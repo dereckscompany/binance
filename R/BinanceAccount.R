@@ -1,0 +1,223 @@
+# File: R/BinanceAccount.R
+# R6 class for Binance account and funding operations.
+
+#' BinanceAccount: Account and Funding Management
+#'
+#' Provides methods for querying account information, balances, and trade
+#' history on Binance. Inherits from [BinanceBase].
+#'
+#' ### Purpose and Scope
+#' - **Account Info**: Retrieve balances, commission rates, and account permissions.
+#' - **Trade History**: Paginated trade history for any symbol with datetime conversion.
+#'
+#' ### Usage
+#' All methods require authentication (valid API key and secret set via
+#' environment variables or passed to the constructor).
+#'
+#' ### Official Documentation
+#' [Binance Account Endpoints](https://binance-docs.github.io/apidocs/spot/en/#account-endpoints)
+#'
+#' ### Endpoints Covered
+#' | Method | Endpoint | HTTP |
+#' |--------|----------|------|
+#' | get_account | GET /api/v3/account | GET |
+#' | get_trades | GET /api/v3/myTrades | GET |
+#'
+#' @examples
+#' \dontrun{
+#' # Synchronous
+#' account <- BinanceAccount$new()
+#' info <- account$get_account()
+#' print(info)
+#'
+#' # Asynchronous
+#' account_async <- BinanceAccount$new(async = TRUE)
+#' main <- coro::async(function() {
+#'   info <- await(account_async$get_account())
+#'   print(info)
+#' })
+#' main()
+#' while (!later::loop_empty()) later::run_now()
+#' }
+#'
+#' @importFrom R6 R6Class
+#' @export
+BinanceAccount <- R6::R6Class(
+  "BinanceAccount",
+  inherit = BinanceBase,
+  public = list(
+    #' @description
+    #' Get Account Information
+    #'
+    #' Retrieves account information including balances, commission rates,
+    #' and trading permissions.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/api/v3/account`
+    #'
+    #' ### Official Documentation
+    #' [Binance Account Information](https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data)
+    #'
+    #' ### Automated Trading Usage
+    #' - **Balance Check**: Verify available funds before placing orders.
+    #' - **Commission Rates**: Access maker/taker commission rates for cost analysis.
+    #' - **Permission Check**: Confirm `can_trade` is TRUE before placing orders.
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/api/v3/account' \
+    #'   -H 'X-MBX-APIKEY: your-api-key' \
+    #'   -d 'timestamp=1729176273859&signature=...'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "makerCommission": 15,
+    #'   "takerCommission": 15,
+    #'   "canTrade": true,
+    #'   "canWithdraw": true,
+    #'   "canDeposit": true,
+    #'   "accountType": "SPOT",
+    #'   "balances": [
+    #'     { "asset": "BTC", "free": "4723846.89208129", "locked": "0.00000000" }
+    #'   ],
+    #'   "uid": 354937868
+    #' }
+    #' ```
+    #'
+    #' @param omitZeroBalances Logical or NULL; if TRUE, omit assets with zero balance.
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return Named list with two elements:
+    #'   - `info`: `data.table` with account metadata (`maker_commission`, `taker_commission`,
+    #'     `can_trade`, `can_withdraw`, `can_deposit`, `account_type`, `uid`).
+    #'   - `balances`: `data.table` with columns `asset`, `free`, `locked`.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' account <- BinanceAccount$new()
+    #' acct <- account$get_account()
+    #' print(acct$info)
+    #' print(acct$balances[free != "0.00000000"])
+    #' }
+    get_account = function(omitZeroBalances = NULL, recvWindow = NULL) {
+      query <- list(recvWindow = recvWindow)
+      if (isTRUE(omitZeroBalances)) {
+        query$omitZeroBalances <- "true"
+      }
+
+      return(private$.request(
+        endpoint = "/api/v3/account",
+        query = query,
+        .parser = function(data) {
+          # Extract balances
+          balances <- data$balances
+          data$balances <- NULL
+          data$permissions <- NULL
+          data$commissionRates <- NULL
+
+          info_dt <- as_dt_row(data)
+
+          balances_dt <- data.table::data.table()
+          if (!is.null(balances) && length(balances) > 0) {
+            balances_dt <- as_dt_list(balances)
+          }
+
+          return(list(info = info_dt, balances = balances_dt))
+        }
+      ))
+    },
+
+    #' @description
+    #' Get Account Trade List
+    #'
+    #' Retrieves trades for a specific symbol. Requires authentication.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/api/v3/myTrades`
+    #'
+    #' ### Official Documentation
+    #' [Binance Account Trade List](https://binance-docs.github.io/apidocs/spot/en/#account-trade-list-user_data)
+    #'
+    #' ### Automated Trading Usage
+    #' - **Trade History**: Build trade logs for P&L calculations.
+    #' - **Fill Analysis**: Analyse execution quality across trades.
+    #' - **Tax Reporting**: Export trade history for tax calculations.
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/api/v3/myTrades?symbol=BTCUSDT' \
+    #'   -H 'X-MBX-APIKEY: your-api-key' \
+    #'   -d 'timestamp=1729176273859&signature=...'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "symbol": "BNBBTC",
+    #'     "id": 28457,
+    #'     "orderId": 100234,
+    #'     "price": "4.00000100",
+    #'     "qty": "12.00000000",
+    #'     "quoteQty": "48.000012",
+    #'     "commission": "10.10000000",
+    #'     "commissionAsset": "BNB",
+    #'     "time": 1499865549590,
+    #'     "isBuyer": true,
+    #'     "isMaker": false,
+    #'     "isBestMatch": true
+    #'   }
+    #' ]
+    #' ```
+    #'
+    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
+    #' @param orderId Integer or NULL; filter by order ID.
+    #' @param startTime Integer or NULL; start timestamp in milliseconds.
+    #' @param endTime Integer or NULL; end timestamp in milliseconds.
+    #' @param fromId Integer or NULL; trade ID to fetch from.
+    #' @param limit Integer or NULL; max results (default 500, max 1000).
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` with trade details including `datetime`.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' account <- BinanceAccount$new()
+    #' trades <- account$get_trades("BTCUSDT", limit = 50)
+    #' print(trades[, .(id, price, qty, commission, datetime)])
+    #' }
+    get_trades = function(
+      symbol,
+      orderId = NULL,
+      startTime = NULL,
+      endTime = NULL,
+      fromId = NULL,
+      limit = NULL,
+      recvWindow = NULL
+    ) {
+      return(private$.request(
+        endpoint = "/api/v3/myTrades",
+        query = list(
+          symbol = symbol,
+          orderId = orderId,
+          startTime = startTime,
+          endTime = endTime,
+          fromId = fromId,
+          limit = limit,
+          recvWindow = recvWindow
+        ),
+        .parser = function(data) {
+          if (is.null(data) || length(data) == 0) {
+            return(data.table::data.table())
+          }
+          dt <- as_dt_list(data)
+          if (nrow(dt) > 0 && "time" %in% names(dt)) {
+            dt[, datetime := ms_to_datetime(time)]
+            dt[, time := NULL]
+          }
+          return(dt)
+        }
+      ))
+    }
+  )
+)
