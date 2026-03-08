@@ -31,9 +31,9 @@ then_or_now <- function(x, fn, is_async = FALSE) {
 #' @return Numeric; server time in epoch milliseconds.
 #' @keywords internal
 #' @noRd
-fetch_server_time_ms <- function(base_url) {
+fetch_server_time_ms <- function(base_url, time_endpoint = "/api/v3/time") {
   req <- httr2::request(base_url)
-  req <- httr2::req_url_path_append(req, "/api/v3/time")
+  req <- httr2::req_url_path_append(req, time_endpoint)
   req <- httr2::req_method(req, "GET")
   req <- httr2::req_timeout(req, 5)
   resp <- httr2::req_perform(req)

@@ -139,6 +139,31 @@ parse_orderbook <- function(data) {
 #' @importFrom lubridate as_datetime
 #' @keywords internal
 #' @noRd
+#' Parse Paginated Binance Response
+#'
+#' Extracts the `rows` array from a paginated Binance response that has the
+#' shape `{"total": N, "rows": [...]}` and converts to a [data.table::data.table].
+#'
+#' @param data List; the parsed Binance response containing `total` and `rows`.
+#' @param time_cols Character vector; column names to convert from ms to POSIXct.
+#' @return A [data.table::data.table] with snake_case column names.
+#'
+#' @keywords internal
+#' @noRd
+parse_paginated <- function(data, time_cols = character(0)) {
+  rows <- data$rows
+  if (is.null(rows) || length(rows) == 0) {
+    return(data.table::data.table())
+  }
+  dt <- as_dt_list(rows)
+  for (col in time_cols) {
+    if (nrow(dt) > 0 && col %in% names(dt)) {
+      data.table::set(dt, j = col, value = ms_to_datetime(dt[[col]]))
+    }
+  }
+  return(dt)
+}
+
 parse_klines <- function(data) {
   if (is.null(data) || length(data) == 0) {
     return(data.table::data.table())
