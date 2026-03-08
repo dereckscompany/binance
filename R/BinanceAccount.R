@@ -89,9 +89,24 @@ BinanceAccount <- R6::R6Class(
     #' @param omitZeroBalances Logical or NULL; if TRUE, omit assets with zero balance.
     #' @param recvWindow Integer or NULL; max 60000.
     #' @return Named list with two elements:
-    #'   - `info`: `data.table` with account metadata (`maker_commission`, `taker_commission`,
-    #'     `can_trade`, `can_withdraw`, `can_deposit`, `account_type`, `uid`).
-    #'   - `balances`: `data.table` with columns `asset`, `free`, `locked`.
+    #' - `info`: `data.table` with one row and the following columns:
+    #'   - `maker_commission` (integer): Maker commission rate (basis points).
+    #'   - `taker_commission` (integer): Taker commission rate (basis points).
+    #'   - `buyer_commission` (integer): Buyer commission rate (basis points).
+    #'   - `seller_commission` (integer): Seller commission rate (basis points).
+    #'   - `can_trade` (logical): Whether the account can place trades.
+    #'   - `can_withdraw` (logical): Whether the account can withdraw.
+    #'   - `can_deposit` (logical): Whether the account can deposit.
+    #'   - `brokered` (logical): Whether this is a brokered account.
+    #'   - `require_self_trade_prevention` (logical): Whether STP is required.
+    #'   - `prevent_sor` (logical): Whether smart order routing is prevented.
+    #'   - `update_time` (numeric): Last account update timestamp in milliseconds.
+    #'   - `account_type` (character): Account type (e.g., `"SPOT"`).
+    #'   - `uid` (integer): Unique account identifier.
+    #' - `balances`: `data.table` with one row per asset and the following columns:
+    #'   - `asset` (character): Asset ticker (e.g., `"BTC"`, `"USDT"`).
+    #'   - `free` (character): Available balance for trading.
+    #'   - `locked` (character): Balance locked in open orders.
     #'
     #' @examples
     #' \dontrun{
@@ -178,7 +193,20 @@ BinanceAccount <- R6::R6Class(
     #' @param fromId Integer or NULL; trade ID to fetch from.
     #' @param limit Integer or NULL; max results (default 500, max 1000).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with trade details including `datetime`.
+    #' @return `data.table` with one row per trade and the following columns:
+    #' - `symbol` (character): Trading pair (e.g., `"BTCUSDT"`).
+    #' - `id` (integer): Unique trade identifier.
+    #' - `order_id` (integer): Order that generated this trade.
+    #' - `order_list_id` (integer): OCO order list ID; `-1` if not an OCO.
+    #' - `price` (character): Execution price.
+    #' - `qty` (character): Quantity traded.
+    #' - `quote_qty` (character): Quote asset amount transacted.
+    #' - `commission` (character): Commission charged.
+    #' - `commission_asset` (character): Asset used for commission (e.g., `"BNB"`).
+    #' - `is_buyer` (logical): `TRUE` if you were the buyer.
+    #' - `is_maker` (logical): `TRUE` if you were the maker.
+    #' - `is_best_match` (logical): `TRUE` if this was the best price match.
+    #' - `datetime` (POSIXct): Trade execution time converted from `time`.
     #'
     #' @examples
     #' \dontrun{

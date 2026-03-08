@@ -240,10 +240,10 @@ Useful for detecting clock drift and ensuring HMAC signatures are valid.
 }
 
 \subsection{Returns}{
-\code{data.table} with columns:
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
 \itemize{
-\item \code{server_time} (numeric): Server timestamp in milliseconds.
-\item \code{datetime} (POSIXct): Converted server datetime.
+\item \code{server_time} (numeric): Server epoch timestamp in milliseconds.
+\item \code{datetime} (POSIXct): Server time converted to UTC datetime.
 }
 }
 \subsection{Examples}{
@@ -281,7 +281,7 @@ precision, order types, filters, and trading status for each symbol.
 \subsection{Automated Trading Usage}{
 \itemize{
 \item \strong{Symbol Discovery}: Find available trading pairs and their status.
-\item \strong{Precision Lookup}: Get \code{baseAssetPrecision} and \code{quoteAssetPrecision} for order formatting.
+\item \strong{Precision Lookup}: Get \code{base_asset_precision} and \code{quote_asset_precision} for order formatting.
 \item \strong{Filter Validation}: Check LOT_SIZE, PRICE_FILTER, MIN_NOTIONAL before placing orders.
 }
 }
@@ -305,8 +305,18 @@ precision, order types, filters, and trading status for each symbol.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with symbol metadata including \code{symbol}, \code{status},
-\code{base_asset}, \code{quote_asset}, \code{base_asset_precision}, \code{quote_asset_precision}.
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+\itemize{
+\item \code{symbol} (character): Trading pair identifier (e.g., \code{"BTCUSDT"}).
+\item \code{status} (character): Trading status (\code{"TRADING"}, \code{"HALT"}, \code{"BREAK"}).
+\item \code{base_asset} (character): Base asset code (e.g., \code{"BTC"}).
+\item \code{base_asset_precision} (integer): Decimal precision for base asset quantities.
+\item \code{quote_asset} (character): Quote asset code (e.g., \code{"USDT"}).
+\item \code{quote_asset_precision} (integer): Decimal precision for quote asset quantities.
+\item \code{quote_precision} (integer): Decimal precision for quote asset prices.
+\item \code{is_spot_trading_allowed} (logical): Whether spot trading is enabled.
+\item \code{is_margin_trading_allowed} (logical): Whether margin trading is enabled.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -361,7 +371,11 @@ Retrieves the latest price for a specific symbol.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with columns: \code{symbol} (character), \code{price} (character).
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+\itemize{
+\item \code{symbol} (character): Trading pair identifier.
+\item \code{price} (character): Latest traded price as string.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -382,7 +396,7 @@ print(ticker)
 \subsection{Method \code{get_all_tickers()}}{
 Get All Symbol Price Tickers
 
-Retrieves the latest price for all trading pairs.
+Retrieves the latest price for all trading pairs in a single request.
 \subsection{API Endpoint}{
 
 \verb{GET https://api.binance.com/api/v3/ticker/price}
@@ -397,7 +411,11 @@ Retrieves the latest price for all trading pairs.
 }
 
 \subsection{Returns}{
-\code{data.table} with columns: \code{symbol} (character), \code{price} (character).
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+\itemize{
+\item \code{symbol} (character): Trading pair identifier.
+\item \code{price} (character): Latest traded price as string.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -458,7 +476,14 @@ Retrieves the best bid and ask price and quantity for a symbol.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with columns: \code{symbol}, \code{bid_price}, \code{bid_qty}, \code{ask_price}, \code{ask_qty}.
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+\itemize{
+\item \code{symbol} (character): Trading pair identifier.
+\item \code{bid_price} (character): Best bid price.
+\item \code{bid_qty} (character): Quantity available at best bid.
+\item \code{ask_price} (character): Best ask price.
+\item \code{ask_qty} (character): Quantity available at best ask.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -507,9 +532,30 @@ Retrieves rolling 24-hour price change statistics for a symbol.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with 24hr stats including \code{symbol}, \code{price_change},
-\code{price_change_percent}, \code{weighted_avg_price}, \code{last_price}, \code{volume},
-\code{quote_volume}, \code{high_price}, \code{low_price}, \code{open_price}, \code{count}.
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+\itemize{
+\item \code{symbol} (character): Trading pair identifier.
+\item \code{price_change} (character): Absolute price change over 24h.
+\item \code{price_change_percent} (character): Percentage price change over 24h.
+\item \code{weighted_avg_price} (character): Volume-weighted average price over 24h.
+\item \code{prev_close_price} (character): Previous day's closing price.
+\item \code{last_price} (character): Most recent trade price.
+\item \code{last_qty} (character): Most recent trade quantity.
+\item \code{bid_price} (character): Current best bid price.
+\item \code{bid_qty} (character): Current best bid quantity.
+\item \code{ask_price} (character): Current best ask price.
+\item \code{ask_qty} (character): Current best ask quantity.
+\item \code{open_price} (character): Price at 24h window open.
+\item \code{high_price} (character): Highest price in 24h.
+\item \code{low_price} (character): Lowest price in 24h.
+\item \code{volume} (character): Total base asset volume in 24h.
+\item \code{quote_volume} (character): Total quote asset volume in 24h.
+\item \code{datetime_open} (POSIXct): Start of the 24h window.
+\item \code{datetime_close} (POSIXct): End of the 24h window.
+\item \code{first_id} (integer): First trade ID in the window.
+\item \code{last_id} (integer): Last trade ID in the window.
+\item \code{count} (integer): Total number of trades in 24h.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -564,8 +610,12 @@ Retrieves the current average price for a symbol (5-minute weighted average).
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with columns: \code{mins} (integer), \code{price} (character),
-\code{datetime} (POSIXct).
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+\itemize{
+\item \code{mins} (integer): Number of minutes in the averaging window.
+\item \code{price} (character): Weighted average price over the window.
+\item \code{datetime} (POSIXct): End of the averaging window.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -617,7 +667,13 @@ Retrieves the order book (bids and asks) for a symbol.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with columns: \code{last_update_id}, \code{side}, \code{price}, \code{quantity}.
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+\itemize{
+\item \code{last_update_id} (character): Sequence ID for orderbook synchronisation.
+\item \code{side} (character): \code{"bid"} or \code{"ask"}.
+\item \code{price} (numeric): Price level.
+\item \code{quantity} (numeric): Available quantity at this price level.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -684,8 +740,16 @@ Retrieves the most recent trades for a symbol.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with columns: \code{id}, \code{price}, \code{qty}, \code{quote_qty},
-\code{datetime}, \code{is_buyer_maker}, \code{is_best_match}.
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+\itemize{
+\item \code{id} (integer): Unique trade identifier.
+\item \code{price} (character): Trade execution price.
+\item \code{qty} (character): Base asset quantity traded.
+\item \code{quote_qty} (character): Quote asset quantity traded.
+\item \code{datetime} (POSIXct): Trade execution time.
+\item \code{is_buyer_maker} (logical): \code{TRUE} if the buyer was the maker (passive side).
+\item \code{is_best_match} (logical): \code{TRUE} if this trade was at the best available price.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -759,8 +823,19 @@ Retrieves historical kline/candlestick data for a symbol.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with columns: \code{datetime}, \code{open}, \code{high}, \code{low}, \code{close},
-\code{volume}, \code{quote_volume}, \code{trades}, \code{taker_buy_base_volume}, \code{taker_buy_quote_volume}.
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+\itemize{
+\item \code{datetime} (POSIXct): Candle open time.
+\item \code{open} (numeric): Opening price.
+\item \code{high} (numeric): Highest price during the interval.
+\item \code{low} (numeric): Lowest price during the interval.
+\item \code{close} (numeric): Closing price.
+\item \code{volume} (numeric): Base asset volume traded.
+\item \code{quote_volume} (numeric): Quote asset volume traded.
+\item \code{trades} (integer): Number of trades during the interval.
+\item \code{taker_buy_base_volume} (numeric): Base asset volume bought by takers.
+\item \code{taker_buy_quote_volume} (numeric): Quote asset volume bought by takers.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

@@ -160,9 +160,28 @@ and trading permissions.
 \subsection{Returns}{
 Named list with two elements:
 \itemize{
-\item \code{info}: \code{data.table} with account metadata (\code{maker_commission}, \code{taker_commission},
-\code{can_trade}, \code{can_withdraw}, \code{can_deposit}, \code{account_type}, \code{uid}).
-\item \code{balances}: \code{data.table} with columns \code{asset}, \code{free}, \code{locked}.
+\item \code{info}: \code{data.table} with one row and the following columns:
+\itemize{
+\item \code{maker_commission} (integer): Maker commission rate (basis points).
+\item \code{taker_commission} (integer): Taker commission rate (basis points).
+\item \code{buyer_commission} (integer): Buyer commission rate (basis points).
+\item \code{seller_commission} (integer): Seller commission rate (basis points).
+\item \code{can_trade} (logical): Whether the account can place trades.
+\item \code{can_withdraw} (logical): Whether the account can withdraw.
+\item \code{can_deposit} (logical): Whether the account can deposit.
+\item \code{brokered} (logical): Whether this is a brokered account.
+\item \code{require_self_trade_prevention} (logical): Whether STP is required.
+\item \code{prevent_sor} (logical): Whether smart order routing is prevented.
+\item \code{update_time} (numeric): Last account update timestamp in milliseconds.
+\item \code{account_type} (character): Account type (e.g., \code{"SPOT"}).
+\item \code{uid} (integer): Unique account identifier.
+}
+\item \code{balances}: \code{data.table} with one row per asset and the following columns:
+\itemize{
+\item \code{asset} (character): Asset ticker (e.g., \code{"BTC"}, \code{"USDT"}).
+\item \code{free} (character): Available balance for trading.
+\item \code{locked} (character): Balance locked in open orders.
+}
 }
 }
 \subsection{Examples}{
@@ -264,7 +283,22 @@ Retrieves trades for a specific symbol. Requires authentication.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with trade details including \code{datetime}.
+\code{data.table} with one row per trade and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair (e.g., \code{"BTCUSDT"}).
+\item \code{id} (integer): Unique trade identifier.
+\item \code{order_id} (integer): Order that generated this trade.
+\item \code{order_list_id} (integer): OCO order list ID; \code{-1} if not an OCO.
+\item \code{price} (character): Execution price.
+\item \code{qty} (character): Quantity traded.
+\item \code{quote_qty} (character): Quote asset amount transacted.
+\item \code{commission} (character): Commission charged.
+\item \code{commission_asset} (character): Asset used for commission (e.g., \code{"BNB"}).
+\item \code{is_buyer} (logical): \code{TRUE} if you were the buyer.
+\item \code{is_maker} (logical): \code{TRUE} if you were the maker.
+\item \code{is_best_match} (logical): \code{TRUE} if this was the best price match.
+\item \code{datetime} (POSIXct): Trade execution time converted from \code{time}.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

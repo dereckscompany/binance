@@ -293,7 +293,25 @@ Places a new spot order on Binance.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with order details.
+\code{data.table} with one row and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair (e.g., \code{"BTCUSDT"}).
+\item \code{order_id} (integer): Unique order identifier assigned by Binance.
+\item \code{order_list_id} (integer): OCO order list ID; \code{-1} if not an OCO.
+\item \code{client_order_id} (character): Client-assigned order ID.
+\item \code{price} (character): Order price.
+\item \code{orig_qty} (character): Original requested quantity.
+\item \code{executed_qty} (character): Quantity filled so far.
+\item \code{cummulative_quote_qty} (character): Cumulative quote asset transacted.
+\item \code{status} (character): Order status (\code{"NEW"}, \code{"FILLED"}, \code{"CANCELED"}, etc.).
+\item \code{time_in_force} (character): Time-in-force policy (\code{"GTC"}, \code{"IOC"}, \code{"FOK"}).
+\item \code{type} (character): Order type (\code{"LIMIT"}, \code{"MARKET"}, etc.).
+\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
+\item \code{working_time} (numeric): Timestamp when the order started working.
+\item \code{self_trade_prevention_mode} (character): STP mode applied.
+\item \code{datetime} (POSIXct): Transaction time converted from \code{transactTime}.
+\item \code{fills} (list): List of fill objects (present with \code{newOrderRespType = "FULL"}).
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -444,7 +462,24 @@ Cancels an active order by order ID or client order ID.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with cancelled order details.
+\code{data.table} with one row and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair.
+\item \code{orig_client_order_id} (character): Original client order ID.
+\item \code{order_id} (integer): Unique order identifier.
+\item \code{order_list_id} (integer): OCO order list ID; \code{-1} if not an OCO.
+\item \code{client_order_id} (character): New client order ID after cancellation.
+\item \code{transact_time} (numeric): Cancellation timestamp in milliseconds.
+\item \code{price} (character): Order price.
+\item \code{orig_qty} (character): Original requested quantity.
+\item \code{executed_qty} (character): Quantity filled before cancellation.
+\item \code{cummulative_quote_qty} (character): Cumulative quote asset transacted.
+\item \code{status} (character): Order status (typically \code{"CANCELED"}).
+\item \code{time_in_force} (character): Time-in-force policy.
+\item \code{type} (character): Order type.
+\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
+\item \code{self_trade_prevention_mode} (character): STP mode applied.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -489,7 +524,24 @@ Cancels all active orders on a trading pair.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with details of all cancelled orders.
+\code{data.table} with one row per cancelled order and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair.
+\item \code{orig_client_order_id} (character): Original client order ID.
+\item \code{order_id} (integer): Unique order identifier.
+\item \code{order_list_id} (integer): OCO order list ID; \code{-1} if not an OCO.
+\item \code{client_order_id} (character): New client order ID after cancellation.
+\item \code{transact_time} (numeric): Cancellation timestamp in milliseconds.
+\item \code{price} (character): Order price.
+\item \code{orig_qty} (character): Original requested quantity.
+\item \code{executed_qty} (character): Quantity filled before cancellation.
+\item \code{cummulative_quote_qty} (character): Cumulative quote asset transacted.
+\item \code{status} (character): Order status (typically \code{"CANCELED"}).
+\item \code{time_in_force} (character): Time-in-force policy.
+\item \code{type} (character): Order type.
+\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
+\item \code{self_trade_prevention_mode} (character): STP mode applied.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -543,7 +595,29 @@ Retrieves details for a specific order by order ID or client order ID.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with order details.
+\code{data.table} with one row and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair.
+\item \code{order_id} (integer): Unique order identifier.
+\item \code{order_list_id} (integer): OCO order list ID; \code{-1} if not an OCO.
+\item \code{client_order_id} (character): Client-assigned order ID.
+\item \code{price} (character): Order price.
+\item \code{orig_qty} (character): Original requested quantity.
+\item \code{executed_qty} (character): Quantity filled so far.
+\item \code{cummulative_quote_qty} (character): Cumulative quote asset transacted.
+\item \code{status} (character): Order status (\code{"NEW"}, \code{"FILLED"}, \code{"CANCELED"}, etc.).
+\item \code{time_in_force} (character): Time-in-force policy.
+\item \code{type} (character): Order type.
+\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
+\item \code{stop_price} (character): Trigger price for stop orders.
+\item \code{iceberg_qty} (character): Iceberg quantity.
+\item \code{is_working} (logical): Whether the order is on the order book.
+\item \code{orig_quote_order_qty} (character): Original quote order quantity.
+\item \code{working_time} (numeric): Timestamp when the order started working.
+\item \code{self_trade_prevention_mode} (character): STP mode applied.
+\item \code{datetime_created} (POSIXct): Order creation time converted from \code{time}.
+\item \code{datetime_updated} (POSIXct): Last update time converted from \code{updateTime}.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -589,7 +663,28 @@ If NULL, returns open orders for all symbols (weight 80).}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with open order details.
+\code{data.table} with one row per open order and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair.
+\item \code{order_id} (integer): Unique order identifier.
+\item \code{order_list_id} (integer): OCO order list ID; \code{-1} if not an OCO.
+\item \code{client_order_id} (character): Client-assigned order ID.
+\item \code{price} (character): Order price.
+\item \code{orig_qty} (character): Original requested quantity.
+\item \code{executed_qty} (character): Quantity filled so far.
+\item \code{cummulative_quote_qty} (character): Cumulative quote asset transacted.
+\item \code{status} (character): Order status (typically \code{"NEW"} or \code{"PARTIALLY_FILLED"}).
+\item \code{time_in_force} (character): Time-in-force policy.
+\item \code{type} (character): Order type.
+\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
+\item \code{stop_price} (character): Trigger price for stop orders.
+\item \code{iceberg_qty} (character): Iceberg quantity.
+\item \code{is_working} (logical): Whether the order is on the order book.
+\item \code{orig_quote_order_qty} (character): Original quote order quantity.
+\item \code{working_time} (numeric): Timestamp when the order started working.
+\item \code{self_trade_prevention_mode} (character): STP mode applied.
+\item \code{datetime_created} (POSIXct): Order creation time converted from \code{time}.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -651,7 +746,29 @@ the most recent orders are returned.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with order details including \code{datetime_created}.
+\code{data.table} with one row per order and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair.
+\item \code{order_id} (integer): Unique order identifier.
+\item \code{order_list_id} (integer): OCO order list ID; \code{-1} if not an OCO.
+\item \code{client_order_id} (character): Client-assigned order ID.
+\item \code{price} (character): Order price.
+\item \code{orig_qty} (character): Original requested quantity.
+\item \code{executed_qty} (character): Quantity filled so far.
+\item \code{cummulative_quote_qty} (character): Cumulative quote asset transacted.
+\item \code{status} (character): Order status (\code{"NEW"}, \code{"FILLED"}, \code{"CANCELED"}, etc.).
+\item \code{time_in_force} (character): Time-in-force policy.
+\item \code{type} (character): Order type.
+\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
+\item \code{stop_price} (character): Trigger price for stop orders.
+\item \code{iceberg_qty} (character): Iceberg quantity.
+\item \code{is_working} (logical): Whether the order is on the order book.
+\item \code{orig_quote_order_qty} (character): Original quote order quantity.
+\item \code{working_time} (numeric): Timestamp when the order started working.
+\item \code{self_trade_prevention_mode} (character): STP mode applied.
+\item \code{datetime_created} (POSIXct): Order creation time converted from \code{time}.
+\item \code{datetime_updated} (POSIXct): Last update time converted from \code{updateTime}.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

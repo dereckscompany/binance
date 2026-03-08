@@ -128,7 +128,23 @@ BinanceTrading <- R6::R6Class(
     #' @param newOrderRespType Character or NULL; `"ACK"`, `"RESULT"`, or `"FULL"`.
     #' @param selfTradePreventionMode Character or NULL.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with order details.
+    #' @return `data.table` with one row and the following columns:
+    #' - `symbol` (character): Trading pair (e.g., `"BTCUSDT"`).
+    #' - `order_id` (integer): Unique order identifier assigned by Binance.
+    #' - `order_list_id` (integer): OCO order list ID; `-1` if not an OCO.
+    #' - `client_order_id` (character): Client-assigned order ID.
+    #' - `price` (character): Order price.
+    #' - `orig_qty` (character): Original requested quantity.
+    #' - `executed_qty` (character): Quantity filled so far.
+    #' - `cummulative_quote_qty` (character): Cumulative quote asset transacted.
+    #' - `status` (character): Order status (`"NEW"`, `"FILLED"`, `"CANCELED"`, etc.).
+    #' - `time_in_force` (character): Time-in-force policy (`"GTC"`, `"IOC"`, `"FOK"`).
+    #' - `type` (character): Order type (`"LIMIT"`, `"MARKET"`, etc.).
+    #' - `side` (character): `"BUY"` or `"SELL"`.
+    #' - `working_time` (numeric): Timestamp when the order started working.
+    #' - `self_trade_prevention_mode` (character): STP mode applied.
+    #' - `datetime` (POSIXct): Transaction time converted from `transactTime`.
+    #' - `fills` (list): List of fill objects (present with `newOrderRespType = "FULL"`).
     #'
     #' @examples
     #' \dontrun{
@@ -288,7 +304,22 @@ BinanceTrading <- R6::R6Class(
     #' @param orderId Integer or NULL; the order ID to cancel.
     #' @param origClientOrderId Character or NULL; the client order ID to cancel.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with cancelled order details.
+    #' @return `data.table` with one row and the following columns:
+    #' - `symbol` (character): Trading pair.
+    #' - `orig_client_order_id` (character): Original client order ID.
+    #' - `order_id` (integer): Unique order identifier.
+    #' - `order_list_id` (integer): OCO order list ID; `-1` if not an OCO.
+    #' - `client_order_id` (character): New client order ID after cancellation.
+    #' - `transact_time` (numeric): Cancellation timestamp in milliseconds.
+    #' - `price` (character): Order price.
+    #' - `orig_qty` (character): Original requested quantity.
+    #' - `executed_qty` (character): Quantity filled before cancellation.
+    #' - `cummulative_quote_qty` (character): Cumulative quote asset transacted.
+    #' - `status` (character): Order status (typically `"CANCELED"`).
+    #' - `time_in_force` (character): Time-in-force policy.
+    #' - `type` (character): Order type.
+    #' - `side` (character): `"BUY"` or `"SELL"`.
+    #' - `self_trade_prevention_mode` (character): STP mode applied.
     #'
     #' @examples
     #' \dontrun{
@@ -327,7 +358,22 @@ BinanceTrading <- R6::R6Class(
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with details of all cancelled orders.
+    #' @return `data.table` with one row per cancelled order and the following columns:
+    #' - `symbol` (character): Trading pair.
+    #' - `orig_client_order_id` (character): Original client order ID.
+    #' - `order_id` (integer): Unique order identifier.
+    #' - `order_list_id` (integer): OCO order list ID; `-1` if not an OCO.
+    #' - `client_order_id` (character): New client order ID after cancellation.
+    #' - `transact_time` (numeric): Cancellation timestamp in milliseconds.
+    #' - `price` (character): Order price.
+    #' - `orig_qty` (character): Original requested quantity.
+    #' - `executed_qty` (character): Quantity filled before cancellation.
+    #' - `cummulative_quote_qty` (character): Cumulative quote asset transacted.
+    #' - `status` (character): Order status (typically `"CANCELED"`).
+    #' - `time_in_force` (character): Time-in-force policy.
+    #' - `type` (character): Order type.
+    #' - `side` (character): `"BUY"` or `"SELL"`.
+    #' - `self_trade_prevention_mode` (character): STP mode applied.
     #'
     #' @examples
     #' \dontrun{
@@ -361,7 +407,27 @@ BinanceTrading <- R6::R6Class(
     #' @param orderId Integer or NULL; the order ID.
     #' @param origClientOrderId Character or NULL; the client order ID.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with order details.
+    #' @return `data.table` with one row and the following columns:
+    #' - `symbol` (character): Trading pair.
+    #' - `order_id` (integer): Unique order identifier.
+    #' - `order_list_id` (integer): OCO order list ID; `-1` if not an OCO.
+    #' - `client_order_id` (character): Client-assigned order ID.
+    #' - `price` (character): Order price.
+    #' - `orig_qty` (character): Original requested quantity.
+    #' - `executed_qty` (character): Quantity filled so far.
+    #' - `cummulative_quote_qty` (character): Cumulative quote asset transacted.
+    #' - `status` (character): Order status (`"NEW"`, `"FILLED"`, `"CANCELED"`, etc.).
+    #' - `time_in_force` (character): Time-in-force policy.
+    #' - `type` (character): Order type.
+    #' - `side` (character): `"BUY"` or `"SELL"`.
+    #' - `stop_price` (character): Trigger price for stop orders.
+    #' - `iceberg_qty` (character): Iceberg quantity.
+    #' - `is_working` (logical): Whether the order is on the order book.
+    #' - `orig_quote_order_qty` (character): Original quote order quantity.
+    #' - `working_time` (numeric): Timestamp when the order started working.
+    #' - `self_trade_prevention_mode` (character): STP mode applied.
+    #' - `datetime_created` (POSIXct): Order creation time converted from `time`.
+    #' - `datetime_updated` (POSIXct): Last update time converted from `updateTime`.
     #'
     #' @examples
     #' \dontrun{
@@ -411,7 +477,26 @@ BinanceTrading <- R6::R6Class(
     #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
     #'   If NULL, returns open orders for all symbols (weight 80).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with open order details.
+    #' @return `data.table` with one row per open order and the following columns:
+    #' - `symbol` (character): Trading pair.
+    #' - `order_id` (integer): Unique order identifier.
+    #' - `order_list_id` (integer): OCO order list ID; `-1` if not an OCO.
+    #' - `client_order_id` (character): Client-assigned order ID.
+    #' - `price` (character): Order price.
+    #' - `orig_qty` (character): Original requested quantity.
+    #' - `executed_qty` (character): Quantity filled so far.
+    #' - `cummulative_quote_qty` (character): Cumulative quote asset transacted.
+    #' - `status` (character): Order status (typically `"NEW"` or `"PARTIALLY_FILLED"`).
+    #' - `time_in_force` (character): Time-in-force policy.
+    #' - `type` (character): Order type.
+    #' - `side` (character): `"BUY"` or `"SELL"`.
+    #' - `stop_price` (character): Trigger price for stop orders.
+    #' - `iceberg_qty` (character): Iceberg quantity.
+    #' - `is_working` (logical): Whether the order is on the order book.
+    #' - `orig_quote_order_qty` (character): Original quote order quantity.
+    #' - `working_time` (numeric): Timestamp when the order started working.
+    #' - `self_trade_prevention_mode` (character): STP mode applied.
+    #' - `datetime_created` (POSIXct): Order creation time converted from `time`.
     #'
     #' @examples
     #' \dontrun{
@@ -456,7 +541,27 @@ BinanceTrading <- R6::R6Class(
     #' @param endTime Integer or NULL; end timestamp in milliseconds.
     #' @param limit Integer or NULL; max results (default 500, max 1000).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with order details including `datetime_created`.
+    #' @return `data.table` with one row per order and the following columns:
+    #' - `symbol` (character): Trading pair.
+    #' - `order_id` (integer): Unique order identifier.
+    #' - `order_list_id` (integer): OCO order list ID; `-1` if not an OCO.
+    #' - `client_order_id` (character): Client-assigned order ID.
+    #' - `price` (character): Order price.
+    #' - `orig_qty` (character): Original requested quantity.
+    #' - `executed_qty` (character): Quantity filled so far.
+    #' - `cummulative_quote_qty` (character): Cumulative quote asset transacted.
+    #' - `status` (character): Order status (`"NEW"`, `"FILLED"`, `"CANCELED"`, etc.).
+    #' - `time_in_force` (character): Time-in-force policy.
+    #' - `type` (character): Order type.
+    #' - `side` (character): `"BUY"` or `"SELL"`.
+    #' - `stop_price` (character): Trigger price for stop orders.
+    #' - `iceberg_qty` (character): Iceberg quantity.
+    #' - `is_working` (logical): Whether the order is on the order book.
+    #' - `orig_quote_order_qty` (character): Original quote order quantity.
+    #' - `working_time` (numeric): Timestamp when the order started working.
+    #' - `self_trade_prevention_mode` (character): STP mode applied.
+    #' - `datetime_created` (POSIXct): Order creation time converted from `time`.
+    #' - `datetime_updated` (POSIXct): Last update time converted from `updateTime`.
     #'
     #' @examples
     #' \dontrun{
