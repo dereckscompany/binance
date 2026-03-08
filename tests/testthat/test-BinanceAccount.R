@@ -16,24 +16,13 @@ test_that("BinanceAccount inherits from BinanceBase", {
   expect_s3_class(a, "BinanceBase")
 })
 
-# -- get_account --
+# -- get_account_info --
 
-test_that("get_account returns list with info and balances", {
+test_that("get_account_info returns data.table with expected columns", {
   resp <- mock_binance_response(data = mock_account_data())
   httr2::local_mocked_responses(function(req) resp)
 
-  result <- new_account()$get_account()
-  expect_type(result, "list")
-  expect_true("info" %in% names(result))
-  expect_true("balances" %in% names(result))
-})
-
-test_that("get_account info has expected columns", {
-  resp <- mock_binance_response(data = mock_account_data())
-  httr2::local_mocked_responses(function(req) resp)
-
-  result <- new_account()$get_account()
-  info <- result$info
+  info <- new_account()$get_account_info()
   expect_s3_class(info, "data.table")
   expect_equal(nrow(info), 1L)
   expect_true("maker_commission" %in% names(info))
@@ -47,14 +36,28 @@ test_that("get_account info has expected columns", {
   expect_equal(info$account_type, "SPOT")
   expect_equal(info$uid, 354937868L)
   expect_true(info$can_trade)
+
+  # commission_rates and permissions are preserved
+  expect_true("commission_rates" %in% names(info))
+  expect_true("permissions" %in% names(info))
 })
 
-test_that("get_account balances has expected columns", {
+test_that("get_account_info does not include balances", {
   resp <- mock_binance_response(data = mock_account_data())
   httr2::local_mocked_responses(function(req) resp)
 
-  result <- new_account()$get_account()
-  balances <- result$balances
+  info <- new_account()$get_account_info()
+  expect_false("balances" %in% names(info))
+  expect_false("asset" %in% names(info))
+})
+
+# -- get_balances --
+
+test_that("get_balances returns data.table with expected columns", {
+  resp <- mock_binance_response(data = mock_account_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  balances <- new_account()$get_balances()
   expect_s3_class(balances, "data.table")
   expect_equal(nrow(balances), 3L)
   expect_true("asset" %in% names(balances))
@@ -63,7 +66,7 @@ test_that("get_account balances has expected columns", {
   expect_equal(sort(balances$asset), c("BTC", "ETH", "LTC"))
 })
 
-test_that("get_account passes omitZeroBalances parameter", {
+test_that("get_balances passes omitZeroBalances parameter", {
   captured_url <- NULL
   resp <- mock_binance_response(data = mock_account_data())
   httr2::local_mocked_responses(function(req) {
@@ -71,7 +74,7 @@ test_that("get_account passes omitZeroBalances parameter", {
     resp
   })
 
-  new_account()$get_account(omitZeroBalances = TRUE)
+  new_account()$get_balances(omitZeroBalances = TRUE)
   expect_true(grepl("omitZeroBalances=true", captured_url))
 })
 

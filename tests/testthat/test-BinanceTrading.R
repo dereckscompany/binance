@@ -86,7 +86,7 @@ test_that("add_order_test hits test endpoint and returns empty data.table", {
 
 # -- cancel_order --
 
-test_that("cancel_order returns cancelled order details", {
+test_that("cancel_order returns cancelled order details with datetime", {
   resp <- mock_binance_response(data = mock_cancel_order_data())
   httr2::local_mocked_responses(function(req) resp)
 
@@ -96,6 +96,11 @@ test_that("cancel_order returns cancelled order details", {
   expect_equal(dt$status, "CANCELED")
   expect_equal(dt$order_id, 28L)
   expect_equal(dt$symbol, "BTCUSDT")
+
+  # transact_time should be converted to datetime
+  expect_true("datetime" %in% names(dt))
+  expect_s3_class(dt$datetime, "POSIXct")
+  expect_false("transact_time" %in% names(dt))
 })
 
 test_that("cancel_order requires orderId or origClientOrderId", {
@@ -119,7 +124,7 @@ test_that("cancel_order sends DELETE method", {
 
 # -- cancel_all_orders --
 
-test_that("cancel_all_orders returns data.table of cancelled orders", {
+test_that("cancel_all_orders returns data.table with datetime", {
   resp <- mock_binance_response(data = list(mock_cancel_order_data()))
   httr2::local_mocked_responses(function(req) resp)
 
@@ -127,6 +132,11 @@ test_that("cancel_all_orders returns data.table of cancelled orders", {
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   expect_equal(dt$status, "CANCELED")
+
+  # transact_time should be converted to datetime
+  expect_true("datetime" %in% names(dt))
+  expect_s3_class(dt$datetime, "POSIXct")
+  expect_false("transact_time" %in% names(dt))
 })
 
 test_that("cancel_all_orders sends DELETE to openOrders endpoint", {

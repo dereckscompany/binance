@@ -469,7 +469,6 @@ Cancels an active order by order ID or client order ID.
 \item \code{order_id} (integer): Unique order identifier.
 \item \code{order_list_id} (integer): OCO order list ID; \code{-1} if not an OCO.
 \item \code{client_order_id} (character): New client order ID after cancellation.
-\item \code{transact_time} (numeric): Cancellation timestamp in milliseconds.
 \item \code{price} (character): Order price.
 \item \code{orig_qty} (character): Original requested quantity.
 \item \code{executed_qty} (character): Quantity filled before cancellation.
@@ -479,6 +478,7 @@ Cancels an active order by order ID or client order ID.
 \item \code{type} (character): Order type.
 \item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
+\item \code{datetime} (POSIXct): Cancellation time converted from \code{transactTime}.
 }
 }
 \subsection{Examples}{
@@ -531,7 +531,6 @@ Cancels all active orders on a trading pair.
 \item \code{order_id} (integer): Unique order identifier.
 \item \code{order_list_id} (integer): OCO order list ID; \code{-1} if not an OCO.
 \item \code{client_order_id} (character): New client order ID after cancellation.
-\item \code{transact_time} (numeric): Cancellation timestamp in milliseconds.
 \item \code{price} (character): Order price.
 \item \code{orig_qty} (character): Original requested quantity.
 \item \code{executed_qty} (character): Quantity filled before cancellation.
@@ -541,6 +540,7 @@ Cancels all active orders on a trading pair.
 \item \code{type} (character): Order type.
 \item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
+\item \code{datetime} (POSIXct): Cancellation time converted from \code{transactTime}.
 }
 }
 \subsection{Examples}{
@@ -684,6 +684,7 @@ If NULL, returns open orders for all symbols (weight 80).}
 \item \code{working_time} (numeric): Timestamp when the order started working.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
 \item \code{datetime_created} (POSIXct): Order creation time converted from \code{time}.
+\item \code{datetime_updated} (POSIXct): Last update time converted from \code{updateTime}.
 }
 }
 \subsection{Examples}{

@@ -2,8 +2,10 @@
 
 export(BinanceAccount)
 export(BinanceBase)
+export(BinanceDeposit)
 export(BinanceMarketData)
 export(BinanceTrading)
+export(BinanceWithdrawal)
 export(binance_build_request)
 export(get_api_keys)
 export(get_base_url)

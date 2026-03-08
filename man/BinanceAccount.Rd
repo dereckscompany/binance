@@ -31,7 +31,8 @@ environment variables or passed to the constructor).
 
 \subsection{Endpoints Covered}{\tabular{lll}{
    Method \tab Endpoint \tab HTTP \cr
-   get_account \tab GET /api/v3/account \tab GET \cr
+   get_account_info \tab GET /api/v3/account \tab GET \cr
+   get_balances \tab GET /api/v3/account \tab GET \cr
    get_trades \tab GET /api/v3/myTrades \tab GET \cr
 }
 
@@ -41,13 +42,15 @@ environment variables or passed to the constructor).
 \dontrun{
 # Synchronous
 account <- BinanceAccount$new()
-info <- account$get_account()
+info <- account$get_account_info()
 print(info)
+balances <- account$get_balances()
+print(balances)
 
 # Asynchronous
 account_async <- BinanceAccount$new(async = TRUE)
 main <- coro::async(function() {
-  info <- await(account_async$get_account())
+  info <- await(account_async$get_account_info())
   print(info)
 })
 main()
@@ -56,14 +59,23 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceAccount$get_account`
+## Method `BinanceAccount$get_account_info`
 ## ------------------------------------------------
 
 \dontrun{
 account <- BinanceAccount$new()
-acct <- account$get_account()
-print(acct$info)
-print(acct$balances[free != "0.00000000"])
+info <- account$get_account_info()
+print(info[, .(maker_commission, taker_commission, can_trade, account_type)])
+}
+
+## ------------------------------------------------
+## Method `BinanceAccount$get_balances`
+## ------------------------------------------------
+
+\dontrun{
+account <- BinanceAccount$new()
+balances <- account$get_balances()
+print(balances[free != "0.00000000"])
 }
 
 ## ------------------------------------------------
@@ -82,7 +94,8 @@ print(trades[, .(id, price, qty, commission, datetime)])
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-BinanceAccount-get_account}{\code{BinanceAccount$get_account()}}
+\item \href{#method-BinanceAccount-get_account_info}{\code{BinanceAccount$get_account_info()}}
+\item \href{#method-BinanceAccount-get_balances}{\code{BinanceAccount$get_balances()}}
 \item \href{#method-BinanceAccount-get_trades}{\code{BinanceAccount$get_trades()}}
 \item \href{#method-BinanceAccount-clone}{\code{BinanceAccount$clone()}}
 }
@@ -95,13 +108,13 @@ print(trades[, .(id, price, qty, commission, datetime)])
 </details>
 }}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BinanceAccount-get_account"></a>}}
-\if{latex}{\out{\hypertarget{method-BinanceAccount-get_account}{}}}
-\subsection{Method \code{get_account()}}{
+\if{html}{\out{<a id="method-BinanceAccount-get_account_info"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceAccount-get_account_info}{}}}
+\subsection{Method \code{get_account_info()}}{
 Get Account Information
 
-Retrieves account information including balances, commission rates,
-and trading permissions.
+Retrieves account metadata including commission rates, trading permissions,
+and account type. For balances, use \code{get_balances()}.
 \subsection{API Endpoint}{
 
 \verb{GET https://api.binance.com/api/v3/account}
@@ -114,7 +127,6 @@ and trading permissions.
 
 \subsection{Automated Trading Usage}{
 \itemize{
-\item \strong{Balance Check}: Verify available funds before placing orders.
 \item \strong{Commission Rates}: Access maker/taker commission rates for cost analysis.
 \item \strong{Permission Check}: Confirm \code{can_trade} is TRUE before placing orders.
 }
@@ -137,15 +149,80 @@ and trading permissions.
   "canWithdraw": true,
   "canDeposit": true,
   "accountType": "SPOT",
-  "balances": [
-    \{ "asset": "BTC", "free": "4723846.89208129", "locked": "0.00000000" \}
-  ],
+  "balances": [...],
   "uid": 354937868
 \}
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceAccount$get_account(omitZeroBalances = NULL, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceAccount$get_account_info(recvWindow = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+\itemize{
+\item \code{maker_commission} (integer): Maker commission rate (basis points).
+\item \code{taker_commission} (integer): Taker commission rate (basis points).
+\item \code{buyer_commission} (integer): Buyer commission rate (basis points).
+\item \code{seller_commission} (integer): Seller commission rate (basis points).
+\item \code{commission_rates} (list): Nested object with \code{maker}, \code{taker}, \code{buyer}, \code{seller} as decimal strings.
+\item \code{can_trade} (logical): Whether the account can place trades.
+\item \code{can_withdraw} (logical): Whether the account can withdraw.
+\item \code{can_deposit} (logical): Whether the account can deposit.
+\item \code{brokered} (logical): Whether this is a brokered account.
+\item \code{require_self_trade_prevention} (logical): Whether STP is required.
+\item \code{prevent_sor} (logical): Whether smart order routing is prevented.
+\item \code{update_time} (numeric): Last account update timestamp in milliseconds.
+\item \code{account_type} (character): Account type (e.g., \code{"SPOT"}).
+\item \code{permissions} (list): Account permissions (e.g., \code{"SPOT"}).
+\item \code{uid} (integer): Unique account identifier.
+}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+account <- BinanceAccount$new()
+info <- account$get_account_info()
+print(info[, .(maker_commission, taker_commission, can_trade, account_type)])
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BinanceAccount-get_balances"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceAccount-get_balances}{}}}
+\subsection{Method \code{get_balances()}}{
+Get Account Balances
+
+Retrieves asset balances for the account.
+\subsection{API Endpoint}{
+
+\verb{GET https://api.binance.com/api/v3/account}
+}
+
+\subsection{Official Documentation}{
+
+\href{https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data}{Binance Account Information}
+}
+
+\subsection{Automated Trading Usage}{
+\itemize{
+\item \strong{Balance Check}: Verify available funds before placing orders.
+\item \strong{Portfolio Overview}: Get all asset balances in a single call.
+}
+}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceAccount$get_balances(omitZeroBalances = NULL, recvWindow = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -158,39 +235,19 @@ and trading permissions.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Named list with two elements:
-\itemize{
-\item \code{info}: \code{data.table} with one row and the following columns:
-\itemize{
-\item \code{maker_commission} (integer): Maker commission rate (basis points).
-\item \code{taker_commission} (integer): Taker commission rate (basis points).
-\item \code{buyer_commission} (integer): Buyer commission rate (basis points).
-\item \code{seller_commission} (integer): Seller commission rate (basis points).
-\item \code{can_trade} (logical): Whether the account can place trades.
-\item \code{can_withdraw} (logical): Whether the account can withdraw.
-\item \code{can_deposit} (logical): Whether the account can deposit.
-\item \code{brokered} (logical): Whether this is a brokered account.
-\item \code{require_self_trade_prevention} (logical): Whether STP is required.
-\item \code{prevent_sor} (logical): Whether smart order routing is prevented.
-\item \code{update_time} (numeric): Last account update timestamp in milliseconds.
-\item \code{account_type} (character): Account type (e.g., \code{"SPOT"}).
-\item \code{uid} (integer): Unique account identifier.
-}
-\item \code{balances}: \code{data.table} with one row per asset and the following columns:
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
 \itemize{
 \item \code{asset} (character): Asset ticker (e.g., \code{"BTC"}, \code{"USDT"}).
 \item \code{free} (character): Available balance for trading.
 \item \code{locked} (character): Balance locked in open orders.
 }
 }
-}
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 account <- BinanceAccount$new()
-acct <- account$get_account()
-print(acct$info)
-print(acct$balances[free != "0.00000000"])
+balances <- account$get_balances()
+print(balances[free != "0.00000000"])
 }
 }
 \if{html}{\out{</div>}}

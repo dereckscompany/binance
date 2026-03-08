@@ -94,7 +94,7 @@ BinanceMarketData <- R6::R6Class(
     #'
     #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
     #'   - `server_time` (numeric): Server epoch timestamp in milliseconds.
-    #'   - `datetime` (POSIXct): Server time converted to UTC datetime.
+    #'   - `datetime_server` (POSIXct): Server time converted to UTC datetime.
     #'
     #' @examples
     #' \dontrun{
@@ -111,7 +111,7 @@ BinanceMarketData <- R6::R6Class(
           ts <- as.numeric(data$serverTime)
           return(data.table::data.table(
             server_time = ts,
-            datetime = ms_to_datetime(ts)
+            datetime_server = ms_to_datetime(ts)
           ))
         }
       ))
@@ -143,7 +143,8 @@ BinanceMarketData <- R6::R6Class(
     #'
     #' @param symbol Character or NULL; specific symbol (e.g., `"BTCUSDT"`).
     #' @param symbols Character vector or NULL; multiple symbols.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with all symbol
+    #'   fields returned by the API, converted to snake_case. Key columns include:
     #'   - `symbol` (character): Trading pair identifier (e.g., `"BTCUSDT"`).
     #'   - `status` (character): Trading status (`"TRADING"`, `"HALT"`, `"BREAK"`).
     #'   - `base_asset` (character): Base asset code (e.g., `"BTC"`).
@@ -151,8 +152,19 @@ BinanceMarketData <- R6::R6Class(
     #'   - `quote_asset` (character): Quote asset code (e.g., `"USDT"`).
     #'   - `quote_asset_precision` (integer): Decimal precision for quote asset quantities.
     #'   - `quote_precision` (integer): Decimal precision for quote asset prices.
+    #'   - `order_types` (list): Allowed order types for this symbol.
+    #'   - `iceberg_allowed` (logical): Whether iceberg orders are allowed.
+    #'   - `oco_allowed` (logical): Whether OCO orders are allowed.
+    #'   - `oto_allowed` (logical): Whether OTO orders are allowed.
+    #'   - `quote_order_qty_market_allowed` (logical): Whether quote quantity market orders are allowed.
+    #'   - `allow_trailing_stop` (logical): Whether trailing stop orders are allowed.
+    #'   - `cancel_replace_allowed` (logical): Whether cancel-replace is allowed.
     #'   - `is_spot_trading_allowed` (logical): Whether spot trading is enabled.
     #'   - `is_margin_trading_allowed` (logical): Whether margin trading is enabled.
+    #'   - `filters` (list): List of filter objects (LOT_SIZE, PRICE_FILTER, etc.).
+    #'   - `permissions` (list): Trading permissions for this symbol.
+    #'   - `default_self_trade_prevention_mode` (character): Default STP mode.
+    #'   - `allowed_self_trade_prevention_modes` (list): Allowed STP modes.
     #'
     #' @examples
     #' \dontrun{
@@ -178,19 +190,7 @@ BinanceMarketData <- R6::R6Class(
             return(data.table::data.table())
           }
           dt <- data.table::rbindlist(
-            lapply(syms, function(s) {
-              data.table::data.table(
-                symbol = s$symbol %||% NA_character_,
-                status = s$status %||% NA_character_,
-                base_asset = s$baseAsset %||% NA_character_,
-                base_asset_precision = s$baseAssetPrecision %||% NA_integer_,
-                quote_asset = s$quoteAsset %||% NA_character_,
-                quote_asset_precision = s$quoteAssetPrecision %||% NA_integer_,
-                quote_precision = s$quotePrecision %||% NA_integer_,
-                is_spot_trading_allowed = s$isSpotTradingAllowed %||% NA,
-                is_margin_trading_allowed = s$isMarginTradingAllowed %||% NA
-              )
-            }),
+            lapply(syms, as_dt_row),
             fill = TRUE
           )
           return(dt)
@@ -415,7 +415,7 @@ BinanceMarketData <- R6::R6Class(
     #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
     #'   - `mins` (integer): Number of minutes in the averaging window.
     #'   - `price` (character): Weighted average price over the window.
-    #'   - `datetime` (POSIXct): End of the averaging window.
+    #'   - `datetime_close` (POSIXct): End of the averaging window.
     #'
     #' @examples
     #' \dontrun{
@@ -431,7 +431,7 @@ BinanceMarketData <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           if (nrow(dt) > 0 && "close_time" %in% names(dt)) {
-            dt[, datetime := ms_to_datetime(close_time)]
+            dt[, datetime_close := ms_to_datetime(close_time)]
             dt[, close_time := NULL]
           }
           return(dt)
@@ -521,7 +521,7 @@ BinanceMarketData <- R6::R6Class(
     #'   - `price` (character): Trade execution price.
     #'   - `qty` (character): Base asset quantity traded.
     #'   - `quote_qty` (character): Quote asset quantity traded.
-    #'   - `datetime` (POSIXct): Trade execution time.
+    #'   - `datetime_trade` (POSIXct): Trade execution time.
     #'   - `is_buyer_maker` (logical): `TRUE` if the buyer was the maker (passive side).
     #'   - `is_best_match` (logical): `TRUE` if this trade was at the best available price.
     #'
@@ -539,7 +539,7 @@ BinanceMarketData <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, datetime := ms_to_datetime(time)]
+            dt[, datetime_trade := ms_to_datetime(time)]
             dt[, time := NULL]
           }
           return(dt)
@@ -579,16 +579,18 @@ BinanceMarketData <- R6::R6Class(
     #' @param endTime POSIXct or numeric or NULL; end time (ms or POSIXct).
     #' @param limit Integer or NULL; max results (default 500, max 1000).
     #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `datetime` (POSIXct): Candle open time.
+    #'   - `datetime_open` (POSIXct): Candle open time.
     #'   - `open` (numeric): Opening price.
     #'   - `high` (numeric): Highest price during the interval.
     #'   - `low` (numeric): Lowest price during the interval.
     #'   - `close` (numeric): Closing price.
     #'   - `volume` (numeric): Base asset volume traded.
+    #'   - `datetime_close` (POSIXct): Candle close time.
     #'   - `quote_volume` (numeric): Quote asset volume traded.
     #'   - `trades` (integer): Number of trades during the interval.
     #'   - `taker_buy_base_volume` (numeric): Base asset volume bought by takers.
     #'   - `taker_buy_quote_volume` (numeric): Quote asset volume bought by takers.
+    #'   - `ignore` (character): Unused field from Binance API.
     #'
     #' @examples
     #' \dontrun{

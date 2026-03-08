@@ -20,20 +20,23 @@
 #' ### Endpoints Covered
 #' | Method | Endpoint | HTTP |
 #' |--------|----------|------|
-#' | get_account | GET /api/v3/account | GET |
+#' | get_account_info | GET /api/v3/account | GET |
+#' | get_balances | GET /api/v3/account | GET |
 #' | get_trades | GET /api/v3/myTrades | GET |
 #'
 #' @examples
 #' \dontrun{
 #' # Synchronous
 #' account <- BinanceAccount$new()
-#' info <- account$get_account()
+#' info <- account$get_account_info()
 #' print(info)
+#' balances <- account$get_balances()
+#' print(balances)
 #'
 #' # Asynchronous
 #' account_async <- BinanceAccount$new(async = TRUE)
 #' main <- coro::async(function() {
-#'   info <- await(account_async$get_account())
+#'   info <- await(account_async$get_account_info())
 #'   print(info)
 #' })
 #' main()
@@ -49,8 +52,8 @@ BinanceAccount <- R6::R6Class(
     #' @description
     #' Get Account Information
     #'
-    #' Retrieves account information including balances, commission rates,
-    #' and trading permissions.
+    #' Retrieves account metadata including commission rates, trading permissions,
+    #' and account type. For balances, use `get_balances()`.
     #'
     #' ### API Endpoint
     #' `GET https://api.binance.com/api/v3/account`
@@ -59,7 +62,6 @@ BinanceAccount <- R6::R6Class(
     #' [Binance Account Information](https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data)
     #'
     #' ### Automated Trading Usage
-    #' - **Balance Check**: Verify available funds before placing orders.
     #' - **Commission Rates**: Access maker/taker commission rates for cost analysis.
     #' - **Permission Check**: Confirm `can_trade` is TRUE before placing orders.
     #'
@@ -79,43 +81,75 @@ BinanceAccount <- R6::R6Class(
     #'   "canWithdraw": true,
     #'   "canDeposit": true,
     #'   "accountType": "SPOT",
-    #'   "balances": [
-    #'     { "asset": "BTC", "free": "4723846.89208129", "locked": "0.00000000" }
-    #'   ],
+    #'   "balances": [...],
     #'   "uid": 354937868
     #' }
     #' ```
     #'
-    #' @param omitZeroBalances Logical or NULL; if TRUE, omit assets with zero balance.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return Named list with two elements:
-    #' - `info`: `data.table` with one row and the following columns:
-    #'   - `maker_commission` (integer): Maker commission rate (basis points).
-    #'   - `taker_commission` (integer): Taker commission rate (basis points).
-    #'   - `buyer_commission` (integer): Buyer commission rate (basis points).
-    #'   - `seller_commission` (integer): Seller commission rate (basis points).
-    #'   - `can_trade` (logical): Whether the account can place trades.
-    #'   - `can_withdraw` (logical): Whether the account can withdraw.
-    #'   - `can_deposit` (logical): Whether the account can deposit.
-    #'   - `brokered` (logical): Whether this is a brokered account.
-    #'   - `require_self_trade_prevention` (logical): Whether STP is required.
-    #'   - `prevent_sor` (logical): Whether smart order routing is prevented.
-    #'   - `update_time` (numeric): Last account update timestamp in milliseconds.
-    #'   - `account_type` (character): Account type (e.g., `"SPOT"`).
-    #'   - `uid` (integer): Unique account identifier.
-    #' - `balances`: `data.table` with one row per asset and the following columns:
-    #'   - `asset` (character): Asset ticker (e.g., `"BTC"`, `"USDT"`).
-    #'   - `free` (character): Available balance for trading.
-    #'   - `locked` (character): Balance locked in open orders.
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+    #' - `maker_commission` (integer): Maker commission rate (basis points).
+    #' - `taker_commission` (integer): Taker commission rate (basis points).
+    #' - `buyer_commission` (integer): Buyer commission rate (basis points).
+    #' - `seller_commission` (integer): Seller commission rate (basis points).
+    #' - `commission_rates` (list): Nested object with `maker`, `taker`, `buyer`, `seller` as decimal strings.
+    #' - `can_trade` (logical): Whether the account can place trades.
+    #' - `can_withdraw` (logical): Whether the account can withdraw.
+    #' - `can_deposit` (logical): Whether the account can deposit.
+    #' - `brokered` (logical): Whether this is a brokered account.
+    #' - `require_self_trade_prevention` (logical): Whether STP is required.
+    #' - `prevent_sor` (logical): Whether smart order routing is prevented.
+    #' - `update_time` (numeric): Last account update timestamp in milliseconds.
+    #' - `account_type` (character): Account type (e.g., `"SPOT"`).
+    #' - `permissions` (list): Account permissions (e.g., `"SPOT"`).
+    #' - `uid` (integer): Unique account identifier.
     #'
     #' @examples
     #' \dontrun{
     #' account <- BinanceAccount$new()
-    #' acct <- account$get_account()
-    #' print(acct$info)
-    #' print(acct$balances[free != "0.00000000"])
+    #' info <- account$get_account_info()
+    #' print(info[, .(maker_commission, taker_commission, can_trade, account_type)])
     #' }
-    get_account = function(omitZeroBalances = NULL, recvWindow = NULL) {
+    get_account_info = function(recvWindow = NULL) {
+      return(private$.request(
+        endpoint = "/api/v3/account",
+        query = list(recvWindow = recvWindow),
+        .parser = function(data) {
+          data$balances <- NULL
+          return(as_dt_row(data))
+        }
+      ))
+    },
+
+    #' @description
+    #' Get Account Balances
+    #'
+    #' Retrieves asset balances for the account.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/api/v3/account`
+    #'
+    #' ### Official Documentation
+    #' [Binance Account Information](https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data)
+    #'
+    #' ### Automated Trading Usage
+    #' - **Balance Check**: Verify available funds before placing orders.
+    #' - **Portfolio Overview**: Get all asset balances in a single call.
+    #'
+    #' @param omitZeroBalances Logical or NULL; if TRUE, omit assets with zero balance.
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+    #' - `asset` (character): Asset ticker (e.g., `"BTC"`, `"USDT"`).
+    #' - `free` (character): Available balance for trading.
+    #' - `locked` (character): Balance locked in open orders.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' account <- BinanceAccount$new()
+    #' balances <- account$get_balances()
+    #' print(balances[free != "0.00000000"])
+    #' }
+    get_balances = function(omitZeroBalances = NULL, recvWindow = NULL) {
       query <- list(recvWindow = recvWindow)
       if (isTRUE(omitZeroBalances)) {
         query$omitZeroBalances <- "true"
@@ -125,20 +159,11 @@ BinanceAccount <- R6::R6Class(
         endpoint = "/api/v3/account",
         query = query,
         .parser = function(data) {
-          # Extract balances
           balances <- data$balances
-          data$balances <- NULL
-          data$permissions <- NULL
-          data$commissionRates <- NULL
-
-          info_dt <- as_dt_row(data)
-
-          balances_dt <- data.table::data.table()
-          if (!is.null(balances) && length(balances) > 0) {
-            balances_dt <- as_dt_list(balances)
+          if (is.null(balances) || length(balances) == 0) {
+            return(data.table::data.table())
           }
-
-          return(list(info = info_dt, balances = balances_dt))
+          return(as_dt_list(balances))
         }
       ))
     },

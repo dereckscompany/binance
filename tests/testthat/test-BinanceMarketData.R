@@ -52,6 +52,21 @@ test_that("get_exchange_info returns data.table with symbol metadata", {
   expect_true("quote_asset" %in% names(dt))
   expect_equal(sort(dt$symbol), c("BTCUSDT", "ETHUSDT"))
   expect_equal(dt[symbol == "BTCUSDT"]$base_asset, "BTC")
+
+  # Previously dropped fields are now included
+  expect_true("order_types" %in% names(dt))
+  expect_true("iceberg_allowed" %in% names(dt))
+  expect_true("oco_allowed" %in% names(dt))
+  expect_true("filters" %in% names(dt))
+  expect_true("permissions" %in% names(dt))
+  expect_true("default_self_trade_prevention_mode" %in% names(dt))
+  expect_true("allowed_self_trade_prevention_modes" %in% names(dt))
+  expect_true("allow_trailing_stop" %in% names(dt))
+  expect_true("cancel_replace_allowed" %in% names(dt))
+
+  # List columns are accessible
+  expect_true(dt[symbol == "BTCUSDT"]$iceberg_allowed)
+  expect_false(dt[symbol == "ETHUSDT"]$iceberg_allowed)
 })
 
 test_that("get_exchange_info filters by symbol", {
@@ -199,7 +214,14 @@ test_that("get_klines returns OHLCV data.table", {
   expect_true("low" %in% names(dt))
   expect_true("close" %in% names(dt))
   expect_true("volume" %in% names(dt))
+  expect_true("datetime_close" %in% names(dt))
+  expect_true("quote_volume" %in% names(dt))
+  expect_true("trades" %in% names(dt))
+  expect_true("taker_buy_base_volume" %in% names(dt))
+  expect_true("taker_buy_quote_volume" %in% names(dt))
+  expect_true("ignore" %in% names(dt))
   expect_s3_class(dt$datetime, "POSIXct")
+  expect_s3_class(dt$datetime_close, "POSIXct")
   expect_type(dt$open, "double")
   expect_type(dt$volume, "double")
 })

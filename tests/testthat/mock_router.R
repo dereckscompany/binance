@@ -16,7 +16,9 @@ box::use(./mockery[
   mock_orderbook_data, mock_trades_data, mock_klines_data,
   mock_order_response, mock_cancel_order_data, mock_query_order_data,
   mock_open_orders_data,
-  mock_account_data, mock_my_trades_data
+  mock_account_data, mock_my_trades_data,
+  mock_deposit_address_data, mock_deposit_history_data,
+  mock_withdrawal_response, mock_withdrawal_history_data
 ])
 
 #' Route table: URL pattern -> fixture thunk
@@ -43,7 +45,13 @@ box::use(./mockery[
   list(pattern = "api/v3/order", fixture = function() mock_query_order_data(), method = "GET"),
   # Account
   list(pattern = "api/v3/account", fixture = function() mock_account_data()),
-  list(pattern = "api/v3/myTrades", fixture = function() mock_my_trades_data())
+  list(pattern = "api/v3/myTrades", fixture = function() mock_my_trades_data()),
+  # Deposit
+  list(pattern = "sapi/v1/capital/deposit/address", fixture = function() mock_deposit_address_data()),
+  list(pattern = "sapi/v1/capital/deposit/hisrec", fixture = function() mock_deposit_history_data()),
+  # Withdrawal
+  list(pattern = "sapi/v1/capital/withdraw/apply", fixture = function() mock_withdrawal_response(), method = "POST"),
+  list(pattern = "sapi/v1/capital/withdraw/history", fixture = function() mock_withdrawal_history_data())
 )
 
 #' Mock HTTP router for README and vignettes

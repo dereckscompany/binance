@@ -54,8 +54,22 @@ mock_exchange_info_data <- function() {
         quoteAsset = "USDT",
         quoteAssetPrecision = 8L,
         quotePrecision = 8L,
+        orderTypes = list("LIMIT", "LIMIT_MAKER", "MARKET", "STOP_LOSS_LIMIT", "TAKE_PROFIT_LIMIT"),
+        icebergAllowed = TRUE,
+        ocoAllowed = TRUE,
+        otoAllowed = TRUE,
+        quoteOrderQtyMarketAllowed = TRUE,
+        allowTrailingStop = TRUE,
+        cancelReplaceAllowed = TRUE,
         isSpotTradingAllowed = TRUE,
-        isMarginTradingAllowed = TRUE
+        isMarginTradingAllowed = TRUE,
+        filters = list(
+          list(filterType = "PRICE_FILTER", minPrice = "0.01000000", maxPrice = "1000000.00", tickSize = "0.01000000"),
+          list(filterType = "LOT_SIZE", minQty = "0.00001000", maxQty = "9000.00000000", stepSize = "0.00001000")
+        ),
+        permissions = list("SPOT", "MARGIN"),
+        defaultSelfTradePreventionMode = "EXPIRE_MAKER",
+        allowedSelfTradePreventionModes = list("EXPIRE_TAKER", "EXPIRE_MAKER", "EXPIRE_BOTH")
       ),
       list(
         symbol = "ETHUSDT",
@@ -65,8 +79,21 @@ mock_exchange_info_data <- function() {
         quoteAsset = "USDT",
         quoteAssetPrecision = 8L,
         quotePrecision = 8L,
+        orderTypes = list("LIMIT", "MARKET"),
+        icebergAllowed = FALSE,
+        ocoAllowed = FALSE,
+        otoAllowed = FALSE,
+        quoteOrderQtyMarketAllowed = TRUE,
+        allowTrailingStop = FALSE,
+        cancelReplaceAllowed = FALSE,
         isSpotTradingAllowed = TRUE,
-        isMarginTradingAllowed = FALSE
+        isMarginTradingAllowed = FALSE,
+        filters = list(
+          list(filterType = "PRICE_FILTER", minPrice = "0.01000000", maxPrice = "100000.00", tickSize = "0.01000000")
+        ),
+        permissions = list("SPOT"),
+        defaultSelfTradePreventionMode = "NONE",
+        allowedSelfTradePreventionModes = list("NONE")
       )
     )
   ))
@@ -410,6 +437,113 @@ mock_my_trades_data <- function() {
       isBuyer = FALSE,
       isMaker = TRUE,
       isBestMatch = TRUE
+    )
+  ))
+}
+
+# ---------------------------------------------------------------------------
+# Deposit fixtures
+# ---------------------------------------------------------------------------
+
+#' Deposit address response
+#' @export
+mock_deposit_address_data <- function() {
+  return(list(
+    address = "1HPn8Rx2y6nNSfagQBKy27GB99Vbzg89wv",
+    coin = "BTC",
+    tag = "",
+    url = "https://btc.com/1HPn8Rx2y6nNSfagQBKy27GB99Vbzg89wv"
+  ))
+}
+
+#' Deposit history — 2 deposits
+#' @export
+mock_deposit_history_data <- function() {
+  return(list(
+    list(
+      id = "769800519366885376",
+      amount = "0.001",
+      coin = "BNB",
+      network = "BNB",
+      status = 1L,
+      address = "bnb136ns6lfw4zs5hg4n85vdthaad7hq5m4gtkgf23",
+      addressTag = "101764890",
+      txId = "98A3EA560C6B3336D348B6C83F0F95ECE4F1F5919E94BD006E5BF3BF264FACFC",
+      insertTime = 1661493146000,
+      completeTime = 1661493246000,
+      transferType = 0L,
+      confirmTimes = "1/1",
+      unlockConfirm = 0L,
+      walletType = 0L
+    ),
+    list(
+      id = "769800519366885377",
+      amount = "0.50000000",
+      coin = "ETH",
+      network = "ETH",
+      status = 0L,
+      address = "0x94df8b352de7f46f64b01d3666bf6e936e44ce60",
+      addressTag = "",
+      txId = "0xabc123def456",
+      insertTime = 1661493246000,
+      completeTime = 0,
+      transferType = 0L,
+      confirmTimes = "5/12",
+      unlockConfirm = 12L,
+      walletType = 0L
+    )
+  ))
+}
+
+# ---------------------------------------------------------------------------
+# Withdrawal fixtures
+# ---------------------------------------------------------------------------
+
+#' Withdrawal apply response
+#' @export
+mock_withdrawal_response <- function() {
+  return(list(id = "7213fea8e94b4a5593d507237e5a555b"))
+}
+
+#' Withdrawal history — 2 withdrawals
+#' @export
+mock_withdrawal_history_data <- function() {
+  return(list(
+    list(
+      id = "b6ae22b3aa844210a7041aee7589627c",
+      amount = "8.91000000",
+      transactionFee = "0.004",
+      coin = "USDT",
+      status = 6L,
+      address = "0x94df8b352de7f46f64b01d3666bf6e936e44ce60",
+      txId = "0xb5ef8c13b968a406cc62a93a8bd80f9e9a906ef1b3fcf20a2e48573c17659268",
+      applyTime = "2019-10-12 11:12:02",
+      network = "ETH",
+      transferType = 0L,
+      withdrawOrderId = "WITHDRAWtest123",
+      info = "",
+      confirmNo = 3L,
+      walletType = 1L,
+      txKey = "",
+      completeTime = "2023-03-23 16:52:41"
+    ),
+    list(
+      id = "c7bf33c4bb955321b8152618faa69738",
+      amount = "0.10000000",
+      transactionFee = "0.0005",
+      coin = "BTC",
+      status = 4L,
+      address = "1HPn8Rx2y6nNSfagQBKy27GB99Vbzg89wv",
+      txId = "",
+      applyTime = "2023-05-01 08:30:00",
+      network = "BTC",
+      transferType = 0L,
+      withdrawOrderId = "",
+      info = "",
+      confirmNo = 0L,
+      walletType = 0L,
+      txKey = "",
+      completeTime = ""
     )
   ))
 }

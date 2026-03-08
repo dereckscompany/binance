@@ -305,7 +305,8 @@ precision, order types, filters, and trading status for each symbol.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with all symbol
+fields returned by the API, converted to snake_case. Key columns include:
 \itemize{
 \item \code{symbol} (character): Trading pair identifier (e.g., \code{"BTCUSDT"}).
 \item \code{status} (character): Trading status (\code{"TRADING"}, \code{"HALT"}, \code{"BREAK"}).
@@ -314,8 +315,19 @@ precision, order types, filters, and trading status for each symbol.
 \item \code{quote_asset} (character): Quote asset code (e.g., \code{"USDT"}).
 \item \code{quote_asset_precision} (integer): Decimal precision for quote asset quantities.
 \item \code{quote_precision} (integer): Decimal precision for quote asset prices.
+\item \code{order_types} (list): Allowed order types for this symbol.
+\item \code{iceberg_allowed} (logical): Whether iceberg orders are allowed.
+\item \code{oco_allowed} (logical): Whether OCO orders are allowed.
+\item \code{oto_allowed} (logical): Whether OTO orders are allowed.
+\item \code{quote_order_qty_market_allowed} (logical): Whether quote quantity market orders are allowed.
+\item \code{allow_trailing_stop} (logical): Whether trailing stop orders are allowed.
+\item \code{cancel_replace_allowed} (logical): Whether cancel-replace is allowed.
 \item \code{is_spot_trading_allowed} (logical): Whether spot trading is enabled.
 \item \code{is_margin_trading_allowed} (logical): Whether margin trading is enabled.
+\item \code{filters} (list): List of filter objects (LOT_SIZE, PRICE_FILTER, etc.).
+\item \code{permissions} (list): Trading permissions for this symbol.
+\item \code{default_self_trade_prevention_mode} (character): Default STP mode.
+\item \code{allowed_self_trade_prevention_modes} (list): Allowed STP modes.
 }
 }
 \subsection{Examples}{
@@ -831,10 +843,12 @@ Retrieves historical kline/candlestick data for a symbol.
 \item \code{low} (numeric): Lowest price during the interval.
 \item \code{close} (numeric): Closing price.
 \item \code{volume} (numeric): Base asset volume traded.
+\item \code{datetime_close} (POSIXct): Candle close time.
 \item \code{quote_volume} (numeric): Quote asset volume traded.
 \item \code{trades} (integer): Number of trades during the interval.
 \item \code{taker_buy_base_volume} (numeric): Base asset volume bought by takers.
 \item \code{taker_buy_quote_volume} (numeric): Quote asset volume bought by takers.
+\item \code{ignore} (character): Unused field from Binance API.
 }
 }
 \subsection{Examples}{

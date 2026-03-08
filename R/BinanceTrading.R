@@ -143,7 +143,7 @@ BinanceTrading <- R6::R6Class(
     #' - `side` (character): `"BUY"` or `"SELL"`.
     #' - `working_time` (numeric): Timestamp when the order started working.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
-    #' - `datetime` (POSIXct): Transaction time converted from `transactTime`.
+    #' - `datetime_transact` (POSIXct): Transaction time converted from `transactTime`.
     #' - `fills` (list): List of fill objects (present with `newOrderRespType = "FULL"`).
     #'
     #' @examples
@@ -310,7 +310,6 @@ BinanceTrading <- R6::R6Class(
     #' - `order_id` (integer): Unique order identifier.
     #' - `order_list_id` (integer): OCO order list ID; `-1` if not an OCO.
     #' - `client_order_id` (character): New client order ID after cancellation.
-    #' - `transact_time` (numeric): Cancellation timestamp in milliseconds.
     #' - `price` (character): Order price.
     #' - `orig_qty` (character): Original requested quantity.
     #' - `executed_qty` (character): Quantity filled before cancellation.
@@ -320,6 +319,7 @@ BinanceTrading <- R6::R6Class(
     #' - `type` (character): Order type.
     #' - `side` (character): `"BUY"` or `"SELL"`.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
+    #' - `datetime` (POSIXct): Cancellation time converted from `transactTime`.
     #'
     #' @examples
     #' \dontrun{
@@ -341,7 +341,14 @@ BinanceTrading <- R6::R6Class(
           origClientOrderId = origClientOrderId,
           recvWindow = recvWindow
         ),
-        .parser = as_dt_row
+        .parser = function(data) {
+          dt <- as_dt_row(data)
+          if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
+            dt[, datetime := ms_to_datetime(transact_time)]
+            dt[, transact_time := NULL]
+          }
+          return(dt)
+        }
       ))
     },
 
@@ -364,7 +371,6 @@ BinanceTrading <- R6::R6Class(
     #' - `order_id` (integer): Unique order identifier.
     #' - `order_list_id` (integer): OCO order list ID; `-1` if not an OCO.
     #' - `client_order_id` (character): New client order ID after cancellation.
-    #' - `transact_time` (numeric): Cancellation timestamp in milliseconds.
     #' - `price` (character): Order price.
     #' - `orig_qty` (character): Original requested quantity.
     #' - `executed_qty` (character): Quantity filled before cancellation.
@@ -374,6 +380,7 @@ BinanceTrading <- R6::R6Class(
     #' - `type` (character): Order type.
     #' - `side` (character): `"BUY"` or `"SELL"`.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
+    #' - `datetime` (POSIXct): Cancellation time converted from `transactTime`.
     #'
     #' @examples
     #' \dontrun{
@@ -386,7 +393,17 @@ BinanceTrading <- R6::R6Class(
         endpoint = "/api/v3/openOrders",
         method = "DELETE",
         query = list(symbol = symbol, recvWindow = recvWindow),
-        .parser = as_dt_list
+        .parser = function(data) {
+          if (is.null(data) || length(data) == 0) {
+            return(data.table::data.table())
+          }
+          dt <- as_dt_list(data)
+          if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
+            dt[, datetime := ms_to_datetime(transact_time)]
+            dt[, transact_time := NULL]
+          }
+          return(dt)
+        }
       ))
     },
 
@@ -497,6 +514,7 @@ BinanceTrading <- R6::R6Class(
     #' - `working_time` (numeric): Timestamp when the order started working.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
     #' - `datetime_created` (POSIXct): Order creation time converted from `time`.
+    #' - `datetime_updated` (POSIXct): Last update time converted from `updateTime`.
     #'
     #' @examples
     #' \dontrun{
@@ -516,6 +534,10 @@ BinanceTrading <- R6::R6Class(
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
             dt[, datetime_created := ms_to_datetime(time)]
             dt[, time := NULL]
+          }
+          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
+            dt[, datetime_updated := ms_to_datetime(update_time)]
+            dt[, update_time := NULL]
           }
           return(dt)
         }
