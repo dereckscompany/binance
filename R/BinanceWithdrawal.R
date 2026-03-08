@@ -139,13 +139,27 @@ BinanceWithdrawal <- R6::R6Class(
         address = address,
         amount = as.character(amount)
       )
-      if (!is.null(network)) body$network <- network
-      if (!is.null(withdrawOrderId)) body$withdrawOrderId <- withdrawOrderId
-      if (!is.null(addressTag)) body$addressTag <- addressTag
-      if (!is.null(transactionFeeFlag)) body$transactionFeeFlag <- tolower(as.character(transactionFeeFlag))
-      if (!is.null(name)) body$name <- name
-      if (!is.null(walletType)) body$walletType <- as.character(walletType)
-      if (!is.null(recvWindow)) body$recvWindow <- as.character(recvWindow)
+      if (!is.null(network)) {
+        body$network <- network
+      }
+      if (!is.null(withdrawOrderId)) {
+        body$withdrawOrderId <- withdrawOrderId
+      }
+      if (!is.null(addressTag)) {
+        body$addressTag <- addressTag
+      }
+      if (!is.null(transactionFeeFlag)) {
+        body$transactionFeeFlag <- tolower(as.character(transactionFeeFlag))
+      }
+      if (!is.null(name)) {
+        body$name <- name
+      }
+      if (!is.null(walletType)) {
+        body$walletType <- as.character(walletType)
+      }
+      if (!is.null(recvWindow)) {
+        body$recvWindow <- as.character(recvWindow)
+      }
 
       return(private$.request(
         endpoint = "/sapi/v1/capital/withdraw/apply",

@@ -319,7 +319,7 @@ BinanceTrading <- R6::R6Class(
     #' - `type` (character): Order type.
     #' - `side` (character): `"BUY"` or `"SELL"`.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
-    #' - `datetime` (POSIXct): Cancellation time converted from `transactTime`.
+    #' - `datetime_transact` (POSIXct): Cancellation time converted from `transactTime`.
     #'
     #' @examples
     #' \dontrun{
@@ -380,7 +380,7 @@ BinanceTrading <- R6::R6Class(
     #' - `type` (character): Order type.
     #' - `side` (character): `"BUY"` or `"SELL"`.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
-    #' - `datetime` (POSIXct): Cancellation time converted from `transactTime`.
+    #' - `datetime_transact` (POSIXct): Cancellation time converted from `transactTime`.
     #'
     #' @examples
     #' \dontrun{
