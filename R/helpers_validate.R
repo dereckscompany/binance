@@ -49,7 +49,10 @@ validate_order_params <- function(
   # Required field validation
   type <- toupper(type)
   side <- toupper(side)
-  rlang::arg_match0(type, c("LIMIT", "MARKET", "STOP_LOSS", "STOP_LOSS_LIMIT", "TAKE_PROFIT", "TAKE_PROFIT_LIMIT", "LIMIT_MAKER"))
+  rlang::arg_match0(
+    type,
+    c("LIMIT", "MARKET", "STOP_LOSS", "STOP_LOSS_LIMIT", "TAKE_PROFIT", "TAKE_PROFIT_LIMIT", "LIMIT_MAKER")
+  )
   rlang::arg_match0(side, c("BUY", "SELL"))
 
   if (!verify_symbol(symbol)) {
@@ -57,19 +60,35 @@ validate_order_params <- function(
   }
 
   # Convert numerics to character for the API
-  if (!is.null(price)) price <- as.character(price)
-  if (!is.null(quantity)) quantity <- as.character(quantity)
-  if (!is.null(quoteOrderQty)) quoteOrderQty <- as.character(quoteOrderQty)
-  if (!is.null(stopPrice)) stopPrice <- as.character(stopPrice)
-  if (!is.null(icebergQty)) icebergQty <- as.character(icebergQty)
+  if (!is.null(price)) {
+    price <- as.character(price)
+  }
+  if (!is.null(quantity)) {
+    quantity <- as.character(quantity)
+  }
+  if (!is.null(quoteOrderQty)) {
+    quoteOrderQty <- as.character(quoteOrderQty)
+  }
+  if (!is.null(stopPrice)) {
+    stopPrice <- as.character(stopPrice)
+  }
+  if (!is.null(icebergQty)) {
+    icebergQty <- as.character(icebergQty)
+  }
 
   # Type-specific validation
   if (type == "LIMIT") {
-    if (is.null(price)) rlang::abort("Parameter 'price' is required for LIMIT orders.")
-    if (is.null(quantity)) rlang::abort("Parameter 'quantity' is required for LIMIT orders.")
+    if (is.null(price)) {
+      rlang::abort("Parameter 'price' is required for LIMIT orders.")
+    }
+    if (is.null(quantity)) {
+      rlang::abort("Parameter 'quantity' is required for LIMIT orders.")
+    }
     if (is.null(timeInForce)) timeInForce <- "GTC"
   } else if (type == "MARKET") {
-    if (!is.null(price)) rlang::abort("Parameter 'price' is not applicable for MARKET orders.")
+    if (!is.null(price)) {
+      rlang::abort("Parameter 'price' is not applicable for MARKET orders.")
+    }
     if (is.null(quantity) && is.null(quoteOrderQty)) {
       rlang::abort("Either 'quantity' or 'quoteOrderQty' must be specified for MARKET orders.")
     }

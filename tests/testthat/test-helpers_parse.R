@@ -41,9 +41,20 @@ test_that("ms_to_datetime handles NULL and NA", {
 
 test_that("parse_klines returns proper OHLCV data.table", {
   kline_data <- list(
-    list(1499040000000, "0.01634790", "0.80000000", "0.01575800", "0.01577100",
-         "148976.11427815", 1499644799999, "2434.19055334", 308L,
-         "1756.87402397", "28.46694368", "0")
+    list(
+      1499040000000,
+      "0.01634790",
+      "0.80000000",
+      "0.01575800",
+      "0.01577100",
+      "148976.11427815",
+      1499644799999,
+      "2434.19055334",
+      308L,
+      "1756.87402397",
+      "28.46694368",
+      "0"
+    )
   )
   result <- binance:::parse_klines(kline_data)
   expect_s3_class(result, "data.table")

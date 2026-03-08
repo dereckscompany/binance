@@ -148,6 +148,9 @@ binance_build_request <- function(
     }
   }
 
+  # Suppress httr2 auto-error so parse_binance_response handles errors
+  req <- httr2::req_error(req, is_error = function(resp) FALSE)
+
   # Sign if authenticated
   if (!is.null(keys)) {
     req <- sign_request(req, keys, .get_timestamp_ms = .get_timestamp_ms)
