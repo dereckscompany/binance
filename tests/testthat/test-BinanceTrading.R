@@ -37,9 +37,9 @@ test_that("add_order returns order data.table with correct columns", {
   expect_equal(dt$side, "BUY")
   expect_equal(dt$type, "LIMIT")
 
-  # transact_time should be converted to datetime
-  expect_true("datetime" %in% names(dt))
-  expect_s3_class(dt$datetime, "POSIXct")
+  # transact_time should be converted to datetime_transact
+  expect_true("datetime_transact" %in% names(dt))
+  expect_s3_class(dt$datetime_transact, "POSIXct")
   expect_false("transact_time" %in% names(dt))
 })
 
@@ -97,9 +97,9 @@ test_that("cancel_order returns cancelled order details with datetime", {
   expect_equal(dt$order_id, 28L)
   expect_equal(dt$symbol, "BTCUSDT")
 
-  # transact_time should be converted to datetime
-  expect_true("datetime" %in% names(dt))
-  expect_s3_class(dt$datetime, "POSIXct")
+  # transact_time should be converted to datetime_transact
+  expect_true("datetime_transact" %in% names(dt))
+  expect_s3_class(dt$datetime_transact, "POSIXct")
   expect_false("transact_time" %in% names(dt))
 })
 
@@ -133,9 +133,9 @@ test_that("cancel_all_orders returns data.table with datetime", {
   expect_equal(nrow(dt), 1L)
   expect_equal(dt$status, "CANCELED")
 
-  # transact_time should be converted to datetime
-  expect_true("datetime" %in% names(dt))
-  expect_s3_class(dt$datetime, "POSIXct")
+  # transact_time should be converted to datetime_transact
+  expect_true("datetime_transact" %in% names(dt))
+  expect_s3_class(dt$datetime_transact, "POSIXct")
   expect_false("transact_time" %in% names(dt))
 })
 

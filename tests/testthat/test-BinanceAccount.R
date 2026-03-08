@@ -100,8 +100,8 @@ test_that("get_trades returns data.table with datetime", {
   expect_true("is_maker" %in% names(dt))
 
   # datetime conversion
-  expect_true("datetime" %in% names(dt))
-  expect_s3_class(dt$datetime, "POSIXct")
+  expect_true("datetime_trade" %in% names(dt))
+  expect_s3_class(dt$datetime_trade, "POSIXct")
   expect_false("time" %in% names(dt))
 
   # Values

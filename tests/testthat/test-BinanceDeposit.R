@@ -89,13 +89,13 @@ test_that("get_deposit_history returns data.table with expected columns", {
   expect_equal(dt$status[2], 0L)
 })
 
-test_that("get_deposit_history converts insertTime to datetime", {
+test_that("get_deposit_history converts insertTime to datetime_insert", {
   resp <- mock_binance_response(data = mock_deposit_history_data())
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_deposit()$get_deposit_history()
-  expect_true("datetime" %in% names(dt))
-  expect_s3_class(dt$datetime, "POSIXct")
+  expect_true("datetime_insert" %in% names(dt))
+  expect_s3_class(dt$datetime_insert, "POSIXct")
   expect_false("insert_time" %in% names(dt))
 })
 

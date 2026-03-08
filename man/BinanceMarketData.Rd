@@ -243,7 +243,7 @@ Useful for detecting clock drift and ensuring HMAC signatures are valid.
 \code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
 \itemize{
 \item \code{server_time} (numeric): Server epoch timestamp in milliseconds.
-\item \code{datetime} (POSIXct): Server time converted to UTC datetime.
+\item \code{datetime_server} (POSIXct): Server time converted to UTC datetime.
 }
 }
 \subsection{Examples}{
@@ -626,7 +626,7 @@ Retrieves the current average price for a symbol (5-minute weighted average).
 \itemize{
 \item \code{mins} (integer): Number of minutes in the averaging window.
 \item \code{price} (character): Weighted average price over the window.
-\item \code{datetime} (POSIXct): End of the averaging window.
+\item \code{datetime_close} (POSIXct): End of the averaging window.
 }
 }
 \subsection{Examples}{
@@ -758,7 +758,7 @@ Retrieves the most recent trades for a symbol.
 \item \code{price} (character): Trade execution price.
 \item \code{qty} (character): Base asset quantity traded.
 \item \code{quote_qty} (character): Quote asset quantity traded.
-\item \code{datetime} (POSIXct): Trade execution time.
+\item \code{datetime_trade} (POSIXct): Trade execution time.
 \item \code{is_buyer_maker} (logical): \code{TRUE} if the buyer was the maker (passive side).
 \item \code{is_best_match} (logical): \code{TRUE} if this trade was at the best available price.
 }
@@ -837,7 +837,7 @@ Retrieves historical kline/candlestick data for a symbol.
 \subsection{Returns}{
 \code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
 \itemize{
-\item \code{datetime} (POSIXct): Candle open time.
+\item \code{datetime_open} (POSIXct): Candle open time.
 \item \code{open} (numeric): Opening price.
 \item \code{high} (numeric): Highest price during the interval.
 \item \code{low} (numeric): Lowest price during the interval.

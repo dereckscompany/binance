@@ -59,7 +59,7 @@ test_that("parse_klines returns proper OHLCV data.table", {
   result <- binance:::parse_klines(kline_data)
   expect_s3_class(result, "data.table")
   expect_equal(nrow(result), 1)
-  expect_true("datetime" %in% names(result))
+  expect_true("datetime_open" %in% names(result))
   expect_true("open" %in% names(result))
   expect_true("high" %in% names(result))
   expect_true("low" %in% names(result))

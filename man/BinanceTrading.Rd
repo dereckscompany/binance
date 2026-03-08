@@ -309,7 +309,7 @@ Places a new spot order on Binance.
 \item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
 \item \code{working_time} (numeric): Timestamp when the order started working.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
-\item \code{datetime} (POSIXct): Transaction time converted from \code{transactTime}.
+\item \code{datetime_transact} (POSIXct): Transaction time converted from \code{transactTime}.
 \item \code{fills} (list): List of fill objects (present with \code{newOrderRespType = "FULL"}).
 }
 }
@@ -478,7 +478,7 @@ Cancels an active order by order ID or client order ID.
 \item \code{type} (character): Order type.
 \item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
-\item \code{datetime} (POSIXct): Cancellation time converted from \code{transactTime}.
+\item \code{datetime_transact} (POSIXct): Cancellation time converted from \code{transactTime}.
 }
 }
 \subsection{Examples}{
@@ -540,7 +540,7 @@ Cancels all active orders on a trading pair.
 \item \code{type} (character): Order type.
 \item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
-\item \code{datetime} (POSIXct): Cancellation time converted from \code{transactTime}.
+\item \code{datetime_transact} (POSIXct): Cancellation time converted from \code{transactTime}.
 }
 }
 \subsection{Examples}{

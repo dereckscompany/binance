@@ -193,7 +193,7 @@ BinanceTrading <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
-            dt[, datetime := ms_to_datetime(transact_time)]
+            dt[, datetime_transact := ms_to_datetime(transact_time)]
             dt[, transact_time := NULL]
           }
           return(dt)
@@ -344,7 +344,7 @@ BinanceTrading <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
-            dt[, datetime := ms_to_datetime(transact_time)]
+            dt[, datetime_transact := ms_to_datetime(transact_time)]
             dt[, transact_time := NULL]
           }
           return(dt)
@@ -399,7 +399,7 @@ BinanceTrading <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
-            dt[, datetime := ms_to_datetime(transact_time)]
+            dt[, datetime_transact := ms_to_datetime(transact_time)]
             dt[, transact_time := NULL]
           }
           return(dt)

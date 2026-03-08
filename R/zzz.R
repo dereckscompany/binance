@@ -4,12 +4,14 @@ utils::globalVariables(c(
   ".N",
   ".SD",
   ":=",
-  # Standardised datetime columns used in := assignments
-  "datetime",
+  # Standardised datetime_* columns used in := assignments
   "datetime_close",
-  "datetime_created",
-  "datetime_updated",
   "datetime_complete",
+  "datetime_created",
+  "datetime_insert",
+  "datetime_trade",
+  "datetime_transact",
+  "datetime_updated",
   # Raw API columns consumed then removed in := assignments
   "time",
   "open_time",
