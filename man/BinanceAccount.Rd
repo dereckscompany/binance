@@ -85,7 +85,7 @@ print(balances[free != "0.00000000"])
 \dontrun{
 account <- BinanceAccount$new()
 trades <- account$get_trades("BTCUSDT", limit = 50)
-print(trades[, .(id, price, qty, commission, datetime_trade)])
+print(trades[, .(id, price, qty, commission, time)])
 }
 }
 \section{Super class}{
@@ -354,7 +354,7 @@ Retrieves trades for a specific symbol. Requires authentication.
 \item \code{is_buyer} (logical): \code{TRUE} if you were the buyer.
 \item \code{is_maker} (logical): \code{TRUE} if you were the maker.
 \item \code{is_best_match} (logical): \code{TRUE} if this was the best price match.
-\item \code{datetime_trade} (POSIXct): Trade execution time converted from \code{time}.
+\item \code{time} (POSIXct): Trade execution time converted from \code{time}.
 }
 }
 \subsection{Examples}{
@@ -362,7 +362,7 @@ Retrieves trades for a specific symbol. Requires authentication.
 \preformatted{\dontrun{
 account <- BinanceAccount$new()
 trades <- account$get_trades("BTCUSDT", limit = 50)
-print(trades[, .(id, price, qty, commission, datetime_trade)])
+print(trades[, .(id, price, qty, commission, time)])
 }
 }
 \if{html}{\out{</div>}}

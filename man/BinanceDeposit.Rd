@@ -92,7 +92,7 @@ deposit <- BinanceDeposit$new()
 
 # Get all successful BTC deposits
 history <- deposit$get_deposit_history(coin = "BTC", status = 1)
-print(history[, .(amount, coin, status, datetime_insert)])
+print(history[, .(amount, coin, status, insert_time)])
 
 # Get deposits from the last 24 hours
 now_ms <- as.integer(as.numeric(Sys.time()) * 1000)
@@ -315,8 +315,8 @@ specific period. Max range is 90 days.
 \item \code{confirm_times} (character): Confirmation progress (e.g., \code{"1/1"}).
 \item \code{unlock_confirm} (integer): Confirmations needed to unlock.
 \item \code{wallet_type} (integer): 0=spot, 1=funding.
-\item \code{datetime_insert} (POSIXct): Deposit time converted from \code{insertTime}.
-\item \code{datetime_complete} (POSIXct): Completion time converted from \code{completeTime}.
+\item \code{insert_time} (POSIXct): Deposit time converted from \code{insertTime}.
+\item \code{complete_time} (POSIXct): Completion time converted from \code{completeTime}.
 }
 }
 \subsection{Examples}{
@@ -326,7 +326,7 @@ deposit <- BinanceDeposit$new()
 
 # Get all successful BTC deposits
 history <- deposit$get_deposit_history(coin = "BTC", status = 1)
-print(history[, .(amount, coin, status, datetime_insert)])
+print(history[, .(amount, coin, status, insert_time)])
 
 # Get deposits from the last 24 hours
 now_ms <- as.integer(as.numeric(Sys.time()) * 1000)

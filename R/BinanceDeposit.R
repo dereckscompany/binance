@@ -191,8 +191,8 @@ BinanceDeposit <- R6::R6Class(
     #' - `confirm_times` (character): Confirmation progress (e.g., `"1/1"`).
     #' - `unlock_confirm` (integer): Confirmations needed to unlock.
     #' - `wallet_type` (integer): 0=spot, 1=funding.
-    #' - `datetime_insert` (POSIXct): Deposit time converted from `insertTime`.
-    #' - `datetime_complete` (POSIXct): Completion time converted from `completeTime`.
+    #' - `insert_time` (POSIXct): Deposit time converted from `insertTime`.
+    #' - `complete_time` (POSIXct): Completion time converted from `completeTime`.
     #'
     #' @examples
     #' \dontrun{
@@ -200,7 +200,7 @@ BinanceDeposit <- R6::R6Class(
     #'
     #' # Get all successful BTC deposits
     #' history <- deposit$get_deposit_history(coin = "BTC", status = 1)
-    #' print(history[, .(amount, coin, status, datetime_insert)])
+    #' print(history[, .(amount, coin, status, insert_time)])
     #'
     #' # Get deposits from the last 24 hours
     #' now_ms <- as.integer(as.numeric(Sys.time()) * 1000)
@@ -237,12 +237,10 @@ BinanceDeposit <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "insert_time" %in% names(dt)) {
-            dt[, datetime_insert := ms_to_datetime(insert_time)]
-            dt[, insert_time := NULL]
+            dt[, insert_time := ms_to_datetime(insert_time)]
           }
           if (nrow(dt) > 0 && "complete_time" %in% names(dt)) {
-            dt[, datetime_complete := ms_to_datetime(complete_time)]
-            dt[, complete_time := NULL]
+            dt[, complete_time := ms_to_datetime(complete_time)]
           }
           return(dt)
         }

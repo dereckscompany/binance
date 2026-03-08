@@ -37,10 +37,9 @@ test_that("add_order returns order data.table with correct columns", {
   expect_equal(dt$side, "BUY")
   expect_equal(dt$type, "LIMIT")
 
-  # transact_time should be converted to datetime_transact
-  expect_true("datetime_transact" %in% names(dt))
-  expect_s3_class(dt$datetime_transact, "POSIXct")
-  expect_false("transact_time" %in% names(dt))
+  # transact_time should be converted to POSIXct in-place
+  expect_true("transact_time" %in% names(dt))
+  expect_s3_class(dt$transact_time, "POSIXct")
 })
 
 test_that("add_order sends correct endpoint", {
@@ -97,10 +96,9 @@ test_that("cancel_order returns cancelled order details with datetime", {
   expect_equal(dt$order_id, 28L)
   expect_equal(dt$symbol, "BTCUSDT")
 
-  # transact_time should be converted to datetime_transact
-  expect_true("datetime_transact" %in% names(dt))
-  expect_s3_class(dt$datetime_transact, "POSIXct")
-  expect_false("transact_time" %in% names(dt))
+  # transact_time should be converted to POSIXct in-place
+  expect_true("transact_time" %in% names(dt))
+  expect_s3_class(dt$transact_time, "POSIXct")
 })
 
 test_that("cancel_order requires orderId or origClientOrderId", {
@@ -133,10 +131,9 @@ test_that("cancel_all_orders returns data.table with datetime", {
   expect_equal(nrow(dt), 1L)
   expect_equal(dt$status, "CANCELED")
 
-  # transact_time should be converted to datetime_transact
-  expect_true("datetime_transact" %in% names(dt))
-  expect_s3_class(dt$datetime_transact, "POSIXct")
-  expect_false("transact_time" %in% names(dt))
+  # transact_time should be converted to POSIXct in-place
+  expect_true("transact_time" %in% names(dt))
+  expect_s3_class(dt$transact_time, "POSIXct")
 })
 
 test_that("cancel_all_orders sends DELETE to openOrders endpoint", {
@@ -166,15 +163,13 @@ test_that("get_order returns order with datetime columns", {
   expect_equal(dt$symbol, "BTCUSDT")
   expect_equal(dt$status, "FILLED")
 
-  # time → datetime_created
-  expect_true("datetime_created" %in% names(dt))
-  expect_s3_class(dt$datetime_created, "POSIXct")
-  expect_false("time" %in% names(dt))
+  # time should be converted to POSIXct in-place
+  expect_true("time" %in% names(dt))
+  expect_s3_class(dt$time, "POSIXct")
 
-  # update_time → datetime_updated
-  expect_true("datetime_updated" %in% names(dt))
-  expect_s3_class(dt$datetime_updated, "POSIXct")
-  expect_false("update_time" %in% names(dt))
+  # update_time should be converted to POSIXct in-place
+  expect_true("update_time" %in% names(dt))
+  expect_s3_class(dt$update_time, "POSIXct")
 })
 
 test_that("get_order requires orderId or origClientOrderId", {
@@ -186,7 +181,7 @@ test_that("get_order requires orderId or origClientOrderId", {
 
 # -- get_open_orders --
 
-test_that("get_open_orders returns data.table with datetime_created", {
+test_that("get_open_orders returns data.table with time", {
   resp <- mock_binance_response(data = mock_open_orders_data())
   httr2::local_mocked_responses(function(req) resp)
 
@@ -194,8 +189,7 @@ test_that("get_open_orders returns data.table with datetime_created", {
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   expect_equal(dt$status, "NEW")
-  expect_true("datetime_created" %in% names(dt))
-  expect_false("time" %in% names(dt))
+  expect_true("time" %in% names(dt))
 })
 
 test_that("get_open_orders returns empty data.table when no orders", {
@@ -216,7 +210,7 @@ test_that("get_all_orders returns data.table with datetime columns", {
   dt <- new_trading()$get_all_orders("BTCUSDT")
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
-  expect_true("datetime_created" %in% names(dt))
+  expect_true("time" %in% names(dt))
 })
 
 test_that("get_all_orders passes query parameters", {

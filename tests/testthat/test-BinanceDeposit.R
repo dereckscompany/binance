@@ -89,23 +89,21 @@ test_that("get_deposit_history returns data.table with expected columns", {
   expect_equal(dt$status[2], 0L)
 })
 
-test_that("get_deposit_history converts insertTime to datetime_insert", {
+test_that("get_deposit_history converts insert_time to POSIXct", {
   resp <- mock_binance_response(data = mock_deposit_history_data())
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_deposit()$get_deposit_history()
-  expect_true("datetime_insert" %in% names(dt))
-  expect_s3_class(dt$datetime_insert, "POSIXct")
-  expect_false("insert_time" %in% names(dt))
+  expect_true("insert_time" %in% names(dt))
+  expect_s3_class(dt$insert_time, "POSIXct")
 })
 
-test_that("get_deposit_history converts completeTime to datetime_complete", {
+test_that("get_deposit_history converts complete_time to POSIXct", {
   resp <- mock_binance_response(data = mock_deposit_history_data())
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_deposit()$get_deposit_history()
-  expect_true("datetime_complete" %in% names(dt))
-  expect_false("complete_time" %in% names(dt))
+  expect_true("complete_time" %in% names(dt))
 })
 
 test_that("get_deposit_history hits correct endpoint", {

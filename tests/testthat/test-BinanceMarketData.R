@@ -32,9 +32,7 @@ test_that("get_server_time returns data.table with datetime", {
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   expect_true("server_time" %in% names(dt))
-  expect_true("datetime_server" %in% names(dt))
-  expect_s3_class(dt$datetime_server, "POSIXct")
-  expect_equal(dt$server_time, 1499827319559)
+  expect_s3_class(dt$server_time, "POSIXct")
 })
 
 # -- get_exchange_info --
@@ -136,14 +134,10 @@ test_that("get_24hr_stats returns stats with datetime columns", {
   expect_equal(dt$symbol, "BTCUSDT")
   expect_true("last_price" %in% names(dt))
   expect_true("volume" %in% names(dt))
-  expect_true("datetime_open" %in% names(dt))
-  expect_true("datetime_close" %in% names(dt))
-  expect_s3_class(dt$datetime_open, "POSIXct")
-  expect_s3_class(dt$datetime_close, "POSIXct")
-
-  # Raw time columns should be removed
-  expect_false("open_time" %in% names(dt))
-  expect_false("close_time" %in% names(dt))
+  expect_true("open_time" %in% names(dt))
+  expect_true("close_time" %in% names(dt))
+  expect_s3_class(dt$open_time, "POSIXct")
+  expect_s3_class(dt$close_time, "POSIXct")
 })
 
 # -- get_avg_price --
@@ -157,11 +151,8 @@ test_that("get_avg_price returns price with datetime", {
   expect_equal(nrow(dt), 1L)
   expect_equal(dt$mins, 5L)
   expect_true("price" %in% names(dt))
-  expect_true("datetime_close" %in% names(dt))
-  expect_s3_class(dt$datetime_close, "POSIXct")
-
-  # Raw close_time should be removed
-  expect_false("close_time" %in% names(dt))
+  expect_true("close_time" %in% names(dt))
+  expect_s3_class(dt$close_time, "POSIXct")
 })
 
 # -- get_depth --
@@ -192,11 +183,8 @@ test_that("get_trades returns data.table with datetime", {
   expect_true("id" %in% names(dt))
   expect_true("price" %in% names(dt))
   expect_true("qty" %in% names(dt))
-  expect_true("datetime_trade" %in% names(dt))
-  expect_s3_class(dt$datetime_trade, "POSIXct")
-
-  # Raw time column should be removed
-  expect_false("time" %in% names(dt))
+  expect_true("time" %in% names(dt))
+  expect_s3_class(dt$time, "POSIXct")
 })
 
 # -- get_klines --
@@ -208,20 +196,20 @@ test_that("get_klines returns OHLCV data.table", {
   dt <- new_market()$get_klines("BTCUSDT", "1h")
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 3L)
-  expect_true("datetime_open" %in% names(dt))
+  expect_true("open_time" %in% names(dt))
   expect_true("open" %in% names(dt))
   expect_true("high" %in% names(dt))
   expect_true("low" %in% names(dt))
   expect_true("close" %in% names(dt))
   expect_true("volume" %in% names(dt))
-  expect_true("datetime_close" %in% names(dt))
+  expect_true("close_time" %in% names(dt))
   expect_true("quote_volume" %in% names(dt))
   expect_true("trades" %in% names(dt))
   expect_true("taker_buy_base_volume" %in% names(dt))
   expect_true("taker_buy_quote_volume" %in% names(dt))
   expect_true("ignore" %in% names(dt))
-  expect_s3_class(dt$datetime_open, "POSIXct")
-  expect_s3_class(dt$datetime_close, "POSIXct")
+  expect_s3_class(dt$open_time, "POSIXct")
+  expect_s3_class(dt$close_time, "POSIXct")
   expect_type(dt$open, "double")
   expect_type(dt$volume, "double")
 })

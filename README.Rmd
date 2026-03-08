@@ -29,6 +29,18 @@ This software is provided "as is", without warranty of any kind. **This package 
 
 We invite you to read the source code and make contributions if you find a bug or wish to make an improvement.
 
+## Design Philosophy
+
+All API responses are returned as `data.table` objects with two transformations applied:
+
+1. **snake_case column names** — camelCase keys from the JSON response (e.g. `insertTime`, `quoteQty`) are converted to snake_case (`insert_time`, `quote_qty`) via a mechanical transformation. No columns are renamed beyond this.
+
+2. **Millisecond timestamps to POSIXct** — Columns containing epoch-millisecond timestamps are converted to `POSIXct` in-place under their snake_case name (e.g. `insertTime` becomes `insert_time` as a `POSIXct`).
+
+That's it. **No fields are dropped and no columns are renamed** beyond the camelCase-to-snake_case conversion. If a column exists in the Binance API response, it will exist in the returned `data.table`. If you don't need a column, drop it yourself.
+
+The only exception is klines (candlestick data), where Binance returns positional arrays instead of named objects. These are assigned descriptive column names (`open_time`, `open`, `high`, `low`, `close`, `volume`, `close_time`, etc.) matching the Binance documentation.
+
 ## Installation
 
 ```{r, eval = FALSE}

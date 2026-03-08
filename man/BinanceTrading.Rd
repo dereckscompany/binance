@@ -164,7 +164,7 @@ print(open)
 \dontrun{
 trading <- BinanceTrading$new()
 all <- trading$get_all_orders("BTCUSDT", limit = 50)
-print(all[, .(order_id, side, price, status, datetime_created)])
+print(all[, .(order_id, side, price, status, time)])
 }
 }
 \section{Super class}{
@@ -309,7 +309,7 @@ Places a new spot order on Binance.
 \item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
 \item \code{working_time} (numeric): Timestamp when the order started working.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
-\item \code{datetime_transact} (POSIXct): Transaction time converted from \code{transactTime}.
+\item \code{transact_time} (POSIXct): Transaction time converted from \code{transactTime}.
 \item \code{fills} (list): List of fill objects (present with \code{newOrderRespType = "FULL"}).
 }
 }
@@ -478,7 +478,7 @@ Cancels an active order by order ID or client order ID.
 \item \code{type} (character): Order type.
 \item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
-\item \code{datetime_transact} (POSIXct): Cancellation time converted from \code{transactTime}.
+\item \code{transact_time} (POSIXct): Cancellation time converted from \code{transactTime}.
 }
 }
 \subsection{Examples}{
@@ -540,7 +540,7 @@ Cancels all active orders on a trading pair.
 \item \code{type} (character): Order type.
 \item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
-\item \code{datetime_transact} (POSIXct): Cancellation time converted from \code{transactTime}.
+\item \code{transact_time} (POSIXct): Cancellation time converted from \code{transactTime}.
 }
 }
 \subsection{Examples}{
@@ -615,8 +615,8 @@ Retrieves details for a specific order by order ID or client order ID.
 \item \code{orig_quote_order_qty} (character): Original quote order quantity.
 \item \code{working_time} (numeric): Timestamp when the order started working.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
-\item \code{datetime_created} (POSIXct): Order creation time converted from \code{time}.
-\item \code{datetime_updated} (POSIXct): Last update time converted from \code{updateTime}.
+\item \code{time} (POSIXct): Order creation time converted from \code{time}.
+\item \code{update_time} (POSIXct): Last update time converted from \code{updateTime}.
 }
 }
 \subsection{Examples}{
@@ -683,8 +683,8 @@ If NULL, returns open orders for all symbols (weight 80).}
 \item \code{orig_quote_order_qty} (character): Original quote order quantity.
 \item \code{working_time} (numeric): Timestamp when the order started working.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
-\item \code{datetime_created} (POSIXct): Order creation time converted from \code{time}.
-\item \code{datetime_updated} (POSIXct): Last update time converted from \code{updateTime}.
+\item \code{time} (POSIXct): Order creation time converted from \code{time}.
+\item \code{update_time} (POSIXct): Last update time converted from \code{updateTime}.
 }
 }
 \subsection{Examples}{
@@ -767,8 +767,8 @@ the most recent orders are returned.
 \item \code{orig_quote_order_qty} (character): Original quote order quantity.
 \item \code{working_time} (numeric): Timestamp when the order started working.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
-\item \code{datetime_created} (POSIXct): Order creation time converted from \code{time}.
-\item \code{datetime_updated} (POSIXct): Last update time converted from \code{updateTime}.
+\item \code{time} (POSIXct): Order creation time converted from \code{time}.
+\item \code{update_time} (POSIXct): Last update time converted from \code{updateTime}.
 }
 }
 \subsection{Examples}{
@@ -776,7 +776,7 @@ the most recent orders are returned.
 \preformatted{\dontrun{
 trading <- BinanceTrading$new()
 all <- trading$get_all_orders("BTCUSDT", limit = 50)
-print(all[, .(order_id, side, price, status, datetime_created)])
+print(all[, .(order_id, side, price, status, time)])
 }
 }
 \if{html}{\out{</div>}}

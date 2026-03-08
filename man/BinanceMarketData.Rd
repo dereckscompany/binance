@@ -78,7 +78,7 @@ while (!later::loop_empty()) later::run_now()
 \dontrun{
 market <- BinanceMarketData$new()
 st <- market$get_server_time()
-drift <- as.numeric(Sys.time()) * 1000 - st$server_time
+drift <- as.numeric(difftime(Sys.time(), st$server_time, units = "secs"))
 cat("Clock drift:", round(drift), "ms\n")
 }
 
@@ -242,8 +242,7 @@ Useful for detecting clock drift and ensuring HMAC signatures are valid.
 \subsection{Returns}{
 \code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
 \itemize{
-\item \code{server_time} (numeric): Server epoch timestamp in milliseconds.
-\item \code{datetime_server} (POSIXct): Server time converted to UTC datetime.
+\item \code{server_time} (POSIXct): Server time as UTC datetime.
 }
 }
 \subsection{Examples}{
@@ -251,7 +250,7 @@ Useful for detecting clock drift and ensuring HMAC signatures are valid.
 \preformatted{\dontrun{
 market <- BinanceMarketData$new()
 st <- market$get_server_time()
-drift <- as.numeric(Sys.time()) * 1000 - st$server_time
+drift <- as.numeric(difftime(Sys.time(), st$server_time, units = "secs"))
 cat("Clock drift:", round(drift), "ms\n")
 }
 }
@@ -562,8 +561,8 @@ Retrieves rolling 24-hour price change statistics for a symbol.
 \item \code{low_price} (character): Lowest price in 24h.
 \item \code{volume} (character): Total base asset volume in 24h.
 \item \code{quote_volume} (character): Total quote asset volume in 24h.
-\item \code{datetime_open} (POSIXct): Start of the 24h window.
-\item \code{datetime_close} (POSIXct): End of the 24h window.
+\item \code{open_time} (POSIXct): Start of the 24h window.
+\item \code{close_time} (POSIXct): End of the 24h window.
 \item \code{first_id} (integer): First trade ID in the window.
 \item \code{last_id} (integer): Last trade ID in the window.
 \item \code{count} (integer): Total number of trades in 24h.
@@ -626,7 +625,7 @@ Retrieves the current average price for a symbol (5-minute weighted average).
 \itemize{
 \item \code{mins} (integer): Number of minutes in the averaging window.
 \item \code{price} (character): Weighted average price over the window.
-\item \code{datetime_close} (POSIXct): End of the averaging window.
+\item \code{close_time} (POSIXct): End of the averaging window.
 }
 }
 \subsection{Examples}{
@@ -758,7 +757,7 @@ Retrieves the most recent trades for a symbol.
 \item \code{price} (character): Trade execution price.
 \item \code{qty} (character): Base asset quantity traded.
 \item \code{quote_qty} (character): Quote asset quantity traded.
-\item \code{datetime_trade} (POSIXct): Trade execution time.
+\item \code{time} (POSIXct): Trade execution time.
 \item \code{is_buyer_maker} (logical): \code{TRUE} if the buyer was the maker (passive side).
 \item \code{is_best_match} (logical): \code{TRUE} if this trade was at the best available price.
 }
@@ -837,13 +836,13 @@ Retrieves historical kline/candlestick data for a symbol.
 \subsection{Returns}{
 \code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
 \itemize{
-\item \code{datetime_open} (POSIXct): Candle open time.
+\item \code{open_time} (POSIXct): Candle open time.
 \item \code{open} (numeric): Opening price.
 \item \code{high} (numeric): Highest price during the interval.
 \item \code{low} (numeric): Lowest price during the interval.
 \item \code{close} (numeric): Closing price.
 \item \code{volume} (numeric): Base asset volume traded.
-\item \code{datetime_close} (POSIXct): Candle close time.
+\item \code{close_time} (POSIXct): Candle close time.
 \item \code{quote_volume} (numeric): Quote asset volume traded.
 \item \code{trades} (integer): Number of trades during the interval.
 \item \code{taker_buy_base_volume} (numeric): Base asset volume bought by takers.

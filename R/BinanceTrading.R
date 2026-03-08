@@ -143,7 +143,7 @@ BinanceTrading <- R6::R6Class(
     #' - `side` (character): `"BUY"` or `"SELL"`.
     #' - `working_time` (numeric): Timestamp when the order started working.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
-    #' - `datetime_transact` (POSIXct): Transaction time converted from `transactTime`.
+    #' - `transact_time` (POSIXct): Transaction time converted from `transactTime`.
     #' - `fills` (list): List of fill objects (present with `newOrderRespType = "FULL"`).
     #'
     #' @examples
@@ -193,8 +193,7 @@ BinanceTrading <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
-            dt[, datetime_transact := ms_to_datetime(transact_time)]
-            dt[, transact_time := NULL]
+            dt[, transact_time := ms_to_datetime(transact_time)]
           }
           return(dt)
         }
@@ -319,7 +318,7 @@ BinanceTrading <- R6::R6Class(
     #' - `type` (character): Order type.
     #' - `side` (character): `"BUY"` or `"SELL"`.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
-    #' - `datetime_transact` (POSIXct): Cancellation time converted from `transactTime`.
+    #' - `transact_time` (POSIXct): Cancellation time converted from `transactTime`.
     #'
     #' @examples
     #' \dontrun{
@@ -344,8 +343,7 @@ BinanceTrading <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
-            dt[, datetime_transact := ms_to_datetime(transact_time)]
-            dt[, transact_time := NULL]
+            dt[, transact_time := ms_to_datetime(transact_time)]
           }
           return(dt)
         }
@@ -380,7 +378,7 @@ BinanceTrading <- R6::R6Class(
     #' - `type` (character): Order type.
     #' - `side` (character): `"BUY"` or `"SELL"`.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
-    #' - `datetime_transact` (POSIXct): Cancellation time converted from `transactTime`.
+    #' - `transact_time` (POSIXct): Cancellation time converted from `transactTime`.
     #'
     #' @examples
     #' \dontrun{
@@ -399,8 +397,7 @@ BinanceTrading <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
-            dt[, datetime_transact := ms_to_datetime(transact_time)]
-            dt[, transact_time := NULL]
+            dt[, transact_time := ms_to_datetime(transact_time)]
           }
           return(dt)
         }
@@ -443,8 +440,8 @@ BinanceTrading <- R6::R6Class(
     #' - `orig_quote_order_qty` (character): Original quote order quantity.
     #' - `working_time` (numeric): Timestamp when the order started working.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
-    #' - `datetime_created` (POSIXct): Order creation time converted from `time`.
-    #' - `datetime_updated` (POSIXct): Last update time converted from `updateTime`.
+    #' - `time` (POSIXct): Order creation time converted from `time`.
+    #' - `update_time` (POSIXct): Last update time converted from `updateTime`.
     #'
     #' @examples
     #' \dontrun{
@@ -468,12 +465,10 @@ BinanceTrading <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, datetime_created := ms_to_datetime(time)]
-            dt[, time := NULL]
+            dt[, time := ms_to_datetime(time)]
           }
           if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, datetime_updated := ms_to_datetime(update_time)]
-            dt[, update_time := NULL]
+            dt[, update_time := ms_to_datetime(update_time)]
           }
           return(dt)
         }
@@ -513,8 +508,8 @@ BinanceTrading <- R6::R6Class(
     #' - `orig_quote_order_qty` (character): Original quote order quantity.
     #' - `working_time` (numeric): Timestamp when the order started working.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
-    #' - `datetime_created` (POSIXct): Order creation time converted from `time`.
-    #' - `datetime_updated` (POSIXct): Last update time converted from `updateTime`.
+    #' - `time` (POSIXct): Order creation time converted from `time`.
+    #' - `update_time` (POSIXct): Last update time converted from `updateTime`.
     #'
     #' @examples
     #' \dontrun{
@@ -532,12 +527,10 @@ BinanceTrading <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, datetime_created := ms_to_datetime(time)]
-            dt[, time := NULL]
+            dt[, time := ms_to_datetime(time)]
           }
           if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, datetime_updated := ms_to_datetime(update_time)]
-            dt[, update_time := NULL]
+            dt[, update_time := ms_to_datetime(update_time)]
           }
           return(dt)
         }
@@ -582,14 +575,14 @@ BinanceTrading <- R6::R6Class(
     #' - `orig_quote_order_qty` (character): Original quote order quantity.
     #' - `working_time` (numeric): Timestamp when the order started working.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
-    #' - `datetime_created` (POSIXct): Order creation time converted from `time`.
-    #' - `datetime_updated` (POSIXct): Last update time converted from `updateTime`.
+    #' - `time` (POSIXct): Order creation time converted from `time`.
+    #' - `update_time` (POSIXct): Last update time converted from `updateTime`.
     #'
     #' @examples
     #' \dontrun{
     #' trading <- BinanceTrading$new()
     #' all <- trading$get_all_orders("BTCUSDT", limit = 50)
-    #' print(all[, .(order_id, side, price, status, datetime_created)])
+    #' print(all[, .(order_id, side, price, status, time)])
     #' }
     get_all_orders = function(
       symbol,
@@ -615,12 +608,10 @@ BinanceTrading <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, datetime_created := ms_to_datetime(time)]
-            dt[, time := NULL]
+            dt[, time := ms_to_datetime(time)]
           }
           if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, datetime_updated := ms_to_datetime(update_time)]
-            dt[, update_time := NULL]
+            dt[, update_time := ms_to_datetime(update_time)]
           }
           return(dt)
         }

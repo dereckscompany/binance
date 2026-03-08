@@ -93,14 +93,13 @@ BinanceMarketData <- R6::R6Class(
     #' ```
     #'
     #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `server_time` (numeric): Server epoch timestamp in milliseconds.
-    #'   - `datetime_server` (POSIXct): Server time converted to UTC datetime.
+    #'   - `server_time` (POSIXct): Server time as UTC datetime.
     #'
     #' @examples
     #' \dontrun{
     #' market <- BinanceMarketData$new()
     #' st <- market$get_server_time()
-    #' drift <- as.numeric(Sys.time()) * 1000 - st$server_time
+    #' drift <- as.numeric(difftime(Sys.time(), st$server_time, units = "secs"))
     #' cat("Clock drift:", round(drift), "ms\n")
     #' }
     get_server_time = function() {
@@ -108,11 +107,11 @@ BinanceMarketData <- R6::R6Class(
         endpoint = "/api/v3/time",
         auth = FALSE,
         .parser = function(data) {
-          ts <- as.numeric(data$serverTime)
-          return(data.table::data.table(
-            server_time = ts,
-            datetime_server = ms_to_datetime(ts)
-          ))
+          dt <- as_dt_row(data)
+          if (nrow(dt) > 0 && "server_time" %in% names(dt)) {
+            dt[, server_time := ms_to_datetime(server_time)]
+          }
+          return(dt)
         }
       ))
     },
@@ -356,8 +355,8 @@ BinanceMarketData <- R6::R6Class(
     #'   - `low_price` (character): Lowest price in 24h.
     #'   - `volume` (character): Total base asset volume in 24h.
     #'   - `quote_volume` (character): Total quote asset volume in 24h.
-    #'   - `datetime_open` (POSIXct): Start of the 24h window.
-    #'   - `datetime_close` (POSIXct): End of the 24h window.
+    #'   - `open_time` (POSIXct): Start of the 24h window.
+    #'   - `close_time` (POSIXct): End of the 24h window.
     #'   - `first_id` (integer): First trade ID in the window.
     #'   - `last_id` (integer): Last trade ID in the window.
     #'   - `count` (integer): Total number of trades in 24h.
@@ -378,8 +377,7 @@ BinanceMarketData <- R6::R6Class(
           if (nrow(dt) > 0) {
             for (col in c("open_time", "close_time")) {
               if (col %in% names(dt)) {
-                dt[, paste0("datetime_", sub("_time$", "", col)) := ms_to_datetime(get(col))]
-                dt[, (col) := NULL]
+                dt[, (col) := ms_to_datetime(get(col))]
               }
             }
           }
@@ -415,7 +413,7 @@ BinanceMarketData <- R6::R6Class(
     #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
     #'   - `mins` (integer): Number of minutes in the averaging window.
     #'   - `price` (character): Weighted average price over the window.
-    #'   - `datetime_close` (POSIXct): End of the averaging window.
+    #'   - `close_time` (POSIXct): End of the averaging window.
     #'
     #' @examples
     #' \dontrun{
@@ -431,8 +429,7 @@ BinanceMarketData <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           if (nrow(dt) > 0 && "close_time" %in% names(dt)) {
-            dt[, datetime_close := ms_to_datetime(close_time)]
-            dt[, close_time := NULL]
+            dt[, close_time := ms_to_datetime(close_time)]
           }
           return(dt)
         }
@@ -521,7 +518,7 @@ BinanceMarketData <- R6::R6Class(
     #'   - `price` (character): Trade execution price.
     #'   - `qty` (character): Base asset quantity traded.
     #'   - `quote_qty` (character): Quote asset quantity traded.
-    #'   - `datetime_trade` (POSIXct): Trade execution time.
+    #'   - `time` (POSIXct): Trade execution time.
     #'   - `is_buyer_maker` (logical): `TRUE` if the buyer was the maker (passive side).
     #'   - `is_best_match` (logical): `TRUE` if this trade was at the best available price.
     #'
@@ -539,8 +536,7 @@ BinanceMarketData <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, datetime_trade := ms_to_datetime(time)]
-            dt[, time := NULL]
+            dt[, time := ms_to_datetime(time)]
           }
           return(dt)
         }
@@ -579,13 +575,13 @@ BinanceMarketData <- R6::R6Class(
     #' @param endTime POSIXct or numeric or NULL; end time (ms or POSIXct).
     #' @param limit Integer or NULL; max results (default 500, max 1000).
     #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `datetime_open` (POSIXct): Candle open time.
+    #'   - `open_time` (POSIXct): Candle open time.
     #'   - `open` (numeric): Opening price.
     #'   - `high` (numeric): Highest price during the interval.
     #'   - `low` (numeric): Lowest price during the interval.
     #'   - `close` (numeric): Closing price.
     #'   - `volume` (numeric): Base asset volume traded.
-    #'   - `datetime_close` (POSIXct): Candle close time.
+    #'   - `close_time` (POSIXct): Candle close time.
     #'   - `quote_volume` (numeric): Quote asset volume traded.
     #'   - `trades` (integer): Number of trades during the interval.
     #'   - `taker_buy_base_volume` (numeric): Base asset volume bought by takers.

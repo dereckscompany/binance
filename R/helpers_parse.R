@@ -131,8 +131,8 @@ parse_orderbook <- function(data) {
 #'   trades, taker_buy_base, taker_buy_quote, ignore]`
 #'
 #' @param data List of lists; the raw kline response from Binance.
-#' @return A [data.table::data.table] with columns: `datetime_open`, `open`, `high`,
-#'   `low`, `close`, `volume`, `datetime_close`, `quote_volume`, `trades`,
+#' @return A [data.table::data.table] with columns: `open_time`, `open`, `high`,
+#'   `low`, `close`, `volume`, `close_time`, `quote_volume`, `trades`,
 #'   `taker_buy_base_volume`, `taker_buy_quote_volume`, `ignore`.
 #'   Returns empty data.table if input is NULL or empty.
 #'
@@ -148,13 +148,13 @@ parse_klines <- function(data) {
   # [6] Close time, [7] Quote asset volume, [8] Number of trades,
   # [9] Taker buy base vol, [10] Taker buy quote vol, [11] Ignore
   dt <- data.table::data.table(
-    datetime_open = lubridate::as_datetime(as.numeric(vapply(data, `[[`, numeric(1), 1L)) / 1000),
+    open_time = lubridate::as_datetime(as.numeric(vapply(data, `[[`, numeric(1), 1L)) / 1000),
     open = as.numeric(vapply(data, `[[`, character(1), 2L)),
     high = as.numeric(vapply(data, `[[`, character(1), 3L)),
     low = as.numeric(vapply(data, `[[`, character(1), 4L)),
     close = as.numeric(vapply(data, `[[`, character(1), 5L)),
     volume = as.numeric(vapply(data, `[[`, character(1), 6L)),
-    datetime_close = lubridate::as_datetime(as.numeric(vapply(data, `[[`, numeric(1), 7L)) / 1000),
+    close_time = lubridate::as_datetime(as.numeric(vapply(data, `[[`, numeric(1), 7L)) / 1000),
     quote_volume = as.numeric(vapply(data, `[[`, character(1), 8L)),
     trades = as.integer(vapply(data, `[[`, integer(1), 9L)),
     taker_buy_base_volume = as.numeric(vapply(data, `[[`, character(1), 10L)),

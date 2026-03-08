@@ -231,13 +231,13 @@ BinanceAccount <- R6::R6Class(
     #' - `is_buyer` (logical): `TRUE` if you were the buyer.
     #' - `is_maker` (logical): `TRUE` if you were the maker.
     #' - `is_best_match` (logical): `TRUE` if this was the best price match.
-    #' - `datetime_trade` (POSIXct): Trade execution time converted from `time`.
+    #' - `time` (POSIXct): Trade execution time converted from `time`.
     #'
     #' @examples
     #' \dontrun{
     #' account <- BinanceAccount$new()
     #' trades <- account$get_trades("BTCUSDT", limit = 50)
-    #' print(trades[, .(id, price, qty, commission, datetime_trade)])
+    #' print(trades[, .(id, price, qty, commission, time)])
     #' }
     get_trades = function(
       symbol,
@@ -265,8 +265,7 @@ BinanceAccount <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, datetime_trade := ms_to_datetime(time)]
-            dt[, time := NULL]
+            dt[, time := ms_to_datetime(time)]
           }
           return(dt)
         }
