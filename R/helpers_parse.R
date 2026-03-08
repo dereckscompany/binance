@@ -64,8 +64,7 @@ as_dt_list <- function(items) {
   if (is.null(items) || length(items) == 0) {
     return(data.table::data.table())
   }
-  dt <- data.table::rbindlist(items, fill = TRUE)
-  data.table::setnames(dt, to_snake_case(names(dt)))
+  dt <- data.table::rbindlist(lapply(items, as_dt_row), fill = TRUE)
   return(dt)
 }
 
@@ -139,6 +138,7 @@ parse_orderbook <- function(data) {
 #' @importFrom lubridate as_datetime
 #' @keywords internal
 #' @noRd
+
 #' Parse Paginated Binance Response
 #'
 #' Extracts the `rows` array from a paginated Binance response that has the

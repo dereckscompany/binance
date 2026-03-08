@@ -13,6 +13,13 @@ utils::globalVariables(c(
   "transact_time",
   "insert_time",
   "complete_time",
+  "funding_time",
+  "next_funding_time",
+  "interest_accured_time",
+  "create_time",
+  "create_time_stamp",
+  "timestamp",
+  "updated_time",
   # Orderbook / trade columns
   "last_update_id",
   "side",

@@ -1,0 +1,936 @@
+# File: R/BinanceMargin.R
+# R6 class for Binance Margin trading operations.
+
+#' BinanceMargin: Margin Trading Operations
+#'
+#' Provides methods for margin borrowing, repaying, order management, and
+#' account queries on Binance. Inherits from [BinanceBase].
+#'
+#' ### Purpose and Scope
+#' - **Borrowing / Repaying**: Borrow and repay assets on cross or isolated margin.
+#' - **Order Management**: Place, cancel, and query margin orders.
+#' - **Account Info**: Query margin account details, max borrowable/transferable amounts.
+#' - **History**: Retrieve interest history, force liquidation records, and trade history.
+#' - **Isolated Margin**: Query isolated margin accounts and initiate isolated transfers.
+#'
+#' ### Usage
+#' All methods require authentication (valid API key and secret).
+#' These are SAPI (`/sapi/`) endpoints.
+#'
+#' ### Official Documentation
+#' [Binance Margin Trading](https://developers.binance.com/docs/margin_trading/Introduction)
+#'
+#' ### Endpoints Covered
+#' | Method | Endpoint | HTTP |
+#' |--------|----------|------|
+#' | add_borrow | POST /sapi/v1/margin/loan | POST |
+#' | add_repay | POST /sapi/v1/margin/repay | POST |
+#' | add_order | POST /sapi/v1/margin/order | POST |
+#' | cancel_order | DELETE /sapi/v1/margin/order | DELETE |
+#' | cancel_all_orders | DELETE /sapi/v1/margin/openOrders | DELETE |
+#' | get_order | GET /sapi/v1/margin/order | GET |
+#' | get_open_orders | GET /sapi/v1/margin/openOrders | GET |
+#' | get_all_orders | GET /sapi/v1/margin/allOrders | GET |
+#' | get_account | GET /sapi/v1/margin/account | GET |
+#' | get_max_borrowable | GET /sapi/v1/margin/maxBorrowable | GET |
+#' | get_max_transferable | GET /sapi/v1/margin/maxTransferable | GET |
+#' | get_interest_history | GET /sapi/v1/margin/interestHistory | GET |
+#' | get_force_liquidation_history | GET /sapi/v1/margin/forceLiquidationRec | GET |
+#' | get_trades | GET /sapi/v1/margin/myTrades | GET |
+#' | get_isolated_account | GET /sapi/v1/margin/isolated/account | GET |
+#' | add_isolated_transfer | POST /sapi/v1/margin/isolated/transfer | POST |
+#'
+#' @section Order Types:
+#' - `"LIMIT"`: requires `price`, `quantity`, `timeInForce`.
+#' - `"MARKET"`: requires either `quantity` or `quoteOrderQty`.
+#' - `"STOP_LOSS"`, `"STOP_LOSS_LIMIT"`, `"TAKE_PROFIT"`, `"TAKE_PROFIT_LIMIT"`: conditional.
+#' - `"LIMIT_MAKER"`: like LIMIT but rejected if it would immediately match.
+#'
+#' @section Side Effect Types:
+#' - `"NO_SIDE_EFFECT"`: Normal trade order.
+#' - `"MARGIN_BUY"`: Margin trade order with auto-borrow.
+#' - `"AUTO_REPAY"`: Margin trade order with auto-repay.
+#'
+#' @examples
+#' \dontrun{
+#' # Synchronous
+#' margin <- BinanceMargin$new()
+#' account <- margin$get_account()
+#' print(account)
+#'
+#' # Asynchronous
+#' margin_async <- BinanceMargin$new(async = TRUE)
+#' main <- coro::async(function() {
+#'   account <- await(margin_async$get_account())
+#'   print(account)
+#' })
+#' main()
+#' while (!later::loop_empty()) later::run_now()
+#' }
+#'
+#' @importFrom R6 R6Class
+#' @importFrom rlang arg_match0
+#' @export
+BinanceMargin <- R6::R6Class(
+  "BinanceMargin",
+  inherit = BinanceBase,
+  public = list(
+    # ---- Borrowing / Repaying ----
+
+    #' @description
+    #' Borrow on Margin
+    #'
+    #' Initiates a margin loan for the specified asset and amount.
+    #'
+    #' ### API Endpoint
+    #' `POST https://api.binance.com/sapi/v1/margin/loan`
+    #'
+    #' ### Official Documentation
+    #' [Binance Margin Borrow](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow)
+    #'
+    #' @param asset Character; asset to borrow (e.g., `"USDT"`).
+    #' @param amount Numeric; amount to borrow.
+    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param symbol Character or NULL; required when `isIsolated = "TRUE"`.
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` with one row and the following columns:
+    #' - `tran_id` (integer): Transaction identifier.
+    #' - `client_tag` (character): Client tag.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' margin <- BinanceMargin$new()
+    #' result <- margin$add_borrow(asset = "USDT", amount = 100)
+    #' print(result)
+    #' }
+    add_borrow = function(asset, amount, isIsolated = NULL, symbol = NULL, recvWindow = NULL) {
+      return(private$.request(
+        endpoint = "/sapi/v1/margin/loan",
+        method = "POST",
+        query = list(
+          asset = asset,
+          amount = as.character(amount),
+          isIsolated = isIsolated,
+          symbol = symbol,
+          recvWindow = recvWindow
+        ),
+        .parser = function(data) {
+          return(as_dt_row(data))
+        }
+      ))
+    },
+
+    #' @description
+    #' Repay Margin Loan
+    #'
+    #' Repays a margin loan for the specified asset and amount.
+    #'
+    #' ### API Endpoint
+    #' `POST https://api.binance.com/sapi/v1/margin/repay`
+    #'
+    #' ### Official Documentation
+    #' [Binance Margin Repay](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Repay)
+    #'
+    #' @param asset Character; asset to repay (e.g., `"USDT"`).
+    #' @param amount Numeric; amount to repay.
+    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param symbol Character or NULL; required when `isIsolated = "TRUE"`.
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` with one row and the following columns:
+    #' - `tran_id` (integer): Transaction identifier.
+    #' - `client_tag` (character): Client tag.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' margin <- BinanceMargin$new()
+    #' result <- margin$add_repay(asset = "USDT", amount = 100)
+    #' print(result)
+    #' }
+    add_repay = function(asset, amount, isIsolated = NULL, symbol = NULL, recvWindow = NULL) {
+      return(private$.request(
+        endpoint = "/sapi/v1/margin/repay",
+        method = "POST",
+        query = list(
+          asset = asset,
+          amount = as.character(amount),
+          isIsolated = isIsolated,
+          symbol = symbol,
+          recvWindow = recvWindow
+        ),
+        .parser = function(data) {
+          return(as_dt_row(data))
+        }
+      ))
+    },
+
+    # ---- Order Management ----
+
+    #' @description
+    #' Place a Margin Order
+    #'
+    #' Places a new margin order on Binance.
+    #'
+    #' ### API Endpoint
+    #' `POST https://api.binance.com/sapi/v1/margin/order`
+    #'
+    #' ### Official Documentation
+    #' [Binance Margin New Order](https://developers.binance.com/docs/margin_trading/trade/Margin-Account-New-Order)
+    #'
+    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
+    #' @param side Character; `"BUY"` or `"SELL"`.
+    #' @param type Character; order type: `"LIMIT"`, `"MARKET"`, `"STOP_LOSS"`,
+    #'   `"STOP_LOSS_LIMIT"`, `"TAKE_PROFIT"`, `"TAKE_PROFIT_LIMIT"`, `"LIMIT_MAKER"`.
+    #' @param quantity Numeric or NULL; base asset quantity.
+    #' @param quoteOrderQty Numeric or NULL; quote asset quantity (market orders only).
+    #' @param price Numeric or NULL; price for limit orders.
+    #' @param stopPrice Numeric or NULL; trigger price for stop orders.
+    #' @param timeInForce Character or NULL; `"GTC"`, `"IOC"`, `"FOK"`.
+    #' @param newClientOrderId Character or NULL; unique client order ID.
+    #' @param newOrderRespType Character or NULL; `"ACK"`, `"RESULT"`, or `"FULL"`.
+    #' @param sideEffectType Character or NULL; `"NO_SIDE_EFFECT"`, `"MARGIN_BUY"`, `"AUTO_REPAY"`.
+    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` with one row and columns including:
+    #' - `symbol` (character): Trading pair.
+    #' - `order_id` (integer): Unique order identifier.
+    #' - `client_order_id` (character): Client-assigned order ID.
+    #' - `transact_time` (POSIXct): Transaction time.
+    #' - `price` (character): Order price.
+    #' - `orig_qty` (character): Original requested quantity.
+    #' - `executed_qty` (character): Quantity filled so far.
+    #' - `status` (character): Order status.
+    #' - `type` (character): Order type.
+    #' - `side` (character): `"BUY"` or `"SELL"`.
+    #' - `is_isolated` (logical): Whether this is an isolated margin order.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' margin <- BinanceMargin$new()
+    #' order <- margin$add_order(
+    #'   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
+    #'   price = 50000, quantity = 0.0001, timeInForce = "GTC"
+    #' )
+    #' print(order)
+    #' }
+    add_order = function(
+      symbol,
+      side,
+      type,
+      quantity = NULL,
+      quoteOrderQty = NULL,
+      price = NULL,
+      stopPrice = NULL,
+      timeInForce = NULL,
+      newClientOrderId = NULL,
+      newOrderRespType = NULL,
+      sideEffectType = NULL,
+      isIsolated = NULL,
+      recvWindow = NULL
+    ) {
+      side <- toupper(side)
+      type <- toupper(type)
+      rlang::arg_match0(side, c("BUY", "SELL"))
+      rlang::arg_match0(
+        type,
+        c("LIMIT", "MARKET", "STOP_LOSS", "STOP_LOSS_LIMIT",
+          "TAKE_PROFIT", "TAKE_PROFIT_LIMIT", "LIMIT_MAKER")
+      )
+
+      if (!is.null(sideEffectType)) {
+        sideEffectType <- toupper(sideEffectType)
+        rlang::arg_match0(sideEffectType, c("NO_SIDE_EFFECT", "MARGIN_BUY", "AUTO_REPAY"))
+      }
+
+      # Convert numeric values to character for precision
+      if (!is.null(price)) price <- as.character(price)
+      if (!is.null(quantity)) quantity <- as.character(quantity)
+      if (!is.null(quoteOrderQty)) quoteOrderQty <- as.character(quoteOrderQty)
+      if (!is.null(stopPrice)) stopPrice <- as.character(stopPrice)
+
+      return(private$.request(
+        endpoint = "/sapi/v1/margin/order",
+        method = "POST",
+        query = list(
+          symbol = symbol,
+          side = side,
+          type = type,
+          quantity = quantity,
+          quoteOrderQty = quoteOrderQty,
+          price = price,
+          stopPrice = stopPrice,
+          timeInForce = timeInForce,
+          newClientOrderId = newClientOrderId,
+          newOrderRespType = newOrderRespType,
+          sideEffectType = sideEffectType,
+          isIsolated = isIsolated,
+          recvWindow = recvWindow
+        ),
+        .parser = function(data) {
+          dt <- as_dt_row(data)
+          if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
+            dt[, transact_time := ms_to_datetime(transact_time)]
+          }
+          return(dt)
+        }
+      ))
+    },
+
+    #' @description
+    #' Cancel a Margin Order
+    #'
+    #' Cancels an active margin order by order ID or client order ID.
+    #'
+    #' ### API Endpoint
+    #' `DELETE https://api.binance.com/sapi/v1/margin/order`
+    #'
+    #' ### Official Documentation
+    #' [Binance Margin Cancel Order](https://developers.binance.com/docs/margin_trading/trade/Margin-Account-Cancel-Order)
+    #'
+    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
+    #' @param orderId Integer or NULL; the order ID to cancel.
+    #' @param origClientOrderId Character or NULL; the client order ID to cancel.
+    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` with one row and columns including:
+    #' - `symbol` (character): Trading pair.
+    #' - `order_id` (integer): Unique order identifier.
+    #' - `orig_client_order_id` (character): Original client order ID.
+    #' - `status` (character): Order status (typically `"CANCELED"`).
+    #' - `transact_time` (POSIXct): Cancellation time.
+    #' - `is_isolated` (logical): Whether this is an isolated margin order.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' margin <- BinanceMargin$new()
+    #' cancelled <- margin$cancel_order("BTCUSDT", orderId = 28)
+    #' print(cancelled)
+    #' }
+    cancel_order = function(symbol, orderId = NULL, origClientOrderId = NULL, isIsolated = NULL, recvWindow = NULL) {
+      if (is.null(orderId) && is.null(origClientOrderId)) {
+        rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
+      }
+
+      return(private$.request(
+        endpoint = "/sapi/v1/margin/order",
+        method = "DELETE",
+        query = list(
+          symbol = symbol,
+          orderId = orderId,
+          origClientOrderId = origClientOrderId,
+          isIsolated = isIsolated,
+          recvWindow = recvWindow
+        ),
+        .parser = function(data) {
+          dt <- as_dt_row(data)
+          if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
+            dt[, transact_time := ms_to_datetime(transact_time)]
+          }
+          return(dt)
+        }
+      ))
+    },
+
+    #' @description
+    #' Cancel All Open Margin Orders on a Symbol
+    #'
+    #' Cancels all active margin orders on a trading pair.
+    #'
+    #' ### API Endpoint
+    #' `DELETE https://api.binance.com/sapi/v1/margin/openOrders`
+    #'
+    #' ### Official Documentation
+    #' [Binance Margin Cancel All Orders](https://developers.binance.com/docs/margin_trading/trade/Margin-Account-Cancel-All-Open-Orders)
+    #'
+    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
+    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` with one row per cancelled order.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' margin <- BinanceMargin$new()
+    #' cancelled <- margin$cancel_all_orders("BTCUSDT")
+    #' print(cancelled)
+    #' }
+    cancel_all_orders = function(symbol, isIsolated = NULL, recvWindow = NULL) {
+      return(private$.request(
+        endpoint = "/sapi/v1/margin/openOrders",
+        method = "DELETE",
+        query = list(
+          symbol = symbol,
+          isIsolated = isIsolated,
+          recvWindow = recvWindow
+        ),
+        .parser = function(data) {
+          if (is.null(data) || length(data) == 0) {
+            return(data.table::data.table())
+          }
+          dt <- as_dt_list(data)
+          if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
+            dt[, transact_time := ms_to_datetime(transact_time)]
+          }
+          return(dt)
+        }
+      ))
+    },
+
+    # ---- Order Queries ----
+
+    #' @description
+    #' Query a Margin Order
+    #'
+    #' Retrieves details for a specific margin order by order ID or client order ID.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/sapi/v1/margin/order`
+    #'
+    #' ### Official Documentation
+    #' [Binance Margin Query Order](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Order)
+    #'
+    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
+    #' @param orderId Integer or NULL; the order ID.
+    #' @param origClientOrderId Character or NULL; the client order ID.
+    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` with one row and columns including:
+    #' - `symbol` (character): Trading pair.
+    #' - `order_id` (integer): Unique order identifier.
+    #' - `client_order_id` (character): Client-assigned order ID.
+    #' - `price` (character): Order price.
+    #' - `orig_qty` (character): Original requested quantity.
+    #' - `executed_qty` (character): Quantity filled so far.
+    #' - `status` (character): Order status.
+    #' - `type` (character): Order type.
+    #' - `side` (character): `"BUY"` or `"SELL"`.
+    #' - `time` (POSIXct): Order creation time.
+    #' - `update_time` (POSIXct): Last update time.
+    #' - `is_isolated` (logical): Whether this is an isolated margin order.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' margin <- BinanceMargin$new()
+    #' order <- margin$get_order("BTCUSDT", orderId = 28)
+    #' print(order)
+    #' }
+    get_order = function(symbol, orderId = NULL, origClientOrderId = NULL, isIsolated = NULL, recvWindow = NULL) {
+      if (is.null(orderId) && is.null(origClientOrderId)) {
+        rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
+      }
+
+      return(private$.request(
+        endpoint = "/sapi/v1/margin/order",
+        query = list(
+          symbol = symbol,
+          orderId = orderId,
+          origClientOrderId = origClientOrderId,
+          isIsolated = isIsolated,
+          recvWindow = recvWindow
+        ),
+        .parser = function(data) {
+          dt <- as_dt_row(data)
+          if (nrow(dt) > 0 && "time" %in% names(dt)) {
+            dt[, time := ms_to_datetime(time)]
+          }
+          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
+            dt[, update_time := ms_to_datetime(update_time)]
+          }
+          return(dt)
+        }
+      ))
+    },
+
+    #' @description
+    #' Get Open Margin Orders
+    #'
+    #' Retrieves all currently open margin orders, optionally filtered by symbol.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/sapi/v1/margin/openOrders`
+    #'
+    #' ### Official Documentation
+    #' [Binance Margin Open Orders](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Open-Orders)
+    #'
+    #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
+    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` with one row per open order.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' margin <- BinanceMargin$new()
+    #' open <- margin$get_open_orders("BTCUSDT")
+    #' print(open)
+    #' }
+    get_open_orders = function(symbol = NULL, isIsolated = NULL, recvWindow = NULL) {
+      return(private$.request(
+        endpoint = "/sapi/v1/margin/openOrders",
+        query = list(
+          symbol = symbol,
+          isIsolated = isIsolated,
+          recvWindow = recvWindow
+        ),
+        .parser = function(data) {
+          if (is.null(data) || length(data) == 0) {
+            return(data.table::data.table())
+          }
+          dt <- as_dt_list(data)
+          if (nrow(dt) > 0 && "time" %in% names(dt)) {
+            dt[, time := ms_to_datetime(time)]
+          }
+          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
+            dt[, update_time := ms_to_datetime(update_time)]
+          }
+          return(dt)
+        }
+      ))
+    },
+
+    #' @description
+    #' Get All Margin Orders
+    #'
+    #' Retrieves all margin orders for a symbol (open, cancelled, filled).
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/sapi/v1/margin/allOrders`
+    #'
+    #' ### Official Documentation
+    #' [Binance Margin All Orders](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-All-Orders)
+    #'
+    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
+    #' @param orderId Integer or NULL; pagination cursor.
+    #' @param startTime Integer or NULL; start timestamp in milliseconds.
+    #' @param endTime Integer or NULL; end timestamp in milliseconds.
+    #' @param limit Integer or NULL; max results (default 500, max 500).
+    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` with one row per order.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' margin <- BinanceMargin$new()
+    #' all <- margin$get_all_orders("BTCUSDT", limit = 50)
+    #' print(all)
+    #' }
+    get_all_orders = function(
+      symbol,
+      orderId = NULL,
+      startTime = NULL,
+      endTime = NULL,
+      limit = NULL,
+      isIsolated = NULL,
+      recvWindow = NULL
+    ) {
+      return(private$.request(
+        endpoint = "/sapi/v1/margin/allOrders",
+        query = list(
+          symbol = symbol,
+          orderId = orderId,
+          startTime = startTime,
+          endTime = endTime,
+          limit = limit,
+          isIsolated = isIsolated,
+          recvWindow = recvWindow
+        ),
+        .parser = function(data) {
+          if (is.null(data) || length(data) == 0) {
+            return(data.table::data.table())
+          }
+          dt <- as_dt_list(data)
+          if (nrow(dt) > 0 && "time" %in% names(dt)) {
+            dt[, time := ms_to_datetime(time)]
+          }
+          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
+            dt[, update_time := ms_to_datetime(update_time)]
+          }
+          return(dt)
+        }
+      ))
+    },
+
+    # ---- Account Queries ----
+
+    #' @description
+    #' Get Margin Account Information
+    #'
+    #' Retrieves cross margin account details including balances and margin level.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/sapi/v1/margin/account`
+    #'
+    #' ### Official Documentation
+    #' [Binance Margin Account](https://developers.binance.com/docs/margin_trading/account/Query-Cross-Margin-Account-Details)
+    #'
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` with one row and columns including:
+    #' - `borrow_enabled` (logical): Whether borrowing is enabled.
+    #' - `margin_level` (character): Current margin level.
+    #' - `total_asset_of_btc` (character): Total asset value in BTC.
+    #' - `total_liability_of_btc` (character): Total liability in BTC.
+    #' - `total_net_asset_of_btc` (character): Net asset value in BTC.
+    #' - `trade_enabled` (logical): Whether trading is enabled.
+    #' - `transfer_enabled` (logical): Whether transfers are enabled.
+    #' - `account_type` (character): Account type (`"MARGIN"`).
+    #' - `user_assets` (list): List of asset balance objects.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' margin <- BinanceMargin$new()
+    #' account <- margin$get_account()
+    #' print(account)
+    #' }
+    get_account = function(recvWindow = NULL) {
+      return(private$.request(
+        endpoint = "/sapi/v1/margin/account",
+        query = list(recvWindow = recvWindow),
+        .parser = function(data) {
+          return(as_dt_row(data))
+        }
+      ))
+    },
+
+    #' @description
+    #' Get Max Borrowable Amount
+    #'
+    #' Queries the maximum borrowable amount for an asset on margin.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/sapi/v1/margin/maxBorrowable`
+    #'
+    #' ### Official Documentation
+    #' [Binance Max Borrowable](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Query-Max-Borrow)
+    #'
+    #' @param asset Character; asset to query (e.g., `"USDT"`).
+    #' @param isolatedSymbol Character or NULL; isolated margin pair (e.g., `"BTCUSDT"`).
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` with one row and the following columns:
+    #' - `amount` (character): Maximum borrowable amount.
+    #' - `borrow_limit` (character): Borrow limit.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' margin <- BinanceMargin$new()
+    #' max_borrow <- margin$get_max_borrowable(asset = "USDT")
+    #' print(max_borrow)
+    #' }
+    get_max_borrowable = function(asset, isolatedSymbol = NULL, recvWindow = NULL) {
+      return(private$.request(
+        endpoint = "/sapi/v1/margin/maxBorrowable",
+        query = list(
+          asset = asset,
+          isolatedSymbol = isolatedSymbol,
+          recvWindow = recvWindow
+        ),
+        .parser = function(data) {
+          return(as_dt_row(data))
+        }
+      ))
+    },
+
+    #' @description
+    #' Get Max Transferable Amount
+    #'
+    #' Queries the maximum transferable-out amount for an asset on margin.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/sapi/v1/margin/maxTransferable`
+    #'
+    #' ### Official Documentation
+    #' [Binance Max Transferable](https://developers.binance.com/docs/margin_trading/transfer/Query-Max-Transfer-Out-Amount)
+    #'
+    #' @param asset Character; asset to query (e.g., `"USDT"`).
+    #' @param isolatedSymbol Character or NULL; isolated margin pair (e.g., `"BTCUSDT"`).
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` with one row.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' margin <- BinanceMargin$new()
+    #' max_transfer <- margin$get_max_transferable(asset = "USDT")
+    #' print(max_transfer)
+    #' }
+    get_max_transferable = function(asset, isolatedSymbol = NULL, recvWindow = NULL) {
+      return(private$.request(
+        endpoint = "/sapi/v1/margin/maxTransferable",
+        query = list(
+          asset = asset,
+          isolatedSymbol = isolatedSymbol,
+          recvWindow = recvWindow
+        ),
+        .parser = function(data) {
+          return(as_dt_row(data))
+        }
+      ))
+    },
+
+    # ---- History ----
+
+    #' @description
+    #' Get Margin Interest History
+    #'
+    #' Retrieves margin interest accrual history with pagination.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/sapi/v1/margin/interestHistory`
+    #'
+    #' ### Official Documentation
+    #' [Binance Interest History](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Get-Interest-History)
+    #'
+    #' @param asset Character or NULL; filter by asset (e.g., `"USDT"`).
+    #' @param startTime Integer or NULL; start timestamp in milliseconds.
+    #' @param endTime Integer or NULL; end timestamp in milliseconds.
+    #' @param current Integer or NULL; current page (default 1).
+    #' @param size Integer or NULL; page size (default 10, max 100).
+    #' @param archived Character or NULL; `"true"` to query 6-month archived data.
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` with one row per interest record.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' margin <- BinanceMargin$new()
+    #' history <- margin$get_interest_history(asset = "USDT")
+    #' print(history)
+    #' }
+    get_interest_history = function(
+      asset = NULL,
+      startTime = NULL,
+      endTime = NULL,
+      current = NULL,
+      size = NULL,
+      archived = NULL,
+      recvWindow = NULL
+    ) {
+      return(private$.request(
+        endpoint = "/sapi/v1/margin/interestHistory",
+        query = list(
+          asset = asset,
+          startTime = startTime,
+          endTime = endTime,
+          current = current,
+          size = size,
+          archived = archived,
+          recvWindow = recvWindow
+        ),
+        .parser = function(data) {
+          return(parse_paginated(data, time_cols = "interest_accured_time"))
+        }
+      ))
+    },
+
+    #' @description
+    #' Get Force Liquidation History
+    #'
+    #' Retrieves margin force liquidation records with pagination.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/sapi/v1/margin/forceLiquidationRec`
+    #'
+    #' ### Official Documentation
+    #' [Binance Force Liquidation](https://developers.binance.com/docs/margin_trading/trade/Get-Force-Liquidation-Record)
+    #'
+    #' @param startTime Integer or NULL; start timestamp in milliseconds.
+    #' @param endTime Integer or NULL; end timestamp in milliseconds.
+    #' @param isolatedSymbol Character or NULL; isolated margin pair.
+    #' @param current Integer or NULL; current page (default 1).
+    #' @param size Integer or NULL; page size (default 10, max 100).
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` with one row per liquidation record.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' margin <- BinanceMargin$new()
+    #' liquidations <- margin$get_force_liquidation_history()
+    #' print(liquidations)
+    #' }
+    get_force_liquidation_history = function(
+      startTime = NULL,
+      endTime = NULL,
+      isolatedSymbol = NULL,
+      current = NULL,
+      size = NULL,
+      recvWindow = NULL
+    ) {
+      return(private$.request(
+        endpoint = "/sapi/v1/margin/forceLiquidationRec",
+        query = list(
+          startTime = startTime,
+          endTime = endTime,
+          isolatedSymbol = isolatedSymbol,
+          current = current,
+          size = size,
+          recvWindow = recvWindow
+        ),
+        .parser = function(data) {
+          return(parse_paginated(data, time_cols = "time"))
+        }
+      ))
+    },
+
+    # ---- Trades ----
+
+    #' @description
+    #' Get Margin Trades
+    #'
+    #' Retrieves margin trade history for a symbol.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/sapi/v1/margin/myTrades`
+    #'
+    #' ### Official Documentation
+    #' [Binance Margin Trades](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Trade-List)
+    #'
+    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
+    #' @param orderId Integer or NULL; filter by order ID.
+    #' @param startTime Integer or NULL; start timestamp in milliseconds.
+    #' @param endTime Integer or NULL; end timestamp in milliseconds.
+    #' @param fromId Integer or NULL; trade ID to fetch from.
+    #' @param limit Integer or NULL; max results (default 500, max 1000).
+    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` with one row per trade and columns including:
+    #' - `symbol` (character): Trading pair.
+    #' - `id` (integer): Trade ID.
+    #' - `order_id` (integer): Order ID.
+    #' - `price` (character): Trade price.
+    #' - `qty` (character): Trade quantity.
+    #' - `commission` (character): Commission paid.
+    #' - `commission_asset` (character): Commission asset.
+    #' - `time` (POSIXct): Trade execution time.
+    #' - `is_buyer` (logical): Whether the trade was a buy.
+    #' - `is_maker` (logical): Whether the trade was a maker.
+    #' - `is_isolated` (logical): Whether this is an isolated margin trade.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' margin <- BinanceMargin$new()
+    #' trades <- margin$get_trades("BTCUSDT")
+    #' print(trades)
+    #' }
+    get_trades = function(
+      symbol,
+      orderId = NULL,
+      startTime = NULL,
+      endTime = NULL,
+      fromId = NULL,
+      limit = NULL,
+      isIsolated = NULL,
+      recvWindow = NULL
+    ) {
+      return(private$.request(
+        endpoint = "/sapi/v1/margin/myTrades",
+        query = list(
+          symbol = symbol,
+          orderId = orderId,
+          startTime = startTime,
+          endTime = endTime,
+          fromId = fromId,
+          limit = limit,
+          isIsolated = isIsolated,
+          recvWindow = recvWindow
+        ),
+        .parser = function(data) {
+          if (is.null(data) || length(data) == 0) {
+            return(data.table::data.table())
+          }
+          dt <- as_dt_list(data)
+          if (nrow(dt) > 0 && "time" %in% names(dt)) {
+            dt[, time := ms_to_datetime(time)]
+          }
+          return(dt)
+        }
+      ))
+    },
+
+    # ---- Isolated Margin ----
+
+    #' @description
+    #' Get Isolated Margin Account Info
+    #'
+    #' Retrieves isolated margin account details.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/sapi/v1/margin/isolated/account`
+    #'
+    #' ### Official Documentation
+    #' [Binance Isolated Margin Account](https://developers.binance.com/docs/margin_trading/account/Query-Isolated-Margin-Account-Info)
+    #'
+    #' @param symbols Character or NULL; comma-separated symbols (max 5, e.g., `"BTCUSDT,ETHUSDT"`).
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` with one row and columns including:
+    #' - `total_asset_of_btc` (character): Total asset value in BTC.
+    #' - `total_liability_of_btc` (character): Total liability in BTC.
+    #' - `total_net_asset_of_btc` (character): Net asset value in BTC.
+    #' - `assets` (list): List of isolated margin asset objects.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' margin <- BinanceMargin$new()
+    #' isolated <- margin$get_isolated_account()
+    #' print(isolated)
+    #' }
+    get_isolated_account = function(symbols = NULL, recvWindow = NULL) {
+      return(private$.request(
+        endpoint = "/sapi/v1/margin/isolated/account",
+        query = list(
+          symbols = symbols,
+          recvWindow = recvWindow
+        ),
+        .parser = function(data) {
+          return(as_dt_row(data))
+        }
+      ))
+    },
+
+    #' @description
+    #' Isolated Margin Transfer
+    #'
+    #' Transfers assets between spot and isolated margin accounts.
+    #'
+    #' ### API Endpoint
+    #' `POST https://api.binance.com/sapi/v1/margin/isolated/transfer`
+    #'
+    #' ### Official Documentation
+    #' [Binance Isolated Margin Transfer](https://developers.binance.com/docs/margin_trading/transfer/Isolated-Margin-Account-Transfer)
+    #'
+    #' @param asset Character; asset to transfer (e.g., `"USDT"`).
+    #' @param symbol Character; isolated margin pair (e.g., `"BTCUSDT"`).
+    #' @param transFrom Character; source account: `"SPOT"` or `"ISOLATED_MARGIN"`.
+    #' @param transTo Character; destination account: `"SPOT"` or `"ISOLATED_MARGIN"`.
+    #' @param amount Numeric; amount to transfer.
+    #' @param recvWindow Integer or NULL; max 60000.
+    #' @return `data.table` with one row and the following columns:
+    #' - `tran_id` (integer): Transaction identifier.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' margin <- BinanceMargin$new()
+    #' result <- margin$add_isolated_transfer(
+    #'   asset = "USDT", symbol = "BTCUSDT",
+    #'   transFrom = "SPOT", transTo = "ISOLATED_MARGIN",
+    #'   amount = 100
+    #' )
+    #' print(result)
+    #' }
+    add_isolated_transfer = function(asset, symbol, transFrom, transTo, amount, recvWindow = NULL) {
+      transFrom <- toupper(transFrom)
+      transTo <- toupper(transTo)
+      rlang::arg_match0(transFrom, c("SPOT", "ISOLATED_MARGIN"))
+      rlang::arg_match0(transTo, c("SPOT", "ISOLATED_MARGIN"))
+
+      return(private$.request(
+        endpoint = "/sapi/v1/margin/isolated/transfer",
+        method = "POST",
+        query = list(
+          asset = asset,
+          symbol = symbol,
+          transFrom = transFrom,
+          transTo = transTo,
+          amount = as.character(amount),
+          recvWindow = recvWindow
+        ),
+        .parser = function(data) {
+          return(as_dt_row(data))
+        }
+      ))
+    }
+  )
+)

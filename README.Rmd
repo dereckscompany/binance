@@ -12,6 +12,25 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+box::use(
+  binance[
+    BinanceMarketData, BinanceTrading, BinanceAccount,
+    BinanceMargin, BinanceFutures, BinanceFuturesData,
+    get_api_keys, get_futures_base_url
+  ]
+)
+
+box::use(./tests/testthat/mock_router[mock_router])
+
+KEYS <- get_api_keys(
+  api_key = "fake-key",
+  api_secret = "fake-secret"
+)
+BASE <- "https://api.binance.com"
+FBASE <- "https://fapi.binance.com"
+
+options(httr2_mock = mock_router)
 ```
 
 # binance
@@ -59,6 +78,190 @@ BINANCE_API_SECRET = your-api-secret
 ```
 
 If you don't have a key, visit the [Binance API documentation](https://binance-docs.github.io/apidocs/).
+
+## Quick Start -- Market Data
+
+Market data endpoints are public and require no authentication.
+
+```{r}
+market <- BinanceMarketData$new(keys = KEYS, base_url = BASE)
+```
+
+### Price Ticker
+
+```{r}
+market$get_ticker("BTCUSDT")
+```
+
+### Klines (Candlestick Data)
+
+```{r}
+klines <- market$get_klines("BTCUSDT", interval = "1h", limit = 5)
+klines[, .(open_time, open, high, low, close, volume)]
+```
+
+### Order Book Depth
+
+```{r}
+depth <- market$get_depth("BTCUSDT", limit = 5)
+depth
+```
+
+### 24hr Statistics
+
+```{r}
+stats <- market$get_24hr_stats("BTCUSDT")
+stats[, .(symbol, last_price, price_change_percent, volume)]
+```
+
+## Trading
+
+Trading endpoints require authentication. Use `add_order_test()` to validate
+order parameters without placing a real order.
+
+```{r}
+trading <- BinanceTrading$new(keys = KEYS, base_url = BASE)
+```
+
+### Test Order (No Execution)
+
+```{r}
+trading$add_order_test(
+  type = "LIMIT", symbol = "BTCUSDT", side = "BUY",
+  price = 50000, quantity = 0.0001
+)
+```
+
+### Query an Order
+
+```{r}
+trading$get_order("BTCUSDT", orderId = 12345)
+```
+
+### Get Open Orders
+
+```{r}
+trading$get_open_orders("BTCUSDT")
+```
+
+## Account
+
+```{r}
+account <- BinanceAccount$new(keys = KEYS, base_url = BASE)
+```
+
+### Account Info
+
+```{r}
+info <- account$get_account_info()
+info[, .(maker_commission, taker_commission, can_trade, account_type)]
+```
+
+### Trade History
+
+```{r}
+account$get_trades("BTCUSDT")
+```
+
+## Margin Trading
+
+Margin endpoints use the same credential setup. Here is a brief overview:
+
+```{r}
+margin <- BinanceMargin$new(keys = KEYS, base_url = BASE)
+```
+
+### Margin Account
+
+```{r}
+acct <- margin$get_account()
+acct[, .(margin_level, total_asset_of_btc, total_net_asset_of_btc)]
+```
+
+### Max Borrowable
+
+```{r}
+margin$get_max_borrowable(asset = "USDT")
+```
+
+### Margin Trades
+
+```{r}
+margin$get_trades("BTCUSDT")
+```
+
+## Futures
+
+### Futures Market Data
+
+```{r}
+fdata <- BinanceFuturesData$new(keys = KEYS, base_url = FBASE)
+```
+
+#### Mark Price and Funding Rate
+
+```{r}
+fdata$get_mark_price("BTCUSDT")
+```
+
+#### Funding Rate History
+
+```{r}
+fdata$get_funding_rate("BTCUSDT", limit = 3)
+```
+
+#### Open Interest
+
+```{r}
+fdata$get_open_interest("BTCUSDT")
+```
+
+### Futures Trading
+
+```{r}
+futures <- BinanceFutures$new(keys = KEYS, base_url = FBASE)
+```
+
+#### Positions
+
+```{r}
+futures$get_positions("BTCUSDT")
+```
+
+#### Futures Test Order
+
+```{r}
+futures$add_order_test(
+  symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
+  quantity = 0.001, price = 50000, timeInForce = "GTC"
+)
+```
+
+#### Set Leverage
+
+```{r}
+futures$set_leverage("BTCUSDT", leverage = 10)
+```
+
+## Async Usage
+
+All classes accept `async = TRUE`, causing methods to return promises.
+Use `coro::async()` to write sequential-looking async code:
+
+```{r, eval = FALSE}
+market_async <- BinanceMarketData$new(async = TRUE)
+
+main <- coro::async(function() {
+  ticker <- await(market_async$get_ticker("BTCUSDT"))
+  klines <- await(market_async$get_klines("BTCUSDT", "1h", limit = 10))
+
+  print(ticker)
+  print(klines)
+})
+
+main()
+while (!later::loop_empty()) later::run_now()
+```
 
 ## Citation
 

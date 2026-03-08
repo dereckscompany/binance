@@ -1,0 +1,240 @@
+---
+title: "Getting Started with binance"
+author: "Dereck Mezquita"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with binance}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+box::use(
+  binance[
+    BinanceMarketData, BinanceTrading, BinanceAccount,
+    BinanceDeposit, BinanceWithdrawal, get_api_keys
+  ]
+)
+
+box::use(../tests/testthat/mock_router[mock_router])
+
+KEYS <- get_api_keys(
+  api_key = "fake-key",
+  api_secret = "fake-secret"
+)
+BASE <- "https://api.binance.com"
+
+options(httr2_mock = mock_router)
+```
+
+This vignette demonstrates how to use `binance` in **synchronous** mode.
+
+## Setup
+
+```{r load}
+box::use(
+  binance[
+    BinanceMarketData, BinanceTrading, BinanceAccount,
+    BinanceDeposit, BinanceWithdrawal, get_api_keys
+  ]
+)
+
+keys <- get_api_keys(
+  api_key = "your-api-key",
+  api_secret = "your-api-secret"
+)
+```
+
+```{r keys, echo = FALSE}
+keys <- KEYS
+base <- BASE
+```
+
+---
+
+## Market Data
+
+The `BinanceMarketData` class covers all public (no auth) market endpoints.
+
+```{r market-init}
+market <- BinanceMarketData$new()
+```
+
+```{r market-init-hidden, echo = FALSE}
+market <- BinanceMarketData$new(keys = keys, base_url = base)
+```
+
+### Exchange Info
+
+```{r exchange-info}
+info <- market$get_exchange_info("BTCUSDT")
+info[, .(symbol, status, base_asset, quote_asset)]
+```
+
+### Ticker
+
+```{r ticker}
+ticker <- market$get_ticker("BTCUSDT")
+ticker
+```
+
+### Klines (Candlestick Data)
+
+```{r klines}
+klines <- market$get_klines("BTCUSDT", "1h", limit = 5)
+klines
+```
+
+### Order Book Depth
+
+```{r orderbook}
+depth <- market$get_depth("BTCUSDT", limit = 5)
+depth
+```
+
+### 24hr Statistics
+
+```{r stats-24hr}
+stats <- market$get_24hr_stats("BTCUSDT")
+stats[, .(symbol, last_price, price_change_percent, volume)]
+```
+
+---
+
+## Trading
+
+The `BinanceTrading` class manages spot orders. All trading endpoints
+require authentication.
+
+### Place a Test Order
+
+Test orders validate parameters without executing:
+
+```{r trading-test-order}
+trading <- BinanceTrading$new()
+```
+
+```{r trading-init-hidden, echo = FALSE}
+trading <- BinanceTrading$new(keys = keys, base_url = base)
+```
+
+```{r}
+result <- trading$add_order_test(
+  type = "LIMIT",
+  symbol = "BTCUSDT",
+  side = "BUY",
+  price = 50000,
+  quantity = 0.0001
+)
+result
+```
+
+### Query an Order
+
+```{r query-order}
+order <- trading$get_order("BTCUSDT", orderId = 12345)
+order
+```
+
+### Get Open Orders
+
+```{r open-orders}
+open_orders <- trading$get_open_orders("BTCUSDT")
+open_orders
+```
+
+---
+
+## Account Management
+
+### Account Info
+
+```{r account-info}
+account <- BinanceAccount$new()
+```
+
+```{r account-hidden, echo = FALSE}
+account <- BinanceAccount$new(keys = keys, base_url = base)
+```
+
+```{r}
+info <- account$get_account_info()
+info[, .(maker_commission, taker_commission, can_trade, account_type)]
+```
+
+### Trade History
+
+```{r trade-history}
+trades <- account$get_trades("BTCUSDT")
+trades
+```
+
+---
+
+## Deposits
+
+### Get Deposit Address
+
+```{r deposit-address}
+deposit <- BinanceDeposit$new()
+```
+
+```{r deposit-hidden, echo = FALSE}
+deposit <- BinanceDeposit$new(keys = keys, base_url = base)
+```
+
+```{r}
+addr <- deposit$get_deposit_address(coin = "BTC")
+addr
+```
+
+### Deposit History
+
+```{r deposit-history}
+history <- deposit$get_deposit_history(coin = "BTC")
+history
+```
+
+---
+
+## Withdrawals
+
+```{r withdrawal-init}
+withdrawal <- BinanceWithdrawal$new()
+```
+
+```{r withdrawal-hidden, echo = FALSE}
+withdrawal <- BinanceWithdrawal$new(keys = keys, base_url = base)
+```
+
+### Withdrawal History
+
+```{r withdrawal-history}
+history <- withdrawal$get_withdrawal_history(coin = "USDT")
+history
+```
+
+### Submit a Withdrawal
+
+```{r, eval = FALSE}
+result <- withdrawal$add_withdrawal(
+  coin = "USDT",
+  address = "your-trc20-address",
+  amount = 10,
+  network = "TRX"
+)
+result
+```
+
+---
+
+## Next Steps
+
+- See the [pkgdown site](https://dereckmezquita.github.io/binance/) for full method documentation.
+- For futures trading, see `BinanceFutures` and `BinanceFuturesData`.
+- For margin trading, see `BinanceMargin` and `BinanceMarginData`.
