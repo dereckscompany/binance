@@ -442,7 +442,12 @@ Retrieves spot account summary for sub-accounts.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with spot summary information.
+\code{data.table} with one row and the following columns:
+\itemize{
+\item \code{total_count} (integer): Total number of sub-accounts.
+\item \code{master_account_total_asset} (character): Master account total asset value in BTC.
+\item \code{spot_sub_user_asset_btc_vo_list} (list): Nested list of per-sub-account spot asset summaries.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -674,7 +679,22 @@ Retrieves futures account details for a sub-account.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with futures account details.
+\code{data.table} with one row and the following columns:
+\itemize{
+\item \code{email} (character): Sub-account email.
+\item \code{asset} (character): Margin asset (e.g., \code{"USDT"}).
+\item \code{assets} (list): Nested list of per-asset balance details.
+\item \code{can_deposit} (logical): Whether deposits are permitted.
+\item \code{can_trade} (logical): Whether trading is permitted.
+\item \code{can_withdraw} (logical): Whether withdrawals are permitted.
+\item \code{fee_tier} (integer): Fee tier level.
+\item \code{max_withdraw_amount} (character): Maximum withdrawable amount.
+\item \code{total_initial_margin} (character): Total initial margin.
+\item \code{total_margin_balance} (character): Total margin balance.
+\item \code{total_wallet_balance} (character): Total wallet balance.
+\item \code{total_unrealized_profit} (character): Total unrealised PnL.
+\item \code{update_time} (numeric): Last update timestamp in ms.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -719,7 +739,15 @@ Retrieves margin account details for a sub-account.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with margin account details.
+\code{data.table} with one row and the following columns:
+\itemize{
+\item \code{email} (character): Sub-account email.
+\item \code{margin_level} (character): Current margin level.
+\item \code{total_asset_of_btc} (character): Total asset value in BTC.
+\item \code{total_liability_of_btc} (character): Total liability in BTC.
+\item \code{total_net_asset_of_btc} (character): Net asset value in BTC.
+\item \code{margin_trade_coeff_vo} (list): Nested margin trading coefficient details.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

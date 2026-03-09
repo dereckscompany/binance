@@ -729,8 +729,19 @@ BinanceFuturesData <- R6::R6Class(
     #' @param startTime POSIXct or numeric or NULL; start time (ms or POSIXct).
     #' @param endTime POSIXct or numeric or NULL; end time (ms or POSIXct).
     #' @param limit Integer or NULL; max results (default 500, max 1500).
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with OHLCV columns.
-    #'   See `get_klines()` for column details.
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+    #' - `open_time` (POSIXct): Candle open time.
+    #' - `open` (numeric): Opening price.
+    #' - `high` (numeric): Highest price.
+    #' - `low` (numeric): Lowest price.
+    #' - `close` (numeric): Closing price.
+    #' - `volume` (numeric): Trading volume.
+    #' - `close_time` (POSIXct): Candle close time.
+    #' - `quote_volume` (numeric): Quote asset volume.
+    #' - `trades` (integer): Number of trades.
+    #' - `taker_buy_base_volume` (numeric): Taker buy base asset volume.
+    #' - `taker_buy_quote_volume` (numeric): Taker buy quote asset volume.
+    #' - `ignore` (character): Unused field.
     #'
     #' @examples
     #' \dontrun{
@@ -813,8 +824,19 @@ BinanceFuturesData <- R6::R6Class(
     #' @param startTime POSIXct or numeric or NULL; start time (ms or POSIXct).
     #' @param endTime POSIXct or numeric or NULL; end time (ms or POSIXct).
     #' @param limit Integer or NULL; max results (default 500, max 1500).
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with OHLCV columns.
-    #'   See `get_klines()` for column details.
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+    #' - `open_time` (POSIXct): Candle open time.
+    #' - `open` (numeric): Opening price.
+    #' - `high` (numeric): Highest price.
+    #' - `low` (numeric): Lowest price.
+    #' - `close` (numeric): Closing price.
+    #' - `volume` (numeric): Trading volume.
+    #' - `close_time` (POSIXct): Candle close time.
+    #' - `quote_volume` (numeric): Quote asset volume.
+    #' - `trades` (integer): Number of trades.
+    #' - `taker_buy_base_volume` (numeric): Taker buy base asset volume.
+    #' - `taker_buy_quote_volume` (numeric): Taker buy quote asset volume.
+    #' - `ignore` (character): Unused field.
     #'
     #' @examples
     #' \dontrun{

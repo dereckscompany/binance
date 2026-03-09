@@ -607,7 +607,15 @@ Cancels all active margin orders on a trading pair.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per cancelled order.
+\code{data.table} with one row per cancelled order and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair.
+\item \code{order_id} (integer): Unique order identifier.
+\item \code{orig_client_order_id} (character): Original client order ID.
+\item \code{status} (character): Order status (typically \code{"CANCELED"}).
+\item \code{transact_time} (POSIXct): Cancellation time.
+\item \code{is_isolated} (logical): Whether this is an isolated margin order.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -729,7 +737,21 @@ Retrieves all currently open margin orders, optionally filtered by symbol.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per open order.
+\code{data.table} with one row per open order and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair.
+\item \code{order_id} (integer): Unique order identifier.
+\item \code{client_order_id} (character): Client-assigned order ID.
+\item \code{price} (character): Order price.
+\item \code{orig_qty} (character): Original requested quantity.
+\item \code{executed_qty} (character): Quantity filled so far.
+\item \code{status} (character): Order status.
+\item \code{type} (character): Order type.
+\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
+\item \code{time} (POSIXct): Order creation time.
+\item \code{update_time} (POSIXct): Last update time.
+\item \code{is_isolated} (logical): Whether this is an isolated margin order.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -792,7 +814,21 @@ Retrieves all margin orders for a symbol (open, cancelled, filled).
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per order.
+\code{data.table} with one row per order and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair.
+\item \code{order_id} (integer): Unique order identifier.
+\item \code{client_order_id} (character): Client-assigned order ID.
+\item \code{price} (character): Order price.
+\item \code{orig_qty} (character): Original requested quantity.
+\item \code{executed_qty} (character): Quantity filled so far.
+\item \code{status} (character): Order status.
+\item \code{type} (character): Order type.
+\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
+\item \code{time} (POSIXct): Order creation time.
+\item \code{update_time} (POSIXct): Last update time.
+\item \code{is_isolated} (logical): Whether this is an isolated margin order.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -952,7 +988,10 @@ Queries the maximum transferable-out amount for an asset on margin.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row.
+\code{data.table} with one row and the following columns:
+\itemize{
+\item \code{amount} (character): Maximum transferable-out amount.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -1015,7 +1054,16 @@ Retrieves margin interest accrual history with pagination.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per interest record.
+\code{data.table} with one row per interest record and the following columns:
+\itemize{
+\item \code{asset} (character): Asset charged interest.
+\item \code{interest} (character): Interest amount accrued.
+\item \code{interest_accured_time} (POSIXct): Time of interest accrual.
+\item \code{interest_rate} (character): Applied interest rate.
+\item \code{principal} (character): Principal amount borrowed.
+\item \code{type} (character): Margin type (\code{"ON_BORROW"}, \code{"PERIODIC"}, etc.).
+\item \code{isolated_symbol} (character): Isolated margin pair (if applicable).
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -1075,7 +1123,19 @@ Retrieves margin force liquidation records with pagination.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per liquidation record.
+\code{data.table} with one row per liquidation record and the following columns:
+\itemize{
+\item \code{avg_price} (character): Average liquidation price.
+\item \code{executed_qty} (character): Liquidated quantity.
+\item \code{order_id} (integer): Liquidation order identifier.
+\item \code{price} (character): Liquidation price.
+\item \code{qty} (character): Total quantity.
+\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
+\item \code{symbol} (character): Trading pair.
+\item \code{time} (POSIXct): Liquidation time.
+\item \code{is_isolated} (logical): Whether this was an isolated margin liquidation.
+\item \code{updated_time} (POSIXct): Last update time.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

@@ -288,8 +288,19 @@ Lists available Simple Earn flexible products, optionally filtered by asset.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per product. Columns depend on API response
-and are converted to snake_case. Returns empty \code{data.table} if no products found.
+\code{data.table} with one row per product and the following columns:
+\itemize{
+\item \code{asset} (character): Asset symbol (e.g., \code{"USDT"}).
+\item \code{latest_annual_percentage_rate} (character): Current annual yield rate.
+\item \code{can_purchase} (logical): Whether new subscriptions are accepted.
+\item \code{can_redeem} (logical): Whether redemptions are allowed.
+\item \code{is_sold_out} (logical): Whether the product is sold out.
+\item \code{hot} (logical): Whether the product is marked as popular.
+\item \code{min_purchase_amount} (character): Minimum subscription amount.
+\item \code{product_id} (character): Unique product identifier.
+\item \code{subscription_start_time} (numeric): Subscription start timestamp in ms.
+\item \code{status} (character): Product status (e.g., \code{"PURCHASING"}).
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -374,8 +385,12 @@ Lists available Simple Earn locked products, optionally filtered by asset.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per product. Columns depend on API response
-and are converted to snake_case. Returns empty \code{data.table} if no products found.
+\code{data.table} with one row per product and the following columns:
+\itemize{
+\item \code{project_id} (character): Unique project identifier.
+\item \code{detail} (list): Nested product details (asset, reward asset, duration, APY).
+\item \code{quota} (list): Nested quota details (total personal quota, minimum).
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -750,8 +765,15 @@ Retrieves current flexible earn positions, optionally filtered by asset or produ
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per position. Columns depend on API response
-and are converted to snake_case. Returns empty \code{data.table} if no positions found.
+\code{data.table} with one row per position and the following columns:
+\itemize{
+\item \code{total_amount} (character): Total amount in the position.
+\item \code{latest_annual_percentage_rate} (character): Current annual yield rate.
+\item \code{asset} (character): Asset symbol (e.g., \code{"USDT"}).
+\item \code{can_redeem} (logical): Whether redemption is allowed.
+\item \code{product_id} (character): Product identifier.
+\item \code{auto_subscribe} (logical): Whether auto-subscription is enabled.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -819,8 +841,18 @@ position ID, or project ID.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per position. Columns depend on API response
-and are converted to snake_case. Returns empty \code{data.table} if no positions found.
+\code{data.table} with one row per position and the following columns:
+\itemize{
+\item \code{position_id} (character): Position identifier.
+\item \code{project_id} (character): Project identifier.
+\item \code{asset} (character): Asset symbol.
+\item \code{amount} (character): Locked amount.
+\item \code{purchase_time} (numeric): Subscription timestamp in ms.
+\item \code{duration} (integer): Lock duration in days.
+\item \code{accrual_days} (integer): Number of days interest has accrued.
+\item \code{reward_asset} (character): Reward asset symbol.
+\item \code{apy} (character): Annual percentage yield.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -912,8 +944,16 @@ Retrieves subscription history for flexible earn products.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per subscription record. The \code{time} column
-is converted to POSIXct. Returns empty \code{data.table} if no records found.
+\code{data.table} with one row per subscription record and the following columns:
+\itemize{
+\item \code{amount} (character): Subscription amount.
+\item \code{asset} (character): Asset symbol.
+\item \code{time} (POSIXct): Subscription time.
+\item \code{purchase_id} (integer): Purchase identifier.
+\item \code{type} (character): Subscription type (e.g., \code{"AUTO"}, \code{"NORMAL"}).
+\item \code{source_account} (character): Source account (e.g., \code{"SPOT"}).
+\item \code{status} (character): Subscription status (e.g., \code{"SUCCESS"}).
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -983,8 +1023,18 @@ Retrieves subscription history for locked earn products.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per subscription record. The \code{time} column
-is converted to POSIXct. Returns empty \code{data.table} if no records found.
+\code{data.table} with one row per subscription record and the following columns:
+\itemize{
+\item \code{amount} (character): Subscription amount.
+\item \code{asset} (character): Asset symbol.
+\item \code{time} (POSIXct): Subscription time.
+\item \code{purchase_id} (integer): Purchase identifier.
+\item \code{position_id} (character): Position identifier.
+\item \code{lock_period} (integer): Lock duration in days.
+\item \code{type} (character): Subscription type.
+\item \code{source_account} (character): Source account.
+\item \code{status} (character): Subscription status.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -1057,8 +1107,16 @@ Retrieves redemption history for flexible earn products.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per redemption record. The \code{time} column
-is converted to POSIXct. Returns empty \code{data.table} if no records found.
+\code{data.table} with one row per redemption record and the following columns:
+\itemize{
+\item \code{amount} (character): Redemption amount.
+\item \code{asset} (character): Asset symbol.
+\item \code{time} (POSIXct): Redemption time.
+\item \code{project_id} (character): Product identifier.
+\item \code{redeem_id} (integer): Redemption identifier.
+\item \code{dest_account} (character): Destination account.
+\item \code{status} (character): Redemption status (e.g., \code{"PAID"}).
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -1131,8 +1189,16 @@ Retrieves redemption history for locked earn products.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per redemption record. The \code{time} column
-is converted to POSIXct. Returns empty \code{data.table} if no records found.
+\code{data.table} with one row per redemption record and the following columns:
+\itemize{
+\item \code{amount} (character): Redemption amount.
+\item \code{asset} (character): Asset symbol.
+\item \code{time} (POSIXct): Redemption time.
+\item \code{position_id} (character): Position identifier.
+\item \code{redeem_id} (integer): Redemption identifier.
+\item \code{deliver_date} (character): Expected delivery date.
+\item \code{status} (character): Redemption status.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

@@ -418,8 +418,23 @@ Places a new USD-M futures order on Binance.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row containing the order response fields.
-\code{update_time} is converted to POSIXct if present.
+\code{data.table} with one row and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair (e.g., \code{"BTCUSDT"}).
+\item \code{order_id} (integer): Unique order identifier.
+\item \code{client_order_id} (character): Client-assigned order ID.
+\item \code{price} (character): Order price.
+\item \code{orig_qty} (character): Original requested quantity.
+\item \code{executed_qty} (character): Quantity filled so far.
+\item \code{cum_qty} (character): Cumulative filled quantity.
+\item \code{cum_quote} (character): Cumulative quote asset transacted.
+\item \code{status} (character): Order status (\code{"NEW"}, \code{"FILLED"}, \code{"CANCELED"}, etc.).
+\item \code{time_in_force} (character): Time-in-force policy.
+\item \code{type} (character): Order type.
+\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
+\item \code{position_side} (character): Position side (\code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}).
+\item \code{update_time} (POSIXct): Last update time.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -559,8 +574,18 @@ Cancels an active futures order by order ID or client order ID.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row containing the cancelled order details.
-\code{update_time} is converted to POSIXct if present.
+\code{data.table} with one row and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair.
+\item \code{order_id} (integer): Unique order identifier.
+\item \code{client_order_id} (character): Client-assigned order ID.
+\item \code{orig_qty} (character): Original requested quantity.
+\item \code{executed_qty} (character): Quantity filled so far.
+\item \code{status} (character): Order status (typically \code{"CANCELED"}).
+\item \code{type} (character): Order type.
+\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
+\item \code{update_time} (POSIXct): Cancellation time.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -605,7 +630,11 @@ Cancels all active futures orders on a trading pair.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row containing \code{code} and \code{msg}.
+\code{data.table} with one row and the following columns:
+\itemize{
+\item \code{code} (integer): Response code (\code{200} on success).
+\item \code{msg} (character): Response message.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -659,8 +688,23 @@ Retrieves details for a specific futures order by order ID or client order ID.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row containing order details.
-\code{time} and \code{update_time} are converted to POSIXct if present.
+\code{data.table} with one row and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair.
+\item \code{order_id} (integer): Unique order identifier.
+\item \code{client_order_id} (character): Client-assigned order ID.
+\item \code{price} (character): Order price.
+\item \code{orig_qty} (character): Original requested quantity.
+\item \code{executed_qty} (character): Quantity filled so far.
+\item \code{cum_quote} (character): Cumulative quote asset transacted.
+\item \code{status} (character): Order status.
+\item \code{time_in_force} (character): Time-in-force policy.
+\item \code{type} (character): Order type.
+\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
+\item \code{position_side} (character): Position side.
+\item \code{time} (POSIXct): Order creation time.
+\item \code{update_time} (POSIXct): Last update time.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -705,9 +749,21 @@ Retrieves all currently open futures orders, optionally filtered by symbol.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per open order.
-\code{time} and \code{update_time} are converted to POSIXct if present.
-Returns empty \code{data.table} if no orders.
+\code{data.table} with one row per open order and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair.
+\item \code{order_id} (integer): Unique order identifier.
+\item \code{client_order_id} (character): Client-assigned order ID.
+\item \code{price} (character): Order price.
+\item \code{orig_qty} (character): Original requested quantity.
+\item \code{executed_qty} (character): Quantity filled so far.
+\item \code{status} (character): Order status.
+\item \code{type} (character): Order type.
+\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
+\item \code{position_side} (character): Position side.
+\item \code{time} (POSIXct): Order creation time.
+\item \code{update_time} (POSIXct): Last update time.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -767,9 +823,21 @@ Retrieves all futures orders for a symbol (open, cancelled, filled).
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per order.
-\code{time} and \code{update_time} are converted to POSIXct if present.
-Returns empty \code{data.table} if no orders.
+\code{data.table} with one row per order and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair.
+\item \code{order_id} (integer): Unique order identifier.
+\item \code{client_order_id} (character): Client-assigned order ID.
+\item \code{price} (character): Order price.
+\item \code{orig_qty} (character): Original requested quantity.
+\item \code{executed_qty} (character): Quantity filled so far.
+\item \code{status} (character): Order status.
+\item \code{type} (character): Order type.
+\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
+\item \code{position_side} (character): Position side.
+\item \code{time} (POSIXct): Order creation time.
+\item \code{update_time} (POSIXct): Last update time.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -813,8 +881,23 @@ and positions (kept as list columns).
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row containing account data.
-Nested \code{assets} and \code{positions} are kept as list columns.
+\code{data.table} with one row and the following columns:
+\itemize{
+\item \code{fee_tier} (integer): Commission fee tier.
+\item \code{can_trade} (logical): Whether trading is permitted.
+\item \code{can_deposit} (logical): Whether deposits are permitted.
+\item \code{can_withdraw} (logical): Whether withdrawals are permitted.
+\item \code{total_initial_margin} (character): Total initial margin required.
+\item \code{total_maint_margin} (character): Total maintenance margin required.
+\item \code{total_wallet_balance} (character): Total wallet balance.
+\item \code{total_unrealized_profit} (character): Total unrealised PnL.
+\item \code{total_margin_balance} (character): Total margin balance.
+\item \code{total_cross_wallet_balance} (character): Total cross-wallet balance.
+\item \code{available_balance} (character): Available balance for new positions.
+\item \code{max_withdraw_amount} (character): Maximum withdrawable amount.
+\item \code{assets} (list): Nested list of per-asset balance details.
+\item \code{positions} (list): Nested list of per-symbol position details.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -857,9 +940,18 @@ Retrieves all asset balances for the futures account.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per asset.
-\code{update_time} is converted to POSIXct.
-Returns empty \code{data.table} if no balances.
+\code{data.table} with one row per asset and the following columns:
+\itemize{
+\item \code{account_alias} (character): Account alias (e.g., \code{"SgsR"}).
+\item \code{asset} (character): Asset symbol (e.g., \code{"USDT"}).
+\item \code{balance} (character): Wallet balance.
+\item \code{cross_wallet_balance} (character): Cross-wallet balance.
+\item \code{cross_un_pnl} (character): Unrealised PnL from cross positions.
+\item \code{available_balance} (character): Available balance.
+\item \code{max_withdraw_amount} (character): Maximum withdrawable amount.
+\item \code{margin_available} (logical): Whether margin is available.
+\item \code{update_time} (POSIXct): Last balance update time.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -904,9 +996,21 @@ Retrieves position risk information, optionally filtered by symbol.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per position.
-\code{update_time} is converted to POSIXct.
-Returns empty \code{data.table} if no positions.
+\code{data.table} with one row per position and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair.
+\item \code{position_side} (character): \code{"BOTH"}, \code{"LONG"}, or \code{"SHORT"}.
+\item \code{position_amt} (character): Position quantity.
+\item \code{entry_price} (character): Average entry price.
+\item \code{mark_price} (character): Current mark price.
+\item \code{un_realized_profit} (character): Unrealised PnL.
+\item \code{liquidation_price} (character): Estimated liquidation price.
+\item \code{leverage} (character): Current leverage.
+\item \code{margin_type} (character): \code{"isolated"} or \code{"cross"}.
+\item \code{isolated_margin} (character): Isolated margin amount.
+\item \code{notional} (character): Position notional value.
+\item \code{update_time} (POSIXct): Last position update time.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -953,7 +1057,12 @@ Changes the initial leverage for a futures symbol.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row containing \code{leverage}, \code{max_notional_value}, \code{symbol}.
+\code{data.table} with one row and the following columns:
+\itemize{
+\item \code{leverage} (integer): New leverage setting.
+\item \code{max_notional_value} (character): Maximum notional value for this leverage.
+\item \code{symbol} (character): Trading pair.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -1000,7 +1109,11 @@ Changes the margin type for a futures symbol.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row containing \code{code} and \code{msg}.
+\code{data.table} with one row and the following columns:
+\itemize{
+\item \code{code} (integer): Response code (\code{200} on success).
+\item \code{msg} (character): Response message.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -1057,7 +1170,13 @@ Adds or reduces the isolated margin for a position.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row containing the response fields.
+\code{data.table} with one row and the following columns:
+\itemize{
+\item \code{code} (integer): Response code (\code{200} on success).
+\item \code{msg} (character): Response message.
+\item \code{amount} (numeric): Margin amount modified.
+\item \code{type} (integer): Margin change type (1 = add, 2 = reduce).
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -1117,9 +1236,16 @@ Retrieves the history of position margin changes.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per margin change.
-\code{time} is converted to POSIXct.
-Returns empty \code{data.table} if no history.
+\code{data.table} with one row per margin change and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair.
+\item \code{type} (integer): Margin change type (1 = add, 2 = reduce).
+\item \code{delta_type} (character): Type of margin change.
+\item \code{amount} (character): Margin amount changed.
+\item \code{asset} (character): Margin asset (e.g., \code{"USDT"}).
+\item \code{time} (POSIXct): Time of the margin change.
+\item \code{position_side} (character): Position side.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -1182,9 +1308,23 @@ Retrieves the trade history for the futures account.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per trade.
-\code{time} is converted to POSIXct.
-Returns empty \code{data.table} if no trades.
+\code{data.table} with one row per trade and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair.
+\item \code{id} (integer): Trade identifier.
+\item \code{order_id} (integer): Order identifier.
+\item \code{price} (character): Trade execution price.
+\item \code{qty} (character): Trade quantity.
+\item \code{quote_qty} (character): Quote asset quantity.
+\item \code{commission} (character): Commission paid.
+\item \code{commission_asset} (character): Commission asset (e.g., \code{"USDT"}).
+\item \code{realized_pnl} (character): Realised profit/loss.
+\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
+\item \code{position_side} (character): Position side.
+\item \code{buyer} (logical): Whether the trade was a buy.
+\item \code{maker} (logical): Whether the trade was a maker.
+\item \code{time} (POSIXct): Trade execution time.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -1252,9 +1392,17 @@ realized PnL, commissions, etc.).
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per income entry.
-\code{time} is converted to POSIXct.
-Returns empty \code{data.table} if no income history.
+\code{data.table} with one row per income entry and the following columns:
+\itemize{
+\item \code{symbol} (character): Trading pair (may be empty for some income types).
+\item \code{income_type} (character): Type of income (e.g., \code{"FUNDING_FEE"}, \code{"REALIZED_PNL"}).
+\item \code{income} (character): Income amount (negative for fees paid).
+\item \code{asset} (character): Asset of the income (e.g., \code{"USDT"}).
+\item \code{info} (character): Additional info about the income event.
+\item \code{time} (POSIXct): Time of the income event.
+\item \code{tran_id} (integer): Transaction identifier.
+\item \code{trade_id} (character): Associated trade ID if applicable.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -1299,7 +1447,11 @@ Changes the position mode between one-way and hedge mode.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row containing \code{code} and \code{msg}.
+\code{data.table} with one row and the following columns:
+\itemize{
+\item \code{code} (integer): Response code (\code{200} on success).
+\item \code{msg} (character): Response message.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -1342,7 +1494,10 @@ Retrieves the current position mode (one-way or hedge mode).
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row containing \code{dual_side_position} (logical).
+\code{data.table} with one row and the following columns:
+\itemize{
+\item \code{dual_side_position} (logical): \code{TRUE} if hedge mode, \code{FALSE} if one-way mode.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

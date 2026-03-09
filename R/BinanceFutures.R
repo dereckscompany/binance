@@ -139,8 +139,21 @@ BinanceFutures <- R6::R6Class(
     #' @param workingType Character or NULL; `"MARK_PRICE"` or `"CONTRACT_PRICE"`.
     #' @param newOrderRespType Character or NULL; `"ACK"`, `"RESULT"`.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row containing the order response fields.
-    #'   `update_time` is converted to POSIXct if present.
+    #' @return `data.table` with one row and the following columns:
+    #' - `symbol` (character): Trading pair (e.g., `"BTCUSDT"`).
+    #' - `order_id` (integer): Unique order identifier.
+    #' - `client_order_id` (character): Client-assigned order ID.
+    #' - `price` (character): Order price.
+    #' - `orig_qty` (character): Original requested quantity.
+    #' - `executed_qty` (character): Quantity filled so far.
+    #' - `cum_qty` (character): Cumulative filled quantity.
+    #' - `cum_quote` (character): Cumulative quote asset transacted.
+    #' - `status` (character): Order status (`"NEW"`, `"FILLED"`, `"CANCELED"`, etc.).
+    #' - `time_in_force` (character): Time-in-force policy.
+    #' - `type` (character): Order type.
+    #' - `side` (character): `"BUY"` or `"SELL"`.
+    #' - `position_side` (character): Position side (`"BOTH"`, `"LONG"`, `"SHORT"`).
+    #' - `update_time` (POSIXct): Last update time.
     #'
     #' @examples
     #' \dontrun{
@@ -337,8 +350,16 @@ BinanceFutures <- R6::R6Class(
     #' @param orderId Integer or NULL; the order ID to cancel.
     #' @param origClientOrderId Character or NULL; the client order ID to cancel.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row containing the cancelled order details.
-    #'   `update_time` is converted to POSIXct if present.
+    #' @return `data.table` with one row and the following columns:
+    #' - `symbol` (character): Trading pair.
+    #' - `order_id` (integer): Unique order identifier.
+    #' - `client_order_id` (character): Client-assigned order ID.
+    #' - `orig_qty` (character): Original requested quantity.
+    #' - `executed_qty` (character): Quantity filled so far.
+    #' - `status` (character): Order status (typically `"CANCELED"`).
+    #' - `type` (character): Order type.
+    #' - `side` (character): `"BUY"` or `"SELL"`.
+    #' - `update_time` (POSIXct): Cancellation time.
     #'
     #' @examples
     #' \dontrun{
@@ -383,7 +404,9 @@ BinanceFutures <- R6::R6Class(
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row containing `code` and `msg`.
+    #' @return `data.table` with one row and the following columns:
+    #' - `code` (integer): Response code (`200` on success).
+    #' - `msg` (character): Response message.
     #'
     #' @examples
     #' \dontrun{
@@ -419,8 +442,21 @@ BinanceFutures <- R6::R6Class(
     #' @param orderId Integer or NULL; the order ID.
     #' @param origClientOrderId Character or NULL; the client order ID.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row containing order details.
-    #'   `time` and `update_time` are converted to POSIXct if present.
+    #' @return `data.table` with one row and the following columns:
+    #' - `symbol` (character): Trading pair.
+    #' - `order_id` (integer): Unique order identifier.
+    #' - `client_order_id` (character): Client-assigned order ID.
+    #' - `price` (character): Order price.
+    #' - `orig_qty` (character): Original requested quantity.
+    #' - `executed_qty` (character): Quantity filled so far.
+    #' - `cum_quote` (character): Cumulative quote asset transacted.
+    #' - `status` (character): Order status.
+    #' - `time_in_force` (character): Time-in-force policy.
+    #' - `type` (character): Order type.
+    #' - `side` (character): `"BUY"` or `"SELL"`.
+    #' - `position_side` (character): Position side.
+    #' - `time` (POSIXct): Order creation time.
+    #' - `update_time` (POSIXct): Last update time.
     #'
     #' @examples
     #' \dontrun{
@@ -467,9 +503,19 @@ BinanceFutures <- R6::R6Class(
     #'
     #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per open order.
-    #'   `time` and `update_time` are converted to POSIXct if present.
-    #'   Returns empty `data.table` if no orders.
+    #' @return `data.table` with one row per open order and the following columns:
+    #' - `symbol` (character): Trading pair.
+    #' - `order_id` (integer): Unique order identifier.
+    #' - `client_order_id` (character): Client-assigned order ID.
+    #' - `price` (character): Order price.
+    #' - `orig_qty` (character): Original requested quantity.
+    #' - `executed_qty` (character): Quantity filled so far.
+    #' - `status` (character): Order status.
+    #' - `type` (character): Order type.
+    #' - `side` (character): `"BUY"` or `"SELL"`.
+    #' - `position_side` (character): Position side.
+    #' - `time` (POSIXct): Order creation time.
+    #' - `update_time` (POSIXct): Last update time.
     #'
     #' @examples
     #' \dontrun{
@@ -514,9 +560,19 @@ BinanceFutures <- R6::R6Class(
     #' @param endTime Integer or NULL; end timestamp in milliseconds.
     #' @param limit Integer or NULL; max results (default 500, max 1000).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per order.
-    #'   `time` and `update_time` are converted to POSIXct if present.
-    #'   Returns empty `data.table` if no orders.
+    #' @return `data.table` with one row per order and the following columns:
+    #' - `symbol` (character): Trading pair.
+    #' - `order_id` (integer): Unique order identifier.
+    #' - `client_order_id` (character): Client-assigned order ID.
+    #' - `price` (character): Order price.
+    #' - `orig_qty` (character): Original requested quantity.
+    #' - `executed_qty` (character): Quantity filled so far.
+    #' - `status` (character): Order status.
+    #' - `type` (character): Order type.
+    #' - `side` (character): `"BUY"` or `"SELL"`.
+    #' - `position_side` (character): Position side.
+    #' - `time` (POSIXct): Order creation time.
+    #' - `update_time` (POSIXct): Last update time.
     #'
     #' @examples
     #' \dontrun{
@@ -573,8 +629,21 @@ BinanceFutures <- R6::R6Class(
     #' [Binance Futures Account Information](https://binance-docs.github.io/apidocs/futures/en/#account-information-v2-user_data)
     #'
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row containing account data.
-    #'   Nested `assets` and `positions` are kept as list columns.
+    #' @return `data.table` with one row and the following columns:
+    #' - `fee_tier` (integer): Commission fee tier.
+    #' - `can_trade` (logical): Whether trading is permitted.
+    #' - `can_deposit` (logical): Whether deposits are permitted.
+    #' - `can_withdraw` (logical): Whether withdrawals are permitted.
+    #' - `total_initial_margin` (character): Total initial margin required.
+    #' - `total_maint_margin` (character): Total maintenance margin required.
+    #' - `total_wallet_balance` (character): Total wallet balance.
+    #' - `total_unrealized_profit` (character): Total unrealised PnL.
+    #' - `total_margin_balance` (character): Total margin balance.
+    #' - `total_cross_wallet_balance` (character): Total cross-wallet balance.
+    #' - `available_balance` (character): Available balance for new positions.
+    #' - `max_withdraw_amount` (character): Maximum withdrawable amount.
+    #' - `assets` (list): Nested list of per-asset balance details.
+    #' - `positions` (list): Nested list of per-symbol position details.
     #'
     #' @examples
     #' \dontrun{
@@ -604,9 +673,16 @@ BinanceFutures <- R6::R6Class(
     #' [Binance Futures Account Balance](https://binance-docs.github.io/apidocs/futures/en/#futures-account-balance-v2-user_data)
     #'
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per asset.
-    #'   `update_time` is converted to POSIXct.
-    #'   Returns empty `data.table` if no balances.
+    #' @return `data.table` with one row per asset and the following columns:
+    #' - `account_alias` (character): Account alias (e.g., `"SgsR"`).
+    #' - `asset` (character): Asset symbol (e.g., `"USDT"`).
+    #' - `balance` (character): Wallet balance.
+    #' - `cross_wallet_balance` (character): Cross-wallet balance.
+    #' - `cross_un_pnl` (character): Unrealised PnL from cross positions.
+    #' - `available_balance` (character): Available balance.
+    #' - `max_withdraw_amount` (character): Maximum withdrawable amount.
+    #' - `margin_available` (logical): Whether margin is available.
+    #' - `update_time` (POSIXct): Last balance update time.
     #'
     #' @examples
     #' \dontrun{
@@ -644,9 +720,19 @@ BinanceFutures <- R6::R6Class(
     #'
     #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per position.
-    #'   `update_time` is converted to POSIXct.
-    #'   Returns empty `data.table` if no positions.
+    #' @return `data.table` with one row per position and the following columns:
+    #' - `symbol` (character): Trading pair.
+    #' - `position_side` (character): `"BOTH"`, `"LONG"`, or `"SHORT"`.
+    #' - `position_amt` (character): Position quantity.
+    #' - `entry_price` (character): Average entry price.
+    #' - `mark_price` (character): Current mark price.
+    #' - `un_realized_profit` (character): Unrealised PnL.
+    #' - `liquidation_price` (character): Estimated liquidation price.
+    #' - `leverage` (character): Current leverage.
+    #' - `margin_type` (character): `"isolated"` or `"cross"`.
+    #' - `isolated_margin` (character): Isolated margin amount.
+    #' - `notional` (character): Position notional value.
+    #' - `update_time` (POSIXct): Last position update time.
     #'
     #' @examples
     #' \dontrun{
@@ -687,7 +773,10 @@ BinanceFutures <- R6::R6Class(
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param leverage Integer; target leverage (1-125).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row containing `leverage`, `max_notional_value`, `symbol`.
+    #' @return `data.table` with one row and the following columns:
+    #' - `leverage` (integer): New leverage setting.
+    #' - `max_notional_value` (character): Maximum notional value for this leverage.
+    #' - `symbol` (character): Trading pair.
     #'
     #' @examples
     #' \dontrun{
@@ -724,7 +813,9 @@ BinanceFutures <- R6::R6Class(
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param marginType Character; `"ISOLATED"` or `"CROSSED"`.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row containing `code` and `msg`.
+    #' @return `data.table` with one row and the following columns:
+    #' - `code` (integer): Response code (`200` on success).
+    #' - `msg` (character): Response message.
     #'
     #' @examples
     #' \dontrun{
@@ -766,7 +857,11 @@ BinanceFutures <- R6::R6Class(
     #' @param type Integer; 1 = add margin, 2 = reduce margin.
     #' @param positionSide Character or NULL; `"BOTH"`, `"LONG"`, `"SHORT"`.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row containing the response fields.
+    #' @return `data.table` with one row and the following columns:
+    #' - `code` (integer): Response code (`200` on success).
+    #' - `msg` (character): Response message.
+    #' - `amount` (numeric): Margin amount modified.
+    #' - `type` (integer): Margin change type (1 = add, 2 = reduce).
     #'
     #' @examples
     #' \dontrun{
@@ -813,9 +908,14 @@ BinanceFutures <- R6::R6Class(
     #' @param endTime Integer or NULL; end timestamp in milliseconds.
     #' @param limit Integer or NULL; max results (default 500).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per margin change.
-    #'   `time` is converted to POSIXct.
-    #'   Returns empty `data.table` if no history.
+    #' @return `data.table` with one row per margin change and the following columns:
+    #' - `symbol` (character): Trading pair.
+    #' - `type` (integer): Margin change type (1 = add, 2 = reduce).
+    #' - `delta_type` (character): Type of margin change.
+    #' - `amount` (character): Margin amount changed.
+    #' - `asset` (character): Margin asset (e.g., `"USDT"`).
+    #' - `time` (POSIXct): Time of the margin change.
+    #' - `position_side` (character): Position side.
     #'
     #' @examples
     #' \dontrun{
@@ -874,9 +974,21 @@ BinanceFutures <- R6::R6Class(
     #' @param fromId Integer or NULL; trade ID to fetch from.
     #' @param limit Integer or NULL; max results (default 500, max 1000).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per trade.
-    #'   `time` is converted to POSIXct.
-    #'   Returns empty `data.table` if no trades.
+    #' @return `data.table` with one row per trade and the following columns:
+    #' - `symbol` (character): Trading pair.
+    #' - `id` (integer): Trade identifier.
+    #' - `order_id` (integer): Order identifier.
+    #' - `price` (character): Trade execution price.
+    #' - `qty` (character): Trade quantity.
+    #' - `quote_qty` (character): Quote asset quantity.
+    #' - `commission` (character): Commission paid.
+    #' - `commission_asset` (character): Commission asset (e.g., `"USDT"`).
+    #' - `realized_pnl` (character): Realised profit/loss.
+    #' - `side` (character): `"BUY"` or `"SELL"`.
+    #' - `position_side` (character): Position side.
+    #' - `buyer` (logical): Whether the trade was a buy.
+    #' - `maker` (logical): Whether the trade was a maker.
+    #' - `time` (POSIXct): Trade execution time.
     #'
     #' @examples
     #' \dontrun{
@@ -942,9 +1054,15 @@ BinanceFutures <- R6::R6Class(
     #' @param endTime Integer or NULL; end timestamp in milliseconds.
     #' @param limit Integer or NULL; max results (default 100, max 1000).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per income entry.
-    #'   `time` is converted to POSIXct.
-    #'   Returns empty `data.table` if no income history.
+    #' @return `data.table` with one row per income entry and the following columns:
+    #' - `symbol` (character): Trading pair (may be empty for some income types).
+    #' - `income_type` (character): Type of income (e.g., `"FUNDING_FEE"`, `"REALIZED_PNL"`).
+    #' - `income` (character): Income amount (negative for fees paid).
+    #' - `asset` (character): Asset of the income (e.g., `"USDT"`).
+    #' - `info` (character): Additional info about the income event.
+    #' - `time` (POSIXct): Time of the income event.
+    #' - `tran_id` (integer): Transaction identifier.
+    #' - `trade_id` (character): Associated trade ID if applicable.
     #'
     #' @examples
     #' \dontrun{
@@ -1011,7 +1129,9 @@ BinanceFutures <- R6::R6Class(
     #'
     #' @param dualSidePosition Logical; `TRUE` for hedge mode, `FALSE` for one-way.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row containing `code` and `msg`.
+    #' @return `data.table` with one row and the following columns:
+    #' - `code` (integer): Response code (`200` on success).
+    #' - `msg` (character): Response message.
     #'
     #' @examples
     #' \dontrun{
@@ -1047,7 +1167,8 @@ BinanceFutures <- R6::R6Class(
     #' [Binance Futures Get Current Position Mode](https://binance-docs.github.io/apidocs/futures/en/#get-current-position-mode-user_data)
     #'
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row containing `dual_side_position` (logical).
+    #' @return `data.table` with one row and the following columns:
+    #' - `dual_side_position` (logical): `TRUE` if hedge mode, `FALSE` if one-way mode.
     #'
     #' @examples
     #' \dontrun{

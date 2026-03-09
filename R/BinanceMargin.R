@@ -344,7 +344,13 @@ BinanceMargin <- R6::R6Class(
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per cancelled order.
+    #' @return `data.table` with one row per cancelled order and the following columns:
+    #' - `symbol` (character): Trading pair.
+    #' - `order_id` (integer): Unique order identifier.
+    #' - `orig_client_order_id` (character): Original client order ID.
+    #' - `status` (character): Order status (typically `"CANCELED"`).
+    #' - `transact_time` (POSIXct): Cancellation time.
+    #' - `is_isolated` (logical): Whether this is an isolated margin order.
     #'
     #' @examples
     #' \dontrun{
@@ -453,7 +459,19 @@ BinanceMargin <- R6::R6Class(
     #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
     #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per open order.
+    #' @return `data.table` with one row per open order and the following columns:
+    #' - `symbol` (character): Trading pair.
+    #' - `order_id` (integer): Unique order identifier.
+    #' - `client_order_id` (character): Client-assigned order ID.
+    #' - `price` (character): Order price.
+    #' - `orig_qty` (character): Original requested quantity.
+    #' - `executed_qty` (character): Quantity filled so far.
+    #' - `status` (character): Order status.
+    #' - `type` (character): Order type.
+    #' - `side` (character): `"BUY"` or `"SELL"`.
+    #' - `time` (POSIXct): Order creation time.
+    #' - `update_time` (POSIXct): Last update time.
+    #' - `is_isolated` (logical): Whether this is an isolated margin order.
     #'
     #' @examples
     #' \dontrun{
@@ -503,7 +521,19 @@ BinanceMargin <- R6::R6Class(
     #' @param limit Integer or NULL; max results (default 500, max 500).
     #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per order.
+    #' @return `data.table` with one row per order and the following columns:
+    #' - `symbol` (character): Trading pair.
+    #' - `order_id` (integer): Unique order identifier.
+    #' - `client_order_id` (character): Client-assigned order ID.
+    #' - `price` (character): Order price.
+    #' - `orig_qty` (character): Original requested quantity.
+    #' - `executed_qty` (character): Quantity filled so far.
+    #' - `status` (character): Order status.
+    #' - `type` (character): Order type.
+    #' - `side` (character): `"BUY"` or `"SELL"`.
+    #' - `time` (POSIXct): Order creation time.
+    #' - `update_time` (POSIXct): Last update time.
+    #' - `is_isolated` (logical): Whether this is an isolated margin order.
     #'
     #' @examples
     #' \dontrun{
@@ -640,7 +670,8 @@ BinanceMargin <- R6::R6Class(
     #' @param asset Character; asset to query (e.g., `"USDT"`).
     #' @param isolatedSymbol Character or NULL; isolated margin pair (e.g., `"BTCUSDT"`).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row.
+    #' @return `data.table` with one row and the following columns:
+    #' - `amount` (character): Maximum transferable-out amount.
     #'
     #' @examples
     #' \dontrun{
@@ -682,7 +713,14 @@ BinanceMargin <- R6::R6Class(
     #' @param size Integer or NULL; page size (default 10, max 100).
     #' @param archived Character or NULL; `"true"` to query 6-month archived data.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per interest record.
+    #' @return `data.table` with one row per interest record and the following columns:
+    #' - `asset` (character): Asset charged interest.
+    #' - `interest` (character): Interest amount accrued.
+    #' - `interest_accured_time` (POSIXct): Time of interest accrual.
+    #' - `interest_rate` (character): Applied interest rate.
+    #' - `principal` (character): Principal amount borrowed.
+    #' - `type` (character): Margin type (`"ON_BORROW"`, `"PERIODIC"`, etc.).
+    #' - `isolated_symbol` (character): Isolated margin pair (if applicable).
     #'
     #' @examples
     #' \dontrun{
@@ -733,7 +771,17 @@ BinanceMargin <- R6::R6Class(
     #' @param current Integer or NULL; current page (default 1).
     #' @param size Integer or NULL; page size (default 10, max 100).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per liquidation record.
+    #' @return `data.table` with one row per liquidation record and the following columns:
+    #' - `avg_price` (character): Average liquidation price.
+    #' - `executed_qty` (character): Liquidated quantity.
+    #' - `order_id` (integer): Liquidation order identifier.
+    #' - `price` (character): Liquidation price.
+    #' - `qty` (character): Total quantity.
+    #' - `side` (character): `"BUY"` or `"SELL"`.
+    #' - `symbol` (character): Trading pair.
+    #' - `time` (POSIXct): Liquidation time.
+    #' - `is_isolated` (logical): Whether this was an isolated margin liquidation.
+    #' - `updated_time` (POSIXct): Last update time.
     #'
     #' @examples
     #' \dontrun{

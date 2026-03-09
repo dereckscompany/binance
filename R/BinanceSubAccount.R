@@ -252,7 +252,10 @@ BinanceSubAccount <- R6::R6Class(
     #' @param page Integer or NULL; page number (default 1).
     #' @param size Integer or NULL; results per page (default 10, max 20).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with spot summary information.
+    #' @return `data.table` with one row and the following columns:
+    #' - `total_count` (integer): Total number of sub-accounts.
+    #' - `master_account_total_asset` (character): Master account total asset value in BTC.
+    #' - `spot_sub_user_asset_btc_vo_list` (list): Nested list of per-sub-account spot asset summaries.
     #'
     #' @examples
     #' \dontrun{
@@ -476,7 +479,20 @@ BinanceSubAccount <- R6::R6Class(
     #' @param email Character; the sub-account email.
     #' @param futuresType Integer; `1` for USDT-margined futures, `2` for COIN-margined futures.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with futures account details.
+    #' @return `data.table` with one row and the following columns:
+    #' - `email` (character): Sub-account email.
+    #' - `asset` (character): Margin asset (e.g., `"USDT"`).
+    #' - `assets` (list): Nested list of per-asset balance details.
+    #' - `can_deposit` (logical): Whether deposits are permitted.
+    #' - `can_trade` (logical): Whether trading is permitted.
+    #' - `can_withdraw` (logical): Whether withdrawals are permitted.
+    #' - `fee_tier` (integer): Fee tier level.
+    #' - `max_withdraw_amount` (character): Maximum withdrawable amount.
+    #' - `total_initial_margin` (character): Total initial margin.
+    #' - `total_margin_balance` (character): Total margin balance.
+    #' - `total_wallet_balance` (character): Total wallet balance.
+    #' - `total_unrealized_profit` (character): Total unrealised PnL.
+    #' - `update_time` (numeric): Last update timestamp in ms.
     #'
     #' @examples
     #' \dontrun{
@@ -509,7 +525,13 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' @param email Character; the sub-account email.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with margin account details.
+    #' @return `data.table` with one row and the following columns:
+    #' - `email` (character): Sub-account email.
+    #' - `margin_level` (character): Current margin level.
+    #' - `total_asset_of_btc` (character): Total asset value in BTC.
+    #' - `total_liability_of_btc` (character): Total liability in BTC.
+    #' - `total_net_asset_of_btc` (character): Net asset value in BTC.
+    #' - `margin_trade_coeff_vo` (list): Nested margin trading coefficient details.
     #'
     #' @examples
     #' \dontrun{

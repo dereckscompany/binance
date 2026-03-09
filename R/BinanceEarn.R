@@ -107,8 +107,17 @@ BinanceEarn <- R6::R6Class(
     #' @param current Integer or NULL; current page (default 1, starting from 1).
     #' @param size Integer or NULL; page size (default 10, max 100).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per product. Columns depend on API response
-    #'   and are converted to snake_case. Returns empty `data.table` if no products found.
+    #' @return `data.table` with one row per product and the following columns:
+    #' - `asset` (character): Asset symbol (e.g., `"USDT"`).
+    #' - `latest_annual_percentage_rate` (character): Current annual yield rate.
+    #' - `can_purchase` (logical): Whether new subscriptions are accepted.
+    #' - `can_redeem` (logical): Whether redemptions are allowed.
+    #' - `is_sold_out` (logical): Whether the product is sold out.
+    #' - `hot` (logical): Whether the product is marked as popular.
+    #' - `min_purchase_amount` (character): Minimum subscription amount.
+    #' - `product_id` (character): Unique product identifier.
+    #' - `subscription_start_time` (numeric): Subscription start timestamp in ms.
+    #' - `status` (character): Product status (e.g., `"PURCHASING"`).
     #'
     #' @examples
     #' \dontrun{
@@ -175,8 +184,10 @@ BinanceEarn <- R6::R6Class(
     #' @param current Integer or NULL; current page (default 1, starting from 1).
     #' @param size Integer or NULL; page size (default 10, max 100).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per product. Columns depend on API response
-    #'   and are converted to snake_case. Returns empty `data.table` if no products found.
+    #' @return `data.table` with one row per product and the following columns:
+    #' - `project_id` (character): Unique project identifier.
+    #' - `detail` (list): Nested product details (asset, reward asset, duration, APY).
+    #' - `quota` (list): Nested quota details (total personal quota, minimum).
     #'
     #' @examples
     #' \dontrun{
@@ -466,8 +477,13 @@ BinanceEarn <- R6::R6Class(
     #' @param current Integer or NULL; current page (default 1, starting from 1).
     #' @param size Integer or NULL; page size (default 10, max 100).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per position. Columns depend on API response
-    #'   and are converted to snake_case. Returns empty `data.table` if no positions found.
+    #' @return `data.table` with one row per position and the following columns:
+    #' - `total_amount` (character): Total amount in the position.
+    #' - `latest_annual_percentage_rate` (character): Current annual yield rate.
+    #' - `asset` (character): Asset symbol (e.g., `"USDT"`).
+    #' - `can_redeem` (logical): Whether redemption is allowed.
+    #' - `product_id` (character): Product identifier.
+    #' - `auto_subscribe` (logical): Whether auto-subscription is enabled.
     #'
     #' @examples
     #' \dontrun{
@@ -515,8 +531,16 @@ BinanceEarn <- R6::R6Class(
     #' @param current Integer or NULL; current page (default 1, starting from 1).
     #' @param size Integer or NULL; page size (default 10, max 100).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per position. Columns depend on API response
-    #'   and are converted to snake_case. Returns empty `data.table` if no positions found.
+    #' @return `data.table` with one row per position and the following columns:
+    #' - `position_id` (character): Position identifier.
+    #' - `project_id` (character): Project identifier.
+    #' - `asset` (character): Asset symbol.
+    #' - `amount` (character): Locked amount.
+    #' - `purchase_time` (numeric): Subscription timestamp in ms.
+    #' - `duration` (integer): Lock duration in days.
+    #' - `accrual_days` (integer): Number of days interest has accrued.
+    #' - `reward_asset` (character): Reward asset symbol.
+    #' - `apy` (character): Annual percentage yield.
     #'
     #' @examples
     #' \dontrun{
@@ -586,8 +610,14 @@ BinanceEarn <- R6::R6Class(
     #' @param current Integer or NULL; current page (default 1, starting from 1).
     #' @param size Integer or NULL; page size (default 10, max 100).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per subscription record. The `time` column
-    #'   is converted to POSIXct. Returns empty `data.table` if no records found.
+    #' @return `data.table` with one row per subscription record and the following columns:
+    #' - `amount` (character): Subscription amount.
+    #' - `asset` (character): Asset symbol.
+    #' - `time` (POSIXct): Subscription time.
+    #' - `purchase_id` (integer): Purchase identifier.
+    #' - `type` (character): Subscription type (e.g., `"AUTO"`, `"NORMAL"`).
+    #' - `source_account` (character): Source account (e.g., `"SPOT"`).
+    #' - `status` (character): Subscription status (e.g., `"SUCCESS"`).
     #'
     #' @examples
     #' \dontrun{
@@ -647,8 +677,16 @@ BinanceEarn <- R6::R6Class(
     #' @param current Integer or NULL; current page (default 1, starting from 1).
     #' @param size Integer or NULL; page size (default 10, max 100).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per subscription record. The `time` column
-    #'   is converted to POSIXct. Returns empty `data.table` if no records found.
+    #' @return `data.table` with one row per subscription record and the following columns:
+    #' - `amount` (character): Subscription amount.
+    #' - `asset` (character): Asset symbol.
+    #' - `time` (POSIXct): Subscription time.
+    #' - `purchase_id` (integer): Purchase identifier.
+    #' - `position_id` (character): Position identifier.
+    #' - `lock_period` (integer): Lock duration in days.
+    #' - `type` (character): Subscription type.
+    #' - `source_account` (character): Source account.
+    #' - `status` (character): Subscription status.
     #'
     #' @examples
     #' \dontrun{
@@ -707,8 +745,14 @@ BinanceEarn <- R6::R6Class(
     #' @param current Integer or NULL; current page (default 1, starting from 1).
     #' @param size Integer or NULL; page size (default 10, max 100).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per redemption record. The `time` column
-    #'   is converted to POSIXct. Returns empty `data.table` if no records found.
+    #' @return `data.table` with one row per redemption record and the following columns:
+    #' - `amount` (character): Redemption amount.
+    #' - `asset` (character): Asset symbol.
+    #' - `time` (POSIXct): Redemption time.
+    #' - `project_id` (character): Product identifier.
+    #' - `redeem_id` (integer): Redemption identifier.
+    #' - `dest_account` (character): Destination account.
+    #' - `status` (character): Redemption status (e.g., `"PAID"`).
     #'
     #' @examples
     #' \dontrun{
@@ -769,8 +813,14 @@ BinanceEarn <- R6::R6Class(
     #' @param current Integer or NULL; current page (default 1, starting from 1).
     #' @param size Integer or NULL; page size (default 10, max 100).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per redemption record. The `time` column
-    #'   is converted to POSIXct. Returns empty `data.table` if no records found.
+    #' @return `data.table` with one row per redemption record and the following columns:
+    #' - `amount` (character): Redemption amount.
+    #' - `asset` (character): Asset symbol.
+    #' - `time` (POSIXct): Redemption time.
+    #' - `position_id` (character): Position identifier.
+    #' - `redeem_id` (integer): Redemption identifier.
+    #' - `deliver_date` (character): Expected delivery date.
+    #' - `status` (character): Redemption status.
     #'
     #' @examples
     #' \dontrun{

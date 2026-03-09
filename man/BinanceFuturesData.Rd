@@ -925,8 +925,21 @@ Retrieves historical index price kline/candlestick data for a pair.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with OHLCV columns.
-See \code{get_klines()} for column details.
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+\itemize{
+\item \code{open_time} (POSIXct): Candle open time.
+\item \code{open} (numeric): Opening price.
+\item \code{high} (numeric): Highest price.
+\item \code{low} (numeric): Lowest price.
+\item \code{close} (numeric): Closing price.
+\item \code{volume} (numeric): Trading volume.
+\item \code{close_time} (POSIXct): Candle close time.
+\item \code{quote_volume} (numeric): Quote asset volume.
+\item \code{trades} (integer): Number of trades.
+\item \code{taker_buy_base_volume} (numeric): Taker buy base asset volume.
+\item \code{taker_buy_quote_volume} (numeric): Taker buy quote asset volume.
+\item \code{ignore} (character): Unused field.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -992,8 +1005,21 @@ Retrieves historical mark price kline/candlestick data for a symbol.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with OHLCV columns.
-See \code{get_klines()} for column details.
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+\itemize{
+\item \code{open_time} (POSIXct): Candle open time.
+\item \code{open} (numeric): Opening price.
+\item \code{high} (numeric): Highest price.
+\item \code{low} (numeric): Lowest price.
+\item \code{close} (numeric): Closing price.
+\item \code{volume} (numeric): Trading volume.
+\item \code{close_time} (POSIXct): Candle close time.
+\item \code{quote_volume} (numeric): Quote asset volume.
+\item \code{trades} (integer): Number of trades.
+\item \code{taker_buy_base_volume} (numeric): Taker buy base asset volume.
+\item \code{taker_buy_quote_volume} (numeric): Taker buy quote asset volume.
+\item \code{ignore} (character): Unused field.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
