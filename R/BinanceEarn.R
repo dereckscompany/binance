@@ -253,7 +253,13 @@ BinanceEarn <- R6::R6Class(
     #' result <- earn$add_flexible_subscription(productId = "USDT001", amount = 100)
     #' print(result)
     #' }
-    add_flexible_subscription = function(productId, amount, autoSubscribe = NULL, sourceAccount = NULL, recvWindow = NULL) {
+    add_flexible_subscription = function(
+      productId,
+      amount,
+      autoSubscribe = NULL,
+      sourceAccount = NULL,
+      recvWindow = NULL
+    ) {
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/subscribe",
         method = "POST",
@@ -371,7 +377,13 @@ BinanceEarn <- R6::R6Class(
     #' result <- earn$add_flexible_redemption(productId = "USDT001", amount = 50)
     #' print(result)
     #' }
-    add_flexible_redemption = function(productId, amount = NULL, redeemAll = NULL, destAccount = NULL, recvWindow = NULL) {
+    add_flexible_redemption = function(
+      productId,
+      amount = NULL,
+      redeemAll = NULL,
+      destAccount = NULL,
+      recvWindow = NULL
+    ) {
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/redeem",
         method = "POST",
