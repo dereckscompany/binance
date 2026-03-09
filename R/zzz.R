@@ -28,5 +28,6 @@ utils::globalVariables(c(
   # Order columns
   "order_id",
   "client_order_id",
-  "symbol"
+  "symbol",
+  "interval"
 ))

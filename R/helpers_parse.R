@@ -121,24 +121,6 @@ parse_orderbook <- function(data) {
   return(result)
 }
 
-#' Parse Raw Binance Kline Data into a data.table
-#'
-#' Converts the array-of-arrays response from Binance's klines endpoint into
-#' a typed [data.table::data.table] with standard OHLCV columns.
-#' Each candle is returned as:
-#' `[open_time, open, high, low, close, volume, close_time, quote_volume,
-#'   trades, taker_buy_base, taker_buy_quote, ignore]`
-#'
-#' @param data List of lists; the raw kline response from Binance.
-#' @return A [data.table::data.table] with columns: `open_time`, `open`, `high`,
-#'   `low`, `close`, `volume`, `close_time`, `quote_volume`, `trades`,
-#'   `taker_buy_base_volume`, `taker_buy_quote_volume`, `ignore`.
-#'   Returns empty data.table if input is NULL or empty.
-#'
-#' @importFrom lubridate as_datetime
-#' @keywords internal
-#' @noRd
-
 #' Parse Paginated Binance Response
 #'
 #' Extracts the `rows` array from a paginated Binance response that has the
@@ -164,6 +146,8 @@ parse_paginated <- function(data, time_cols = character(0)) {
   return(dt)
 }
 
+#' @keywords internal
+#' @noRd
 parse_klines <- function(data) {
   if (is.null(data) || length(data) == 0) {
     return(data.table::data.table())

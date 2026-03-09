@@ -16,8 +16,10 @@ knitr::opts_chunk$set(
 
 box::use(
   binance[
-    BinanceMarketData, BinanceTrading, BinanceAccount,
-    BinanceDeposit, BinanceWithdrawal, get_api_keys
+    BinanceMarketData, BinanceTrading, BinanceOcoOrders,
+    BinanceAccount, BinanceDeposit, BinanceWithdrawal,
+    BinanceTransfer, BinanceSubAccount, BinanceEarn,
+    get_api_keys, binance_backfill_klines
   ]
 )
 
@@ -39,8 +41,10 @@ This vignette demonstrates how to use `binance` in **synchronous** mode.
 ```{r load}
 box::use(
   binance[
-    BinanceMarketData, BinanceTrading, BinanceAccount,
-    BinanceDeposit, BinanceWithdrawal, get_api_keys
+    BinanceMarketData, BinanceTrading, BinanceOcoOrders,
+    BinanceAccount, BinanceDeposit, BinanceWithdrawal,
+    BinanceTransfer, BinanceSubAccount, BinanceEarn,
+    get_api_keys
   ]
 )
 
@@ -83,18 +87,27 @@ ticker <- market$get_ticker("BTCUSDT")
 ticker
 ```
 
-### Klines (Candlestick Data)
+### All Tickers
 
-```{r klines}
-klines <- market$get_klines("BTCUSDT", "1h", limit = 5)
-klines
+```{r all-tickers}
+tickers <- market$get_all_tickers()
+tickers
 ```
 
-### Order Book Depth
+### Book Ticker
 
-```{r orderbook}
-depth <- market$get_depth("BTCUSDT", limit = 5)
-depth
+Best bid/ask prices and quantities:
+
+```{r book-ticker}
+book <- market$get_book_ticker("BTCUSDT")
+book
+```
+
+### Average Price
+
+```{r avg-price}
+avg <- market$get_avg_price("BTCUSDT")
+avg
 ```
 
 ### 24hr Statistics
@@ -104,6 +117,34 @@ stats <- market$get_24hr_stats("BTCUSDT")
 stats[, .(symbol, last_price, price_change_percent, volume)]
 ```
 
+### Order Book Depth
+
+```{r orderbook}
+depth <- market$get_depth("BTCUSDT", limit = 5)
+depth
+```
+
+### Recent Trades
+
+```{r trades}
+trades <- market$get_trades("BTCUSDT")
+trades
+```
+
+### Klines (Candlestick Data)
+
+```{r klines}
+klines <- market$get_klines("BTCUSDT", "1h", limit = 5)
+klines[, .(open_time, open, high, low, close, volume)]
+```
+
+### Server Time
+
+```{r server-time}
+st <- market$get_server_time()
+st
+```
+
 ---
 
 ## Trading
@@ -111,11 +152,7 @@ stats[, .(symbol, last_price, price_change_percent, volume)]
 The `BinanceTrading` class manages spot orders. All trading endpoints
 require authentication.
 
-### Place a Test Order
-
-Test orders validate parameters without executing:
-
-```{r trading-test-order}
+```{r trading-init}
 trading <- BinanceTrading$new()
 ```
 
@@ -123,7 +160,11 @@ trading <- BinanceTrading$new()
 trading <- BinanceTrading$new(keys = keys, base_url = base)
 ```
 
-```{r}
+### Place a Test Order
+
+Test orders validate parameters without executing:
+
+```{r test-order}
 result <- trading$add_order_test(
   type = "LIMIT",
   symbol = "BTCUSDT",
@@ -132,6 +173,20 @@ result <- trading$add_order_test(
   quantity = 0.0001
 )
 result
+```
+
+### Place a Real Order
+
+```{r real-order, eval = FALSE}
+order <- trading$add_order(
+  type = "LIMIT",
+  symbol = "BTCUSDT",
+  side = "BUY",
+  price = 50000,
+  quantity = 0.0001,
+  timeInForce = "GTC"
+)
+order
 ```
 
 ### Query an Order
@@ -148,13 +203,55 @@ open_orders <- trading$get_open_orders("BTCUSDT")
 open_orders
 ```
 
+### Cancel an Order
+
+```{r cancel-order, eval = FALSE}
+cancelled <- trading$cancel_order("BTCUSDT", orderId = 12345)
+cancelled
+```
+
+---
+
+## OCO Orders
+
+An OCO (One-Cancels-Other) order pairs a limit order with a stop-limit
+order; when one side fills, the other is cancelled automatically.
+
+```{r oco-init}
+oco <- BinanceOcoOrders$new()
+```
+
+```{r oco-hidden, echo = FALSE}
+oco <- BinanceOcoOrders$new(keys = keys, base_url = base)
+```
+
+```{r oco-place, eval = FALSE}
+result <- oco$add_order(
+  symbol = "BTCUSDT",
+  side = "SELL",
+  quantity = 0.001,
+  price = 110000,          # Limit price (take profit)
+  stopPrice = 90000,       # Stop trigger price
+  stopLimitPrice = 89500,  # Stop limit price
+  stopLimitTimeInForce = "GTC"
+)
+result
+```
+
+### Query OCO Orders
+
+```{r oco-query}
+open_oco <- oco$get_open_oco_orders()
+open_oco
+```
+
 ---
 
 ## Account Management
 
 ### Account Info
 
-```{r account-info}
+```{r account-init}
 account <- BinanceAccount$new()
 ```
 
@@ -162,7 +259,7 @@ account <- BinanceAccount$new()
 account <- BinanceAccount$new(keys = keys, base_url = base)
 ```
 
-```{r}
+```{r account-info}
 info <- account$get_account_info()
 info[, .(maker_commission, taker_commission, can_trade, account_type)]
 ```
@@ -178,9 +275,7 @@ trades
 
 ## Deposits
 
-### Get Deposit Address
-
-```{r deposit-address}
+```{r deposit-init}
 deposit <- BinanceDeposit$new()
 ```
 
@@ -188,7 +283,9 @@ deposit <- BinanceDeposit$new()
 deposit <- BinanceDeposit$new(keys = keys, base_url = base)
 ```
 
-```{r}
+### Get Deposit Address
+
+```{r deposit-address}
 addr <- deposit$get_deposit_address(coin = "BTC")
 addr
 ```
@@ -221,7 +318,7 @@ history
 
 ### Submit a Withdrawal
 
-```{r, eval = FALSE}
+```{r submit-withdrawal, eval = FALSE}
 result <- withdrawal$add_withdrawal(
   coin = "USDT",
   address = "your-trc20-address",
@@ -233,8 +330,131 @@ result
 
 ---
 
+## Fund Transfers
+
+Use `BinanceTransfer` to move assets between wallet types (spot, margin,
+futures, funding).
+
+```{r transfer-init, eval = FALSE}
+transfer <- BinanceTransfer$new()
+```
+
+```{r transfer-example, eval = FALSE}
+# Transfer 100 USDT from spot to futures
+result <- transfer$add_transfer(
+  type = "MAIN_UMFUTURE",
+  asset = "USDT",
+  amount = 100
+)
+result
+
+# Check transfer history
+history <- transfer$get_transfer_history(type = "MAIN_UMFUTURE")
+history
+```
+
+---
+
+## Simple Earn
+
+Use `BinanceEarn` to subscribe to flexible savings products:
+
+```{r earn-init}
+earn <- BinanceEarn$new()
+```
+
+```{r earn-hidden, echo = FALSE}
+earn <- BinanceEarn$new(keys = keys, base_url = base)
+```
+
+### List Available Products
+
+```{r earn-products}
+products <- earn$get_flexible_products()
+products
+```
+
+### Subscribe
+
+```{r earn-subscribe, eval = FALSE}
+result <- earn$subscribe_flexible(productId = "BTC001", amount = 0.01)
+result
+```
+
+### Check Positions
+
+```{r earn-positions}
+positions <- earn$get_flexible_position()
+positions
+```
+
+---
+
+## Sub-Account Management
+
+```{r sub-init}
+sub <- BinanceSubAccount$new()
+```
+
+```{r sub-hidden, echo = FALSE}
+sub <- BinanceSubAccount$new(keys = keys, base_url = base)
+```
+
+```{r sub-list}
+subs <- sub$get_sub_accounts()
+subs
+```
+
+---
+
+## Clock Drift: Server Time Signing
+
+By default, HMAC request signatures use your local machine's clock. If your
+system time is out of sync with Binance's servers, authenticated requests may
+fail with timestamp errors. You can configure any class to fetch the server
+time before each authenticated request:
+
+```{r clock-drift, eval = FALSE}
+# Use server time for signing (adds one round trip per request)
+trading <- BinanceTrading$new(time_source = "server")
+
+# All authenticated calls now use the exchange clock
+order <- trading$add_order_test(
+  type = "LIMIT", symbol = "BTCUSDT", side = "BUY",
+  price = 50000, quantity = 0.0001
+)
+```
+
+The `time_source` parameter is available on all class constructors:
+`BinanceTrading`, `BinanceAccount`, `BinanceOcoOrders`,
+`BinanceDeposit`, `BinanceWithdrawal`, `BinanceTransfer`,
+`BinanceSubAccount`, `BinanceMargin`, `BinanceEarn`, and `BinanceFutures`.
+
+---
+
+## Bulk Historical Data: Backfill Klines
+
+Download historical kline data across multiple symbols and intervals,
+with automatic CSV-based resume support:
+
+```{r backfill, eval = FALSE}
+binance_backfill_klines(
+  symbols = c("BTCUSDT", "ETHUSDT"),
+  intervals = c("1d", "4h"),
+  from = lubridate::as_datetime("2020-01-01"),
+  to = lubridate::now("UTC"),
+  file = "my_klines.csv"
+)
+
+# Resume an interrupted download — just run the same call again
+# It reads the existing CSV and skips completed symbol-interval combos
+```
+
+---
+
 ## Next Steps
 
-- See the [pkgdown site](https://dereckmezquita.github.io/binance/) for full method documentation.
-- For futures trading, see `BinanceFutures` and `BinanceFuturesData`.
-- For margin trading, see `BinanceMargin` and `BinanceMarginData`.
+- See `vignette("async-usage")` for promise-based asynchronous operation.
+- See `vignette("margin-futures-trading")` for margin and USD-M futures trading.
+- Browse the [pkgdown site](https://dereckmezquita.github.io/binance/) for full method documentation.
+- For bulk historical data, see `?binance_backfill_klines`.
