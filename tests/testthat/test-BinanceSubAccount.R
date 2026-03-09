@@ -197,8 +197,10 @@ test_that("add_transfer hits correct endpoint with POST", {
   })
 
   new_sub()$add_transfer(
-    fromAccountType = "SPOT", toAccountType = "SPOT",
-    asset = "USDT", amount = 100
+    fromAccountType = "SPOT",
+    toAccountType = "SPOT",
+    asset = "USDT",
+    amount = 100
   )
   expect_true(grepl("sapi/v1/sub-account/universalTransfer", captured_url))
   expect_equal(captured_method, "POST")

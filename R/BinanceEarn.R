@@ -548,7 +548,14 @@ BinanceEarn <- R6::R6Class(
     #' positions <- earn$get_locked_position(asset = "BTC")
     #' print(positions)
     #' }
-    get_locked_position = function(asset = NULL, positionId = NULL, projectId = NULL, current = NULL, size = NULL, recvWindow = NULL) {
+    get_locked_position = function(
+      asset = NULL,
+      positionId = NULL,
+      projectId = NULL,
+      current = NULL,
+      size = NULL,
+      recvWindow = NULL
+    ) {
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/position",
         query = list(

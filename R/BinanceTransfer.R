@@ -72,7 +72,6 @@ BinanceTransfer <- R6::R6Class(
   "BinanceTransfer",
   inherit = BinanceBase,
   public = list(
-
     #' @description
     #' Initiate a Universal Transfer
     #'
@@ -131,17 +130,29 @@ BinanceTransfer <- R6::R6Class(
       toSymbol = NULL,
       recvWindow = NULL
     ) {
-      rlang::arg_match0(type, c(
-        "MAIN_UMFUTURE", "MAIN_CMFUTURE", "MAIN_MARGIN",
-        "UMFUTURE_MAIN", "UMFUTURE_MARGIN",
-        "CMFUTURE_MAIN",
-        "MARGIN_MAIN", "MARGIN_UMFUTURE",
-        "MAIN_FUNDING", "FUNDING_MAIN",
-        "FUNDING_UMFUTURE", "UMFUTURE_FUNDING",
-        "MARGIN_FUNDING", "FUNDING_MARGIN",
-        "FUNDING_CMFUTURE", "CMFUTURE_FUNDING",
-        "MAIN_ISOLATED_MARGIN", "ISOLATED_MARGIN_MAIN"
-      ))
+      rlang::arg_match0(
+        type,
+        c(
+          "MAIN_UMFUTURE",
+          "MAIN_CMFUTURE",
+          "MAIN_MARGIN",
+          "UMFUTURE_MAIN",
+          "UMFUTURE_MARGIN",
+          "CMFUTURE_MAIN",
+          "MARGIN_MAIN",
+          "MARGIN_UMFUTURE",
+          "MAIN_FUNDING",
+          "FUNDING_MAIN",
+          "FUNDING_UMFUTURE",
+          "UMFUTURE_FUNDING",
+          "MARGIN_FUNDING",
+          "FUNDING_MARGIN",
+          "FUNDING_CMFUTURE",
+          "CMFUTURE_FUNDING",
+          "MAIN_ISOLATED_MARGIN",
+          "ISOLATED_MARGIN_MAIN"
+        )
+      )
 
       return(private$.request(
         endpoint = "/sapi/v1/asset/transfer",
@@ -229,17 +240,29 @@ BinanceTransfer <- R6::R6Class(
       toSymbol = NULL,
       recvWindow = NULL
     ) {
-      rlang::arg_match0(type, c(
-        "MAIN_UMFUTURE", "MAIN_CMFUTURE", "MAIN_MARGIN",
-        "UMFUTURE_MAIN", "UMFUTURE_MARGIN",
-        "CMFUTURE_MAIN",
-        "MARGIN_MAIN", "MARGIN_UMFUTURE",
-        "MAIN_FUNDING", "FUNDING_MAIN",
-        "FUNDING_UMFUTURE", "UMFUTURE_FUNDING",
-        "MARGIN_FUNDING", "FUNDING_MARGIN",
-        "FUNDING_CMFUTURE", "CMFUTURE_FUNDING",
-        "MAIN_ISOLATED_MARGIN", "ISOLATED_MARGIN_MAIN"
-      ))
+      rlang::arg_match0(
+        type,
+        c(
+          "MAIN_UMFUTURE",
+          "MAIN_CMFUTURE",
+          "MAIN_MARGIN",
+          "UMFUTURE_MAIN",
+          "UMFUTURE_MARGIN",
+          "CMFUTURE_MAIN",
+          "MARGIN_MAIN",
+          "MARGIN_UMFUTURE",
+          "MAIN_FUNDING",
+          "FUNDING_MAIN",
+          "FUNDING_UMFUTURE",
+          "UMFUTURE_FUNDING",
+          "MARGIN_FUNDING",
+          "FUNDING_MARGIN",
+          "FUNDING_CMFUTURE",
+          "CMFUTURE_FUNDING",
+          "MAIN_ISOLATED_MARGIN",
+          "ISOLATED_MARGIN_MAIN"
+        )
+      )
 
       return(private$.request(
         endpoint = "/sapi/v1/asset/transfer",

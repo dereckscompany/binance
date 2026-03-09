@@ -23,7 +23,9 @@ test_that("add_transfer returns data.table with tran_id", {
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_transfer()$add_transfer(
-    type = "MAIN_UMFUTURE", asset = "USDT", amount = 100
+    type = "MAIN_UMFUTURE",
+    asset = "USDT",
+    amount = 100
   )
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
@@ -42,7 +44,9 @@ test_that("add_transfer hits correct endpoint with POST", {
   })
 
   new_transfer()$add_transfer(
-    type = "MAIN_UMFUTURE", asset = "USDT", amount = 100
+    type = "MAIN_UMFUTURE",
+    asset = "USDT",
+    amount = 100
   )
   expect_true(grepl("sapi/v1/asset/transfer", captured_url))
   expect_equal(captured_method, "POST")
@@ -57,7 +61,9 @@ test_that("add_transfer passes parameters in query string", {
   })
 
   new_transfer()$add_transfer(
-    type = "MAIN_UMFUTURE", asset = "USDT", amount = 100
+    type = "MAIN_UMFUTURE",
+    asset = "USDT",
+    amount = 100
   )
   expect_true(grepl("type=MAIN_UMFUTURE", captured_url))
   expect_true(grepl("asset=USDT", captured_url))
@@ -67,7 +73,9 @@ test_that("add_transfer passes parameters in query string", {
 test_that("add_transfer validates type parameter", {
   expect_error(
     new_transfer()$add_transfer(
-      type = "INVALID_TYPE", asset = "USDT", amount = 100
+      type = "INVALID_TYPE",
+      asset = "USDT",
+      amount = 100
     )
   )
 })
@@ -81,8 +89,11 @@ test_that("add_transfer passes optional fromSymbol and toSymbol", {
   })
 
   new_transfer()$add_transfer(
-    type = "MAIN_ISOLATED_MARGIN", asset = "USDT", amount = 50,
-    fromSymbol = "BNBUSDT", toSymbol = "BTCUSDT"
+    type = "MAIN_ISOLATED_MARGIN",
+    asset = "USDT",
+    amount = 50,
+    fromSymbol = "BNBUSDT",
+    toSymbol = "BTCUSDT"
   )
   expect_true(grepl("fromSymbol=BNBUSDT", captured_url))
   expect_true(grepl("toSymbol=BTCUSDT", captured_url))

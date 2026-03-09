@@ -605,22 +605,35 @@ mock_oco_order_response <- function() {
     ),
     orderReports = list(
       list(
-        symbol = "BTCUSDT", orderId = 12L, orderListId = 0L,
+        symbol = "BTCUSDT",
+        orderId = 12L,
+        orderListId = 0L,
         clientOrderId = "bX5wROblo6YeDwa9iTLeyY",
         transactTime = 1563417480525,
-        price = "50000.00000000", origQty = "0.00010000",
-        executedQty = "0.00000000", cummulativeQuoteQty = "0.00000000",
-        status = "NEW", timeInForce = "GTC", type = "STOP_LOSS_LIMIT",
-        side = "SELL", stopPrice = "49000.00000000",
+        price = "50000.00000000",
+        origQty = "0.00010000",
+        executedQty = "0.00000000",
+        cummulativeQuoteQty = "0.00000000",
+        status = "NEW",
+        timeInForce = "GTC",
+        type = "STOP_LOSS_LIMIT",
+        side = "SELL",
+        stopPrice = "49000.00000000",
         selfTradePreventionMode = "NONE"
       ),
       list(
-        symbol = "BTCUSDT", orderId = 13L, orderListId = 0L,
+        symbol = "BTCUSDT",
+        orderId = 13L,
+        orderListId = 0L,
         clientOrderId = "Tnu2IP0J5Y4mxw3IATBfmW",
         transactTime = 1563417480525,
-        price = "55000.00000000", origQty = "0.00010000",
-        executedQty = "0.00000000", cummulativeQuoteQty = "0.00000000",
-        status = "NEW", timeInForce = "GTC", type = "LIMIT_MAKER",
+        price = "55000.00000000",
+        origQty = "0.00010000",
+        executedQty = "0.00000000",
+        cummulativeQuoteQty = "0.00000000",
+        status = "NEW",
+        timeInForce = "GTC",
+        type = "LIMIT_MAKER",
         side = "SELL",
         selfTradePreventionMode = "NONE"
       )
@@ -654,8 +667,24 @@ mock_oco_query_data <- function() {
 #' @export
 mock_margin_all_pairs_data <- function() {
   return(list(
-    list(base = "BTC", id = 351637150L, isBuyAllowed = TRUE, isMarginTrade = TRUE, isSellAllowed = TRUE, quote = "USDT", symbol = "BTCUSDT"),
-    list(base = "ETH", id = 351637151L, isBuyAllowed = TRUE, isMarginTrade = TRUE, isSellAllowed = TRUE, quote = "USDT", symbol = "ETHUSDT")
+    list(
+      base = "BTC",
+      id = 351637150L,
+      isBuyAllowed = TRUE,
+      isMarginTrade = TRUE,
+      isSellAllowed = TRUE,
+      quote = "USDT",
+      symbol = "BTCUSDT"
+    ),
+    list(
+      base = "ETH",
+      id = 351637151L,
+      isBuyAllowed = TRUE,
+      isMarginTrade = TRUE,
+      isSellAllowed = TRUE,
+      quote = "USDT",
+      symbol = "ETHUSDT"
+    )
   ))
 }
 
@@ -663,8 +692,22 @@ mock_margin_all_pairs_data <- function() {
 #' @export
 mock_margin_isolated_pairs_data <- function() {
   return(list(
-    list(symbol = "BTCUSDT", base = "BTC", quote = "USDT", isMarginTrade = TRUE, isBuyAllowed = TRUE, isSellAllowed = TRUE),
-    list(symbol = "ETHUSDT", base = "ETH", quote = "USDT", isMarginTrade = TRUE, isBuyAllowed = TRUE, isSellAllowed = TRUE)
+    list(
+      symbol = "BTCUSDT",
+      base = "BTC",
+      quote = "USDT",
+      isMarginTrade = TRUE,
+      isBuyAllowed = TRUE,
+      isSellAllowed = TRUE
+    ),
+    list(
+      symbol = "ETHUSDT",
+      base = "ETH",
+      quote = "USDT",
+      isMarginTrade = TRUE,
+      isBuyAllowed = TRUE,
+      isSellAllowed = TRUE
+    )
   ))
 }
 
@@ -687,7 +730,16 @@ mock_interest_rate_history_data <- function() {
 #' @export
 mock_cross_margin_data <- function() {
   return(list(
-    list(vipLevel = 0L, coin = "BTC", transferIn = TRUE, transferOut = TRUE, borrowable = TRUE, dailyInterest = "0.00015000", yearlyInterest = "0.05475000", marginablePairs = list("BTCUSDT", "BTCBUSD"))
+    list(
+      vipLevel = 0L,
+      coin = "BTC",
+      transferIn = TRUE,
+      transferOut = TRUE,
+      borrowable = TRUE,
+      dailyInterest = "0.00015000",
+      yearlyInterest = "0.05475000",
+      marginablePairs = list("BTCUSDT", "BTCBUSD")
+    )
   ))
 }
 
@@ -695,7 +747,12 @@ mock_cross_margin_data <- function() {
 #' @export
 mock_isolated_margin_data <- function() {
   return(list(
-    list(vipLevel = 0L, symbol = "BTCUSDT", leverage = "10", data = list(list(coin = "BTC", dailyInterest = "0.00015000", borrowLimit = "100.00000000")))
+    list(
+      vipLevel = 0L,
+      symbol = "BTCUSDT",
+      leverage = "10",
+      data = list(list(coin = "BTC", dailyInterest = "0.00015000", borrowLimit = "100.00000000"))
+    )
   ))
 }
 
@@ -714,8 +771,20 @@ mock_sub_account_create_response <- function() {
 mock_sub_account_list_data <- function() {
   return(list(
     subAccounts = list(
-      list(email = "testsub01@virtual.com", isFreeze = FALSE, createTime = 1661493146000, isManagedSubAccount = FALSE, isAssetManagementSubAccount = FALSE),
-      list(email = "testsub02@virtual.com", isFreeze = TRUE, createTime = 1661493246000, isManagedSubAccount = FALSE, isAssetManagementSubAccount = FALSE)
+      list(
+        email = "testsub01@virtual.com",
+        isFreeze = FALSE,
+        createTime = 1661493146000,
+        isManagedSubAccount = FALSE,
+        isAssetManagementSubAccount = FALSE
+      ),
+      list(
+        email = "testsub02@virtual.com",
+        isFreeze = TRUE,
+        createTime = 1661493246000,
+        isManagedSubAccount = FALSE,
+        isAssetManagementSubAccount = FALSE
+      )
     )
   ))
 }
@@ -742,7 +811,18 @@ mock_sub_account_transfer_response <- function() {
 mock_sub_account_transfer_history_data <- function() {
   return(list(
     result = list(
-      list(tranId = 11945860693, fromEmail = "master@test.com", toEmail = "testsub01@virtual.com", asset = "USDT", amount = "100.00000000", createTimeStamp = 1661493146000, fromAccountType = "SPOT", toAccountType = "SPOT", status = "SUCCESS", clientTranId = "test_001")
+      list(
+        tranId = 11945860693,
+        fromEmail = "master@test.com",
+        toEmail = "testsub01@virtual.com",
+        asset = "USDT",
+        amount = "100.00000000",
+        createTimeStamp = 1661493146000,
+        fromAccountType = "SPOT",
+        toAccountType = "SPOT",
+        status = "SUCCESS",
+        clientTranId = "test_001"
+      )
     )
   ))
 }
@@ -751,7 +831,15 @@ mock_sub_account_transfer_history_data <- function() {
 #' @export
 mock_sub_account_status_data <- function() {
   return(list(
-    list(email = "testsub01@virtual.com", isSubUserEnabled = TRUE, isUserActive = TRUE, insertTime = 1661493146000, isMarginEnabled = FALSE, isFutureEnabled = FALSE, mobile = 0L)
+    list(
+      email = "testsub01@virtual.com",
+      isSubUserEnabled = TRUE,
+      isUserActive = TRUE,
+      insertTime = 1661493146000,
+      isMarginEnabled = FALSE,
+      isFutureEnabled = FALSE,
+      mobile = 0L
+    )
   ))
 }
 
@@ -765,7 +853,18 @@ mock_flexible_products_data <- function() {
   return(list(
     total = 1L,
     rows = list(
-      list(asset = "USDT", latestAnnualPercentageRate = "0.03250000", canPurchase = TRUE, canRedeem = TRUE, isSoldOut = FALSE, hot = TRUE, minPurchaseAmount = "0.10000000", productId = "USDT001", subscriptionStartTime = 1661493146000, status = "PURCHASING")
+      list(
+        asset = "USDT",
+        latestAnnualPercentageRate = "0.03250000",
+        canPurchase = TRUE,
+        canRedeem = TRUE,
+        isSoldOut = FALSE,
+        hot = TRUE,
+        minPurchaseAmount = "0.10000000",
+        productId = "USDT001",
+        subscriptionStartTime = 1661493146000,
+        status = "PURCHASING"
+      )
     )
   ))
 }
@@ -776,7 +875,11 @@ mock_locked_products_data <- function() {
   return(list(
     total = 1L,
     rows = list(
-      list(projectId = "BTC30d001", detail = list(asset = "BTC", rewardAsset = "BTC", duration = 30L, renewable = TRUE, apy = "0.05000000"), quota = list(totalPersonalQuota = "10.00000000", minimum = "0.001"))
+      list(
+        projectId = "BTC30d001",
+        detail = list(asset = "BTC", rewardAsset = "BTC", duration = 30L, renewable = TRUE, apy = "0.05000000"),
+        quota = list(totalPersonalQuota = "10.00000000", minimum = "0.001")
+      )
     )
   ))
 }
@@ -811,7 +914,22 @@ mock_flexible_position_data <- function() {
   return(list(
     total = 1L,
     rows = list(
-      list(totalAmount = "100.00000000", tierAnnualPercentageRate = list(), latestAnnualPercentageRate = "0.03250000", yesterdayAirdropPercentageRate = "0.00008000", asset = "USDT", airDropAsset = "USDT", canRedeem = TRUE, collateralAmount = "0.00000000", productId = "USDT001", yesterdayRealTimeRewards = "0.00800000", cumulativeBonusRewards = "0.15000000", cumulativeRealTimeRewards = "0.08000000", cumulativeTotalRewards = "0.23000000", autoSubscribe = TRUE)
+      list(
+        totalAmount = "100.00000000",
+        tierAnnualPercentageRate = list(),
+        latestAnnualPercentageRate = "0.03250000",
+        yesterdayAirdropPercentageRate = "0.00008000",
+        asset = "USDT",
+        airDropAsset = "USDT",
+        canRedeem = TRUE,
+        collateralAmount = "0.00000000",
+        productId = "USDT001",
+        yesterdayRealTimeRewards = "0.00800000",
+        cumulativeBonusRewards = "0.15000000",
+        cumulativeRealTimeRewards = "0.08000000",
+        cumulativeTotalRewards = "0.23000000",
+        autoSubscribe = TRUE
+      )
     )
   ))
 }
@@ -822,7 +940,17 @@ mock_flexible_subscription_history_data <- function() {
   return(list(
     total = 1L,
     rows = list(
-      list(amount = "100.00000000", asset = "USDT", time = 1661493146000, purchaseId = 40607L, type = "AUTO", sourceAccount = "SPOT", amountFromSpot = "100.00000000", amountFromFunding = "0.00000000", status = "SUCCESS")
+      list(
+        amount = "100.00000000",
+        asset = "USDT",
+        time = 1661493146000,
+        purchaseId = 40607L,
+        type = "AUTO",
+        sourceAccount = "SPOT",
+        amountFromSpot = "100.00000000",
+        amountFromFunding = "0.00000000",
+        status = "SUCCESS"
+      )
     )
   ))
 }
@@ -841,12 +969,20 @@ mock_margin_borrow_response <- function() {
 #' @export
 mock_margin_order_response <- function() {
   return(list(
-    symbol = "BTCUSDT", orderId = 28L, clientOrderId = "6gCrw2kRUAF9CvJDGP16IP",
-    transactTime = 1507725176595, price = "50000.00000000",
-    origQty = "0.00010000", executedQty = "0.00000000",
-    cummulativeQuoteQty = "0.00000000", status = "NEW",
-    timeInForce = "GTC", type = "LIMIT", side = "BUY",
-    isIsolated = FALSE, selfTradePreventionMode = "NONE"
+    symbol = "BTCUSDT",
+    orderId = 28L,
+    clientOrderId = "6gCrw2kRUAF9CvJDGP16IP",
+    transactTime = 1507725176595,
+    price = "50000.00000000",
+    origQty = "0.00010000",
+    executedQty = "0.00000000",
+    cummulativeQuoteQty = "0.00000000",
+    status = "NEW",
+    timeInForce = "GTC",
+    type = "LIMIT",
+    side = "BUY",
+    isIsolated = FALSE,
+    selfTradePreventionMode = "NONE"
   ))
 }
 
@@ -854,13 +990,21 @@ mock_margin_order_response <- function() {
 #' @export
 mock_margin_cancel_order_data <- function() {
   return(list(
-    symbol = "BTCUSDT", origClientOrderId = "6gCrw2kRUAF9CvJDGP16IP",
-    orderId = 28L, clientOrderId = "cancelMyOrder1",
-    transactTime = 1507725176595, price = "50000.00000000",
-    origQty = "0.00010000", executedQty = "0.00000000",
-    cummulativeQuoteQty = "0.00000000", status = "CANCELED",
-    timeInForce = "GTC", type = "LIMIT", side = "BUY",
-    isIsolated = FALSE, selfTradePreventionMode = "NONE"
+    symbol = "BTCUSDT",
+    origClientOrderId = "6gCrw2kRUAF9CvJDGP16IP",
+    orderId = 28L,
+    clientOrderId = "cancelMyOrder1",
+    transactTime = 1507725176595,
+    price = "50000.00000000",
+    origQty = "0.00010000",
+    executedQty = "0.00000000",
+    cummulativeQuoteQty = "0.00000000",
+    status = "CANCELED",
+    timeInForce = "GTC",
+    type = "LIMIT",
+    side = "BUY",
+    isIsolated = FALSE,
+    selfTradePreventionMode = "NONE"
   ))
 }
 
@@ -868,13 +1012,23 @@ mock_margin_cancel_order_data <- function() {
 #' @export
 mock_margin_query_order_data <- function() {
   return(list(
-    symbol = "BTCUSDT", orderId = 28L, clientOrderId = "6gCrw2kRUAF9CvJDGP16IP",
-    price = "50000.00000000", origQty = "0.00010000",
-    executedQty = "0.00010000", cummulativeQuoteQty = "5.00000000",
-    status = "FILLED", timeInForce = "GTC", type = "LIMIT", side = "BUY",
-    stopPrice = "0.00000000", icebergQty = "0.00000000",
-    time = 1507725176595, updateTime = 1507725176700,
-    isWorking = TRUE, isIsolated = FALSE,
+    symbol = "BTCUSDT",
+    orderId = 28L,
+    clientOrderId = "6gCrw2kRUAF9CvJDGP16IP",
+    price = "50000.00000000",
+    origQty = "0.00010000",
+    executedQty = "0.00010000",
+    cummulativeQuoteQty = "5.00000000",
+    status = "FILLED",
+    timeInForce = "GTC",
+    type = "LIMIT",
+    side = "BUY",
+    stopPrice = "0.00000000",
+    icebergQty = "0.00000000",
+    time = 1507725176595,
+    updateTime = 1507725176700,
+    isWorking = TRUE,
+    isIsolated = FALSE,
     selfTradePreventionMode = "NONE"
   ))
 }
@@ -883,13 +1037,31 @@ mock_margin_query_order_data <- function() {
 #' @export
 mock_margin_account_data <- function() {
   return(list(
-    borrowEnabled = TRUE, marginLevel = "11.64405625",
-    totalAssetOfBtc = "6.82000000", totalLiabilityOfBtc = "0.58633215",
-    totalNetAssetOfBtc = "6.23366785", tradeEnabled = TRUE,
-    transferEnabled = TRUE, accountType = "MARGIN",
+    borrowEnabled = TRUE,
+    marginLevel = "11.64405625",
+    totalAssetOfBtc = "6.82000000",
+    totalLiabilityOfBtc = "0.58633215",
+    totalNetAssetOfBtc = "6.23366785",
+    tradeEnabled = TRUE,
+    transferEnabled = TRUE,
+    accountType = "MARGIN",
     userAssets = list(
-      list(asset = "BTC", borrowed = "0.00000000", free = "0.00499500", interest = "0.00000000", locked = "0.00000000", netAsset = "0.00499500"),
-      list(asset = "USDT", borrowed = "100.00000000", free = "200.00000000", interest = "0.01000000", locked = "0.00000000", netAsset = "99.99000000")
+      list(
+        asset = "BTC",
+        borrowed = "0.00000000",
+        free = "0.00499500",
+        interest = "0.00000000",
+        locked = "0.00000000",
+        netAsset = "0.00499500"
+      ),
+      list(
+        asset = "USDT",
+        borrowed = "100.00000000",
+        free = "200.00000000",
+        interest = "0.01000000",
+        locked = "0.00000000",
+        netAsset = "99.99000000"
+      )
     )
   ))
 }
@@ -907,10 +1079,15 @@ mock_margin_interest_history_data <- function() {
     total = 1L,
     rows = list(
       list(
-        txId = 1352286576452864727, interestAccuredTime = 1672160400000,
-        asset = "USDT", rawAsset = "USDT", principal = "100.00000000",
-        interest = "0.01000000", interestRate = "0.00010000",
-        type = "ON_BORROW", isolatedSymbol = ""
+        txId = 1352286576452864727,
+        interestAccuredTime = 1672160400000,
+        asset = "USDT",
+        rawAsset = "USDT",
+        principal = "100.00000000",
+        interest = "0.01000000",
+        interestRate = "0.00010000",
+        type = "ON_BORROW",
+        isolatedSymbol = ""
       )
     )
   ))
@@ -923,11 +1100,17 @@ mock_margin_force_liquidation_data <- function() {
     total = 1L,
     rows = list(
       list(
-        avgPrice = "67232.90000000", executedQty = "0.001",
-        orderId = 12345L, price = "67000.00000000",
-        qty = "0.001", side = "SELL", symbol = "BTCUSDT",
-        timeInForce = "GTC", time = 1661493146000,
-        updatedTime = 1661493146000, isIsolated = FALSE
+        avgPrice = "67232.90000000",
+        executedQty = "0.001",
+        orderId = 12345L,
+        price = "67000.00000000",
+        qty = "0.001",
+        side = "SELL",
+        symbol = "BTCUSDT",
+        timeInForce = "GTC",
+        time = 1661493146000,
+        updatedTime = 1661493146000,
+        isIsolated = FALSE
       )
     )
   ))
@@ -938,11 +1121,18 @@ mock_margin_force_liquidation_data <- function() {
 mock_margin_trades_data <- function() {
   return(list(
     list(
-      symbol = "BTCUSDT", id = 28457L, orderId = 100234L,
-      price = "67232.90000000", qty = "0.00100000",
-      quoteQty = "67.23290000", commission = "0.00000100",
-      commissionAsset = "BTC", time = 1499865549590,
-      isBuyer = TRUE, isMaker = FALSE, isBestMatch = TRUE,
+      symbol = "BTCUSDT",
+      id = 28457L,
+      orderId = 100234L,
+      price = "67232.90000000",
+      qty = "0.00100000",
+      quoteQty = "67.23290000",
+      commission = "0.00000100",
+      commissionAsset = "BTC",
+      time = 1499865549590,
+      isBuyer = TRUE,
+      isMaker = FALSE,
+      isBestMatch = TRUE,
       isIsolated = FALSE
     )
   ))
@@ -957,9 +1147,40 @@ mock_isolated_margin_account_data <- function() {
     totalNetAssetOfBtc = "0.00000000",
     assets = list(
       list(
-        baseAsset = list(asset = "BTC", borrowEnabled = TRUE, borrowed = "0.00000000", free = "0.00000000", interest = "0.00000000", locked = "0.00000000", netAsset = "0.00000000", netAssetOfBtc = "0.00000000", repayEnabled = TRUE, totalAsset = "0.00000000"),
-        quoteAsset = list(asset = "USDT", borrowEnabled = TRUE, borrowed = "0.00000000", free = "0.00000000", interest = "0.00000000", locked = "0.00000000", netAsset = "0.00000000", netAssetOfBtc = "0.00000000", repayEnabled = TRUE, totalAsset = "0.00000000"),
-        symbol = "BTCUSDT", isolatedCreated = TRUE, enabled = TRUE, marginLevel = "0.00000000", marginLevelStatus = "EXCESSIVE", marginRatio = "0.00000000", indexPrice = "67232.90000000", liquidatePrice = "0.00000000", liquidateRate = "0.00000000", tradeEnabled = TRUE
+        baseAsset = list(
+          asset = "BTC",
+          borrowEnabled = TRUE,
+          borrowed = "0.00000000",
+          free = "0.00000000",
+          interest = "0.00000000",
+          locked = "0.00000000",
+          netAsset = "0.00000000",
+          netAssetOfBtc = "0.00000000",
+          repayEnabled = TRUE,
+          totalAsset = "0.00000000"
+        ),
+        quoteAsset = list(
+          asset = "USDT",
+          borrowEnabled = TRUE,
+          borrowed = "0.00000000",
+          free = "0.00000000",
+          interest = "0.00000000",
+          locked = "0.00000000",
+          netAsset = "0.00000000",
+          netAssetOfBtc = "0.00000000",
+          repayEnabled = TRUE,
+          totalAsset = "0.00000000"
+        ),
+        symbol = "BTCUSDT",
+        isolatedCreated = TRUE,
+        enabled = TRUE,
+        marginLevel = "0.00000000",
+        marginLevelStatus = "EXCESSIVE",
+        marginRatio = "0.00000000",
+        indexPrice = "67232.90000000",
+        liquidatePrice = "0.00000000",
+        liquidateRate = "0.00000000",
+        tradeEnabled = TRUE
       )
     )
   ))
@@ -982,7 +1203,36 @@ mock_futures_exchange_info_data <- function() {
     timezone = "UTC",
     serverTime = 1499827319559,
     symbols = list(
-      list(symbol = "BTCUSDT", pair = "BTCUSDT", contractType = "PERPETUAL", deliveryDate = 4133404800000, onboardDate = 1569398400000, status = "TRADING", baseAsset = "BTC", quoteAsset = "USDT", marginAsset = "USDT", pricePrecision = 2L, quantityPrecision = 3L, baseAssetPrecision = 8L, quotePrecision = 8L, underlyingType = "COIN", underlyingSubType = list("PoW"), settlePlan = 0L, triggerProtect = "0.0500", filters = list(list(filterType = "PRICE_FILTER", minPrice = "556.72", maxPrice = "4529764", tickSize = "0.01")), orderTypes = list("LIMIT", "MARKET", "STOP", "STOP_MARKET", "TAKE_PROFIT", "TAKE_PROFIT_MARKET", "TRAILING_STOP_MARKET"), timeInForce = list("GTC", "IOC", "FOK", "GTX", "GTD"))
+      list(
+        symbol = "BTCUSDT",
+        pair = "BTCUSDT",
+        contractType = "PERPETUAL",
+        deliveryDate = 4133404800000,
+        onboardDate = 1569398400000,
+        status = "TRADING",
+        baseAsset = "BTC",
+        quoteAsset = "USDT",
+        marginAsset = "USDT",
+        pricePrecision = 2L,
+        quantityPrecision = 3L,
+        baseAssetPrecision = 8L,
+        quotePrecision = 8L,
+        underlyingType = "COIN",
+        underlyingSubType = list("PoW"),
+        settlePlan = 0L,
+        triggerProtect = "0.0500",
+        filters = list(list(filterType = "PRICE_FILTER", minPrice = "556.72", maxPrice = "4529764", tickSize = "0.01")),
+        orderTypes = list(
+          "LIMIT",
+          "MARKET",
+          "STOP",
+          "STOP_MARKET",
+          "TAKE_PROFIT",
+          "TAKE_PROFIT_MARKET",
+          "TRAILING_STOP_MARKET"
+        ),
+        timeInForce = list("GTC", "IOC", "FOK", "GTX", "GTD")
+      )
     )
   ))
 }
@@ -991,10 +1241,14 @@ mock_futures_exchange_info_data <- function() {
 #' @export
 mock_futures_mark_price_data <- function() {
   return(list(
-    symbol = "BTCUSDT", markPrice = "67232.90000000",
-    indexPrice = "67230.50000000", estimatedSettlePrice = "67231.70000000",
-    lastFundingRate = "0.00010000", nextFundingTime = 1661493600000,
-    interestRate = "0.00010000", time = 1661493146000
+    symbol = "BTCUSDT",
+    markPrice = "67232.90000000",
+    indexPrice = "67230.50000000",
+    estimatedSettlePrice = "67231.70000000",
+    lastFundingRate = "0.00010000",
+    nextFundingTime = 1661493600000,
+    interestRate = "0.00010000",
+    time = 1661493146000
   ))
 }
 
@@ -1027,14 +1281,28 @@ mock_futures_ticker_data <- function() {
 #' @export
 mock_futures_order_response <- function() {
   return(list(
-    orderId = 283194212L, symbol = "BTCUSDT", status = "NEW",
-    clientOrderId = "test_futures_order", price = "50000.00",
-    avgPrice = "0.00", origQty = "0.001", executedQty = "0.000",
-    cumQuote = "0.00", timeInForce = "GTC", type = "LIMIT",
-    reduceOnly = FALSE, closePosition = FALSE, side = "BUY",
-    positionSide = "BOTH", stopPrice = "0.00", workingType = "CONTRACT_PRICE",
-    origType = "LIMIT", priceMatch = "NONE", selfTradePreventionMode = "NONE",
-    goodTillDate = 0L, updateTime = 1661493146000
+    orderId = 283194212L,
+    symbol = "BTCUSDT",
+    status = "NEW",
+    clientOrderId = "test_futures_order",
+    price = "50000.00",
+    avgPrice = "0.00",
+    origQty = "0.001",
+    executedQty = "0.000",
+    cumQuote = "0.00",
+    timeInForce = "GTC",
+    type = "LIMIT",
+    reduceOnly = FALSE,
+    closePosition = FALSE,
+    side = "BUY",
+    positionSide = "BOTH",
+    stopPrice = "0.00",
+    workingType = "CONTRACT_PRICE",
+    origType = "LIMIT",
+    priceMatch = "NONE",
+    selfTradePreventionMode = "NONE",
+    goodTillDate = 0L,
+    updateTime = 1661493146000
   ))
 }
 
@@ -1048,19 +1316,62 @@ mock_futures_cancel_all_response <- function() {
 #' @export
 mock_futures_account_data <- function() {
   return(list(
-    feeTier = 0L, canTrade = TRUE, canDeposit = TRUE, canWithdraw = TRUE,
-    updateTime = 0L, multiAssetsMargin = FALSE,
-    totalInitialMargin = "0.00000000", totalMaintMargin = "0.00000000",
-    totalWalletBalance = "1000.00000000", totalUnrealizedProfit = "0.00000000",
-    totalMarginBalance = "1000.00000000", totalPositionInitialMargin = "0.00000000",
-    totalOpenOrderInitialMargin = "0.00000000", totalCrossWalletBalance = "1000.00000000",
-    totalCrossUnPnl = "0.00000000", availableBalance = "1000.00000000",
+    feeTier = 0L,
+    canTrade = TRUE,
+    canDeposit = TRUE,
+    canWithdraw = TRUE,
+    updateTime = 0L,
+    multiAssetsMargin = FALSE,
+    totalInitialMargin = "0.00000000",
+    totalMaintMargin = "0.00000000",
+    totalWalletBalance = "1000.00000000",
+    totalUnrealizedProfit = "0.00000000",
+    totalMarginBalance = "1000.00000000",
+    totalPositionInitialMargin = "0.00000000",
+    totalOpenOrderInitialMargin = "0.00000000",
+    totalCrossWalletBalance = "1000.00000000",
+    totalCrossUnPnl = "0.00000000",
+    availableBalance = "1000.00000000",
     maxWithdrawAmount = "1000.00000000",
     assets = list(
-      list(asset = "USDT", walletBalance = "1000.00000000", unrealizedProfit = "0.00000000", marginBalance = "1000.00000000", maintMargin = "0.00000000", initialMargin = "0.00000000", positionInitialMargin = "0.00000000", openOrderInitialMargin = "0.00000000", crossWalletBalance = "1000.00000000", crossUnPnl = "0.00000000", availableBalance = "1000.00000000", maxWithdrawAmount = "1000.00000000", marginAvailable = TRUE, updateTime = 0L)
+      list(
+        asset = "USDT",
+        walletBalance = "1000.00000000",
+        unrealizedProfit = "0.00000000",
+        marginBalance = "1000.00000000",
+        maintMargin = "0.00000000",
+        initialMargin = "0.00000000",
+        positionInitialMargin = "0.00000000",
+        openOrderInitialMargin = "0.00000000",
+        crossWalletBalance = "1000.00000000",
+        crossUnPnl = "0.00000000",
+        availableBalance = "1000.00000000",
+        maxWithdrawAmount = "1000.00000000",
+        marginAvailable = TRUE,
+        updateTime = 0L
+      )
     ),
     positions = list(
-      list(symbol = "BTCUSDT", initialMargin = "0", maintMargin = "0", unrealizedProfit = "0.00000000", positionInitialMargin = "0", openOrderInitialMargin = "0", leverage = "20", isolated = FALSE, entryPrice = "0.0", breakEvenPrice = "0.0", maxNotional = "25000000", positionSide = "BOTH", positionAmt = "0.000", notional = "0", isolatedWallet = "0", updateTime = 0L, bidNotional = "0", askNotional = "0")
+      list(
+        symbol = "BTCUSDT",
+        initialMargin = "0",
+        maintMargin = "0",
+        unrealizedProfit = "0.00000000",
+        positionInitialMargin = "0",
+        openOrderInitialMargin = "0",
+        leverage = "20",
+        isolated = FALSE,
+        entryPrice = "0.0",
+        breakEvenPrice = "0.0",
+        maxNotional = "25000000",
+        positionSide = "BOTH",
+        positionAmt = "0.000",
+        notional = "0",
+        isolatedWallet = "0",
+        updateTime = 0L,
+        bidNotional = "0",
+        askNotional = "0"
+      )
     )
   ))
 }
@@ -1069,7 +1380,17 @@ mock_futures_account_data <- function() {
 #' @export
 mock_futures_balances_data <- function() {
   return(list(
-    list(accountAlias = "SgsR", asset = "USDT", balance = "1000.00000000", crossWalletBalance = "1000.00000000", crossUnPnl = "0.00000000", availableBalance = "1000.00000000", maxWithdrawAmount = "1000.00000000", marginAvailable = TRUE, updateTime = 1661493146000)
+    list(
+      accountAlias = "SgsR",
+      asset = "USDT",
+      balance = "1000.00000000",
+      crossWalletBalance = "1000.00000000",
+      crossUnPnl = "0.00000000",
+      availableBalance = "1000.00000000",
+      maxWithdrawAmount = "1000.00000000",
+      marginAvailable = TRUE,
+      updateTime = 1661493146000
+    )
   ))
 }
 
@@ -1077,7 +1398,24 @@ mock_futures_balances_data <- function() {
 #' @export
 mock_futures_positions_data <- function() {
   return(list(
-    list(symbol = "BTCUSDT", positionAmt = "0.001", entryPrice = "50000.00", breakEvenPrice = "50025.00", markPrice = "67232.90", unRealizedProfit = "17.23290000", liquidationPrice = "0", leverage = "20", maxNotionalValue = "25000000", marginType = "cross", isolatedMargin = "0.00000000", isAutoAddMargin = "false", positionSide = "BOTH", notional = "67.23290000", isolatedWallet = "0", updateTime = 1661493146000)
+    list(
+      symbol = "BTCUSDT",
+      positionAmt = "0.001",
+      entryPrice = "50000.00",
+      breakEvenPrice = "50025.00",
+      markPrice = "67232.90",
+      unRealizedProfit = "17.23290000",
+      liquidationPrice = "0",
+      leverage = "20",
+      maxNotionalValue = "25000000",
+      marginType = "cross",
+      isolatedMargin = "0.00000000",
+      isAutoAddMargin = "false",
+      positionSide = "BOTH",
+      notional = "67.23290000",
+      isolatedWallet = "0",
+      updateTime = 1661493146000
+    )
   ))
 }
 
@@ -1097,7 +1435,23 @@ mock_futures_margin_type_response <- function() {
 #' @export
 mock_futures_trades_data <- function() {
   return(list(
-    list(symbol = "BTCUSDT", id = 100001L, orderId = 283194212L, side = "BUY", price = "50000.00", qty = "0.001", realizedPnl = "0.00000000", marginAsset = "USDT", quoteQty = "50.00000000", commission = "0.02000000", commissionAsset = "USDT", time = 1661493146000, positionSide = "BOTH", buyer = TRUE, maker = FALSE)
+    list(
+      symbol = "BTCUSDT",
+      id = 100001L,
+      orderId = 283194212L,
+      side = "BUY",
+      price = "50000.00",
+      qty = "0.001",
+      realizedPnl = "0.00000000",
+      marginAsset = "USDT",
+      quoteQty = "50.00000000",
+      commission = "0.02000000",
+      commissionAsset = "USDT",
+      time = 1661493146000,
+      positionSide = "BOTH",
+      buyer = TRUE,
+      maker = FALSE
+    )
   ))
 }
 
@@ -1105,7 +1459,16 @@ mock_futures_trades_data <- function() {
 #' @export
 mock_futures_income_data <- function() {
   return(list(
-    list(symbol = "BTCUSDT", incomeType = "FUNDING_FEE", income = "-0.01200000", asset = "USDT", info = "", time = 1661493146000, tranId = 100000001L, tradeId = "")
+    list(
+      symbol = "BTCUSDT",
+      incomeType = "FUNDING_FEE",
+      income = "-0.01200000",
+      asset = "USDT",
+      info = "",
+      time = 1661493146000,
+      tranId = 100000001L,
+      tradeId = ""
+    )
   ))
 }
 

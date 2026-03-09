@@ -342,14 +342,18 @@ BinanceSubAccount <- R6::R6Class(
         rlang::abort(paste0(
           "'fromAccountType' must be one of: ",
           paste(valid_types, collapse = ", "),
-          ". Got: '", fromAccountType, "'."
+          ". Got: '",
+          fromAccountType,
+          "'."
         ))
       }
       if (!toAccountType %in% valid_types) {
         rlang::abort(paste0(
           "'toAccountType' must be one of: ",
           paste(valid_types, collapse = ", "),
-          ". Got: '", toAccountType, "'."
+          ". Got: '",
+          toAccountType,
+          "'."
         ))
       }
 

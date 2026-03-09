@@ -232,8 +232,7 @@ BinanceMargin <- R6::R6Class(
       rlang::arg_match0(side, c("BUY", "SELL"))
       rlang::arg_match0(
         type,
-        c("LIMIT", "MARKET", "STOP_LOSS", "STOP_LOSS_LIMIT",
-          "TAKE_PROFIT", "TAKE_PROFIT_LIMIT", "LIMIT_MAKER")
+        c("LIMIT", "MARKET", "STOP_LOSS", "STOP_LOSS_LIMIT", "TAKE_PROFIT", "TAKE_PROFIT_LIMIT", "LIMIT_MAKER")
       )
 
       if (!is.null(sideEffectType)) {
@@ -242,10 +241,18 @@ BinanceMargin <- R6::R6Class(
       }
 
       # Convert numeric values to character for precision
-      if (!is.null(price)) price <- as.character(price)
-      if (!is.null(quantity)) quantity <- as.character(quantity)
-      if (!is.null(quoteOrderQty)) quoteOrderQty <- as.character(quoteOrderQty)
-      if (!is.null(stopPrice)) stopPrice <- as.character(stopPrice)
+      if (!is.null(price)) {
+        price <- as.character(price)
+      }
+      if (!is.null(quantity)) {
+        quantity <- as.character(quantity)
+      }
+      if (!is.null(quoteOrderQty)) {
+        quoteOrderQty <- as.character(quoteOrderQty)
+      }
+      if (!is.null(stopPrice)) {
+        stopPrice <- as.character(stopPrice)
+      }
 
       return(private$.request(
         endpoint = "/sapi/v1/margin/order",

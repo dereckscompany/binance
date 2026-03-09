@@ -63,8 +63,11 @@ test_that("add_order returns order data.table with transact_time as POSIXct", {
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_margin()$add_order(
-    symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
-    price = 50000, quantity = 0.0001
+    symbol = "BTCUSDT",
+    side = "BUY",
+    type = "LIMIT",
+    price = 50000,
+    quantity = 0.0001
   )
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
@@ -86,8 +89,11 @@ test_that("add_order sends POST to correct endpoint", {
   })
 
   new_margin()$add_order(
-    symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
-    price = 50000, quantity = 0.0001
+    symbol = "BTCUSDT",
+    side = "BUY",
+    type = "LIMIT",
+    price = 50000,
+    quantity = 0.0001
   )
   expect_true(grepl("sapi/v1/margin/order", captured_url))
 })
@@ -106,7 +112,9 @@ test_that("add_order validates side and type", {
 test_that("add_order validates sideEffectType when provided", {
   expect_error(
     new_margin()$add_order(
-      symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
+      symbol = "BTCUSDT",
+      side = "BUY",
+      type = "LIMIT",
       sideEffectType = "INVALID"
     ),
     "INVALID"
@@ -344,8 +352,10 @@ test_that("add_isolated_transfer returns data.table with tran_id", {
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_margin()$add_isolated_transfer(
-    asset = "USDT", symbol = "BTCUSDT",
-    transFrom = "SPOT", transTo = "ISOLATED_MARGIN",
+    asset = "USDT",
+    symbol = "BTCUSDT",
+    transFrom = "SPOT",
+    transTo = "ISOLATED_MARGIN",
     amount = 100
   )
   expect_s3_class(dt, "data.table")
@@ -357,16 +367,20 @@ test_that("add_isolated_transfer returns data.table with tran_id", {
 test_that("add_isolated_transfer validates transFrom and transTo", {
   expect_error(
     new_margin()$add_isolated_transfer(
-      asset = "USDT", symbol = "BTCUSDT",
-      transFrom = "INVALID", transTo = "SPOT",
+      asset = "USDT",
+      symbol = "BTCUSDT",
+      transFrom = "INVALID",
+      transTo = "SPOT",
       amount = 100
     ),
     "INVALID"
   )
   expect_error(
     new_margin()$add_isolated_transfer(
-      asset = "USDT", symbol = "BTCUSDT",
-      transFrom = "SPOT", transTo = "INVALID",
+      asset = "USDT",
+      symbol = "BTCUSDT",
+      transFrom = "SPOT",
+      transTo = "INVALID",
       amount = 100
     ),
     "INVALID"
@@ -384,8 +398,10 @@ test_that("add_isolated_transfer sends POST to correct endpoint", {
   })
 
   new_margin()$add_isolated_transfer(
-    asset = "USDT", symbol = "BTCUSDT",
-    transFrom = "SPOT", transTo = "ISOLATED_MARGIN",
+    asset = "USDT",
+    symbol = "BTCUSDT",
+    transFrom = "SPOT",
+    transTo = "ISOLATED_MARGIN",
     amount = 100
   )
   expect_true(grepl("sapi/v1/margin/isolated/transfer", captured_url))

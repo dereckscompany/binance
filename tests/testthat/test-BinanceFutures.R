@@ -28,7 +28,14 @@ test_that("add_order returns data.table with order details", {
   resp <- mock_binance_response(data = mock_futures_order_response())
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_futures()$add_order(symbol = "BTCUSDT", side = "BUY", type = "LIMIT", quantity = 0.001, price = 50000, timeInForce = "GTC")
+  dt <- new_futures()$add_order(
+    symbol = "BTCUSDT",
+    side = "BUY",
+    type = "LIMIT",
+    quantity = 0.001,
+    price = 50000,
+    timeInForce = "GTC"
+  )
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   expect_equal(dt$symbol, "BTCUSDT")
@@ -65,7 +72,14 @@ test_that("add_order_test returns empty data.table on success", {
   resp <- mock_binance_response(data = list())
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_futures()$add_order_test(symbol = "BTCUSDT", side = "BUY", type = "LIMIT", quantity = 0.001, price = 50000, timeInForce = "GTC")
+  dt <- new_futures()$add_order_test(
+    symbol = "BTCUSDT",
+    side = "BUY",
+    type = "LIMIT",
+    quantity = 0.001,
+    price = 50000,
+    timeInForce = "GTC"
+  )
   expect_s3_class(dt, "data.table")
 })
 

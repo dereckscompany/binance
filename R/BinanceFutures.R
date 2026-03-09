@@ -80,7 +80,6 @@ BinanceFutures <- R6::R6Class(
   "BinanceFutures",
   inherit = BinanceBase,
   public = list(
-
     #' @description
     #' Initialise a BinanceFutures Object
     #'
@@ -183,7 +182,10 @@ BinanceFutures <- R6::R6Class(
       side <- toupper(side)
       type <- toupper(type)
       rlang::arg_match0(side, c("BUY", "SELL"))
-      rlang::arg_match0(type, c("LIMIT", "MARKET", "STOP", "STOP_MARKET", "TAKE_PROFIT", "TAKE_PROFIT_MARKET", "TRAILING_STOP_MARKET"))
+      rlang::arg_match0(
+        type,
+        c("LIMIT", "MARKET", "STOP", "STOP_MARKET", "TAKE_PROFIT", "TAKE_PROFIT_MARKET", "TRAILING_STOP_MARKET")
+      )
 
       if (!is.null(positionSide)) {
         positionSide <- toupper(positionSide)
@@ -194,11 +196,21 @@ BinanceFutures <- R6::R6Class(
         rlang::arg_match0(workingType, c("MARK_PRICE", "CONTRACT_PRICE"))
       }
 
-      if (!is.null(price)) price <- as.character(price)
-      if (!is.null(quantity)) quantity <- as.character(quantity)
-      if (!is.null(stopPrice)) stopPrice <- as.character(stopPrice)
-      if (!is.null(reduceOnly)) reduceOnly <- tolower(as.character(reduceOnly))
-      if (!is.null(closePosition)) closePosition <- tolower(as.character(closePosition))
+      if (!is.null(price)) {
+        price <- as.character(price)
+      }
+      if (!is.null(quantity)) {
+        quantity <- as.character(quantity)
+      }
+      if (!is.null(stopPrice)) {
+        stopPrice <- as.character(stopPrice)
+      }
+      if (!is.null(reduceOnly)) {
+        reduceOnly <- tolower(as.character(reduceOnly))
+      }
+      if (!is.null(closePosition)) {
+        closePosition <- tolower(as.character(closePosition))
+      }
 
       body <- list(
         symbol = symbol,
@@ -285,7 +297,10 @@ BinanceFutures <- R6::R6Class(
       side <- toupper(side)
       type <- toupper(type)
       rlang::arg_match0(side, c("BUY", "SELL"))
-      rlang::arg_match0(type, c("LIMIT", "MARKET", "STOP", "STOP_MARKET", "TAKE_PROFIT", "TAKE_PROFIT_MARKET", "TRAILING_STOP_MARKET"))
+      rlang::arg_match0(
+        type,
+        c("LIMIT", "MARKET", "STOP", "STOP_MARKET", "TAKE_PROFIT", "TAKE_PROFIT_MARKET", "TRAILING_STOP_MARKET")
+      )
 
       if (!is.null(positionSide)) {
         positionSide <- toupper(positionSide)
@@ -296,11 +311,21 @@ BinanceFutures <- R6::R6Class(
         rlang::arg_match0(workingType, c("MARK_PRICE", "CONTRACT_PRICE"))
       }
 
-      if (!is.null(price)) price <- as.character(price)
-      if (!is.null(quantity)) quantity <- as.character(quantity)
-      if (!is.null(stopPrice)) stopPrice <- as.character(stopPrice)
-      if (!is.null(reduceOnly)) reduceOnly <- tolower(as.character(reduceOnly))
-      if (!is.null(closePosition)) closePosition <- tolower(as.character(closePosition))
+      if (!is.null(price)) {
+        price <- as.character(price)
+      }
+      if (!is.null(quantity)) {
+        quantity <- as.character(quantity)
+      }
+      if (!is.null(stopPrice)) {
+        stopPrice <- as.character(stopPrice)
+      }
+      if (!is.null(reduceOnly)) {
+        reduceOnly <- tolower(as.character(reduceOnly))
+      }
+      if (!is.null(closePosition)) {
+        closePosition <- tolower(as.character(closePosition))
+      }
 
       body <- list(
         symbol = symbol,
@@ -1080,15 +1105,30 @@ BinanceFutures <- R6::R6Class(
     ) {
       if (!is.null(incomeType)) {
         incomeType <- toupper(incomeType)
-        rlang::arg_match0(incomeType, c(
-          "TRANSFER", "WELCOME_BONUS", "REALIZED_PNL", "FUNDING_FEE",
-          "COMMISSION", "INSURANCE_CLEAR", "REFERRAL_KICKBACK",
-          "COMMISSION_REBATE", "API_REBATE", "CONTEST_REWARD",
-          "CROSS_COLLATERAL_TRANSFER", "OPTIONS_PREMIUM_FEE",
-          "OPTIONS_SETTLE_PROFIT", "INTERNAL_TRANSFER", "AUTO_EXCHANGE",
-          "DELIVERED_SETTELMENT", "COIN_SWAP_DEPOSIT", "COIN_SWAP_WITHDRAW",
-          "POSITION_LIMIT_INCREASE_FEE"
-        ))
+        rlang::arg_match0(
+          incomeType,
+          c(
+            "TRANSFER",
+            "WELCOME_BONUS",
+            "REALIZED_PNL",
+            "FUNDING_FEE",
+            "COMMISSION",
+            "INSURANCE_CLEAR",
+            "REFERRAL_KICKBACK",
+            "COMMISSION_REBATE",
+            "API_REBATE",
+            "CONTEST_REWARD",
+            "CROSS_COLLATERAL_TRANSFER",
+            "OPTIONS_PREMIUM_FEE",
+            "OPTIONS_SETTLE_PROFIT",
+            "INTERNAL_TRANSFER",
+            "AUTO_EXCHANGE",
+            "DELIVERED_SETTELMENT",
+            "COIN_SWAP_DEPOSIT",
+            "COIN_SWAP_WITHDRAW",
+            "POSITION_LIMIT_INCREASE_FEE"
+          )
+        )
       }
 
       return(private$.request(

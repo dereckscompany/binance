@@ -109,7 +109,11 @@ box::use(./mockery[
   list(pattern = "sapi/v1/sub-account/list", fixture = function() mock_sub_account_list_data()),
   # Earn
   list(pattern = "sapi/v1/simple-earn/flexible/list", fixture = function() mock_flexible_products_data()),
-  list(pattern = "sapi/v1/simple-earn/flexible/subscribe", fixture = function() mock_flexible_subscribe_response(), method = "POST"),
+  list(
+    pattern = "sapi/v1/simple-earn/flexible/subscribe",
+    fixture = function() mock_flexible_subscribe_response(),
+    method = "POST"
+  ),
   list(pattern = "sapi/v1/simple-earn/flexible/position", fixture = function() mock_flexible_position_data()),
   # Futures Data (fapi endpoints)
   list(pattern = "fapi/v1/exchangeInfo", fixture = function() mock_futures_exchange_info_data()),
