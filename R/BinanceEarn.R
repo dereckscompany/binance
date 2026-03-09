@@ -74,7 +74,7 @@ BinanceEarn <- R6::R6Class(
     #' `GET https://api.binance.com/sapi/v1/simple-earn/flexible/list`
     #'
     #' ### Official Documentation
-    #' [Binance Simple Earn Flexible List](https://developers.binance.com/docs/simple_earn/account/Get-Simple-Earn-Flexible-Product-List)
+    #' [Binance Simple Earn Flexible List](https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Simple-Earn-Flexible-Product-List)
     #'
     #' ### curl
     #' ```
@@ -149,7 +149,7 @@ BinanceEarn <- R6::R6Class(
     #' `GET https://api.binance.com/sapi/v1/simple-earn/locked/list`
     #'
     #' ### Official Documentation
-    #' [Binance Simple Earn Locked List](https://developers.binance.com/docs/simple_earn/account/Get-Simple-Earn-Locked-Product-List)
+    #' [Binance Simple Earn Locked List](https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Simple-Earn-Locked-Product-List)
     #'
     #' ### curl
     #' ```
@@ -221,7 +221,7 @@ BinanceEarn <- R6::R6Class(
     #' `POST https://api.binance.com/sapi/v1/simple-earn/flexible/subscribe`
     #'
     #' ### Official Documentation
-    #' [Binance Simple Earn Flexible Subscribe](https://developers.binance.com/docs/simple_earn/earn/Subscribe-Flexible-Product)
+    #' [Binance Simple Earn Flexible Subscribe](https://developers.binance.com/docs/simple_earn/flexible-locked/earn)
     #'
     #' ### curl
     #' ```
@@ -241,6 +241,7 @@ BinanceEarn <- R6::R6Class(
     #' @param productId Character; the product ID to subscribe to.
     #' @param amount Numeric; amount to subscribe.
     #' @param autoSubscribe Logical or NULL; whether to enable auto-subscription.
+    #' @param sourceAccount Character or NULL; source wallet: `"SPOT"`, `"FUND"`, or `"ALL"`. Default `"SPOT"`.
     #' @param recvWindow Integer or NULL; max 60000.
     #' @return `data.table` with one row and the following columns:
     #' - `purchase_id` (integer): Unique purchase identifier.
@@ -252,7 +253,7 @@ BinanceEarn <- R6::R6Class(
     #' result <- earn$add_flexible_subscription(productId = "USDT001", amount = 100)
     #' print(result)
     #' }
-    add_flexible_subscription = function(productId, amount, autoSubscribe = NULL, recvWindow = NULL) {
+    add_flexible_subscription = function(productId, amount, autoSubscribe = NULL, sourceAccount = NULL, recvWindow = NULL) {
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/subscribe",
         method = "POST",
@@ -260,6 +261,7 @@ BinanceEarn <- R6::R6Class(
           productId = productId,
           amount = as.character(amount),
           autoSubscribe = autoSubscribe,
+          sourceAccount = sourceAccount,
           recvWindow = recvWindow
         ),
         .parser = function(data) {
@@ -277,7 +279,7 @@ BinanceEarn <- R6::R6Class(
     #' `POST https://api.binance.com/sapi/v1/simple-earn/locked/subscribe`
     #'
     #' ### Official Documentation
-    #' [Binance Simple Earn Locked Subscribe](https://developers.binance.com/docs/simple_earn/earn/Subscribe-Locked-Product)
+    #' [Binance Simple Earn Locked Subscribe](https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Subscribe-Locked-Product)
     #'
     #' ### curl
     #' ```
@@ -337,7 +339,7 @@ BinanceEarn <- R6::R6Class(
     #' `POST https://api.binance.com/sapi/v1/simple-earn/flexible/redeem`
     #'
     #' ### Official Documentation
-    #' [Binance Simple Earn Flexible Redeem](https://developers.binance.com/docs/simple_earn/earn/Redeem-Flexible-Product)
+    #' [Binance Simple Earn Flexible Redeem](https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Redeem-Flexible-Product)
     #'
     #' ### curl
     #' ```
@@ -357,6 +359,7 @@ BinanceEarn <- R6::R6Class(
     #' @param productId Character; the product ID to redeem from.
     #' @param amount Numeric or NULL; amount to redeem. If NULL, use `redeemAll`.
     #' @param redeemAll Logical or NULL; if TRUE, redeem entire position.
+    #' @param destAccount Character or NULL; destination wallet: `"SPOT"` or `"FUND"`. Default `"SPOT"`.
     #' @param recvWindow Integer or NULL; max 60000.
     #' @return `data.table` with one row and the following columns:
     #' - `redeem_id` (integer): Unique redemption identifier.
@@ -368,7 +371,7 @@ BinanceEarn <- R6::R6Class(
     #' result <- earn$add_flexible_redemption(productId = "USDT001", amount = 50)
     #' print(result)
     #' }
-    add_flexible_redemption = function(productId, amount = NULL, redeemAll = NULL, recvWindow = NULL) {
+    add_flexible_redemption = function(productId, amount = NULL, redeemAll = NULL, destAccount = NULL, recvWindow = NULL) {
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/redeem",
         method = "POST",
@@ -376,6 +379,7 @@ BinanceEarn <- R6::R6Class(
           productId = productId,
           amount = if (!is.null(amount)) as.character(amount) else NULL,
           redeemAll = redeemAll,
+          destAccount = destAccount,
           recvWindow = recvWindow
         ),
         .parser = function(data) {
@@ -393,7 +397,7 @@ BinanceEarn <- R6::R6Class(
     #' `POST https://api.binance.com/sapi/v1/simple-earn/locked/redeem`
     #'
     #' ### Official Documentation
-    #' [Binance Simple Earn Locked Redeem](https://developers.binance.com/docs/simple_earn/earn/Redeem-Locked-Product)
+    #' [Binance Simple Earn Locked Redeem](https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Redeem-Locked-Product)
     #'
     #' ### curl
     #' ```
@@ -447,7 +451,7 @@ BinanceEarn <- R6::R6Class(
     #' `GET https://api.binance.com/sapi/v1/simple-earn/flexible/position`
     #'
     #' ### Official Documentation
-    #' [Binance Simple Earn Flexible Position](https://developers.binance.com/docs/simple_earn/account/Get-Flexible-Product-Position)
+    #' [Binance Simple Earn Flexible Position](https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Flexible-Product-Position)
     #'
     #' ### curl
     #' ```
@@ -517,7 +521,7 @@ BinanceEarn <- R6::R6Class(
     #' `GET https://api.binance.com/sapi/v1/simple-earn/locked/position`
     #'
     #' ### Official Documentation
-    #' [Binance Simple Earn Locked Position](https://developers.binance.com/docs/simple_earn/account/Get-Locked-Product-Position)
+    #' [Binance Simple Earn Locked Position](https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Locked-Product-Position)
     #'
     #' ### curl
     #' ```
@@ -583,7 +587,7 @@ BinanceEarn <- R6::R6Class(
     #' `GET https://api.binance.com/sapi/v1/simple-earn/flexible/history/subscriptionRecord`
     #'
     #' ### Official Documentation
-    #' [Binance Simple Earn Flexible Subscription Record](https://developers.binance.com/docs/simple_earn/history/Get-Flexible-Subscription-Record)
+    #' [Binance Simple Earn Flexible Subscription Record](https://developers.binance.com/docs/simple_earn/flexible-locked/history)
     #'
     #' ### curl
     #' ```
@@ -669,7 +673,7 @@ BinanceEarn <- R6::R6Class(
     #' `GET https://api.binance.com/sapi/v1/simple-earn/locked/history/subscriptionRecord`
     #'
     #' ### Official Documentation
-    #' [Binance Simple Earn Locked Subscription Record](https://developers.binance.com/docs/simple_earn/history/Get-Locked-Subscription-Record)
+    #' [Binance Simple Earn Locked Subscription Record](https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Locked-Subscription-Record)
     #'
     #' ### curl
     #' ```
@@ -736,7 +740,7 @@ BinanceEarn <- R6::R6Class(
     #' `GET https://api.binance.com/sapi/v1/simple-earn/flexible/history/redemptionRecord`
     #'
     #' ### Official Documentation
-    #' [Binance Simple Earn Flexible Redemption Record](https://developers.binance.com/docs/simple_earn/history/Get-Flexible-Redemption-Record)
+    #' [Binance Simple Earn Flexible Redemption Record](https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Flexible-Redemption-Record)
     #'
     #' ### curl
     #' ```
@@ -804,7 +808,7 @@ BinanceEarn <- R6::R6Class(
     #' `GET https://api.binance.com/sapi/v1/simple-earn/locked/history/redemptionRecord`
     #'
     #' ### Official Documentation
-    #' [Binance Simple Earn Locked Redemption Record](https://developers.binance.com/docs/simple_earn/history/Get-Locked-Redemption-Record)
+    #' [Binance Simple Earn Locked Redemption Record](https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Locked-Redemption-Record)
     #'
     #' ### curl
     #' ```

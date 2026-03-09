@@ -417,7 +417,7 @@ Retrieves spot account summary for sub-accounts.
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/sub_account/asset-management/Sub-account-Spot-Assets-Summary}{Binance Sub-Account Spot Summary}
+\href{https://developers.binance.com/docs/sub_account/asset-management/Query-Sub-account-Spot-Assets-Summary}{Binance Sub-Account Spot Summary}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_spot_summary(

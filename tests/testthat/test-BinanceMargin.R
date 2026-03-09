@@ -40,7 +40,7 @@ test_that("add_borrow sends POST to correct endpoint", {
   })
 
   new_margin()$add_borrow(asset = "USDT", amount = 100)
-  expect_true(grepl("sapi/v1/margin/loan", captured_url))
+  expect_true(grepl("sapi/v1/margin/borrow-repay", captured_url))
   expect_equal(captured_method, "POST")
 })
 

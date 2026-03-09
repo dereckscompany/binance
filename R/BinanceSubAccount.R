@@ -246,7 +246,7 @@ BinanceSubAccount <- R6::R6Class(
     #' `GET https://api.binance.com/sapi/v1/sub-account/spotSummary`
     #'
     #' ### Official Documentation
-    #' [Binance Sub-Account Spot Summary](https://developers.binance.com/docs/sub_account/asset-management/Sub-account-Spot-Assets-Summary)
+    #' [Binance Sub-Account Spot Summary](https://developers.binance.com/docs/sub_account/asset-management/Query-Sub-account-Spot-Assets-Summary)
     #'
     #' @param email Character or NULL; filter by sub-account email.
     #' @param page Integer or NULL; page number (default 1).

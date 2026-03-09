@@ -34,8 +34,8 @@ These are SAPI (\verb{/sapi/}) endpoints.
 
 \subsection{Endpoints Covered}{\tabular{lll}{
    Method \tab Endpoint \tab HTTP \cr
-   add_borrow \tab POST /sapi/v1/margin/loan \tab POST \cr
-   add_repay \tab POST /sapi/v1/margin/repay \tab POST \cr
+   add_borrow \tab POST /sapi/v1/margin/borrow-repay (type=BORROW) \tab POST \cr
+   add_repay \tab POST /sapi/v1/margin/borrow-repay (type=REPAY) \tab POST \cr
    add_order \tab POST /sapi/v1/margin/order \tab POST \cr
    cancel_order \tab DELETE /sapi/v1/margin/order \tab DELETE \cr
    cancel_all_orders \tab DELETE /sapi/v1/margin/openOrders \tab DELETE \cr
@@ -297,20 +297,21 @@ print(result)
 Borrow on Margin
 
 Initiates a margin loan for the specified asset and amount.
+Uses the consolidated borrow-repay endpoint with \code{type = "BORROW"}.
 \subsection{API Endpoint}{
 
-\verb{POST https://api.binance.com/sapi/v1/margin/loan}
+\verb{POST https://api.binance.com/sapi/v1/margin/borrow-repay}
 }
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow}{Binance Margin Borrow}
+\href{https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay}{Binance Margin Borrow-Repay}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$add_borrow(
   asset,
   amount,
-  isIsolated = NULL,
+  isIsolated = "FALSE",
   symbol = NULL,
   recvWindow = NULL
 )}\if{html}{\out{</div>}}
@@ -323,7 +324,7 @@ Initiates a margin loan for the specified asset and amount.
 
 \item{\code{amount}}{Numeric; amount to borrow.}
 
-\item{\code{isIsolated}}{Character or NULL; \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+\item{\code{isIsolated}}{Character; \code{"TRUE"} or \code{"FALSE"} for isolated margin. Default \code{"FALSE"}.}
 
 \item{\code{symbol}}{Character or NULL; required when \code{isIsolated = "TRUE"}.}
 
@@ -335,7 +336,6 @@ Initiates a margin loan for the specified asset and amount.
 \code{data.table} with one row and the following columns:
 \itemize{
 \item \code{tran_id} (integer): Transaction identifier.
-\item \code{client_tag} (character): Client tag.
 }
 }
 \subsection{Examples}{
@@ -358,20 +358,21 @@ print(result)
 Repay Margin Loan
 
 Repays a margin loan for the specified asset and amount.
+Uses the consolidated borrow-repay endpoint with \code{type = "REPAY"}.
 \subsection{API Endpoint}{
 
-\verb{POST https://api.binance.com/sapi/v1/margin/repay}
+\verb{POST https://api.binance.com/sapi/v1/margin/borrow-repay}
 }
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Repay}{Binance Margin Repay}
+\href{https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay}{Binance Margin Borrow-Repay}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$add_repay(
   asset,
   amount,
-  isIsolated = NULL,
+  isIsolated = "FALSE",
   symbol = NULL,
   recvWindow = NULL
 )}\if{html}{\out{</div>}}
@@ -384,7 +385,7 @@ Repays a margin loan for the specified asset and amount.
 
 \item{\code{amount}}{Numeric; amount to repay.}
 
-\item{\code{isIsolated}}{Character or NULL; \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+\item{\code{isIsolated}}{Character; \code{"TRUE"} or \code{"FALSE"} for isolated margin. Default \code{"FALSE"}.}
 
 \item{\code{symbol}}{Character or NULL; required when \code{isIsolated = "TRUE"}.}
 
@@ -396,7 +397,6 @@ Repays a margin loan for the specified asset and amount.
 \code{data.table} with one row and the following columns:
 \itemize{
 \item \code{tran_id} (integer): Transaction identifier.
-\item \code{client_tag} (character): Client tag.
 }
 }
 \subsection{Examples}{
@@ -1294,7 +1294,7 @@ Transfers assets between spot and isolated margin accounts.
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/margin_trading/transfer/Isolated-Margin-Account-Transfer}{Binance Isolated Margin Transfer}
+\href{https://developers.binance.com/docs/margin_trading/Introduction}{Binance Isolated Margin Transfer}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$add_isolated_transfer(

@@ -23,8 +23,8 @@
 #' ### Endpoints Covered
 #' | Method | Endpoint | HTTP |
 #' |--------|----------|------|
-#' | add_borrow | POST /sapi/v1/margin/loan | POST |
-#' | add_repay | POST /sapi/v1/margin/repay | POST |
+#' | add_borrow | POST /sapi/v1/margin/borrow-repay (type=BORROW) | POST |
+#' | add_repay | POST /sapi/v1/margin/borrow-repay (type=REPAY) | POST |
 #' | add_order | POST /sapi/v1/margin/order | POST |
 #' | cancel_order | DELETE /sapi/v1/margin/order | DELETE |
 #' | cancel_all_orders | DELETE /sapi/v1/margin/openOrders | DELETE |
@@ -81,21 +81,21 @@ BinanceMargin <- R6::R6Class(
     #' Borrow on Margin
     #'
     #' Initiates a margin loan for the specified asset and amount.
+    #' Uses the consolidated borrow-repay endpoint with `type = "BORROW"`.
     #'
     #' ### API Endpoint
-    #' `POST https://api.binance.com/sapi/v1/margin/loan`
+    #' `POST https://api.binance.com/sapi/v1/margin/borrow-repay`
     #'
     #' ### Official Documentation
-    #' [Binance Margin Borrow](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow)
+    #' [Binance Margin Borrow-Repay](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay)
     #'
     #' @param asset Character; asset to borrow (e.g., `"USDT"`).
     #' @param amount Numeric; amount to borrow.
-    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param isIsolated Character; `"TRUE"` or `"FALSE"` for isolated margin. Default `"FALSE"`.
     #' @param symbol Character or NULL; required when `isIsolated = "TRUE"`.
     #' @param recvWindow Integer or NULL; max 60000.
     #' @return `data.table` with one row and the following columns:
     #' - `tran_id` (integer): Transaction identifier.
-    #' - `client_tag` (character): Client tag.
     #'
     #' @examples
     #' \dontrun{
@@ -103,13 +103,14 @@ BinanceMargin <- R6::R6Class(
     #' result <- margin$add_borrow(asset = "USDT", amount = 100)
     #' print(result)
     #' }
-    add_borrow = function(asset, amount, isIsolated = NULL, symbol = NULL, recvWindow = NULL) {
+    add_borrow = function(asset, amount, isIsolated = "FALSE", symbol = NULL, recvWindow = NULL) {
       return(private$.request(
-        endpoint = "/sapi/v1/margin/loan",
+        endpoint = "/sapi/v1/margin/borrow-repay",
         method = "POST",
         query = list(
           asset = asset,
           amount = as.character(amount),
+          type = "BORROW",
           isIsolated = isIsolated,
           symbol = symbol,
           recvWindow = recvWindow
@@ -124,21 +125,21 @@ BinanceMargin <- R6::R6Class(
     #' Repay Margin Loan
     #'
     #' Repays a margin loan for the specified asset and amount.
+    #' Uses the consolidated borrow-repay endpoint with `type = "REPAY"`.
     #'
     #' ### API Endpoint
-    #' `POST https://api.binance.com/sapi/v1/margin/repay`
+    #' `POST https://api.binance.com/sapi/v1/margin/borrow-repay`
     #'
     #' ### Official Documentation
-    #' [Binance Margin Repay](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Repay)
+    #' [Binance Margin Borrow-Repay](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay)
     #'
     #' @param asset Character; asset to repay (e.g., `"USDT"`).
     #' @param amount Numeric; amount to repay.
-    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param isIsolated Character; `"TRUE"` or `"FALSE"` for isolated margin. Default `"FALSE"`.
     #' @param symbol Character or NULL; required when `isIsolated = "TRUE"`.
     #' @param recvWindow Integer or NULL; max 60000.
     #' @return `data.table` with one row and the following columns:
     #' - `tran_id` (integer): Transaction identifier.
-    #' - `client_tag` (character): Client tag.
     #'
     #' @examples
     #' \dontrun{
@@ -146,13 +147,14 @@ BinanceMargin <- R6::R6Class(
     #' result <- margin$add_repay(asset = "USDT", amount = 100)
     #' print(result)
     #' }
-    add_repay = function(asset, amount, isIsolated = NULL, symbol = NULL, recvWindow = NULL) {
+    add_repay = function(asset, amount, isIsolated = "FALSE", symbol = NULL, recvWindow = NULL) {
       return(private$.request(
-        endpoint = "/sapi/v1/margin/repay",
+        endpoint = "/sapi/v1/margin/borrow-repay",
         method = "POST",
         query = list(
           asset = asset,
           amount = as.character(amount),
+          type = "REPAY",
           isIsolated = isIsolated,
           symbol = symbol,
           recvWindow = recvWindow
@@ -944,7 +946,7 @@ BinanceMargin <- R6::R6Class(
     #' `POST https://api.binance.com/sapi/v1/margin/isolated/transfer`
     #'
     #' ### Official Documentation
-    #' [Binance Isolated Margin Transfer](https://developers.binance.com/docs/margin_trading/transfer/Isolated-Margin-Account-Transfer)
+    #' [Binance Isolated Margin Transfer](https://developers.binance.com/docs/margin_trading/Introduction)
     #'
     #' @param asset Character; asset to transfer (e.g., `"USDT"`).
     #' @param symbol Character; isolated margin pair (e.g., `"BTCUSDT"`).

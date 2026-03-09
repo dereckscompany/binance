@@ -234,7 +234,7 @@ Lists available Simple Earn flexible products, optionally filtered by asset.
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/simple_earn/account/Get-Simple-Earn-Flexible-Product-List}{Binance Simple Earn Flexible List}
+\href{https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Simple-Earn-Flexible-Product-List}{Binance Simple Earn Flexible List}
 }
 
 \subsection{curl}{
@@ -329,7 +329,7 @@ Lists available Simple Earn locked products, optionally filtered by asset.
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/simple_earn/account/Get-Simple-Earn-Locked-Product-List}{Binance Simple Earn Locked List}
+\href{https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Simple-Earn-Locked-Product-List}{Binance Simple Earn Locked List}
 }
 
 \subsection{curl}{
@@ -419,7 +419,7 @@ Subscribes to a Simple Earn flexible product.
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/simple_earn/earn/Subscribe-Flexible-Product}{Binance Simple Earn Flexible Subscribe}
+\href{https://developers.binance.com/docs/simple_earn/flexible-locked/earn}{Binance Simple Earn Flexible Subscribe}
 }
 
 \subsection{curl}{
@@ -443,6 +443,7 @@ Subscribes to a Simple Earn flexible product.
   productId,
   amount,
   autoSubscribe = NULL,
+  sourceAccount = NULL,
   recvWindow = NULL
 )}\if{html}{\out{</div>}}
 }
@@ -455,6 +456,8 @@ Subscribes to a Simple Earn flexible product.
 \item{\code{amount}}{Numeric; amount to subscribe.}
 
 \item{\code{autoSubscribe}}{Logical or NULL; whether to enable auto-subscription.}
+
+\item{\code{sourceAccount}}{Character or NULL; source wallet: \code{"SPOT"}, \code{"FUND"}, or \code{"ALL"}. Default \code{"SPOT"}.}
 
 \item{\code{recvWindow}}{Integer or NULL; max 60000.}
 }
@@ -494,7 +497,7 @@ Subscribes to a Simple Earn locked product.
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/simple_earn/earn/Subscribe-Locked-Product}{Binance Simple Earn Locked Subscribe}
+\href{https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Subscribe-Locked-Product}{Binance Simple Earn Locked Subscribe}
 }
 
 \subsection{curl}{
@@ -571,7 +574,7 @@ Redeems from a Simple Earn flexible product.
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/simple_earn/earn/Redeem-Flexible-Product}{Binance Simple Earn Flexible Redeem}
+\href{https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Redeem-Flexible-Product}{Binance Simple Earn Flexible Redeem}
 }
 
 \subsection{curl}{
@@ -595,6 +598,7 @@ Redeems from a Simple Earn flexible product.
   productId,
   amount = NULL,
   redeemAll = NULL,
+  destAccount = NULL,
   recvWindow = NULL
 )}\if{html}{\out{</div>}}
 }
@@ -607,6 +611,8 @@ Redeems from a Simple Earn flexible product.
 \item{\code{amount}}{Numeric or NULL; amount to redeem. If NULL, use \code{redeemAll}.}
 
 \item{\code{redeemAll}}{Logical or NULL; if TRUE, redeem entire position.}
+
+\item{\code{destAccount}}{Character or NULL; destination wallet: \code{"SPOT"} or \code{"FUND"}. Default \code{"SPOT"}.}
 
 \item{\code{recvWindow}}{Integer or NULL; max 60000.}
 }
@@ -646,7 +652,7 @@ Redeems from a Simple Earn locked product.
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/simple_earn/earn/Redeem-Locked-Product}{Binance Simple Earn Locked Redeem}
+\href{https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Redeem-Locked-Product}{Binance Simple Earn Locked Redeem}
 }
 
 \subsection{curl}{
@@ -712,7 +718,7 @@ Retrieves current flexible earn positions, optionally filtered by asset or produ
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/simple_earn/account/Get-Flexible-Product-Position}{Binance Simple Earn Flexible Position}
+\href{https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Flexible-Product-Position}{Binance Simple Earn Flexible Position}
 }
 
 \subsection{curl}{
@@ -803,7 +809,7 @@ position ID, or project ID.
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/simple_earn/account/Get-Locked-Product-Position}{Binance Simple Earn Locked Position}
+\href{https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Locked-Product-Position}{Binance Simple Earn Locked Position}
 }
 
 \subsection{curl}{
@@ -881,7 +887,7 @@ Retrieves subscription history for flexible earn products.
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/simple_earn/history/Get-Flexible-Subscription-Record}{Binance Simple Earn Flexible Subscription Record}
+\href{https://developers.binance.com/docs/simple_earn/flexible-locked/history}{Binance Simple Earn Flexible Subscription Record}
 }
 
 \subsection{curl}{
@@ -982,7 +988,7 @@ Retrieves subscription history for locked earn products.
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/simple_earn/history/Get-Locked-Subscription-Record}{Binance Simple Earn Locked Subscription Record}
+\href{https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Locked-Subscription-Record}{Binance Simple Earn Locked Subscription Record}
 }
 
 \subsection{curl}{
@@ -1063,7 +1069,7 @@ Retrieves redemption history for flexible earn products.
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/simple_earn/history/Get-Flexible-Redemption-Record}{Binance Simple Earn Flexible Redemption Record}
+\href{https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Flexible-Redemption-Record}{Binance Simple Earn Flexible Redemption Record}
 }
 
 \subsection{curl}{
@@ -1145,7 +1151,7 @@ Retrieves redemption history for locked earn products.
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/simple_earn/history/Get-Locked-Redemption-Record}{Binance Simple Earn Locked Redemption Record}
+\href{https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Locked-Redemption-Record}{Binance Simple Earn Locked Redemption Record}
 }
 
 \subsection{curl}{
