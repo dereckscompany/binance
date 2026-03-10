@@ -5,22 +5,20 @@
 #' purposes. Produced by [binance_backfill_klines()].
 #'
 #' @format A [data.table::data.table] with 500 rows and 14 columns:
-#' \describe{
-#'   \item{open_time}{POSIXct. Candle open time in UTC.}
-#'   \item{open}{Numeric. Opening price.}
-#'   \item{high}{Numeric. Highest price during the interval.}
-#'   \item{low}{Numeric. Lowest price during the interval.}
-#'   \item{close}{Numeric. Closing price.}
-#'   \item{volume}{Numeric. Trading volume in base currency (BTC).}
-#'   \item{close_time}{POSIXct. Candle close time in UTC.}
-#'   \item{quote_volume}{Numeric. Trading volume in quote currency (USDT).}
-#'   \item{trades}{Integer. Number of trades during the interval.}
-#'   \item{taker_buy_base_volume}{Numeric. Taker buy volume in base currency.}
-#'   \item{taker_buy_quote_volume}{Numeric. Taker buy volume in quote currency.}
-#'   \item{ignore}{Character. Unused field from Binance API.}
-#'   \item{symbol}{Character. Trading pair identifier, `"BTCUSDT"`.}
-#'   \item{interval}{Character. Candle interval, `"4h"`.}
-#' }
+#' - `open_time` (POSIXct): Candle open time in UTC.
+#' - `open` (Numeric): Opening price.
+#' - `high` (Numeric): Highest price during the interval.
+#' - `low` (Numeric): Lowest price during the interval.
+#' - `close` (Numeric): Closing price.
+#' - `volume` (Numeric): Trading volume in base currency (BTC).
+#' - `close_time` (POSIXct): Candle close time in UTC.
+#' - `quote_volume` (Numeric): Trading volume in quote currency (USDT).
+#' - `trades` (Integer): Number of trades during the interval.
+#' - `taker_buy_base_volume` (Numeric): Taker buy volume in base currency.
+#' - `taker_buy_quote_volume` (Numeric): Taker buy volume in quote currency.
+#' - `ignore` (Character): Unused field from Binance API.
+#' - `symbol` (Character): Trading pair identifier, `"BTCUSDT"`.
+#' - `interval` (Character): Candle interval, `"4h"`.
 #'
 #' @source Binance API via [binance_backfill_klines()]
 #' @examples

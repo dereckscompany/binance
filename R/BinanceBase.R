@@ -81,7 +81,7 @@ BinanceBase <- R6::R6Class(
         url <- base_url
         private$.get_timestamp_ms <- function() fetch_server_time_ms(url)
       } else {
-        private$.get_timestamp_ms <- function() floor(as.numeric(Sys.time()) * 1000)
+        private$.get_timestamp_ms <- function() floor(as.numeric(lubridate::now("UTC")) * 1000)
       }
 
       if (private$.is_async) {

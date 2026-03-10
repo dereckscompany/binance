@@ -61,7 +61,7 @@ fetch_server_time_ms <- function(base_url, time_endpoint = "/api/v3/time") {
 #' @noRd
 sign_request <- function(req, keys, .get_timestamp_ms = NULL) {
   if (is.null(.get_timestamp_ms)) {
-    .get_timestamp_ms <- function() floor(as.numeric(Sys.time()) * 1000)
+    .get_timestamp_ms <- function() floor(as.numeric(lubridate::now("UTC")) * 1000)
   }
   timestamp <- format(.get_timestamp_ms(), scientific = FALSE)
 
