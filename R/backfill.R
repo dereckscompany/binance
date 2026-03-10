@@ -1,17 +1,17 @@
 # File: R/backfill.R
-# Batch backfill of kline (OHLCV) data across multiple symbols and intervals,
+# Batch backfill of kline (OHLCV) data across multiple symbols and timeframes,
 # with CSV-based resume support.
 
 #' Backfill Binance Kline Data to CSV
 #'
 #' Downloads historical OHLCV candlestick data for one or more trading pairs and
-#' intervals, writing results incrementally to a CSV file. Supports resuming
+#' timeframes, writing results incrementally to a CSV file. Supports resuming
 #' from a partially completed backfill by reading the existing file and skipping
-#' symbol-interval combinations that are already up to date.
+#' symbol-timeframe combinations that are already up to date.
 #'
 #' @param symbols Character vector of trading pair symbols (e.g.,
 #'   `c("BTCUSDT", "ETHUSDT")`). Must not be NULL or empty.
-#' @param intervals Character vector of candle intervals (e.g., `c("1d", "1h")`).
+#' @param timeframes Character vector of candle timeframes (e.g., `c("1d", "1h")`).
 #'   Valid values: `"1s"`, `"1m"`, `"3m"`, `"5m"`, `"15m"`, `"30m"`, `"1h"`,
 #'   `"2h"`, `"4h"`, `"6h"`, `"8h"`, `"12h"`, `"1d"`, `"3d"`, `"1w"`, `"1M"`.
 #' @param from POSIXct or numeric; start of the backfill window. Defaults to one
@@ -22,13 +22,13 @@
 #' @param file Character; path to the output CSV file. Data is appended
 #'   incrementally so progress is saved even if the process is interrupted.
 #' @param base_url Character; Binance API base URL.
-#' @param sleep Numeric; seconds to sleep between each symbol-interval
+#' @param sleep Numeric; seconds to sleep between each symbol-timeframe
 #'   combination to respect rate limits.
 #' @param verbose Logical; if `TRUE`, prints progress messages via [rlang::inform()].
 #'
-#' @return The file path (invisibly). If any symbol-interval combinations
+#' @return The file path (invisibly). If any symbol-timeframe combinations
 #'   failed, a `"failures"` attribute is attached containing a
-#'   [data.table::data.table] with columns `symbol`, `interval`, and `error`.
+#'   [data.table::data.table] with columns `symbol`, `timeframe`, and `error`.
 #'
 #' @importFrom httr2 req_perform
 #' @importFrom lubridate as_datetime now
@@ -39,14 +39,14 @@
 #' \dontrun{
 #' binance_backfill_klines(
 #'   symbols = c("BTCUSDT", "ETHUSDT"),
-#'   intervals = c("1d", "1h"),
+#'   timeframes = c("1d", "1h"),
 #'   from = lubridate::as_datetime("2020-01-01"),
 #'   file = "my_klines.csv"
 #' )
 #' }
 binance_backfill_klines <- function(
   symbols,
-  intervals = "1d",
+  timeframes = "1d",
   from = lubridate::now("UTC") - lubridate::ddays(365),
   to = lubridate::now("UTC"),
   file = "binance_klines.csv",
@@ -81,12 +81,12 @@ binance_backfill_klines <- function(
   resume <- NULL
   if (file.exists(file)) {
     existing <- tryCatch(
-      data.table::fread(file, select = c("symbol", "interval", "open_time")),
+      data.table::fread(file, select = c("symbol", "timeframe", "open_time")),
       error = function(e) NULL
     )
     if (!is.null(existing) && nrow(existing) > 0L) {
       existing[, open_time := lubridate::as_datetime(open_time, tz = "UTC")]
-      resume <- existing[, .(last_dt = max(open_time)), by = .(symbol, interval)]
+      resume <- existing[, .(last_dt = max(open_time)), by = .(symbol, timeframe)]
     }
   }
 
@@ -108,7 +108,7 @@ binance_backfill_klines <- function(
   # --- Build combo grid ---
   combos <- expand.grid(
     symbol = symbols,
-    interval = intervals,
+    timeframe = timeframes,
     stringsAsFactors = FALSE
   )
   total <- nrow(combos)
@@ -118,14 +118,14 @@ binance_backfill_klines <- function(
 
   for (i in seq_len(total)) {
     sym <- combos$symbol[i]
-    intv <- combos$interval[i]
+    intv <- combos$timeframe[i]
 
     # Determine effective from for this combo
     combo_from <- from
     resumed_from <- NULL
 
     if (!is.null(resume)) {
-      match_row <- resume[symbol == sym & interval == intv]
+      match_row <- resume[symbol == sym & timeframe == intv]
       if (nrow(match_row) > 0L) {
         last_dt <- match_row$last_dt[1L]
         if (last_dt >= to) {
@@ -143,7 +143,7 @@ binance_backfill_klines <- function(
       {
         result <- binance_fetch_klines(
           symbol = sym,
-          interval = intv,
+          timeframe = intv,
           from = combo_from,
           to = to,
           .req_fn = sync_req_fn,
@@ -154,7 +154,7 @@ binance_backfill_klines <- function(
       error = function(e) {
         failures[[length(failures) + 1L]] <<- data.table::data.table(
           symbol = sym,
-          interval = intv,
+          timeframe = intv,
           error = conditionMessage(e)
         )
         rlang::warn(sprintf("[%d/%d] %s %s: FAILED - %s", i, total, sym, intv, conditionMessage(e)))
@@ -164,7 +164,7 @@ binance_backfill_klines <- function(
 
     if (!is.null(dt) && nrow(dt) > 0L) {
       dt[, symbol := sym]
-      dt[, interval := intv]
+      dt[, timeframe := intv]
 
       if (!file_exists) {
         data.table::fwrite(dt, file, append = FALSE)

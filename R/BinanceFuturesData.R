@@ -634,7 +634,7 @@ BinanceFuturesData <- R6::R6Class(
     #'   - `last_update_id` (character): Sequence ID for orderbook synchronisation.
     #'   - `side` (character): `"bid"` or `"ask"`.
     #'   - `price` (numeric): Price level.
-    #'   - `quantity` (numeric): Available quantity at this price level.
+    #'   - `size` (numeric): Available size at this price level.
     #'
     #' @examples
     #' \dontrun{

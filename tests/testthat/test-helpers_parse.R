@@ -78,6 +78,6 @@ test_that("parse_orderbook returns proper data.table", {
   expect_equal(nrow(result), 2)
   expect_true("side" %in% names(result))
   expect_true("price" %in% names(result))
-  expect_true("quantity" %in% names(result))
+  expect_true("size" %in% names(result))
   expect_equal(result$side, c("bid", "ask"))
 })

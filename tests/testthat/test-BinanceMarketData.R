@@ -166,7 +166,7 @@ test_that("get_depth returns orderbook with bids and asks", {
   expect_equal(nrow(dt), 6L)
   expect_true("side" %in% names(dt))
   expect_true("price" %in% names(dt))
-  expect_true("quantity" %in% names(dt))
+  expect_true("size" %in% names(dt))
   expect_equal(sum(dt$side == "bid"), 3L)
   expect_equal(sum(dt$side == "ask"), 3L)
 })

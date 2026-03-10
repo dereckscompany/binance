@@ -1,9 +1,9 @@
 # tests/testthat/test-impl_klines.R
 # Tests for the shared klines fetching implementation.
 
-# -- binance_interval_map --
+# -- binance_timeframe_map --
 
-test_that("binance_interval_map contains all expected intervals", {
+test_that("binance_timeframe_map contains all expected timeframes", {
   expected <- c(
     "1s",
     "1m",
@@ -22,30 +22,30 @@ test_that("binance_interval_map contains all expected intervals", {
     "1w",
     "1M"
   )
-  expect_equal(sort(names(binance_interval_map)), sort(expected))
+  expect_equal(sort(names(binance_timeframe_map)), sort(expected))
 })
 
-test_that("binance_interval_map values are correct durations in seconds", {
-  expect_equal(binance_interval_map[["1m"]], 60L)
-  expect_equal(binance_interval_map[["15m"]], 900L)
-  expect_equal(binance_interval_map[["1h"]], 3600L)
-  expect_equal(binance_interval_map[["1d"]], 86400L)
-  expect_equal(binance_interval_map[["1w"]], 604800L)
+test_that("binance_timeframe_map values are correct durations in seconds", {
+  expect_equal(binance_timeframe_map[["1m"]], 60L)
+  expect_equal(binance_timeframe_map[["15m"]], 900L)
+  expect_equal(binance_timeframe_map[["1h"]], 3600L)
+  expect_equal(binance_timeframe_map[["1d"]], 86400L)
+  expect_equal(binance_timeframe_map[["1w"]], 604800L)
 })
 
 # -- binance_fetch_klines validation --
 
-test_that("binance_fetch_klines rejects invalid interval", {
+test_that("binance_fetch_klines rejects invalid timeframe", {
   fake_fn <- function(...) stop("Should not be called")
   expect_error(
     binance_fetch_klines(
       symbol = "BTCUSDT",
-      interval = "2m",
+      timeframe = "2m",
       from = 1729100000,
       to = 1729200000,
       .req_fn = fake_fn
     ),
-    "Invalid interval.*2m"
+    "Invalid timeframe.*2m"
   )
 })
 
@@ -53,7 +53,7 @@ test_that("binance_fetch_klines returns empty data.table for zero-width range", 
   fake_fn <- function(...) stop("Should not be called")
   result <- binance_fetch_klines(
     symbol = "BTCUSDT",
-    interval = "15m",
+    timeframe = "15m",
     from = 1729100000,
     to = 1729100000,
     .req_fn = fake_fn
@@ -111,7 +111,7 @@ test_that("binance_fetch_klines fetches single segment correctly", {
 
   result <- binance_fetch_klines(
     symbol = "BTCUSDT",
-    interval = "1h",
+    timeframe = "1h",
     from = from_ts,
     to = to_ts,
     .req_fn = fake_req_fn
@@ -161,7 +161,7 @@ test_that("binance_fetch_klines segments large time ranges", {
 
   result <- binance_fetch_klines(
     symbol = "BTCUSDT",
-    interval = "1h",
+    timeframe = "1h",
     from = from_ts,
     to = to_ts,
     .req_fn = fake_req_fn
@@ -214,7 +214,7 @@ test_that("binance_fetch_klines deduplicates by open_time", {
 
   result <- binance_fetch_klines(
     symbol = "BTCUSDT",
-    interval = "1h",
+    timeframe = "1h",
     from = from_ts,
     to = to_ts,
     .req_fn = fake_req_fn
@@ -279,7 +279,7 @@ test_that("binance_fetch_klines sorts by open_time ascending", {
 
   result <- binance_fetch_klines(
     symbol = "BTCUSDT",
-    interval = "1h",
+    timeframe = "1h",
     from = from_ts,
     to = to_ts,
     .req_fn = fake_req_fn
@@ -299,7 +299,7 @@ test_that("binance_fetch_klines uses correct endpoint", {
 
   binance_fetch_klines(
     symbol = "BTCUSDT",
-    interval = "1d",
+    timeframe = "1d",
     from = 1729100000,
     to = 1729200000,
     .req_fn = fake_req_fn
@@ -318,7 +318,7 @@ test_that("binance_fetch_klines sets auth = FALSE", {
 
   binance_fetch_klines(
     symbol = "BTCUSDT",
-    interval = "1d",
+    timeframe = "1d",
     from = 1729100000,
     to = 1729200000,
     .req_fn = fake_req_fn
@@ -334,7 +334,7 @@ test_that("binance_fetch_klines handles empty API responses", {
 
   result <- binance_fetch_klines(
     symbol = "BTCUSDT",
-    interval = "15m",
+    timeframe = "15m",
     from = 1729100000,
     to = 1729200000,
     .req_fn = fake_req_fn
@@ -362,7 +362,7 @@ test_that("binance_fetch_klines segments overlap by 1 candle", {
 
   binance_fetch_klines(
     symbol = "BTCUSDT",
-    interval = "15m",
+    timeframe = "15m",
     from = from_ts,
     to = to_ts,
     .req_fn = fake_req_fn

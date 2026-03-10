@@ -3,11 +3,11 @@
 # binance_backfill_klines(). Handles time-range segmentation, per-segment
 # HTTP requests, deduplication, and sorting.
 
-# Frequency Map for Binance Kline Intervals
+# Frequency Map for Binance Kline Timeframes
 #
-# Maps human-readable interval strings to their duration in seconds.
+# Maps human-readable timeframe strings to their duration in seconds.
 # Used by binance_fetch_klines() for time-range segmentation.
-binance_interval_map <- list(
+binance_timeframe_map <- list(
   "1s" = 1L,
   "1m" = 60L,
   "3m" = 180L,
@@ -37,22 +37,22 @@ binance_interval_map <- list(
 # by binance_backfill_klines(). It does not depend on any R6 class instance.
 binance_fetch_klines <- function(
   symbol,
-  interval = "1h",
+  timeframe = "1h",
   from = lubridate::now("UTC") - lubridate::dhours(24),
   to = lubridate::now("UTC"),
   .req_fn,
   is_async = FALSE
 ) {
-  if (!interval %in% names(binance_interval_map)) {
+  if (!timeframe %in% names(binance_timeframe_map)) {
     rlang::abort(paste0(
-      "Invalid interval '",
-      interval,
+      "Invalid timeframe '",
+      timeframe,
       "'. Valid: ",
-      paste(names(binance_interval_map), collapse = ", ")
+      paste(names(binance_timeframe_map), collapse = ", ")
     ))
   }
 
-  interval_seconds <- binance_interval_map[[interval]]
+  timeframe_seconds <- binance_timeframe_map[[timeframe]]
   from_ms <- as.numeric(from) * 1000
   to_ms <- as.numeric(to) * 1000
   max_candles <- 1000L
@@ -62,7 +62,7 @@ binance_fetch_klines <- function(
   segments <- list()
   seg_start <- from_ms
   while (seg_start < to_ms) {
-    seg_end <- min(seg_start + max_candles * interval_seconds * 1000, to_ms)
+    seg_end <- min(seg_start + max_candles * timeframe_seconds * 1000, to_ms)
     segments[[length(segments) + 1L]] <- list(
       startTime = format(seg_start, scientific = FALSE),
       endTime = format(seg_end, scientific = FALSE)
@@ -71,7 +71,7 @@ binance_fetch_klines <- function(
     if (seg_end >= to_ms) {
       break
     }
-    seg_start <- seg_end - interval_seconds * 1000
+    seg_start <- seg_end - timeframe_seconds * 1000
   }
 
   if (length(segments) == 0L) {
@@ -97,7 +97,7 @@ binance_fetch_klines <- function(
       method = "GET",
       query = list(
         symbol = symbol,
-        interval = interval,
+        interval = timeframe,
         startTime = seg$startTime,
         endTime = seg$endTime,
         limit = max_candles

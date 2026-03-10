@@ -86,12 +86,12 @@ ms_to_datetime <- function(ms) {
 #' Process Orderbook Data into a data.table
 #'
 #' Transforms the bids/asks arrays from a Binance orderbook response into a
-#' tidy [data.table::data.table] with `side`, `price`, and `quantity` columns.
+#' tidy [data.table::data.table] with `side`, `price`, and `size` columns.
 #'
 #' @param data List; the parsed Binance orderbook response data containing
 #'   `bids`, `asks`, and `lastUpdateId` fields.
 #' @return A [data.table::data.table] with columns: `last_update_id`,
-#'   `side`, `price`, `quantity`.
+#'   `side`, `price`, `size`.
 #'
 #' @keywords internal
 #' @noRd
@@ -101,13 +101,13 @@ parse_orderbook <- function(data) {
       return(data.table::data.table(
         side = character(),
         price = numeric(),
-        quantity = numeric()
+        size = numeric()
       ))
     }
     return(data.table::data.table(
       side = side_label,
       price = as.numeric(vapply(entries, `[[`, character(1), 1L)),
-      quantity = as.numeric(vapply(entries, `[[`, character(1), 2L))
+      size = as.numeric(vapply(entries, `[[`, character(1), 2L))
     ))
   }
 
@@ -116,7 +116,7 @@ parse_orderbook <- function(data) {
   result <- data.table::rbindlist(list(bids_dt, asks_dt))
 
   result[, last_update_id := as.character(data$lastUpdateId)]
-  data.table::setcolorder(result, c("last_update_id", "side", "price", "quantity"))
+  data.table::setcolorder(result, c("last_update_id", "side", "price", "size"))
 
   return(result)
 }

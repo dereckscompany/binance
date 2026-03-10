@@ -5,14 +5,14 @@
 
 test_that("backfill rejects NULL symbols", {
   expect_error(
-    binance_backfill_klines(symbols = NULL, intervals = "1d"),
+    binance_backfill_klines(symbols = NULL, timeframes = "1d"),
     "non-empty"
   )
 })
 
 test_that("backfill rejects empty symbols", {
   expect_error(
-    binance_backfill_klines(symbols = character(0), intervals = "1d"),
+    binance_backfill_klines(symbols = character(0), timeframes = "1d"),
     "non-empty"
   )
 })
@@ -30,7 +30,7 @@ test_that("backfill writes CSV and returns file path", {
 
   result <- binance_backfill_klines(
     symbols = "BTCUSDT",
-    intervals = "1d",
+    timeframes = "1d",
     from = lubridate::as_datetime("2024-10-16", tz = "UTC"),
     to = lubridate::as_datetime("2024-10-17", tz = "UTC"),
     file = outfile,
@@ -44,10 +44,10 @@ test_that("backfill writes CSV and returns file path", {
   dt <- data.table::fread(outfile)
   expect_true(nrow(dt) > 0L)
   expect_true("symbol" %in% names(dt))
-  expect_true("interval" %in% names(dt))
+  expect_true("timeframe" %in% names(dt))
   expect_true("open_time" %in% names(dt))
   expect_equal(unique(dt$symbol), "BTCUSDT")
-  expect_equal(unique(dt$interval), "1d")
+  expect_equal(unique(dt$timeframe), "1d")
 })
 
 # -- Resume Support --
@@ -71,7 +71,7 @@ test_that("backfill skips completed combos on resume", {
     taker_buy_quote_volume = 3350000,
     ignore = "0",
     symbol = "BTCUSDT",
-    interval = "1d"
+    timeframe = "1d"
   )
   data.table::fwrite(existing, outfile)
 
@@ -84,7 +84,7 @@ test_that("backfill skips completed combos on resume", {
 
   binance_backfill_klines(
     symbols = "BTCUSDT",
-    intervals = "1d",
+    timeframes = "1d",
     from = lubridate::as_datetime("2024-10-16", tz = "UTC"),
     to = lubridate::as_datetime("2024-10-17", tz = "UTC"),
     file = outfile,
@@ -108,7 +108,7 @@ test_that("backfill clamps -Inf from to 2017-07-01", {
   # Should not error with -Inf from
   result <- binance_backfill_klines(
     symbols = "BTCUSDT",
-    intervals = "1d",
+    timeframes = "1d",
     from = -Inf,
     to = lubridate::as_datetime("2017-07-02", tz = "UTC"),
     file = outfile,
@@ -136,7 +136,7 @@ test_that("backfill attaches failures attribute on error", {
 
   result <- suppressWarnings(binance_backfill_klines(
     symbols = "BTCUSDT",
-    intervals = "1d",
+    timeframes = "1d",
     from = lubridate::as_datetime("2024-10-16", tz = "UTC"),
     to = lubridate::as_datetime("2024-10-17", tz = "UTC"),
     file = outfile,
@@ -148,12 +148,12 @@ test_that("backfill attaches failures attribute on error", {
   expect_s3_class(failures, "data.table")
   expect_equal(nrow(failures), 1L)
   expect_equal(failures$symbol, "BTCUSDT")
-  expect_equal(failures$interval, "1d")
+  expect_equal(failures$timeframe, "1d")
 })
 
-# -- Multiple Symbols/Intervals --
+# -- Multiple Symbols/Timeframes --
 
-test_that("backfill handles multiple symbol-interval combos", {
+test_that("backfill handles multiple symbol-timeframe combos", {
   outfile <- tempfile(fileext = ".csv")
   on.exit(unlink(outfile), add = TRUE)
 
@@ -162,7 +162,7 @@ test_that("backfill handles multiple symbol-interval combos", {
 
   result <- binance_backfill_klines(
     symbols = c("BTCUSDT", "ETHUSDT"),
-    intervals = c("1d"),
+    timeframes = c("1d"),
     from = lubridate::as_datetime("2024-10-16", tz = "UTC"),
     to = lubridate::as_datetime("2024-10-17", tz = "UTC"),
     file = outfile,
