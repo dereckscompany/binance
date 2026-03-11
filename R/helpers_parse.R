@@ -31,7 +31,7 @@ to_snake_case <- function(names) {
 #' @noRd
 as_dt_row <- function(x) {
   if (is.null(x) || length(x) == 0) {
-    return(data.table::data.table())
+    return(data.table::data.table()[])
   }
   x <- lapply(x, function(val) {
     if (is.null(val)) {
@@ -47,7 +47,7 @@ as_dt_row <- function(x) {
   })
   dt <- data.table::as.data.table(x)
   data.table::setnames(dt, to_snake_case(names(dt)))
-  return(dt)
+  return(dt[])
 }
 
 #' Convert a List of Lists to a data.table
@@ -62,10 +62,10 @@ as_dt_row <- function(x) {
 #' @noRd
 as_dt_list <- function(items) {
   if (is.null(items) || length(items) == 0) {
-    return(data.table::data.table())
+    return(data.table::data.table()[])
   }
   dt <- data.table::rbindlist(lapply(items, as_dt_row), fill = TRUE)
-  return(dt)
+  return(dt[])
 }
 
 #' Convert a Binance Millisecond Timestamp to POSIXct
@@ -102,13 +102,13 @@ parse_orderbook <- function(data) {
         side = character(),
         price = numeric(),
         size = numeric()
-      ))
+      )[])
     }
     return(data.table::data.table(
       side = side_label,
       price = as.numeric(vapply(entries, `[[`, character(1), 1L)),
       size = as.numeric(vapply(entries, `[[`, character(1), 2L))
-    ))
+    )[])
   }
 
   bids_dt <- parse_side(data$bids, "bid")
@@ -118,7 +118,7 @@ parse_orderbook <- function(data) {
   result[, last_update_id := as.character(data$lastUpdateId)]
   data.table::setcolorder(result, c("last_update_id", "side", "price", "size"))
 
-  return(result)
+  return(result[])
 }
 
 #' Parse Paginated Binance Response
@@ -135,7 +135,7 @@ parse_orderbook <- function(data) {
 parse_paginated <- function(data, time_cols = character(0)) {
   rows <- data$rows
   if (is.null(rows) || length(rows) == 0) {
-    return(data.table::data.table())
+    return(data.table::data.table()[])
   }
   dt <- as_dt_list(rows)
   for (col in time_cols) {
@@ -143,7 +143,7 @@ parse_paginated <- function(data, time_cols = character(0)) {
       data.table::set(dt, j = col, value = ms_to_datetime(dt[[col]]))
     }
   }
-  return(dt)
+  return(dt[])
 }
 
 #' @keywords internal
