@@ -66,12 +66,28 @@ BinanceOcoOrders <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance New OCO](https://binance-docs.github.io/apidocs/spot/en/#new-oco-trade)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X POST 'https://api.binance.com/api/v3/order/oco' \
     #'   -H 'X-MBX-APIKEY: your-api-key' \
     #'   -d 'symbol=BTCUSDT&side=SELL&quantity=0.0001&price=55000&stopPrice=49000&timestamp=...&signature=...'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "side": "SELL",
+    #'   "quantity": "0.0001",
+    #'   "price": "55000",
+    #'   "stopPrice": "49000",
+    #'   "stopLimitPrice": "48500",
+    #'   "stopLimitTimeInForce": "GTC",
+    #'   "timestamp": 1563417480525,
+    #'   "signature": "..."
+    #' }
     #' ```
     #'
     #' ### JSON Response
@@ -189,6 +205,71 @@ BinanceOcoOrders <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Cancel OCO](https://binance-docs.github.io/apidocs/spot/en/#cancel-oco-trade)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X DELETE 'https://api.binance.com/api/v3/orderList?symbol=BTCUSDT&orderListId=0&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "orderListId": 0,
+    #'   "contingencyType": "OCO",
+    #'   "listStatusType": "ALL_DONE",
+    #'   "listOrderStatus": "ALL_DONE",
+    #'   "listClientOrderId": "C3wyj4WVEktd7u9aVBRXcN",
+    #'   "transactTime": 1563417480525,
+    #'   "symbol": "BTCUSDT",
+    #'   "orders": [
+    #'     {
+    #'       "symbol": "BTCUSDT",
+    #'       "orderId": 12569099453,
+    #'       "clientOrderId": "bfYPSQdLoqAJeNrOr9adzq"
+    #'     },
+    #'     {
+    #'       "symbol": "BTCUSDT",
+    #'       "orderId": 12569099454,
+    #'       "clientOrderId": "0NPFMfBo6cMGlwnSfzBrdg"
+    #'     }
+    #'   ],
+    #'   "orderReports": [
+    #'     {
+    #'       "symbol": "BTCUSDT",
+    #'       "orderId": 12569099453,
+    #'       "orderListId": 0,
+    #'       "clientOrderId": "bfYPSQdLoqAJeNrOr9adzq",
+    #'       "transactTime": 1563417480525,
+    #'       "price": "55000.00000000",
+    #'       "origQty": "0.00010000",
+    #'       "executedQty": "0.00000000",
+    #'       "cummulativeQuoteQty": "0.00000000",
+    #'       "status": "CANCELED",
+    #'       "timeInForce": "GTC",
+    #'       "type": "LIMIT_MAKER",
+    #'       "side": "SELL"
+    #'     },
+    #'     {
+    #'       "symbol": "BTCUSDT",
+    #'       "orderId": 12569099454,
+    #'       "orderListId": 0,
+    #'       "clientOrderId": "0NPFMfBo6cMGlwnSfzBrdg",
+    #'       "transactTime": 1563417480525,
+    #'       "price": "48500.00000000",
+    #'       "origQty": "0.00010000",
+    #'       "executedQty": "0.00000000",
+    #'       "cummulativeQuoteQty": "0.00000000",
+    #'       "status": "CANCELED",
+    #'       "timeInForce": "GTC",
+    #'       "type": "STOP_LOSS_LIMIT",
+    #'       "side": "SELL",
+    #'       "stopPrice": "49000.00000000"
+    #'     }
+    #'   ]
+    #' }
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param orderListId Integer or NULL; the OCO order list ID.
@@ -247,6 +328,38 @@ BinanceOcoOrders <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Query OCO](https://binance-docs.github.io/apidocs/spot/en/#query-oco-user_data)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/api/v3/orderList?orderListId=0&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "orderListId": 0,
+    #'   "contingencyType": "OCO",
+    #'   "listStatusType": "ALL_DONE",
+    #'   "listOrderStatus": "ALL_DONE",
+    #'   "listClientOrderId": "C3wyj4WVEktd7u9aVBRXcN",
+    #'   "transactionTime": 1563417480525,
+    #'   "symbol": "BTCUSDT",
+    #'   "orders": [
+    #'     {
+    #'       "symbol": "BTCUSDT",
+    #'       "orderId": 12569099453,
+    #'       "clientOrderId": "bfYPSQdLoqAJeNrOr9adzq"
+    #'     },
+    #'     {
+    #'       "symbol": "BTCUSDT",
+    #'       "orderId": 12569099454,
+    #'       "clientOrderId": "0NPFMfBo6cMGlwnSfzBrdg"
+    #'     }
+    #'   ]
+    #' }
+    #' ```
     #'
     #' @param orderListId Integer or NULL; the OCO order list ID.
     #' @param origClientOrderId Character or NULL; the original client order list ID.
@@ -299,6 +412,40 @@ BinanceOcoOrders <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Query Open OCO](https://binance-docs.github.io/apidocs/spot/en/#query-open-oco-user_data)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/api/v3/openOrderList?timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "orderListId": 31,
+    #'     "contingencyType": "OCO",
+    #'     "listStatusType": "EXEC_STARTED",
+    #'     "listOrderStatus": "EXECUTING",
+    #'     "listClientOrderId": "wuB13fmulKj3YjdqWEcsnp",
+    #'     "transactionTime": 1565246080644,
+    #'     "symbol": "LTCBTC",
+    #'     "orders": [
+    #'       {
+    #'         "symbol": "LTCBTC",
+    #'         "orderId": 4,
+    #'         "clientOrderId": "r3EH2N76dHfLoSZWIUw1bT"
+    #'       },
+    #'       {
+    #'         "symbol": "LTCBTC",
+    #'         "orderId": 5,
+    #'         "clientOrderId": "Cv1SnyPD3qhqpbjpYEHbd2"
+    #'       }
+    #'     ]
+    #'   }
+    #' ]
+    #' ```
     #'
     #' @param recvWindow Integer or NULL; max 60000.
     #' @return `data.table` with one row per open OCO and the following columns:
@@ -346,6 +493,61 @@ BinanceOcoOrders <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Query All OCO](https://binance-docs.github.io/apidocs/spot/en/#query-all-oco-user_data)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/api/v3/allOrderList?limit=50&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "orderListId": 29,
+    #'     "contingencyType": "OCO",
+    #'     "listStatusType": "EXEC_STARTED",
+    #'     "listOrderStatus": "EXECUTING",
+    #'     "listClientOrderId": "amEEAXryFzFwYF1FeRpUoZ",
+    #'     "transactionTime": 1565245913483,
+    #'     "symbol": "LTCBTC",
+    #'     "orders": [
+    #'       {
+    #'         "symbol": "LTCBTC",
+    #'         "orderId": 4,
+    #'         "clientOrderId": "oD7aesZqjEGlZrbtRpy5zB"
+    #'       },
+    #'       {
+    #'         "symbol": "LTCBTC",
+    #'         "orderId": 5,
+    #'         "clientOrderId": "Jr1h6xirOxgeJOUuYQS7V3"
+    #'       }
+    #'     ]
+    #'   },
+    #'   {
+    #'     "orderListId": 30,
+    #'     "contingencyType": "OCO",
+    #'     "listStatusType": "ALL_DONE",
+    #'     "listOrderStatus": "ALL_DONE",
+    #'     "listClientOrderId": "XbijSrMBk4cGLvoDYtU08w",
+    #'     "transactionTime": 1565245913847,
+    #'     "symbol": "BTCUSDT",
+    #'     "orders": [
+    #'       {
+    #'         "symbol": "BTCUSDT",
+    #'         "orderId": 8,
+    #'         "clientOrderId": "pO9ufTiFGg3ndn3Kq7BuSA"
+    #'       },
+    #'       {
+    #'         "symbol": "BTCUSDT",
+    #'         "orderId": 9,
+    #'         "clientOrderId": "TXOvglzXuaubXAaENpaRCB"
+    #'       }
+    #'     ]
+    #'   }
+    #' ]
+    #' ```
     #'
     #' @param fromId Integer or NULL; pagination cursor (orderListId).
     #' @param startTime Integer or NULL; start timestamp in milliseconds.

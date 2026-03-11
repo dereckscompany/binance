@@ -82,12 +82,24 @@ BinanceTransfer <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Universal Transfer](https://developers.binance.com/docs/wallet/asset/user-universal-transfer)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X POST 'https://api.binance.com/sapi/v1/asset/transfer' \
     #'   -H 'X-MBX-APIKEY: your-api-key' \
     #'   -d 'type=MAIN_UMFUTURE&asset=USDT&amount=100&timestamp=1661493146000&signature=...'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "type": "MAIN_UMFUTURE",
+    #'   "asset": "USDT",
+    #'   "amount": "100",
+    #'   "timestamp": 1661493146000,
+    #'   "signature": "..."
+    #' }
     #' ```
     #'
     #' ### JSON Response
@@ -182,6 +194,7 @@ BinanceTransfer <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Universal Transfer](https://developers.binance.com/docs/wallet/asset/query-user-universal-transfer)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```

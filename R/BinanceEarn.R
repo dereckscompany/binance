@@ -75,6 +75,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible List](https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Simple-Earn-Flexible-Product-List)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
@@ -150,6 +151,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked List](https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Simple-Earn-Locked-Product-List)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
@@ -222,12 +224,23 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible Subscribe](https://developers.binance.com/docs/simple_earn/flexible-locked/earn)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X POST 'https://api.binance.com/sapi/v1/simple-earn/flexible/subscribe' \
     #'   -H 'X-MBX-APIKEY: your-api-key' \
     #'   -d 'productId=USDT001&amount=100&timestamp=1661493146000&signature=...'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "productId": "USDT001",
+    #'   "amount": "100",
+    #'   "autoSubscribe": true,
+    #'   "sourceAccount": "SPOT"
+    #' }
     #' ```
     #'
     #' ### JSON Response
@@ -286,12 +299,22 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked Subscribe](https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Subscribe-Locked-Product)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X POST 'https://api.binance.com/sapi/v1/simple-earn/locked/subscribe' \
     #'   -H 'X-MBX-APIKEY: your-api-key' \
     #'   -d 'projectId=BTC30d001&amount=0.01&timestamp=1661493146000&signature=...'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "projectId": "BTC30d001",
+    #'   "amount": "0.01",
+    #'   "autoSubscribe": true
+    #' }
     #' ```
     #'
     #' ### JSON Response
@@ -346,12 +369,23 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible Redeem](https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Redeem-Flexible-Product)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X POST 'https://api.binance.com/sapi/v1/simple-earn/flexible/redeem' \
     #'   -H 'X-MBX-APIKEY: your-api-key' \
     #'   -d 'productId=USDT001&amount=50&timestamp=1661493146000&signature=...'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "productId": "USDT001",
+    #'   "amount": "50",
+    #'   "redeemAll": false,
+    #'   "destAccount": "SPOT"
+    #' }
     #' ```
     #'
     #' ### JSON Response
@@ -410,12 +444,20 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked Redeem](https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Redeem-Locked-Product)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X POST 'https://api.binance.com/sapi/v1/simple-earn/locked/redeem' \
     #'   -H 'X-MBX-APIKEY: your-api-key' \
     #'   -d 'positionId=12345&timestamp=1661493146000&signature=...'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "positionId": "12345"
+    #' }
     #' ```
     #'
     #' ### JSON Response
@@ -464,6 +506,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible Position](https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Flexible-Product-Position)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
@@ -534,11 +577,35 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked Position](https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Locked-Product-Position)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://api.binance.com/sapi/v1/simple-earn/locked/position?asset=BTC&timestamp=1661493146000&signature=...' \
     #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "total": 1,
+    #'   "rows": [
+    #'     {
+    #'       "positionId": "12345",
+    #'       "projectId": "BTC30d001",
+    #'       "asset": "BTC",
+    #'       "amount": "0.01000000",
+    #'       "purchaseTime": 1661493146000,
+    #'       "duration": 30,
+    #'       "accrualDays": 15,
+    #'       "rewardAsset": "BTC",
+    #'       "apy": "0.05000000",
+    #'       "isRenewable": true,
+    #'       "isAutoRenew": true,
+    #'       "redeemDate": 1664085146000
+    #'     }
+    #'   ]
+    #' }
     #' ```
     #'
     #' @param asset Character or NULL; filter by asset (e.g., `"BTC"`).
@@ -600,6 +667,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible Subscription Record](https://developers.binance.com/docs/simple_earn/flexible-locked/history)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
@@ -686,11 +754,32 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked Subscription Record](https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Locked-Subscription-Record)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://api.binance.com/sapi/v1/simple-earn/locked/history/subscriptionRecord?asset=BTC&timestamp=1661493146000&signature=...' \
     #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "total": 1,
+    #'   "rows": [
+    #'     {
+    #'       "amount": "0.01000000",
+    #'       "asset": "BTC",
+    #'       "time": 1661493146000,
+    #'       "purchaseId": 40608,
+    #'       "positionId": "12345",
+    #'       "lockPeriod": 30,
+    #'       "type": "NORMAL",
+    #'       "sourceAccount": "SPOT",
+    #'       "status": "SUCCESS"
+    #'     }
+    #'   ]
+    #' }
     #' ```
     #'
     #' @param purchaseId Integer or NULL; filter by purchase ID.
@@ -753,11 +842,30 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible Redemption Record](https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Flexible-Redemption-Record)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://api.binance.com/sapi/v1/simple-earn/flexible/history/redemptionRecord?asset=USDT&timestamp=1661493146000&signature=...' \
     #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "total": 1,
+    #'   "rows": [
+    #'     {
+    #'       "amount": "50.00000000",
+    #'       "asset": "USDT",
+    #'       "time": 1661493146000,
+    #'       "projectId": "USDT001",
+    #'       "redeemId": 40609,
+    #'       "destAccount": "SPOT",
+    #'       "status": "PAID"
+    #'     }
+    #'   ]
+    #' }
     #' ```
     #'
     #' @param productId Character or NULL; filter by product ID.
@@ -821,11 +929,30 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked Redemption Record](https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Locked-Redemption-Record)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://api.binance.com/sapi/v1/simple-earn/locked/history/redemptionRecord?asset=BTC&timestamp=1661493146000&signature=...' \
     #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "total": 1,
+    #'   "rows": [
+    #'     {
+    #'       "amount": "0.01000000",
+    #'       "asset": "BTC",
+    #'       "time": 1661493146000,
+    #'       "positionId": "12345",
+    #'       "redeemId": 40610,
+    #'       "deliverDate": "1664085146000",
+    #'       "status": "PAID"
+    #'     }
+    #'   ]
+    #' }
     #' ```
     #'
     #' @param positionId Character or NULL; filter by position ID.

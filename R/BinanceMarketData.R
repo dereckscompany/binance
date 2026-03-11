@@ -76,6 +76,7 @@ BinanceMarketData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Check Server Time](https://binance-docs.github.io/apidocs/spot/en/#check-server-time)
+    #' Verified: 2026-03-10
     #'
     #' ### Automated Trading Usage
     #' - **Clock Drift Detection**: Compare server time against local clock to detect drift.
@@ -129,6 +130,7 @@ BinanceMarketData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Exchange Info](https://binance-docs.github.io/apidocs/spot/en/#exchange-information)
+    #' Verified: 2026-03-10
     #'
     #' ### Automated Trading Usage
     #' - **Symbol Discovery**: Find available trading pairs and their status.
@@ -138,6 +140,42 @@ BinanceMarketData <- R6::R6Class(
     #' ### curl
     #' ```
     #' curl -X GET 'https://api.binance.com/api/v3/exchangeInfo?symbol=BTCUSDT'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "timezone": "UTC",
+    #'   "serverTime": 1710072000000,
+    #'   "symbols": [
+    #'     {
+    #'       "symbol": "BTCUSDT",
+    #'       "status": "TRADING",
+    #'       "baseAsset": "BTC",
+    #'       "baseAssetPrecision": 8,
+    #'       "quoteAsset": "USDT",
+    #'       "quotePrecision": 8,
+    #'       "quoteAssetPrecision": 8,
+    #'       "orderTypes": ["LIMIT","LIMIT_MAKER","MARKET","STOP_LOSS_LIMIT","TAKE_PROFIT_LIMIT"],
+    #'       "icebergAllowed": true,
+    #'       "ocoAllowed": true,
+    #'       "otoAllowed": true,
+    #'       "quoteOrderQtyMarketAllowed": true,
+    #'       "allowTrailingStop": true,
+    #'       "cancelReplaceAllowed": true,
+    #'       "isSpotTradingAllowed": true,
+    #'       "isMarginTradingAllowed": true,
+    #'       "filters": [
+    #'         {"filterType":"PRICE_FILTER","minPrice":"0.01000000","maxPrice":"1000000.00","tickSize":"0.01000000"},
+    #'         {"filterType":"LOT_SIZE","minQty":"0.00001000","maxQty":"9000.00000000","stepSize":"0.00001000"},
+    #'         {"filterType":"MIN_NOTIONAL","minNotional":"5.00000000"}
+    #'       ],
+    #'       "permissions": ["SPOT","MARGIN"],
+    #'       "defaultSelfTradePreventionMode": "EXPIRE_MAKER",
+    #'       "allowedSelfTradePreventionModes": ["EXPIRE_TAKER","EXPIRE_MAKER","EXPIRE_BOTH"]
+    #'     }
+    #'   ]
+    #' }
     #' ```
     #'
     #' @param symbol Character or NULL; specific symbol (e.g., `"BTCUSDT"`).
@@ -209,6 +247,7 @@ BinanceMarketData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Symbol Price Ticker](https://binance-docs.github.io/apidocs/spot/en/#symbol-price-ticker)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
@@ -250,6 +289,21 @@ BinanceMarketData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Symbol Price Ticker](https://binance-docs.github.io/apidocs/spot/en/#symbol-price-ticker)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/api/v3/ticker/price'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   { "symbol": "BTCUSDT", "price": "67232.90000000" },
+    #'   { "symbol": "ETHUSDT", "price": "3456.78000000" },
+    #'   { "symbol": "BNBUSDT", "price": "543.21000000" }
+    #' ]
+    #' ```
     #'
     #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
     #'   - `symbol` (character): Trading pair identifier.
@@ -279,6 +333,7 @@ BinanceMarketData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Symbol Order Book Ticker](https://binance-docs.github.io/apidocs/spot/en/#symbol-order-book-ticker)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
@@ -331,10 +386,38 @@ BinanceMarketData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance 24hr Ticker Price Change Statistics](https://binance-docs.github.io/apidocs/spot/en/#24hr-ticker-price-change-statistics)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "priceChange": "-150.23000000",
+    #'   "priceChangePercent": "-0.223",
+    #'   "weightedAvgPrice": "67150.45000000",
+    #'   "prevClosePrice": "67380.00000000",
+    #'   "lastPrice": "67232.90000000",
+    #'   "lastQty": "0.00120000",
+    #'   "bidPrice": "67232.00000000",
+    #'   "bidQty": "0.41861839",
+    #'   "askPrice": "67232.90000000",
+    #'   "askQty": "1.24808993",
+    #'   "openPrice": "67383.13000000",
+    #'   "highPrice": "67890.00000000",
+    #'   "lowPrice": "66500.00000000",
+    #'   "volume": "18532.41200000",
+    #'   "quoteVolume": "1244567890.12345678",
+    #'   "openTime": 1710072000000,
+    #'   "closeTime": 1710158399999,
+    #'   "firstId": 3553450112,
+    #'   "lastId": 3554123456,
+    #'   "count": 673344
+    #' }
     #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
@@ -398,6 +481,7 @@ BinanceMarketData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Current Average Price](https://binance-docs.github.io/apidocs/spot/en/#current-average-price)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
@@ -448,10 +532,26 @@ BinanceMarketData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Order Book](https://binance-docs.github.io/apidocs/spot/en/#order-book)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://api.binance.com/api/v3/depth?symbol=BTCUSDT&limit=20'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "lastUpdateId": 1027024,
+    #'   "bids": [
+    #'     ["67232.00000000", "0.41861839"],
+    #'     ["67231.50000000", "1.20000000"]
+    #'   ],
+    #'   "asks": [
+    #'     ["67232.90000000", "1.24808993"],
+    #'     ["67233.00000000", "0.85000000"]
+    #'   ]
+    #' }
     #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
@@ -490,6 +590,7 @@ BinanceMarketData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Recent Trades List](https://binance-docs.github.io/apidocs/spot/en/#recent-trades-list)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
@@ -555,10 +656,31 @@ BinanceMarketData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Kline/Candlestick Data](https://binance-docs.github.io/apidocs/spot/en/#kline-candlestick-data)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=100'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   [
+    #'     1710072000000,
+    #'     "67100.00000000",
+    #'     "67250.00000000",
+    #'     "67050.00000000",
+    #'     "67232.90000000",
+    #'     "523.41200000",
+    #'     1710075599999,
+    #'     "35134567.89012345",
+    #'     1234,
+    #'     "261.70600000",
+    #'     "17567283.94506172",
+    #'     "0"
+    #'   ]
+    #' ]
     #' ```
     #'
     #' ### Automated Trading Usage

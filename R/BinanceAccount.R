@@ -60,6 +60,7 @@ BinanceAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Account Information](https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data)
+    #' Verified: 2026-03-10
     #'
     #' ### Automated Trading Usage
     #' - **Commission Rates**: Access maker/taker commission rates for cost analysis.
@@ -131,10 +132,34 @@ BinanceAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Account Information](https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data)
+    #' Verified: 2026-03-10
     #'
     #' ### Automated Trading Usage
     #' - **Balance Check**: Verify available funds before placing orders.
     #' - **Portfolio Overview**: Get all asset balances in a single call.
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/api/v3/account?omitZeroBalances=true' \
+    #'   -H 'X-MBX-APIKEY: your-api-key' \
+    #'   -d 'timestamp=1729176273859&signature=...'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "asset": "BTC",
+    #'     "free": "0.00100000",
+    #'     "locked": "0.00000000"
+    #'   },
+    #'   {
+    #'     "asset": "USDT",
+    #'     "free": "500.00000000",
+    #'     "locked": "50.00000000"
+    #'   }
+    #' ]
+    #' ```
     #'
     #' @param omitZeroBalances Logical or NULL; if TRUE, omit assets with zero balance.
     #' @param recvWindow Integer or NULL; max 60000.
@@ -178,6 +203,7 @@ BinanceAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Account Trade List](https://binance-docs.github.io/apidocs/spot/en/#account-trade-list-user_data)
+    #' Verified: 2026-03-10
     #'
     #' ### Automated Trading Usage
     #' - **Trade History**: Build trade logs for P&L calculations.

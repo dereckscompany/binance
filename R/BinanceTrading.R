@@ -82,6 +82,7 @@ BinanceTrading <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance New Order](https://binance-docs.github.io/apidocs/spot/en/#new-order-trade)
+    #' Verified: 2026-03-10
     #'
     #' ### Automated Trading Usage
     #' - **Limit Orders**: Set specific entry/exit prices for strategy execution.
@@ -212,11 +213,38 @@ BinanceTrading <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Test New Order](https://binance-docs.github.io/apidocs/spot/en/#test-new-order-trade)
+    #' Verified: 2026-03-10
     #'
     #' ### Automated Trading Usage
     #' - **Parameter Validation**: Verify order parameters are correct before live submission.
     #' - **Auth Testing**: Confirm API credentials work for order placement.
     #' - **Integration Testing**: Test your trading pipeline end-to-end without risk.
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X POST 'https://api.binance.com/api/v3/order/test' \
+    #'   -H 'X-MBX-APIKEY: your-api-key' \
+    #'   -d 'symbol=BTCUSDT&side=BUY&type=LIMIT&timeInForce=GTC&quantity=0.0001&price=50000.00&timestamp=1729176273859&signature=...'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "side": "BUY",
+    #'   "type": "LIMIT",
+    #'   "timeInForce": "GTC",
+    #'   "quantity": "0.00010000",
+    #'   "price": "50000.00000000",
+    #'   "timestamp": 1729176273859,
+    #'   "signature": "..."
+    #' }
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {}
+    #' ```
     #'
     #' @param type Character; `"LIMIT"` or `"MARKET"` (and stop/take-profit variants).
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
@@ -307,6 +335,34 @@ BinanceTrading <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Cancel Order](https://binance-docs.github.io/apidocs/spot/en/#cancel-order-trade)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X DELETE 'https://api.binance.com/api/v3/order?symbol=BTCUSDT&orderId=4293153&timestamp=1729176273859&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "origClientOrderId": "msXkySR3u5uYwpvRMFsi3u",
+    #'   "orderId": 4293153,
+    #'   "orderListId": -1,
+    #'   "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+    #'   "transactTime": 1507725176595,
+    #'   "price": "50000.00000000",
+    #'   "origQty": "0.00010000",
+    #'   "executedQty": "0.00000000",
+    #'   "cummulativeQuoteQty": "0.00000000",
+    #'   "status": "CANCELED",
+    #'   "timeInForce": "GTC",
+    #'   "type": "LIMIT",
+    #'   "side": "BUY",
+    #'   "selfTradePreventionMode": "NONE"
+    #' }
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param orderId Integer or NULL; the order ID to cancel.
@@ -369,6 +425,53 @@ BinanceTrading <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Cancel All Open Orders](https://binance-docs.github.io/apidocs/spot/en/#cancel-all-open-orders-on-a-symbol-trade)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X DELETE 'https://api.binance.com/api/v3/openOrders?symbol=BTCUSDT&timestamp=1729176273859&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "symbol": "BTCUSDT",
+    #'     "origClientOrderId": "E6APeyTJvkMvLMYMqu1KQ4",
+    #'     "orderId": 11,
+    #'     "orderListId": -1,
+    #'     "clientOrderId": "pXLV6Hz6mprAcVYpVMTGgx",
+    #'     "transactTime": 1684804350068,
+    #'     "price": "50000.00000000",
+    #'     "origQty": "0.00010000",
+    #'     "executedQty": "0.00000000",
+    #'     "cummulativeQuoteQty": "0.00000000",
+    #'     "status": "CANCELED",
+    #'     "timeInForce": "GTC",
+    #'     "type": "LIMIT",
+    #'     "side": "BUY",
+    #'     "selfTradePreventionMode": "NONE"
+    #'   },
+    #'   {
+    #'     "symbol": "BTCUSDT",
+    #'     "origClientOrderId": "A3EF2HCwxgZPFMrfwbgrhv",
+    #'     "orderId": 13,
+    #'     "orderListId": -1,
+    #'     "clientOrderId": "pXLV6Hz6mprAcVYpVMTGgx",
+    #'     "transactTime": 1684804350068,
+    #'     "price": "48000.00000000",
+    #'     "origQty": "0.00020000",
+    #'     "executedQty": "0.00000000",
+    #'     "cummulativeQuoteQty": "0.00000000",
+    #'     "status": "CANCELED",
+    #'     "timeInForce": "GTC",
+    #'     "type": "LIMIT",
+    #'     "side": "BUY",
+    #'     "selfTradePreventionMode": "NONE"
+    #'   }
+    #' ]
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param recvWindow Integer or NULL; max 60000.
@@ -430,6 +533,39 @@ BinanceTrading <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Query Order](https://binance-docs.github.io/apidocs/spot/en/#query-order-user_data)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/api/v3/order?symbol=BTCUSDT&orderId=4293153&timestamp=1729176273859&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "orderId": 4293153,
+    #'   "orderListId": -1,
+    #'   "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+    #'   "price": "50000.00000000",
+    #'   "origQty": "0.00010000",
+    #'   "executedQty": "0.00010000",
+    #'   "cummulativeQuoteQty": "5.00000000",
+    #'   "status": "FILLED",
+    #'   "timeInForce": "GTC",
+    #'   "type": "LIMIT",
+    #'   "side": "BUY",
+    #'   "stopPrice": "0.00000000",
+    #'   "icebergQty": "0.00000000",
+    #'   "time": 1507725176595,
+    #'   "updateTime": 1507725176595,
+    #'   "isWorking": true,
+    #'   "workingTime": 1507725176595,
+    #'   "origQuoteOrderQty": "0.00000000",
+    #'   "selfTradePreventionMode": "NONE"
+    #' }
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param orderId Integer or NULL; the order ID.
@@ -499,6 +635,41 @@ BinanceTrading <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Current Open Orders](https://binance-docs.github.io/apidocs/spot/en/#current-open-orders-user_data)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/api/v3/openOrders?symbol=BTCUSDT&timestamp=1729176273859&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "symbol": "BTCUSDT",
+    #'     "orderId": 4293153,
+    #'     "orderListId": -1,
+    #'     "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+    #'     "price": "50000.00000000",
+    #'     "origQty": "0.00010000",
+    #'     "executedQty": "0.00000000",
+    #'     "cummulativeQuoteQty": "0.00000000",
+    #'     "status": "NEW",
+    #'     "timeInForce": "GTC",
+    #'     "type": "LIMIT",
+    #'     "side": "BUY",
+    #'     "stopPrice": "0.00000000",
+    #'     "icebergQty": "0.00000000",
+    #'     "time": 1507725176595,
+    #'     "updateTime": 1507725176595,
+    #'     "isWorking": true,
+    #'     "workingTime": 1507725176595,
+    #'     "origQuoteOrderQty": "0.00000000",
+    #'     "selfTradePreventionMode": "NONE"
+    #'   }
+    #' ]
+    #' ```
     #'
     #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
     #'   If NULL, returns open orders for all symbols (weight 80).
@@ -563,6 +734,63 @@ BinanceTrading <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance All Orders](https://binance-docs.github.io/apidocs/spot/en/#all-orders-user_data)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/api/v3/allOrders?symbol=BTCUSDT&limit=50&timestamp=1729176273859&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "symbol": "BTCUSDT",
+    #'     "orderId": 4293153,
+    #'     "orderListId": -1,
+    #'     "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+    #'     "price": "50000.00000000",
+    #'     "origQty": "0.00010000",
+    #'     "executedQty": "0.00010000",
+    #'     "cummulativeQuoteQty": "5.00000000",
+    #'     "status": "FILLED",
+    #'     "timeInForce": "GTC",
+    #'     "type": "LIMIT",
+    #'     "side": "BUY",
+    #'     "stopPrice": "0.00000000",
+    #'     "icebergQty": "0.00000000",
+    #'     "time": 1507725176595,
+    #'     "updateTime": 1507725176595,
+    #'     "isWorking": true,
+    #'     "workingTime": 1507725176595,
+    #'     "origQuoteOrderQty": "0.00000000",
+    #'     "selfTradePreventionMode": "NONE"
+    #'   },
+    #'   {
+    #'     "symbol": "BTCUSDT",
+    #'     "orderId": 4293154,
+    #'     "orderListId": -1,
+    #'     "clientOrderId": "x]]C3kvs44T7fYqJ09VBfg",
+    #'     "price": "0.00000000",
+    #'     "origQty": "0.00010000",
+    #'     "executedQty": "0.00010000",
+    #'     "cummulativeQuoteQty": "5.10230000",
+    #'     "status": "FILLED",
+    #'     "timeInForce": "GTC",
+    #'     "type": "MARKET",
+    #'     "side": "SELL",
+    #'     "stopPrice": "0.00000000",
+    #'     "icebergQty": "0.00000000",
+    #'     "time": 1507725276595,
+    #'     "updateTime": 1507725276595,
+    #'     "isWorking": true,
+    #'     "workingTime": 1507725276595,
+    #'     "origQuoteOrderQty": "0.00000000",
+    #'     "selfTradePreventionMode": "NONE"
+    #'   }
+    #' ]
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param orderId Integer or NULL; pagination cursor.

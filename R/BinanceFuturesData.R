@@ -111,10 +111,46 @@ BinanceFuturesData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Futures Exchange Info](https://binance-docs.github.io/apidocs/futures/en/#exchange-information)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://fapi.binance.com/fapi/v1/exchangeInfo'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "timezone": "UTC",
+    #'   "serverTime": 1710028800000,
+    #'   "symbols": [
+    #'     {
+    #'       "symbol": "BTCUSDT",
+    #'       "pair": "BTCUSDT",
+    #'       "contractType": "PERPETUAL",
+    #'       "deliveryDate": 4133404800000,
+    #'       "onboardDate": 1569398400000,
+    #'       "status": "TRADING",
+    #'       "baseAsset": "BTC",
+    #'       "quoteAsset": "USDT",
+    #'       "marginAsset": "USDT",
+    #'       "pricePrecision": 2,
+    #'       "quantityPrecision": 3,
+    #'       "baseAssetPrecision": 8,
+    #'       "quotePrecision": 8,
+    #'       "underlyingType": "COIN",
+    #'       "settlePlan": 0,
+    #'       "triggerProtect": "0.0500",
+    #'       "orderTypes": ["LIMIT", "MARKET", "STOP", "STOP_MARKET", "TAKE_PROFIT", "TAKE_PROFIT_MARKET", "TRAILING_STOP_MARKET"],
+    #'       "timeInForce": ["GTC", "IOC", "FOK", "GTX", "GTD"],
+    #'       "filters": [
+    #'         {"filterType": "PRICE_FILTER", "minPrice": "556.80", "maxPrice": "4529764", "tickSize": "0.10"},
+    #'         {"filterType": "LOT_SIZE", "minQty": "0.001", "maxQty": "1000", "stepSize": "0.001"},
+    #'         {"filterType": "MIN_NOTIONAL", "notional": "5"}
+    #'       ]
+    #'     }
+    #'   ]
+    #' }
     #' ```
     #'
     #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with all symbol
@@ -167,10 +203,31 @@ BinanceFuturesData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Futures Kline/Candlestick Data](https://binance-docs.github.io/apidocs/futures/en/#kline-candlestick-data)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://fapi.binance.com/fapi/v1/klines?symbol=BTCUSDT&interval=1h&limit=100'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   [
+    #'     1710028800000,
+    #'     "67521.30",
+    #'     "67845.90",
+    #'     "67310.50",
+    #'     "67632.40",
+    #'     "12534.812",
+    #'     1710032399999,
+    #'     "847293156.23",
+    #'     48921,
+    #'     "6231.405",
+    #'     "421234567.89",
+    #'     "0"
+    #'   ]
+    #' ]
     #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
@@ -310,10 +367,25 @@ BinanceFuturesData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Futures Mark Price](https://binance-docs.github.io/apidocs/futures/en/#mark-price)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://fapi.binance.com/fapi/v1/premiumIndex?symbol=BTCUSDT'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "markPrice": "67582.35000000",
+    #'   "indexPrice": "67575.12345678",
+    #'   "estimatedSettlePrice": "67579.88654321",
+    #'   "lastFundingRate": "0.00010000",
+    #'   "nextFundingTime": 1710057600000,
+    #'   "interestRate": "0.00010000",
+    #'   "time": 1710028800000
+    #' }
     #' ```
     #'
     #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
@@ -378,10 +450,29 @@ BinanceFuturesData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Futures Funding Rate History](https://binance-docs.github.io/apidocs/futures/en/#get-funding-rate-history)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://fapi.binance.com/fapi/v1/fundingRate?symbol=BTCUSDT&limit=100'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "symbol": "BTCUSDT",
+    #'     "fundingRate": "0.00010000",
+    #'     "fundingTime": 1710028800000,
+    #'     "markPrice": "67582.35000000"
+    #'   },
+    #'   {
+    #'     "symbol": "BTCUSDT",
+    #'     "fundingRate": "0.00012500",
+    #'     "fundingTime": 1710000000000,
+    #'     "markPrice": "67245.10000000"
+    #'   }
+    #' ]
     #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
@@ -444,10 +535,33 @@ BinanceFuturesData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Futures 24hr Ticker](https://binance-docs.github.io/apidocs/futures/en/#24hr-ticker-price-change-statistics)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://fapi.binance.com/fapi/v1/ticker/24hr?symbol=BTCUSDT'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "priceChange": "1250.30",
+    #'   "priceChangePercent": "1.882",
+    #'   "weightedAvgPrice": "67123.45",
+    #'   "lastPrice": "67632.40",
+    #'   "lastQty": "0.012",
+    #'   "openPrice": "66382.10",
+    #'   "highPrice": "67845.90",
+    #'   "lowPrice": "65980.00",
+    #'   "volume": "285431.234",
+    #'   "quoteVolume": "19187654321.56",
+    #'   "openTime": 1709942400000,
+    #'   "closeTime": 1710028799999,
+    #'   "firstId": 4123456789,
+    #'   "lastId": 4123987654,
+    #'   "count": 530865
+    #' }
     #' ```
     #'
     #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
@@ -509,10 +623,20 @@ BinanceFuturesData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Futures Symbol Price Ticker](https://binance-docs.github.io/apidocs/futures/en/#symbol-price-ticker)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://fapi.binance.com/fapi/v1/ticker/price?symbol=BTCUSDT'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "price": "67632.40",
+    #'   "time": 1710028800000
+    #' }
     #' ```
     #'
     #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
@@ -565,10 +689,23 @@ BinanceFuturesData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Futures Symbol Order Book Ticker](https://binance-docs.github.io/apidocs/futures/en/#symbol-order-book-ticker)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://fapi.binance.com/fapi/v1/ticker/bookTicker?symbol=BTCUSDT'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "bidPrice": "67630.20",
+    #'   "bidQty": "5.432",
+    #'   "askPrice": "67632.40",
+    #'   "askQty": "3.218",
+    #'   "time": 1710028800000
+    #' }
     #' ```
     #'
     #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
@@ -623,10 +760,20 @@ BinanceFuturesData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Futures Open Interest](https://binance-docs.github.io/apidocs/futures/en/#open-interest)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://fapi.binance.com/fapi/v1/openInterest?symbol=BTCUSDT'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "openInterest": "72381.532",
+    #'   "time": 1710028800000
+    #' }
     #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
@@ -668,10 +815,30 @@ BinanceFuturesData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Futures Order Book](https://binance-docs.github.io/apidocs/futures/en/#order-book)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://fapi.binance.com/fapi/v1/depth?symbol=BTCUSDT&limit=20'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "lastUpdateId": 2731879654321,
+    #'   "E": 1710028800000,
+    #'   "T": 1710028800000,
+    #'   "bids": [
+    #'     ["67630.20", "5.432"],
+    #'     ["67629.90", "2.100"],
+    #'     ["67629.50", "8.750"]
+    #'   ],
+    #'   "asks": [
+    #'     ["67632.40", "3.218"],
+    #'     ["67632.80", "1.500"],
+    #'     ["67633.10", "6.340"]
+    #'   ]
+    #' }
     #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
@@ -710,10 +877,33 @@ BinanceFuturesData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Futures Recent Trades List](https://binance-docs.github.io/apidocs/futures/en/#recent-trades-list)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://fapi.binance.com/fapi/v1/trades?symbol=BTCUSDT&limit=10'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "id": 3456789012,
+    #'     "price": "67632.40",
+    #'     "qty": "0.015",
+    #'     "quoteQty": "1014.49",
+    #'     "time": 1710028800123,
+    #'     "isBuyerMaker": false
+    #'   },
+    #'   {
+    #'     "id": 3456789013,
+    #'     "price": "67630.20",
+    #'     "qty": "0.200",
+    #'     "quoteQty": "13526.04",
+    #'     "time": 1710028800456,
+    #'     "isBuyerMaker": true
+    #'   }
+    #' ]
     #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
@@ -762,10 +952,31 @@ BinanceFuturesData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Futures Index Price Kline/Candlestick Data](https://binance-docs.github.io/apidocs/futures/en/#index-price-kline-candlestick-data)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://fapi.binance.com/fapi/v1/indexPriceKlines?pair=BTCUSDT&interval=1h&limit=100'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   [
+    #'     1710028800000,
+    #'     "67518.42",
+    #'     "67840.15",
+    #'     "67305.78",
+    #'     "67625.33",
+    #'     "0",
+    #'     1710032399999,
+    #'     "0",
+    #'     0,
+    #'     "0",
+    #'     "0",
+    #'     "0"
+    #'   ]
+    #' ]
     #' ```
     #'
     #' @param pair Character; underlying pair (e.g., `"BTCUSDT"`).
@@ -857,10 +1068,31 @@ BinanceFuturesData <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Futures Mark Price Kline/Candlestick Data](https://binance-docs.github.io/apidocs/futures/en/#mark-price-kline-candlestick-data)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
     #' curl -X GET 'https://fapi.binance.com/fapi/v1/markPriceKlines?symbol=BTCUSDT&interval=1h&limit=100'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   [
+    #'     1710028800000,
+    #'     "67525.10",
+    #'     "67848.75",
+    #'     "67312.40",
+    #'     "67635.20",
+    #'     "0",
+    #'     1710032399999,
+    #'     "0",
+    #'     0,
+    #'     "0",
+    #'     "0",
+    #'     "0"
+    #'   ]
+    #' ]
     #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).

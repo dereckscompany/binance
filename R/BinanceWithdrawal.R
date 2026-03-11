@@ -67,6 +67,7 @@ BinanceWithdrawal <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Withdraw](https://developers.binance.com/docs/wallet/capital/withdraw)
+    #' Verified: 2026-03-10
     #'
     #' ### Automated Trading Usage
     #' - **Profit Extraction**: Withdraw profits to a cold wallet at regular intervals.
@@ -79,6 +80,18 @@ BinanceWithdrawal <- R6::R6Class(
     #' curl -X POST 'https://api.binance.com/sapi/v1/capital/withdraw/apply' \
     #'   -H 'X-MBX-APIKEY: your-api-key' \
     #'   -d 'coin=USDT&address=TKFRQXSDcY4kd3QLzw7uK16GmLrjJggwX8&amount=10&network=TRX&timestamp=...&signature=...'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "coin": "USDT",
+    #'   "address": "TKFRQXSDcY4kd3QLzw7uK16GmLrjJggwX8",
+    #'   "amount": "10",
+    #'   "network": "TRX",
+    #'   "timestamp": 1661493146000,
+    #'   "signature": "..."
+    #' }
     #' ```
     #'
     #' ### JSON Response
@@ -180,6 +193,7 @@ BinanceWithdrawal <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Withdraw History](https://developers.binance.com/docs/wallet/capital/withdraw-history)
+    #' Verified: 2026-03-10
     #'
     #' ### Automated Trading Usage
     #' - **Withdrawal Monitoring**: Poll for status `6` (completed) to confirm funds have

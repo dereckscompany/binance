@@ -77,6 +77,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Create Virtual Sub-Account](https://developers.binance.com/docs/sub_account/account-management/Create-a-Virtual-Sub-account)
+    #' Verified: 2026-03-10
     #'
     #' ### curl
     #' ```
@@ -128,6 +129,13 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Query Sub-Account List](https://developers.binance.com/docs/sub_account/account-management/Query-Sub-account-List)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/sapi/v1/sub-account/list?timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
     #'
     #' ### JSON Response
     #' ```json
@@ -196,6 +204,13 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Sub-Account Assets](https://developers.binance.com/docs/sub_account/asset-management/Query-Sub-account-Assets-V3)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/sapi/v3/sub-account/assets?email=sub%40virtual.com&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
     #'
     #' ### JSON Response
     #' ```json
@@ -247,6 +262,31 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Sub-Account Spot Summary](https://developers.binance.com/docs/sub_account/asset-management/Query-Sub-account-Spot-Assets-Summary)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/sapi/v1/sub-account/spotSummary?timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "totalCount": 2,
+    #'   "masterAccountTotalAsset": "0.23456789",
+    #'   "spotSubUserAssetBtcVoList": [
+    #'     {
+    #'       "email": "testsub01@virtual.com",
+    #'       "totalAsset": "0.12345678"
+    #'     },
+    #'     {
+    #'       "email": "testsub02@virtual.com",
+    #'       "totalAsset": "0.11111111"
+    #'     }
+    #'   ]
+    #' }
+    #' ```
     #'
     #' @param email Character or NULL; filter by sub-account email.
     #' @param page Integer or NULL; page number (default 1).
@@ -294,6 +334,27 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Universal Transfer](https://developers.binance.com/docs/sub_account/asset-management/Universal-Transfer)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X POST 'https://api.binance.com/sapi/v1/sub-account/universalTransfer' \
+    #'   -H 'X-MBX-APIKEY: your-api-key' \
+    #'   -d 'toEmail=sub%40virtual.com&fromAccountType=SPOT&toAccountType=SPOT&asset=USDT&amount=100&timestamp=...&signature=...'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "fromEmail": "master@test.com",
+    #'   "toEmail": "sub@virtual.com",
+    #'   "fromAccountType": "SPOT",
+    #'   "toAccountType": "SPOT",
+    #'   "asset": "USDT",
+    #'   "amount": "100",
+    #'   "clientTranId": "test_transfer_001"
+    #' }
+    #' ```
     #'
     #' ### JSON Response
     #' ```json
@@ -384,6 +445,13 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Universal Transfer History](https://developers.binance.com/docs/sub_account/asset-management/Query-Universal-Transfer-History)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/sapi/v1/sub-account/universalTransfer?timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
     #'
     #' ### JSON Response
     #' ```json
@@ -479,6 +547,46 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Sub-Account Futures Account V2](https://developers.binance.com/docs/sub_account/asset-management/Get-Detail-on-Sub-accounts-Futures-Account-V2)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/sapi/v2/sub-account/futures/account?email=sub%40virtual.com&futuresType=1&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "futureAccountResp": {
+    #'     "email": "sub@virtual.com",
+    #'     "asset": "USDT",
+    #'     "assets": [
+    #'       {
+    #'         "asset": "USDT",
+    #'         "initialMargin": "0.00000000",
+    #'         "maintenanceMargin": "0.00000000",
+    #'         "marginBalance": "1500.00000000",
+    #'         "maxWithdrawAmount": "1500.00000000",
+    #'         "openOrderInitialMargin": "0.00000000",
+    #'         "positionInitialMargin": "0.00000000",
+    #'         "unrealizedProfit": "0.00000000",
+    #'         "walletBalance": "1500.00000000"
+    #'       }
+    #'     ],
+    #'     "canDeposit": true,
+    #'     "canTrade": true,
+    #'     "canWithdraw": true,
+    #'     "feeTier": 0,
+    #'     "maxWithdrawAmount": "1500.00000000",
+    #'     "totalInitialMargin": "0.00000000",
+    #'     "totalMarginBalance": "1500.00000000",
+    #'     "totalWalletBalance": "1500.00000000",
+    #'     "totalUnrealizedProfit": "0.00000000",
+    #'     "updateTime": 1661493146000
+    #'   }
+    #' }
+    #' ```
     #'
     #' @param email Character; the sub-account email.
     #' @param futuresType Integer; `1` for USDT-margined futures, `2` for COIN-margined futures.
@@ -526,6 +634,29 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Sub-Account Margin Account](https://developers.binance.com/docs/sub_account/asset-management/Get-Detail-on-Sub-accounts-Margin-Account)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/sapi/v1/sub-account/margin/account?email=sub%40virtual.com&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "email": "sub@virtual.com",
+    #'   "marginLevel": "11.64405625",
+    #'   "totalAssetOfBtc": "6.82728457",
+    #'   "totalLiabilityOfBtc": "0.58633215",
+    #'   "totalNetAssetOfBtc": "6.24095242",
+    #'   "marginTradeCoeffVo": {
+    #'     "forceLiquidationBar": "1.1",
+    #'     "marginCallBar": "1.3",
+    #'     "normalBar": "1.5"
+    #'   }
+    #' }
+    #' ```
     #'
     #' @param email Character; the sub-account email.
     #' @param recvWindow Integer or NULL; max 60000.
@@ -567,6 +698,13 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Sub-Account Status](https://developers.binance.com/docs/sub_account/account-management/Get-Sub-accounts-Status-on-Margin-Or-Futures)
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/sapi/v1/sub-account/status?timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
     #'
     #' ### JSON Response
     #' ```json

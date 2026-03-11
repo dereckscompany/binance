@@ -120,7 +120,57 @@ BinanceFutures <- R6::R6Class(
     #' `POST https://fapi.binance.com/fapi/v1/order`
     #'
     #' ### Official Documentation
-    #' [Binance Futures New Order](https://binance-docs.github.io/apidocs/futures/en/#new-order-trade)
+    #' [Binance Futures New Order](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/New-Order)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X POST 'https://fapi.binance.com/fapi/v1/order' \
+    #'   -H 'X-MBX-APIKEY: your-api-key' \
+    #'   -d 'symbol=BTCUSDT&side=BUY&type=LIMIT&quantity=0.001&price=50000&timeInForce=GTC&timestamp=1710000000000&signature=...'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "side": "BUY",
+    #'   "type": "LIMIT",
+    #'   "quantity": "0.001",
+    #'   "price": "50000",
+    #'   "timeInForce": "GTC",
+    #'   "timestamp": 1710000000000,
+    #'   "signature": "..."
+    #' }
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "orderId": 283194212,
+    #'   "symbol": "BTCUSDT",
+    #'   "status": "NEW",
+    #'   "clientOrderId": "x-HNA2TXFJ1710000000",
+    #'   "price": "50000.00",
+    #'   "avgPrice": "0.00",
+    #'   "origQty": "0.001",
+    #'   "executedQty": "0.000",
+    #'   "cumQty": "0.000",
+    #'   "cumQuote": "0.00000",
+    #'   "timeInForce": "GTC",
+    #'   "type": "LIMIT",
+    #'   "reduceOnly": false,
+    #'   "closePosition": false,
+    #'   "side": "BUY",
+    #'   "positionSide": "BOTH",
+    #'   "stopPrice": "0.00",
+    #'   "workingType": "CONTRACT_PRICE",
+    #'   "priceProtect": false,
+    #'   "origType": "LIMIT",
+    #'   "updateTime": 1710000000123
+    #' }
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param side Character; `"BUY"` or `"SELL"`.
@@ -253,6 +303,37 @@ BinanceFutures <- R6::R6Class(
     #' ### API Endpoint
     #' `POST https://fapi.binance.com/fapi/v1/order/test`
     #'
+    #' ### Official Documentation
+    #' [Binance Futures New Order Test](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/New-Order-Test)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X POST 'https://fapi.binance.com/fapi/v1/order/test' \
+    #'   -H 'X-MBX-APIKEY: your-api-key' \
+    #'   -d 'symbol=BTCUSDT&side=BUY&type=LIMIT&quantity=0.001&price=50000&timeInForce=GTC&timestamp=1710000000000&signature=...'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "side": "BUY",
+    #'   "type": "LIMIT",
+    #'   "quantity": "0.001",
+    #'   "price": "50000",
+    #'   "timeInForce": "GTC",
+    #'   "timestamp": 1710000000000,
+    #'   "signature": "..."
+    #' }
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {}
+    #' ```
+    #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param side Character; `"BUY"` or `"SELL"`.
     #' @param type Character; order type.
@@ -378,7 +459,50 @@ BinanceFutures <- R6::R6Class(
     #' `DELETE https://fapi.binance.com/fapi/v1/order`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Cancel Order](https://binance-docs.github.io/apidocs/futures/en/#cancel-order-trade)
+    #' [Binance Futures Cancel Order](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Cancel-Order)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X DELETE 'https://fapi.binance.com/fapi/v1/order?symbol=BTCUSDT&orderId=283194212&timestamp=1710000000000&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "orderId": 283194212,
+    #'   "timestamp": 1710000000000,
+    #'   "signature": "..."
+    #' }
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "orderId": 283194212,
+    #'   "symbol": "BTCUSDT",
+    #'   "status": "CANCELED",
+    #'   "clientOrderId": "x-HNA2TXFJ1710000000",
+    #'   "price": "50000.00",
+    #'   "origQty": "0.001",
+    #'   "executedQty": "0.000",
+    #'   "cumQty": "0.000",
+    #'   "cumQuote": "0.00000",
+    #'   "timeInForce": "GTC",
+    #'   "type": "LIMIT",
+    #'   "reduceOnly": false,
+    #'   "closePosition": false,
+    #'   "side": "BUY",
+    #'   "positionSide": "BOTH",
+    #'   "stopPrice": "0.00",
+    #'   "workingType": "CONTRACT_PRICE",
+    #'   "origType": "LIMIT",
+    #'   "updateTime": 1710000005678
+    #' }
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param orderId Integer or NULL; the order ID to cancel.
@@ -434,7 +558,32 @@ BinanceFutures <- R6::R6Class(
     #' `DELETE https://fapi.binance.com/fapi/v1/allOpenOrders`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Cancel All Open Orders](https://binance-docs.github.io/apidocs/futures/en/#cancel-all-open-orders-trade)
+    #' [Binance Futures Cancel All Open Orders](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Cancel-All-Open-Orders)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X DELETE 'https://fapi.binance.com/fapi/v1/allOpenOrders?symbol=BTCUSDT&timestamp=1710000000000&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "timestamp": 1710000000000,
+    #'   "signature": "..."
+    #' }
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "code": 200,
+    #'   "msg": "The operation of cancel all open order is done."
+    #' }
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param recvWindow Integer or NULL; max 60000.
@@ -470,7 +619,41 @@ BinanceFutures <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/order`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Query Order](https://binance-docs.github.io/apidocs/futures/en/#query-order-user_data)
+    #' [Binance Futures Query Order](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Query-Order)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://fapi.binance.com/fapi/v1/order?symbol=BTCUSDT&orderId=283194212&timestamp=1710000000000&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "orderId": 283194212,
+    #'   "symbol": "BTCUSDT",
+    #'   "status": "NEW",
+    #'   "clientOrderId": "x-HNA2TXFJ1710000000",
+    #'   "price": "50000.00",
+    #'   "avgPrice": "0.00",
+    #'   "origQty": "0.001",
+    #'   "executedQty": "0.000",
+    #'   "cumQuote": "0.00000",
+    #'   "timeInForce": "GTC",
+    #'   "type": "LIMIT",
+    #'   "reduceOnly": false,
+    #'   "closePosition": false,
+    #'   "side": "BUY",
+    #'   "positionSide": "BOTH",
+    #'   "stopPrice": "0.00",
+    #'   "workingType": "CONTRACT_PRICE",
+    #'   "origType": "LIMIT",
+    #'   "time": 1710000000123,
+    #'   "updateTime": 1710000000123
+    #' }
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param orderId Integer or NULL; the order ID.
@@ -533,7 +716,43 @@ BinanceFutures <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/openOrders`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Current Open Orders](https://binance-docs.github.io/apidocs/futures/en/#current-open-orders-user_data)
+    #' [Binance Futures Current Open Orders](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Current-All-Open-Orders)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://fapi.binance.com/fapi/v1/openOrders?symbol=BTCUSDT&timestamp=1710000000000&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "orderId": 283194212,
+    #'     "symbol": "BTCUSDT",
+    #'     "status": "NEW",
+    #'     "clientOrderId": "x-HNA2TXFJ1710000000",
+    #'     "price": "50000.00",
+    #'     "avgPrice": "0.00",
+    #'     "origQty": "0.001",
+    #'     "executedQty": "0.000",
+    #'     "cumQuote": "0.00000",
+    #'     "timeInForce": "GTC",
+    #'     "type": "LIMIT",
+    #'     "reduceOnly": false,
+    #'     "closePosition": false,
+    #'     "side": "BUY",
+    #'     "positionSide": "BOTH",
+    #'     "stopPrice": "0.00",
+    #'     "workingType": "CONTRACT_PRICE",
+    #'     "origType": "LIMIT",
+    #'     "time": 1710000000123,
+    #'     "updateTime": 1710000000123
+    #'   }
+    #' ]
+    #' ```
     #'
     #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
     #' @param recvWindow Integer or NULL; max 60000.
@@ -586,7 +805,43 @@ BinanceFutures <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/allOrders`
     #'
     #' ### Official Documentation
-    #' [Binance Futures All Orders](https://binance-docs.github.io/apidocs/futures/en/#all-orders-user_data)
+    #' [Binance Futures All Orders](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/All-Orders)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://fapi.binance.com/fapi/v1/allOrders?symbol=BTCUSDT&limit=50&timestamp=1710000000000&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "orderId": 283194212,
+    #'     "symbol": "BTCUSDT",
+    #'     "status": "FILLED",
+    #'     "clientOrderId": "x-HNA2TXFJ1710000000",
+    #'     "price": "50000.00",
+    #'     "avgPrice": "50000.00",
+    #'     "origQty": "0.001",
+    #'     "executedQty": "0.001",
+    #'     "cumQuote": "50.00000",
+    #'     "timeInForce": "GTC",
+    #'     "type": "LIMIT",
+    #'     "reduceOnly": false,
+    #'     "closePosition": false,
+    #'     "side": "BUY",
+    #'     "positionSide": "BOTH",
+    #'     "stopPrice": "0.00",
+    #'     "workingType": "CONTRACT_PRICE",
+    #'     "origType": "LIMIT",
+    #'     "time": 1710000000123,
+    #'     "updateTime": 1710000001234
+    #'   }
+    #' ]
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param orderId Integer or NULL; pagination cursor.
@@ -660,7 +915,75 @@ BinanceFutures <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v2/account`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Account Information](https://binance-docs.github.io/apidocs/futures/en/#account-information-v2-user_data)
+    #' [Binance Futures Account Information V2](https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Account-Information-V2)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://fapi.binance.com/fapi/v2/account?timestamp=1710000000000&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "feeTier": 0,
+    #'   "canTrade": true,
+    #'   "canDeposit": true,
+    #'   "canWithdraw": true,
+    #'   "updateTime": 0,
+    #'   "multiAssetsMargin": false,
+    #'   "totalInitialMargin": "0.00000000",
+    #'   "totalMaintMargin": "0.00000000",
+    #'   "totalWalletBalance": "1500.00000000",
+    #'   "totalUnrealizedProfit": "23.45000000",
+    #'   "totalMarginBalance": "1523.45000000",
+    #'   "totalPositionInitialMargin": "0.00000000",
+    #'   "totalOpenOrderInitialMargin": "0.00000000",
+    #'   "totalCrossWalletBalance": "1500.00000000",
+    #'   "totalCrossUnPnl": "23.45000000",
+    #'   "availableBalance": "1500.00000000",
+    #'   "maxWithdrawAmount": "1500.00000000",
+    #'   "assets": [
+    #'     {
+    #'       "asset": "USDT",
+    #'       "walletBalance": "1500.00000000",
+    #'       "unrealizedProfit": "23.45000000",
+    #'       "marginBalance": "1523.45000000",
+    #'       "maintMargin": "0.00000000",
+    #'       "initialMargin": "0.00000000",
+    #'       "positionInitialMargin": "0.00000000",
+    #'       "openOrderInitialMargin": "0.00000000",
+    #'       "crossWalletBalance": "1500.00000000",
+    #'       "crossUnPnl": "23.45000000",
+    #'       "availableBalance": "1500.00000000",
+    #'       "maxWithdrawAmount": "1500.00000000",
+    #'       "marginAvailable": true,
+    #'       "updateTime": 1710000000000
+    #'     }
+    #'   ],
+    #'   "positions": [
+    #'     {
+    #'       "symbol": "BTCUSDT",
+    #'       "initialMargin": "0",
+    #'       "maintMargin": "0",
+    #'       "unrealizedProfit": "0.00000000",
+    #'       "positionInitialMargin": "0",
+    #'       "openOrderInitialMargin": "0",
+    #'       "leverage": "20",
+    #'       "isolated": false,
+    #'       "entryPrice": "0.0",
+    #'       "maxNotional": "250000",
+    #'       "positionSide": "BOTH",
+    #'       "positionAmt": "0.000",
+    #'       "notional": "0",
+    #'       "isolatedWallet": "0",
+    #'       "updateTime": 0
+    #'     }
+    #'   ]
+    #' }
+    #' ```
     #'
     #' @param recvWindow Integer or NULL; max 60000.
     #' @return `data.table` with one row and the following columns:
@@ -704,7 +1027,43 @@ BinanceFutures <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v2/balance`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Account Balance](https://binance-docs.github.io/apidocs/futures/en/#futures-account-balance-v2-user_data)
+    #' [Binance Futures Account Balance V2](https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Futures-Account-Balance-V2)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://fapi.binance.com/fapi/v2/balance?timestamp=1710000000000&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "accountAlias": "SgsR",
+    #'     "asset": "USDT",
+    #'     "balance": "1500.00000000",
+    #'     "crossWalletBalance": "1500.00000000",
+    #'     "crossUnPnl": "23.45000000",
+    #'     "availableBalance": "1476.55000000",
+    #'     "maxWithdrawAmount": "1476.55000000",
+    #'     "marginAvailable": true,
+    #'     "updateTime": 1710000000000
+    #'   },
+    #'   {
+    #'     "accountAlias": "SgsR",
+    #'     "asset": "BNB",
+    #'     "balance": "0.50000000",
+    #'     "crossWalletBalance": "0.50000000",
+    #'     "crossUnPnl": "0.00000000",
+    #'     "availableBalance": "0.50000000",
+    #'     "maxWithdrawAmount": "0.50000000",
+    #'     "marginAvailable": true,
+    #'     "updateTime": 1710000000000
+    #'   }
+    #' ]
+    #' ```
     #'
     #' @param recvWindow Integer or NULL; max 60000.
     #' @return `data.table` with one row per asset and the following columns:
@@ -750,7 +1109,38 @@ BinanceFutures <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v2/positionRisk`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Position Information](https://binance-docs.github.io/apidocs/futures/en/#position-information-v2-user_data)
+    #' [Binance Futures Position Information V2](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Position-Information-V2)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://fapi.binance.com/fapi/v2/positionRisk?symbol=BTCUSDT&timestamp=1710000000000&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "symbol": "BTCUSDT",
+    #'     "positionAmt": "0.001",
+    #'     "entryPrice": "50000.0",
+    #'     "markPrice": "51234.56000000",
+    #'     "unRealizedProfit": "1.23456000",
+    #'     "liquidationPrice": "25123.45678901",
+    #'     "leverage": "20",
+    #'     "maxNotionalValue": "250000",
+    #'     "marginType": "cross",
+    #'     "isolatedMargin": "0.00000000",
+    #'     "isAutoAddMargin": "false",
+    #'     "positionSide": "BOTH",
+    #'     "notional": "51.23456000",
+    #'     "isolatedWallet": "0",
+    #'     "updateTime": 1710000000123
+    #'   }
+    #' ]
+    #' ```
     #'
     #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
     #' @param recvWindow Integer or NULL; max 60000.
@@ -802,7 +1192,35 @@ BinanceFutures <- R6::R6Class(
     #' `POST https://fapi.binance.com/fapi/v1/leverage`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Change Initial Leverage](https://binance-docs.github.io/apidocs/futures/en/#change-initial-leverage-trade)
+    #' [Binance Futures Change Initial Leverage](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Initial-Leverage)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X POST 'https://fapi.binance.com/fapi/v1/leverage' \
+    #'   -H 'X-MBX-APIKEY: your-api-key' \
+    #'   -d 'symbol=BTCUSDT&leverage=20&timestamp=1710000000000&signature=...'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "leverage": 20,
+    #'   "timestamp": 1710000000000,
+    #'   "signature": "..."
+    #' }
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "leverage": 20,
+    #'   "maxNotionalValue": "250000",
+    #'   "symbol": "BTCUSDT"
+    #' }
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param leverage Integer; target leverage (1-125).
@@ -842,7 +1260,34 @@ BinanceFutures <- R6::R6Class(
     #' `POST https://fapi.binance.com/fapi/v1/marginType`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Change Margin Type](https://binance-docs.github.io/apidocs/futures/en/#change-margin-type-trade)
+    #' [Binance Futures Change Margin Type](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Margin-Type)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X POST 'https://fapi.binance.com/fapi/v1/marginType' \
+    #'   -H 'X-MBX-APIKEY: your-api-key' \
+    #'   -d 'symbol=BTCUSDT&marginType=ISOLATED&timestamp=1710000000000&signature=...'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "marginType": "ISOLATED",
+    #'   "timestamp": 1710000000000,
+    #'   "signature": "..."
+    #' }
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "code": 200,
+    #'   "msg": "success"
+    #' }
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param marginType Character; `"ISOLATED"` or `"CROSSED"`.
@@ -884,7 +1329,37 @@ BinanceFutures <- R6::R6Class(
     #' `POST https://fapi.binance.com/fapi/v1/positionMargin`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Modify Isolated Position Margin](https://binance-docs.github.io/apidocs/futures/en/#modify-isolated-position-margin-trade)
+    #' [Binance Futures Modify Isolated Position Margin](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Modify-Isolated-Position-Margin)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X POST 'https://fapi.binance.com/fapi/v1/positionMargin' \
+    #'   -H 'X-MBX-APIKEY: your-api-key' \
+    #'   -d 'symbol=BTCUSDT&amount=100&type=1&timestamp=1710000000000&signature=...'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "amount": "100",
+    #'   "type": 1,
+    #'   "timestamp": 1710000000000,
+    #'   "signature": "..."
+    #' }
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "amount": 100.0,
+    #'   "code": 200,
+    #'   "msg": "Successfully modify position margin.",
+    #'   "type": 1
+    #' }
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param amount Numeric; margin amount.
@@ -934,7 +1409,30 @@ BinanceFutures <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/positionMargin/history`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Get Position Margin Change History](https://binance-docs.github.io/apidocs/futures/en/#get-position-margin-change-history-trade)
+    #' [Binance Futures Get Position Margin Change History](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Get-Position-Margin-Change-History)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://fapi.binance.com/fapi/v1/positionMargin/history?symbol=BTCUSDT&timestamp=1710000000000&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "symbol": "BTCUSDT",
+    #'     "type": 1,
+    #'     "deltaType": "INCREASE_MARGIN",
+    #'     "amount": "100.00000000",
+    #'     "asset": "USDT",
+    #'     "time": 1710000000000,
+    #'     "positionSide": "BOTH"
+    #'   }
+    #' ]
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param type Integer or NULL; 1 = add margin, 2 = reduce margin.
@@ -999,7 +1497,38 @@ BinanceFutures <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/userTrades`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Account Trade List](https://binance-docs.github.io/apidocs/futures/en/#account-trade-list-user_data)
+    #' [Binance Futures Account Trade List](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Account-Trade-List)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://fapi.binance.com/fapi/v1/userTrades?symbol=BTCUSDT&limit=50&timestamp=1710000000000&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "symbol": "BTCUSDT",
+    #'     "id": 698759,
+    #'     "orderId": 283194212,
+    #'     "side": "BUY",
+    #'     "price": "50000.00",
+    #'     "qty": "0.001",
+    #'     "realizedPnl": "0",
+    #'     "marginAsset": "USDT",
+    #'     "quoteQty": "50.00000",
+    #'     "commission": "0.02000000",
+    #'     "commissionAsset": "USDT",
+    #'     "time": 1710000000123,
+    #'     "positionSide": "BOTH",
+    #'     "buyer": true,
+    #'     "maker": false
+    #'   }
+    #' ]
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param orderId Integer or NULL; filter by order ID.
@@ -1073,7 +1602,41 @@ BinanceFutures <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/income`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Get Income History](https://binance-docs.github.io/apidocs/futures/en/#get-income-history-user_data)
+    #' [Binance Futures Get Income History](https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Get-Income-History)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://fapi.binance.com/fapi/v1/income?symbol=BTCUSDT&incomeType=FUNDING_FEE&timestamp=1710000000000&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "symbol": "BTCUSDT",
+    #'     "incomeType": "FUNDING_FEE",
+    #'     "income": "-0.01234500",
+    #'     "asset": "USDT",
+    #'     "info": "",
+    #'     "time": 1710000000000,
+    #'     "tranId": 1567890123456,
+    #'     "tradeId": ""
+    #'   },
+    #'   {
+    #'     "symbol": "BTCUSDT",
+    #'     "incomeType": "REALIZED_PNL",
+    #'     "income": "15.67890000",
+    #'     "asset": "USDT",
+    #'     "info": "",
+    #'     "time": 1710000001000,
+    #'     "tranId": 1567890123457,
+    #'     "tradeId": "698759"
+    #'   }
+    #' ]
+    #' ```
     #'
     #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
     #' @param incomeType Character or NULL; income type filter. Valid values:
@@ -1174,7 +1737,33 @@ BinanceFutures <- R6::R6Class(
     #' `POST https://fapi.binance.com/fapi/v1/positionSide/dual`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Change Position Mode](https://binance-docs.github.io/apidocs/futures/en/#change-position-mode-trade)
+    #' [Binance Futures Change Position Mode](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Position-Mode)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X POST 'https://fapi.binance.com/fapi/v1/positionSide/dual' \
+    #'   -H 'X-MBX-APIKEY: your-api-key' \
+    #'   -d 'dualSidePosition=true&timestamp=1710000000000&signature=...'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "dualSidePosition": "true",
+    #'   "timestamp": 1710000000000,
+    #'   "signature": "..."
+    #' }
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "code": 200,
+    #'   "msg": "success"
+    #' }
+    #' ```
     #'
     #' @param dualSidePosition Logical; `TRUE` for hedge mode, `FALSE` for one-way.
     #' @param recvWindow Integer or NULL; max 60000.
@@ -1213,7 +1802,22 @@ BinanceFutures <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/positionSide/dual`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Get Current Position Mode](https://binance-docs.github.io/apidocs/futures/en/#get-current-position-mode-user_data)
+    #' [Binance Futures Get Current Position Mode](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Get-Current-Position-Mode)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://fapi.binance.com/fapi/v1/positionSide/dual?timestamp=1710000000000&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "dualSidePosition": true
+    #' }
+    #' ```
     #'
     #' @param recvWindow Integer or NULL; max 60000.
     #' @return `data.table` with one row and the following columns:

@@ -89,6 +89,31 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Borrow-Repay](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay)
     #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X POST 'https://api.binance.com/sapi/v1/margin/borrow-repay?asset=USDT&amount=100&type=BORROW&isIsolated=FALSE&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "asset": "USDT",
+    #'   "amount": "100",
+    #'   "type": "BORROW",
+    #'   "isIsolated": "FALSE"
+    #' }
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "tranId": 100000001
+    #' }
+    #' ```
+    #'
     #' @param asset Character; asset to borrow (e.g., `"USDT"`).
     #' @param amount Numeric; amount to borrow.
     #' @param isIsolated Character; `"TRUE"` or `"FALSE"` for isolated margin. Default `"FALSE"`.
@@ -132,6 +157,31 @@ BinanceMargin <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Margin Borrow-Repay](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X POST 'https://api.binance.com/sapi/v1/margin/borrow-repay?asset=USDT&amount=100&type=REPAY&isIsolated=FALSE&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "asset": "USDT",
+    #'   "amount": "100",
+    #'   "type": "REPAY",
+    #'   "isIsolated": "FALSE"
+    #' }
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "tranId": 100000002
+    #' }
+    #' ```
     #'
     #' @param asset Character; asset to repay (e.g., `"USDT"`).
     #' @param amount Numeric; amount to repay.
@@ -177,6 +227,46 @@ BinanceMargin <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Margin New Order](https://developers.binance.com/docs/margin_trading/trade/Margin-Account-New-Order)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X POST 'https://api.binance.com/sapi/v1/margin/order?symbol=BTCUSDT&side=BUY&type=LIMIT&quantity=0.0001&price=50000&timeInForce=GTC&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "side": "BUY",
+    #'   "type": "LIMIT",
+    #'   "quantity": "0.0001",
+    #'   "price": "50000",
+    #'   "timeInForce": "GTC",
+    #'   "sideEffectType": "NO_SIDE_EFFECT"
+    #' }
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "orderId": 28,
+    #'   "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+    #'   "transactTime": 1507725176595,
+    #'   "price": "50000.00000000",
+    #'   "origQty": "0.00010000",
+    #'   "executedQty": "0.00000000",
+    #'   "cummulativeQuoteQty": "0.00000000",
+    #'   "status": "NEW",
+    #'   "timeInForce": "GTC",
+    #'   "type": "LIMIT",
+    #'   "side": "BUY",
+    #'   "isIsolated": false
+    #' }
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param side Character; `"BUY"` or `"SELL"`.
@@ -295,6 +385,42 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Cancel Order](https://developers.binance.com/docs/margin_trading/trade/Margin-Account-Cancel-Order)
     #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X DELETE 'https://api.binance.com/sapi/v1/margin/order?symbol=BTCUSDT&orderId=28&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "orderId": 28
+    #' }
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "orderId": 28,
+    #'   "origClientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+    #'   "clientOrderId": "cancelMyOrder1",
+    #'   "transactTime": 1507725176595,
+    #'   "price": "50000.00000000",
+    #'   "origQty": "0.00010000",
+    #'   "executedQty": "0.00000000",
+    #'   "cummulativeQuoteQty": "0.00000000",
+    #'   "status": "CANCELED",
+    #'   "timeInForce": "GTC",
+    #'   "type": "LIMIT",
+    #'   "side": "BUY",
+    #'   "isIsolated": false
+    #' }
+    #' ```
+    #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param orderId Integer or NULL; the order ID to cancel.
     #' @param origClientOrderId Character or NULL; the client order ID to cancel.
@@ -349,6 +475,43 @@ BinanceMargin <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Margin Cancel All Orders](https://developers.binance.com/docs/margin_trading/trade/Margin-Account-Cancel-All-Open-Orders)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X DELETE 'https://api.binance.com/sapi/v1/margin/openOrders?symbol=BTCUSDT&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT"
+    #' }
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "symbol": "BTCUSDT",
+    #'     "orderId": 28,
+    #'     "origClientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+    #'     "clientOrderId": "cancelMyOrder1",
+    #'     "transactTime": 1507725176595,
+    #'     "price": "50000.00000000",
+    #'     "origQty": "0.00010000",
+    #'     "executedQty": "0.00000000",
+    #'     "cummulativeQuoteQty": "0.00000000",
+    #'     "status": "CANCELED",
+    #'     "timeInForce": "GTC",
+    #'     "type": "LIMIT",
+    #'     "side": "BUY",
+    #'     "isIsolated": false
+    #'   }
+    #' ]
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
@@ -406,6 +569,36 @@ BinanceMargin <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Margin Query Order](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Order)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/sapi/v1/margin/order?symbol=BTCUSDT&orderId=28&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "symbol": "BTCUSDT",
+    #'   "orderId": 28,
+    #'   "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+    #'   "price": "50000.00000000",
+    #'   "origQty": "0.00010000",
+    #'   "executedQty": "0.00010000",
+    #'   "cummulativeQuoteQty": "5.00000000",
+    #'   "status": "FILLED",
+    #'   "timeInForce": "GTC",
+    #'   "type": "LIMIT",
+    #'   "side": "BUY",
+    #'   "stopPrice": "0.00000000",
+    #'   "icebergQty": "0.00000000",
+    #'   "time": 1507725176595,
+    #'   "updateTime": 1507725176595,
+    #'   "isIsolated": false
+    #' }
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param orderId Integer or NULL; the order ID.
@@ -470,6 +663,38 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Open Orders](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Open-Orders)
     #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/sapi/v1/margin/openOrders?symbol=BTCUSDT&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "symbol": "BTCUSDT",
+    #'     "orderId": 28,
+    #'     "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+    #'     "price": "50000.00000000",
+    #'     "origQty": "0.00010000",
+    #'     "executedQty": "0.00000000",
+    #'     "cummulativeQuoteQty": "0.00000000",
+    #'     "status": "NEW",
+    #'     "timeInForce": "GTC",
+    #'     "type": "LIMIT",
+    #'     "side": "BUY",
+    #'     "stopPrice": "0.00000000",
+    #'     "icebergQty": "0.00000000",
+    #'     "time": 1507725176595,
+    #'     "updateTime": 1507725176595,
+    #'     "isIsolated": false
+    #'   }
+    #' ]
+    #' ```
+    #'
     #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
     #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
     #' @param recvWindow Integer or NULL; max 60000.
@@ -527,6 +752,56 @@ BinanceMargin <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Margin All Orders](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-All-Orders)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/sapi/v1/margin/allOrders?symbol=BTCUSDT&limit=50&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "symbol": "BTCUSDT",
+    #'     "orderId": 28,
+    #'     "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+    #'     "price": "50000.00000000",
+    #'     "origQty": "0.00010000",
+    #'     "executedQty": "0.00010000",
+    #'     "cummulativeQuoteQty": "5.00000000",
+    #'     "status": "FILLED",
+    #'     "timeInForce": "GTC",
+    #'     "type": "LIMIT",
+    #'     "side": "BUY",
+    #'     "stopPrice": "0.00000000",
+    #'     "icebergQty": "0.00000000",
+    #'     "time": 1507725176595,
+    #'     "updateTime": 1507725176595,
+    #'     "isIsolated": false
+    #'   },
+    #'   {
+    #'     "symbol": "BTCUSDT",
+    #'     "orderId": 29,
+    #'     "clientOrderId": "x]]Xk3RFN1g2MjEDKWNq8t",
+    #'     "price": "0.00000000",
+    #'     "origQty": "0.00020000",
+    #'     "executedQty": "0.00020000",
+    #'     "cummulativeQuoteQty": "10.48000000",
+    #'     "status": "FILLED",
+    #'     "timeInForce": "GTC",
+    #'     "type": "MARKET",
+    #'     "side": "SELL",
+    #'     "stopPrice": "0.00000000",
+    #'     "icebergQty": "0.00000000",
+    #'     "time": 1507725276595,
+    #'     "updateTime": 1507725276595,
+    #'     "isIsolated": false
+    #'   }
+    #' ]
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param orderId Integer or NULL; pagination cursor.
@@ -604,6 +879,46 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Account](https://developers.binance.com/docs/margin_trading/account/Query-Cross-Margin-Account-Details)
     #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/sapi/v1/margin/account?timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "borrowEnabled": true,
+    #'   "marginLevel": "11.64405625",
+    #'   "totalAssetOfBtc": "6.82728457",
+    #'   "totalLiabilityOfBtc": "0.58633215",
+    #'   "totalNetAssetOfBtc": "6.24095242",
+    #'   "tradeEnabled": true,
+    #'   "transferEnabled": true,
+    #'   "accountType": "MARGIN",
+    #'   "userAssets": [
+    #'     {
+    #'       "asset": "BTC",
+    #'       "borrowed": "0.00000000",
+    #'       "free": "0.00499500",
+    #'       "interest": "0.00000000",
+    #'       "locked": "0.00000000",
+    #'       "netAsset": "0.00499500"
+    #'     },
+    #'     {
+    #'       "asset": "USDT",
+    #'       "borrowed": "200.00000000",
+    #'       "free": "1500.50000000",
+    #'       "interest": "0.01055556",
+    #'       "locked": "0.00000000",
+    #'       "netAsset": "1300.48944444"
+    #'     }
+    #'   ]
+    #' }
+    #' ```
+    #'
     #' @param recvWindow Integer or NULL; max 60000.
     #' @return `data.table` with one row and columns including:
     #' - `borrow_enabled` (logical): Whether borrowing is enabled.
@@ -643,6 +958,22 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Max Borrowable](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Query-Max-Borrow)
     #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/sapi/v1/margin/maxBorrowable?asset=USDT&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "amount": "1.69248805",
+    #'   "borrowLimit": "60"
+    #' }
+    #' ```
+    #'
     #' @param asset Character; asset to query (e.g., `"USDT"`).
     #' @param isolatedSymbol Character or NULL; isolated margin pair (e.g., `"BTCUSDT"`).
     #' @param recvWindow Integer or NULL; max 60000.
@@ -680,6 +1011,21 @@ BinanceMargin <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Max Transferable](https://developers.binance.com/docs/margin_trading/transfer/Query-Max-Transfer-Out-Amount)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/sapi/v1/margin/maxTransferable?asset=USDT&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "amount": "3.59498107"
+    #' }
+    #' ```
     #'
     #' @param asset Character; asset to query (e.g., `"USDT"`).
     #' @param isolatedSymbol Character or NULL; isolated margin pair (e.g., `"BTCUSDT"`).
@@ -719,6 +1065,41 @@ BinanceMargin <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Interest History](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Get-Interest-History)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/sapi/v1/margin/interestHistory?asset=USDT&current=1&size=10&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "rows": [
+    #'     {
+    #'       "isolatedSymbol": "",
+    #'       "asset": "USDT",
+    #'       "interest": "0.01055556",
+    #'       "interestAccuredTime": 1672012800000,
+    #'       "interestRate": "0.00019",
+    #'       "principal": "200.00000000",
+    #'       "type": "ON_BORROW"
+    #'     },
+    #'     {
+    #'       "isolatedSymbol": "",
+    #'       "asset": "USDT",
+    #'       "interest": "0.01055556",
+    #'       "interestAccuredTime": 1672099200000,
+    #'       "interestRate": "0.00019",
+    #'       "principal": "200.00000000",
+    #'       "type": "PERIODIC"
+    #'     }
+    #'   ],
+    #'   "total": 2
+    #' }
+    #' ```
     #'
     #' @param asset Character or NULL; filter by asset (e.g., `"USDT"`).
     #' @param startTime Integer or NULL; start timestamp in milliseconds.
@@ -778,6 +1159,36 @@ BinanceMargin <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Force Liquidation](https://developers.binance.com/docs/margin_trading/trade/Get-Force-Liquidation-Record)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/sapi/v1/margin/forceLiquidationRec?current=1&size=10&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "rows": [
+    #'     {
+    #'       "avgPrice": "52341.12000000",
+    #'       "executedQty": "0.00100000",
+    #'       "orderId": 12345678,
+    #'       "price": "52000.00000000",
+    #'       "qty": "0.00100000",
+    #'       "side": "SELL",
+    #'       "symbol": "BTCUSDT",
+    #'       "timeInForce": "GTC",
+    #'       "isIsolated": false,
+    #'       "updatedTime": 1672099200000,
+    #'       "time": 1672099100000
+    #'     }
+    #'   ],
+    #'   "total": 1
+    #' }
+    #' ```
     #'
     #' @param startTime Integer or NULL; start timestamp in milliseconds.
     #' @param endTime Integer or NULL; end timestamp in milliseconds.
@@ -839,6 +1250,34 @@ BinanceMargin <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Margin Trades](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Trade-List)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/sapi/v1/margin/myTrades?symbol=BTCUSDT&limit=500&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "commission": "0.00000500",
+    #'     "commissionAsset": "BTC",
+    #'     "id": 6,
+    #'     "isBestMatch": true,
+    #'     "isBuyer": true,
+    #'     "isMaker": false,
+    #'     "orderId": 28,
+    #'     "price": "52341.12000000",
+    #'     "qty": "0.00010000",
+    #'     "symbol": "BTCUSDT",
+    #'     "isIsolated": false,
+    #'     "time": 1507725176595
+    #'   }
+    #' ]
+    #' ```
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param orderId Integer or NULL; filter by order ID.
@@ -915,6 +1354,60 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Isolated Margin Account](https://developers.binance.com/docs/margin_trading/account/Query-Isolated-Margin-Account-Info)
     #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://api.binance.com/sapi/v1/margin/isolated/account?symbols=BTCUSDT,ETHUSDT&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "assets": [
+    #'     {
+    #'       "baseAsset": {
+    #'         "asset": "BTC",
+    #'         "borrowEnabled": true,
+    #'         "borrowed": "0.00000000",
+    #'         "free": "0.00100000",
+    #'         "interest": "0.00000000",
+    #'         "locked": "0.00000000",
+    #'         "netAsset": "0.00100000",
+    #'         "netAssetOfBtc": "0.00100000",
+    #'         "repayEnabled": true,
+    #'         "totalAsset": "0.00100000"
+    #'       },
+    #'       "quoteAsset": {
+    #'         "asset": "USDT",
+    #'         "borrowEnabled": true,
+    #'         "borrowed": "0.00000000",
+    #'         "free": "50.00000000",
+    #'         "interest": "0.00000000",
+    #'         "locked": "0.00000000",
+    #'         "netAsset": "50.00000000",
+    #'         "netAssetOfBtc": "0.00094750",
+    #'         "repayEnabled": true,
+    #'         "totalAsset": "50.00000000"
+    #'       },
+    #'       "symbol": "BTCUSDT",
+    #'       "isolatedCreated": true,
+    #'       "enabled": true,
+    #'       "marginLevel": "999.00000000",
+    #'       "marginRatio": "5.00000000",
+    #'       "indexPrice": "52800.00000000",
+    #'       "liquidatePrice": "0.00000000",
+    #'       "liquidateRate": "0.00000000",
+    #'       "tradeEnabled": true
+    #'     }
+    #'   ],
+    #'   "totalAssetOfBtc": "0.00194750",
+    #'   "totalLiabilityOfBtc": "0.00000000",
+    #'   "totalNetAssetOfBtc": "0.00194750"
+    #' }
+    #' ```
+    #'
     #' @param symbols Character or NULL; comma-separated symbols (max 5, e.g., `"BTCUSDT,ETHUSDT"`).
     #' @param recvWindow Integer or NULL; max 60000.
     #' @return `data.table` with one row and columns including:
@@ -951,7 +1444,33 @@ BinanceMargin <- R6::R6Class(
     #' `POST https://api.binance.com/sapi/v1/margin/isolated/transfer`
     #'
     #' ### Official Documentation
-    #' [Binance Isolated Margin Transfer](https://developers.binance.com/docs/margin_trading/Introduction)
+    #' [Binance Isolated Margin Transfer](https://developers.binance.com/docs/margin_trading/transfer/Isolated-Margin-Account-Transfer)
+    #'
+    #' Verified: 2026-03-10
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X POST 'https://api.binance.com/sapi/v1/margin/isolated/transfer?asset=USDT&symbol=BTCUSDT&transFrom=SPOT&transTo=ISOLATED_MARGIN&amount=100&timestamp=...&signature=...' \
+    #'   -H 'X-MBX-APIKEY: your-api-key'
+    #' ```
+    #'
+    #' ### JSON Request
+    #' ```json
+    #' {
+    #'   "asset": "USDT",
+    #'   "symbol": "BTCUSDT",
+    #'   "transFrom": "SPOT",
+    #'   "transTo": "ISOLATED_MARGIN",
+    #'   "amount": "100"
+    #' }
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' {
+    #'   "tranId": 100000003
+    #' }
+    #' ```
     #'
     #' @param asset Character; asset to transfer (e.g., `"USDT"`).
     #' @param symbol Character; isolated margin pair (e.g., `"BTCUSDT"`).
