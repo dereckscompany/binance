@@ -195,15 +195,23 @@ test_that("get_all_orders returns data.table", {
 
 # -- get_account --
 
-test_that("get_account returns data.table with account data", {
+test_that("get_account returns data.table with assets expanded to long format", {
   resp <- mock_binance_response(data = mock_futures_account_data())
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_futures()$get_account()
   expect_s3_class(dt, "data.table")
+  # 1 asset in mock data => 1 row
   expect_equal(nrow(dt), 1L)
   expect_true("can_trade" %in% names(dt))
   expect_true("total_wallet_balance" %in% names(dt))
+  # No list-column 'assets' - expanded with prefix
+  expect_false("assets" %in% names(dt))
+  # Asset columns present with prefix
+  expect_true("asset_asset" %in% names(dt))
+  expect_true("asset_wallet_balance" %in% names(dt))
+  expect_equal(dt$asset_asset, "USDT")
+  expect_equal(dt$asset_wallet_balance, "1000.00000000")
 })
 
 # -- get_balances --

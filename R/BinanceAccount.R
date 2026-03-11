@@ -102,8 +102,10 @@ BinanceAccount <- R6::R6Class(
     #' - `prevent_sor` (logical): Whether smart order routing is prevented.
     #' - `update_time` (numeric): Last account update timestamp in milliseconds.
     #' - `account_type` (character): Account type (e.g., `"SPOT"`).
-    #' - `permissions` (list): Account permissions (e.g., `"SPOT"`).
+    #' - `permission` (character): Account permission (one row per permission, e.g., `"SPOT"`, `"MARGIN"`).
     #' - `uid` (integer): Unique account identifier.
+    #'
+    #' When the account has multiple permissions, account fields are repeated on each row.
     #'
     #' @examples
     #' \dontrun{
@@ -117,7 +119,16 @@ BinanceAccount <- R6::R6Class(
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
           data$balances <- NULL
-          return(as_dt_row(data)[])
+          permissions <- data$permissions
+          data$permissions <- NULL
+          dt <- as_dt_row(data)
+          # Expand permissions to long format: one row per permission
+          if (!is.null(permissions) && length(permissions) > 0) {
+            perms <- unlist(permissions)
+            dt <- dt[rep(1L, length(perms))]
+            dt[, permission := perms]
+          }
+          return(dt[])
         }
       ))
     },

@@ -1410,11 +1410,17 @@ BinanceMargin <- R6::R6Class(
     #'
     #' @param symbols Character or NULL; comma-separated symbols (max 5, e.g., `"BTCUSDT,ETHUSDT"`).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and columns including:
-    #' - `total_asset_of_btc` (character): Total asset value in BTC.
-    #' - `total_liability_of_btc` (character): Total liability in BTC.
-    #' - `total_net_asset_of_btc` (character): Net asset value in BTC.
-    #' - `assets` (list): List of isolated margin asset objects.
+    #' @return `data.table` with one row per isolated margin pair (long format) and columns including:
+    #' - `total_asset_of_btc` (character): Total asset value in BTC (repeated per pair).
+    #' - `total_liability_of_btc` (character): Total liability in BTC (repeated per pair).
+    #' - `total_net_asset_of_btc` (character): Net asset value in BTC (repeated per pair).
+    #' - `base_asset` (list): Base asset details (nested object kept as list-column).
+    #' - `quote_asset` (list): Quote asset details (nested object kept as list-column).
+    #' - `symbol` (character): Isolated margin pair symbol.
+    #' - `isolated_created` (logical): Whether the isolated pair has been created.
+    #' - `enabled` (logical): Whether the pair is enabled.
+    #' - `margin_level` (character): Current margin level.
+    #' - `trade_enabled` (logical): Whether trading is enabled.
     #'
     #' @examples
     #' \dontrun{
@@ -1430,7 +1436,20 @@ BinanceMargin <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data)[])
+          assets <- data$assets
+          data$assets <- NULL
+          parent_dt <- as_dt_row(data)
+          # Expand assets to long format: one row per isolated pair
+          if (!is.null(assets) && length(assets) > 0) {
+            assets_dt <- as_dt_list(assets)
+            if (nrow(parent_dt) > 0 && nrow(assets_dt) > 0) {
+              parent_dt <- parent_dt[rep(1L, nrow(assets_dt))]
+              parent_dt <- cbind(parent_dt, assets_dt)
+            } else if (nrow(assets_dt) > 0) {
+              parent_dt <- assets_dt
+            }
+          }
+          return(parent_dt[])
         }
       ))
     },

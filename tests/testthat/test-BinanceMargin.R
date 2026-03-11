@@ -322,15 +322,22 @@ test_that("get_trades sends GET to correct endpoint with symbol", {
 
 # -- get_isolated_account --
 
-test_that("get_isolated_account returns data.table with assets list column", {
+test_that("get_isolated_account returns data.table with assets expanded to long format", {
   resp <- mock_binance_response(data = mock_isolated_margin_account_data())
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_margin()$get_isolated_account()
   expect_s3_class(dt, "data.table")
+  # 1 asset in mock data => 1 row
   expect_equal(nrow(dt), 1L)
   expect_true("total_asset_of_btc" %in% names(dt))
-  expect_true("assets" %in% names(dt))
+  # No list-column 'assets' - it's been expanded
+  expect_false("assets" %in% names(dt))
+  # Expanded asset columns are present
+  expect_true("symbol" %in% names(dt))
+  expect_true("enabled" %in% names(dt))
+  expect_true("trade_enabled" %in% names(dt))
+  expect_equal(dt$symbol, "BTCUSDT")
 })
 
 test_that("get_isolated_account sends GET to correct endpoint", {

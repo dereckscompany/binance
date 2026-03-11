@@ -189,7 +189,7 @@ BinanceMarketData <- R6::R6Class(
     #'   - `quote_asset` (character): Quote asset code (e.g., `"USDT"`).
     #'   - `quote_asset_precision` (integer): Decimal precision for quote asset quantities.
     #'   - `quote_precision` (integer): Decimal precision for quote asset prices.
-    #'   - `order_types` (list): Allowed order types for this symbol.
+    #'   - `order_types` (character): Comma-separated allowed order types (e.g., `"LIMIT,MARKET"`).
     #'   - `iceberg_allowed` (logical): Whether iceberg orders are allowed.
     #'   - `oco_allowed` (logical): Whether OCO orders are allowed.
     #'   - `oto_allowed` (logical): Whether OTO orders are allowed.
@@ -198,10 +198,10 @@ BinanceMarketData <- R6::R6Class(
     #'   - `cancel_replace_allowed` (logical): Whether cancel-replace is allowed.
     #'   - `is_spot_trading_allowed` (logical): Whether spot trading is enabled.
     #'   - `is_margin_trading_allowed` (logical): Whether margin trading is enabled.
-    #'   - `filters` (list): List of filter objects (LOT_SIZE, PRICE_FILTER, etc.).
-    #'   - `permissions` (list): Trading permissions for this symbol.
+    #'   - `filters` (list): List of filter objects (LOT_SIZE, PRICE_FILTER, etc.) — kept as list-column due to heterogeneous schemas.
+    #'   - `permissions` (character): Comma-separated trading permissions (e.g., `"SPOT,MARGIN"`).
     #'   - `default_self_trade_prevention_mode` (character): Default STP mode.
-    #'   - `allowed_self_trade_prevention_modes` (list): Allowed STP modes.
+    #'   - `allowed_self_trade_prevention_modes` (character): Comma-separated allowed STP modes.
     #'
     #' @examples
     #' \dontrun{
@@ -226,6 +226,15 @@ BinanceMarketData <- R6::R6Class(
           if (is.null(syms) || length(syms) == 0) {
             return(data.table::data.table()[])
           }
+          # Comma-join simple string arrays before passing to as_dt_row
+          syms <- lapply(syms, function(s) {
+            for (field in c("orderTypes", "permissions", "allowedSelfTradePreventionModes")) {
+              if (!is.null(s[[field]]) && is.list(s[[field]])) {
+                s[[field]] <- paste(unlist(s[[field]]), collapse = ",")
+              }
+            }
+            return(s)
+          })
           dt <- data.table::rbindlist(
             lapply(syms, as_dt_row),
             fill = TRUE

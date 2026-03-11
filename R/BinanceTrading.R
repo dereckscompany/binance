@@ -145,7 +145,13 @@ BinanceTrading <- R6::R6Class(
     #' - `working_time` (numeric): Timestamp when the order started working.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
     #' - `transact_time` (POSIXct): Transaction time converted from `transactTime`.
-    #' - `fills` (list): List of fill objects (present with `newOrderRespType = "FULL"`).
+    #' - `fill_price` (character): Fill execution price (one row per fill when `newOrderRespType = "FULL"`).
+    #' - `fill_qty` (character): Fill quantity.
+    #' - `fill_commission` (character): Commission charged for this fill.
+    #' - `fill_commission_asset` (character): Asset used for commission (e.g., `"BNB"`).
+    #'
+    #' When the order has multiple fills, parent order fields are repeated on each row.
+    #' When there are no fills, a single row is returned without fill columns.
     #'
     #' @examples
     #' \dontrun{
@@ -192,9 +198,20 @@ BinanceTrading <- R6::R6Class(
         method = "POST",
         body = body,
         .parser = function(data) {
+          fills <- data$fills
+          data$fills <- NULL
           dt <- as_dt_row(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
             dt[, transact_time := ms_to_datetime(transact_time)]
+          }
+          # Expand fills to long format: one row per fill with parent fields repeated
+          if (!is.null(fills) && length(fills) > 0) {
+            fills_dt <- as_dt_list(fills)
+            # Prefix fill columns to avoid collision with parent order columns
+            fill_names <- names(fills_dt)
+            data.table::setnames(fills_dt, fill_names, paste0("fill_", fill_names))
+            dt <- dt[rep(1L, nrow(fills_dt))]
+            dt <- cbind(dt, fills_dt)
           }
           return(dt[])
         }

@@ -18,7 +18,7 @@ test_that("BinanceOcoOrders inherits from BinanceBase", {
 
 # -- add_oco_order --
 
-test_that("add_oco_order returns data.table with correct columns", {
+test_that("add_oco_order returns data.table with orders expanded to long format", {
   resp <- mock_binance_response(data = mock_oco_order_response())
   httr2::local_mocked_responses(function(req) resp)
 
@@ -30,16 +30,27 @@ test_that("add_oco_order returns data.table with correct columns", {
     stopPrice = 49000
   )
   expect_s3_class(dt, "data.table")
-  expect_equal(nrow(dt), 1L)
-  expect_equal(dt$symbol, "BTCUSDT")
-  expect_equal(dt$order_list_id, 0L)
-  expect_equal(dt$contingency_type, "OCO")
-  expect_equal(dt$list_status_type, "EXEC_STARTED")
-  expect_equal(dt$list_order_status, "EXECUTING")
+  # 2 child orders expanded to 2 rows
+
+  expect_equal(nrow(dt), 2L)
+  expect_equal(unique(dt$symbol), "BTCUSDT")
+  expect_equal(unique(dt$order_list_id), 0L)
+  expect_equal(unique(dt$contingency_type), "OCO")
+  expect_equal(unique(dt$list_status_type), "EXEC_STARTED")
+  expect_equal(unique(dt$list_order_status), "EXECUTING")
 
   # transact_time should be converted to POSIXct in-place
   expect_true("transact_time" %in% names(dt))
   expect_s3_class(dt$transact_time, "POSIXct")
+
+  # Child order columns are present with prefix
+  expect_true("order_symbol" %in% names(dt))
+  expect_true("order_order_id" %in% names(dt))
+  expect_true("order_client_order_id" %in% names(dt))
+  expect_equal(dt$order_order_id, c(12L, 13L))
+
+  # No list-column 'orders' should exist
+  expect_false("orders" %in% names(dt))
 })
 
 test_that("add_oco_order sends POST to correct endpoint", {
@@ -78,19 +89,28 @@ test_that("add_oco_order validates side parameter", {
 
 # -- cancel_oco_order --
 
-test_that("cancel_oco_order returns data.table", {
+test_that("cancel_oco_order returns data.table with orders expanded", {
   resp <- mock_binance_response(data = mock_oco_order_response())
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_oco()$cancel_oco_order("BTCUSDT", orderListId = 0)
   expect_s3_class(dt, "data.table")
-  expect_equal(nrow(dt), 1L)
-  expect_equal(dt$order_list_id, 0L)
-  expect_equal(dt$symbol, "BTCUSDT")
+  # 2 child orders expanded to 2 rows
+  expect_equal(nrow(dt), 2L)
+  expect_equal(unique(dt$order_list_id), 0L)
+  expect_equal(unique(dt$symbol), "BTCUSDT")
 
   # transact_time should be converted to POSIXct in-place
   expect_true("transact_time" %in% names(dt))
   expect_s3_class(dt$transact_time, "POSIXct")
+
+  # Child order columns present with prefix
+  expect_true("order_order_id" %in% names(dt))
+  expect_equal(dt$order_order_id, c(12L, 13L))
+
+  # No list-columns for orders or orderReports
+  expect_false("orders" %in% names(dt))
+  expect_false("order_reports" %in% names(dt))
 })
 
 test_that("cancel_oco_order requires orderListId or listClientOrderId", {
@@ -126,20 +146,28 @@ test_that("cancel_oco_order sends to correct endpoint", {
 
 # -- get_oco_order --
 
-test_that("get_oco_order returns data.table with datetime columns", {
+test_that("get_oco_order returns data.table with orders expanded and datetime columns", {
   resp <- mock_binance_response(data = mock_oco_query_data())
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_oco()$get_oco_order(orderListId = 0)
   expect_s3_class(dt, "data.table")
-  expect_equal(nrow(dt), 1L)
-  expect_equal(dt$order_list_id, 0L)
-  expect_equal(dt$list_status_type, "ALL_DONE")
-  expect_equal(dt$symbol, "BTCUSDT")
+  # 2 child orders expanded to 2 rows
+  expect_equal(nrow(dt), 2L)
+  expect_equal(unique(dt$order_list_id), 0L)
+  expect_equal(unique(dt$list_status_type), "ALL_DONE")
+  expect_equal(unique(dt$symbol), "BTCUSDT")
 
   # transaction_time should be converted to POSIXct in-place
   expect_true("transaction_time" %in% names(dt))
   expect_s3_class(dt$transaction_time, "POSIXct")
+
+  # Child order columns present with prefix
+  expect_true("order_order_id" %in% names(dt))
+  expect_equal(dt$order_order_id, c(12L, 13L))
+
+  # No list-column 'orders' should exist
+  expect_false("orders" %in% names(dt))
 })
 
 test_that("get_oco_order requires orderListId or origClientOrderId", {
@@ -163,14 +191,17 @@ test_that("get_oco_order sends GET to correct endpoint", {
 
 # -- get_open_oco_orders --
 
-test_that("get_open_oco_orders returns data.table", {
+test_that("get_open_oco_orders returns data.table with orders expanded", {
   resp <- mock_binance_response(data = list(mock_oco_query_data()))
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_oco()$get_open_oco_orders()
   expect_s3_class(dt, "data.table")
-  expect_equal(nrow(dt), 1L)
-  expect_equal(dt$order_list_id, 0L)
+  # 1 OCO with 2 orders => 2 rows
+  expect_equal(nrow(dt), 2L)
+  expect_equal(unique(dt$order_list_id), 0L)
+  expect_true("order_order_id" %in% names(dt))
+  expect_false("orders" %in% names(dt))
 })
 
 test_that("get_open_oco_orders returns empty data.table when no orders", {
@@ -196,14 +227,17 @@ test_that("get_open_oco_orders sends to correct endpoint", {
 
 # -- get_all_oco_orders --
 
-test_that("get_all_oco_orders returns data.table", {
+test_that("get_all_oco_orders returns data.table with orders expanded", {
   resp <- mock_binance_response(data = list(mock_oco_query_data()))
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_oco()$get_all_oco_orders()
   expect_s3_class(dt, "data.table")
-  expect_equal(nrow(dt), 1L)
-  expect_equal(dt$order_list_id, 0L)
+  # 1 OCO with 2 orders => 2 rows
+  expect_equal(nrow(dt), 2L)
+  expect_equal(unique(dt$order_list_id), 0L)
+  expect_true("order_order_id" %in% names(dt))
+  expect_false("orders" %in% names(dt))
 })
 
 test_that("get_all_oco_orders passes query parameters", {

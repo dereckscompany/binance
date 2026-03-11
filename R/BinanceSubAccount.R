@@ -591,10 +591,9 @@ BinanceSubAccount <- R6::R6Class(
     #' @param email Character; the sub-account email.
     #' @param futuresType Integer; `1` for USDT-margined futures, `2` for COIN-margined futures.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `email` (character): Sub-account email.
+    #' @return `data.table` with one row per asset (long format) and the following columns:
+    #' - `email` (character): Sub-account email (repeated per asset).
     #' - `asset` (character): Margin asset (e.g., `"USDT"`).
-    #' - `assets` (list): Nested list of per-asset balance details.
     #' - `can_deposit` (logical): Whether deposits are permitted.
     #' - `can_trade` (logical): Whether trading is permitted.
     #' - `can_withdraw` (logical): Whether withdrawals are permitted.
@@ -605,6 +604,13 @@ BinanceSubAccount <- R6::R6Class(
     #' - `total_wallet_balance` (character): Total wallet balance.
     #' - `total_unrealized_profit` (character): Total unrealised PnL.
     #' - `update_time` (numeric): Last update timestamp in ms.
+    #' - `asset_asset` (character): Per-asset name.
+    #' - `asset_wallet_balance` (character): Per-asset wallet balance.
+    #' - `asset_margin_balance` (character): Per-asset margin balance.
+    #'
+    #' When the response contains an `assets` list, it is expanded to long format
+    #' with parent account fields repeated. When there are no assets, returns a
+    #' single row without asset-level columns.
     #'
     #' @examples
     #' \dontrun{
@@ -620,7 +626,22 @@ BinanceSubAccount <- R6::R6Class(
           futuresType = futuresType,
           recvWindow = recvWindow
         ),
-        .parser = as_dt_row
+        .parser = function(data) {
+          # The response may be wrapped in futureAccountResp
+          inner <- if (!is.null(data$futureAccountResp)) data$futureAccountResp else data
+          assets <- inner$assets
+          inner$assets <- NULL
+          dt <- as_dt_row(inner)
+          # Expand assets to long format: one row per asset
+          if (!is.null(assets) && length(assets) > 0) {
+            assets_dt <- as_dt_list(assets)
+            asset_names <- names(assets_dt)
+            data.table::setnames(assets_dt, asset_names, paste0("asset_", asset_names))
+            dt <- dt[rep(1L, nrow(assets_dt))]
+            dt <- cbind(dt, assets_dt)
+          }
+          return(dt[])
+        }
       ))
     },
 

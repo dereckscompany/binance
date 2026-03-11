@@ -37,7 +37,7 @@ test_that("get_server_time returns data.table with datetime", {
 
 # -- get_exchange_info --
 
-test_that("get_exchange_info returns data.table with symbol metadata", {
+test_that("get_exchange_info returns data.table with string arrays comma-joined", {
   resp <- mock_binance_response(data = mock_exchange_info_data())
   httr2::local_mocked_responses(function(req) resp)
 
@@ -51,18 +51,32 @@ test_that("get_exchange_info returns data.table with symbol metadata", {
   expect_equal(sort(dt$symbol), c("BTCUSDT", "ETHUSDT"))
   expect_equal(dt[symbol == "BTCUSDT"]$base_asset, "BTC")
 
-  # Previously dropped fields are now included
+  # String array fields are now comma-separated strings
   expect_true("order_types" %in% names(dt))
+  expect_type(dt$order_types, "character")
+  expect_equal(dt[symbol == "BTCUSDT"]$order_types, "LIMIT,LIMIT_MAKER,MARKET,STOP_LOSS_LIMIT,TAKE_PROFIT_LIMIT")
+  expect_equal(dt[symbol == "ETHUSDT"]$order_types, "LIMIT,MARKET")
+
+  expect_true("permissions" %in% names(dt))
+  expect_type(dt$permissions, "character")
+  expect_equal(dt[symbol == "BTCUSDT"]$permissions, "SPOT,MARGIN")
+  expect_equal(dt[symbol == "ETHUSDT"]$permissions, "SPOT")
+
+  expect_true("allowed_self_trade_prevention_modes" %in% names(dt))
+  expect_type(dt$allowed_self_trade_prevention_modes, "character")
+  expect_equal(dt[symbol == "BTCUSDT"]$allowed_self_trade_prevention_modes, "EXPIRE_TAKER,EXPIRE_MAKER,EXPIRE_BOTH")
+
+  # filters still a list-column (heterogeneous)
+  expect_true("filters" %in% names(dt))
+
+  # Other fields still present
   expect_true("iceberg_allowed" %in% names(dt))
   expect_true("oco_allowed" %in% names(dt))
-  expect_true("filters" %in% names(dt))
-  expect_true("permissions" %in% names(dt))
   expect_true("default_self_trade_prevention_mode" %in% names(dt))
-  expect_true("allowed_self_trade_prevention_modes" %in% names(dt))
   expect_true("allow_trailing_stop" %in% names(dt))
   expect_true("cancel_replace_allowed" %in% names(dt))
 
-  # List columns are accessible
+  # Scalar columns still work
   expect_true(dt[symbol == "BTCUSDT"]$iceberg_allowed)
   expect_false(dt[symbol == "ETHUSDT"]$iceberg_allowed)
 })

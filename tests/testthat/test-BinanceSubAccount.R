@@ -296,7 +296,16 @@ test_that("get_transfer_history returns empty data.table when no results", {
 
 test_that("get_futures_account hits correct endpoint", {
   captured_url <- NULL
-  resp <- mock_binance_response(data = list(email = "sub@virtual.com", asset = "USDT", totalInitialMargin = "0.0"))
+  resp <- mock_binance_response(data = list(
+    futureAccountResp = list(
+      email = "sub@virtual.com",
+      asset = "USDT",
+      totalInitialMargin = "0.0",
+      assets = list(
+        list(asset = "USDT", walletBalance = "1500.00000000", marginBalance = "1500.00000000")
+      )
+    )
+  ))
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
     resp
@@ -308,13 +317,42 @@ test_that("get_futures_account hits correct endpoint", {
   expect_true(grepl("futuresType=1", captured_url))
 })
 
-test_that("get_futures_account returns data.table", {
-  resp <- mock_binance_response(data = list(email = "sub@virtual.com", asset = "USDT", totalInitialMargin = "0.0"))
+test_that("get_futures_account returns data.table with assets expanded", {
+  resp <- mock_binance_response(data = list(
+    futureAccountResp = list(
+      email = "sub@virtual.com",
+      asset = "USDT",
+      totalInitialMargin = "0.0",
+      assets = list(
+        list(asset = "USDT", walletBalance = "1500.00000000", marginBalance = "1500.00000000")
+      )
+    )
+  ))
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_sub()$get_futures_account(email = "sub@virtual.com", futuresType = 1)
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
+  # No list-column 'assets' - expanded with prefix
+  expect_false("assets" %in% names(dt))
+  expect_true("asset_asset" %in% names(dt))
+  expect_true("asset_wallet_balance" %in% names(dt))
+  expect_equal(dt$asset_asset, "USDT")
+  expect_equal(dt$email, "sub@virtual.com")
+})
+
+test_that("get_futures_account works without futureAccountResp wrapper", {
+  resp <- mock_binance_response(data = list(
+    email = "sub@virtual.com",
+    asset = "USDT",
+    totalInitialMargin = "0.0"
+  ))
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_sub()$get_futures_account(email = "sub@virtual.com", futuresType = 1)
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 1L)
+  expect_equal(dt$email, "sub@virtual.com")
 })
 
 # -- get_margin_account --

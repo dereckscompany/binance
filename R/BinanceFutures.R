@@ -999,8 +999,14 @@ BinanceFutures <- R6::R6Class(
     #' - `total_cross_wallet_balance` (character): Total cross-wallet balance.
     #' - `available_balance` (character): Available balance for new positions.
     #' - `max_withdraw_amount` (character): Maximum withdrawable amount.
-    #' - `assets` (list): Nested list of per-asset balance details.
-    #' - `positions` (list): Nested list of per-symbol position details.
+    #' - `asset_name` (character): Per-asset name (one row per asset, expanded from `assets`).
+    #' - `asset_wallet_balance` (character): Per-asset wallet balance.
+    #' - `asset_unrealized_profit` (character): Per-asset unrealised PnL.
+    #' - `asset_margin_balance` (character): Per-asset margin balance.
+    #' - `asset_available_balance` (character): Per-asset available balance.
+    #' - `positions` (list): Nested list of per-symbol position details (kept as list-column).
+    #'
+    #' When the account has multiple assets, account-level fields are repeated on each row.
     #'
     #' @examples
     #' \dontrun{
@@ -1013,7 +1019,19 @@ BinanceFutures <- R6::R6Class(
         endpoint = "/fapi/v2/account",
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
-          return(as_dt_row(data)[])
+          assets <- data$assets
+          data$assets <- NULL
+          dt <- as_dt_row(data)
+          # Expand assets to long format: one row per asset
+          if (!is.null(assets) && length(assets) > 0) {
+            assets_dt <- as_dt_list(assets)
+            # Prefix asset columns to avoid collision with parent account columns
+            asset_names <- names(assets_dt)
+            data.table::setnames(assets_dt, asset_names, paste0("asset_", asset_names))
+            dt <- dt[rep(1L, nrow(assets_dt))]
+            dt <- cbind(dt, assets_dt)
+          }
+          return(dt[])
         }
       ))
     },

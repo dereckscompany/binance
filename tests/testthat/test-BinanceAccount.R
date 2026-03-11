@@ -18,12 +18,13 @@ test_that("BinanceAccount inherits from BinanceBase", {
 
 # -- get_account_info --
 
-test_that("get_account_info returns data.table with expected columns", {
+test_that("get_account_info returns data.table with permissions expanded", {
   resp <- mock_binance_response(data = mock_account_data())
   httr2::local_mocked_responses(function(req) resp)
 
   info <- new_account()$get_account_info()
   expect_s3_class(info, "data.table")
+  # mock_account_data has permissions = list("SPOT"), so 1 row
   expect_equal(nrow(info), 1L)
   expect_true("maker_commission" %in% names(info))
   expect_true("taker_commission" %in% names(info))
@@ -32,14 +33,33 @@ test_that("get_account_info returns data.table with expected columns", {
   expect_true("can_deposit" %in% names(info))
   expect_true("account_type" %in% names(info))
   expect_true("uid" %in% names(info))
-  expect_equal(info$maker_commission, 15L)
-  expect_equal(info$account_type, "SPOT")
-  expect_equal(info$uid, 354937868L)
-  expect_true(info$can_trade)
+  expect_equal(info$maker_commission[1], 15L)
+  expect_equal(info$account_type[1], "SPOT")
+  expect_equal(info$uid[1], 354937868L)
+  expect_true(info$can_trade[1])
 
-  # commission_rates and permissions are preserved
+  # commission_rates preserved, permissions expanded to scalar column
   expect_true("commission_rates" %in% names(info))
-  expect_true("permissions" %in% names(info))
+  expect_true("permission" %in% names(info))
+  expect_equal(info$permission, "SPOT")
+
+  # No list-column 'permissions' should exist
+  expect_false("permissions" %in% names(info))
+})
+
+test_that("get_account_info expands multiple permissions to long format", {
+  account_data <- mock_account_data()
+  account_data$permissions <- list("SPOT", "MARGIN")
+  resp <- mock_binance_response(data = account_data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  info <- new_account()$get_account_info()
+  expect_s3_class(info, "data.table")
+  expect_equal(nrow(info), 2L)
+  expect_equal(info$permission, c("SPOT", "MARGIN"))
+  # Parent fields repeated
+  expect_equal(info$maker_commission, c(15L, 15L))
+  expect_equal(info$account_type, c("SPOT", "SPOT"))
 })
 
 test_that("get_account_info does not include balances", {

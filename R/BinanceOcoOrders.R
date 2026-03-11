@@ -121,16 +121,18 @@ BinanceOcoOrders <- R6::R6Class(
     #' @param newOrderRespType Character or NULL; `"ACK"`, `"RESULT"`, or `"FULL"`.
     #' @param selfTradePreventionMode Character or NULL.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `order_list_id` (integer): OCO order list identifier.
+    #' @return `data.table` with one row per child order (long format) and the following columns:
+    #' - `order_list_id` (integer): OCO order list identifier (repeated per child order).
     #' - `contingency_type` (character): Always `"OCO"`.
     #' - `list_status_type` (character): Status type (e.g., `"EXEC_STARTED"`).
     #' - `list_order_status` (character): Order status (e.g., `"EXECUTING"`).
     #' - `list_client_order_id` (character): Client-assigned list ID.
     #' - `transact_time` (POSIXct): Transaction time.
-    #' - `symbol` (character): Trading pair.
-    #' - `orders` (list): List of order objects.
-    #' - `order_reports` (list): List of order report objects.
+    #' - `symbol` (character): Trading pair from parent OCO.
+    #' - `order_symbol` (character): Trading pair from child order.
+    #' - `order_id` (integer): Child order ID.
+    #' - `client_order_id` (character): Child order client ID.
+    #' - `order_reports` (list): List of order report objects (kept as list-column).
     #'
     #' @examples
     #' \dontrun{
@@ -184,9 +186,19 @@ BinanceOcoOrders <- R6::R6Class(
         method = "POST",
         body = body,
         .parser = function(data) {
+          orders <- data$orders
+          data$orders <- NULL
           dt <- as_dt_row(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
             dt[, transact_time := ms_to_datetime(transact_time)]
+          }
+          # Expand orders to long format: one row per child order
+          if (!is.null(orders) && length(orders) > 0) {
+            orders_dt <- as_dt_list(orders)
+            order_names <- names(orders_dt)
+            data.table::setnames(orders_dt, order_names, paste0("order_", order_names))
+            dt <- dt[rep(1L, nrow(orders_dt))]
+            dt <- cbind(dt, orders_dt)
           }
           return(dt[])
         }
@@ -275,15 +287,17 @@ BinanceOcoOrders <- R6::R6Class(
     #' @param orderListId Integer or NULL; the OCO order list ID.
     #' @param listClientOrderId Character or NULL; the client order list ID.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `order_list_id` (integer): OCO order list identifier.
+    #' @return `data.table` with one row per child order (long format) and the following columns:
+    #' - `order_list_id` (integer): OCO order list identifier (repeated per child order).
     #' - `contingency_type` (character): Always `"OCO"`.
     #' - `list_status_type` (character): Status type (e.g., `"ALL_DONE"`).
     #' - `list_order_status` (character): Order status (e.g., `"ALL_DONE"`).
     #' - `list_client_order_id` (character): Client-assigned list ID.
     #' - `transact_time` (POSIXct): Cancellation time (if present).
-    #' - `symbol` (character): Trading pair.
-    #' - `orders` (list): List of order objects.
+    #' - `symbol` (character): Trading pair from parent OCO.
+    #' - `order_symbol` (character): Trading pair from child order.
+    #' - `order_id` (integer): Child order ID.
+    #' - `client_order_id` (character): Child order client ID.
     #'
     #' @examples
     #' \dontrun{
@@ -306,9 +320,21 @@ BinanceOcoOrders <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
+          orders <- data$orders
+          data$orders <- NULL
+          # Also remove orderReports to avoid list-column
+          data$orderReports <- NULL
           dt <- as_dt_row(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
             dt[, transact_time := ms_to_datetime(transact_time)]
+          }
+          # Expand orders to long format: one row per child order
+          if (!is.null(orders) && length(orders) > 0) {
+            orders_dt <- as_dt_list(orders)
+            order_names <- names(orders_dt)
+            data.table::setnames(orders_dt, order_names, paste0("order_", order_names))
+            dt <- dt[rep(1L, nrow(orders_dt))]
+            dt <- cbind(dt, orders_dt)
           }
           return(dt[])
         }
@@ -364,15 +390,17 @@ BinanceOcoOrders <- R6::R6Class(
     #' @param orderListId Integer or NULL; the OCO order list ID.
     #' @param origClientOrderId Character or NULL; the original client order list ID.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `order_list_id` (integer): OCO order list identifier.
+    #' @return `data.table` with one row per child order (long format) and the following columns:
+    #' - `order_list_id` (integer): OCO order list identifier (repeated per child order).
     #' - `contingency_type` (character): Always `"OCO"`.
     #' - `list_status_type` (character): Status type (e.g., `"ALL_DONE"`).
     #' - `list_order_status` (character): Order status.
     #' - `list_client_order_id` (character): Client-assigned list ID.
     #' - `transaction_time` (POSIXct): Transaction time (if present).
-    #' - `symbol` (character): Trading pair.
-    #' - `orders` (list): List of order objects.
+    #' - `symbol` (character): Trading pair from parent OCO.
+    #' - `order_symbol` (character): Trading pair from child order.
+    #' - `order_id` (integer): Child order ID.
+    #' - `client_order_id` (character): Child order client ID.
     #'
     #' @examples
     #' \dontrun{
@@ -393,9 +421,19 @@ BinanceOcoOrders <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
+          orders <- data$orders
+          data$orders <- NULL
           dt <- as_dt_row(data)
           if (nrow(dt) > 0 && "transaction_time" %in% names(dt)) {
             dt[, transaction_time := ms_to_datetime(transaction_time)]
+          }
+          # Expand orders to long format: one row per child order
+          if (!is.null(orders) && length(orders) > 0) {
+            orders_dt <- as_dt_list(orders)
+            order_names <- names(orders_dt)
+            data.table::setnames(orders_dt, order_names, paste0("order_", order_names))
+            dt <- dt[rep(1L, nrow(orders_dt))]
+            dt <- cbind(dt, orders_dt)
           }
           return(dt[])
         }
@@ -448,15 +486,18 @@ BinanceOcoOrders <- R6::R6Class(
     #' ```
     #'
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per open OCO and the following columns:
-    #' - `order_list_id` (integer): OCO order list identifier.
+    #' @return `data.table` with one row per child order across all open OCOs (long format).
+    #'   Columns include:
+    #' - `order_list_id` (integer): OCO order list identifier (repeated per child order).
     #' - `contingency_type` (character): Always `"OCO"`.
     #' - `list_status_type` (character): Status type.
     #' - `list_order_status` (character): Order status.
     #' - `list_client_order_id` (character): Client-assigned list ID.
-    #' - `transaction_time` (numeric): Transaction time in milliseconds.
-    #' - `symbol` (character): Trading pair.
-    #' - `orders` (list): List of order objects.
+    #' - `transaction_time` (POSIXct): Transaction time.
+    #' - `symbol` (character): Trading pair from parent OCO.
+    #' - `order_symbol` (character): Trading pair from child order.
+    #' - `order_id` (integer): Child order ID.
+    #' - `client_order_id` (character): Child order client ID.
     #'
     #' @examples
     #' \dontrun{
@@ -472,11 +513,24 @@ BinanceOcoOrders <- R6::R6Class(
           if (is.null(data) || length(data) == 0) {
             return(data.table::data.table()[])
           }
-          dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "transaction_time" %in% names(dt)) {
-            dt[, transaction_time := ms_to_datetime(transaction_time)]
-          }
-          return(dt[])
+          # Expand each OCO's orders to long format
+          rows <- lapply(data, function(oco) {
+            orders <- oco$orders
+            oco$orders <- NULL
+            parent_dt <- as_dt_row(oco)
+            if (nrow(parent_dt) > 0 && "transaction_time" %in% names(parent_dt)) {
+              parent_dt[, transaction_time := ms_to_datetime(transaction_time)]
+            }
+            if (!is.null(orders) && length(orders) > 0) {
+              orders_dt <- as_dt_list(orders)
+              order_names <- names(orders_dt)
+              data.table::setnames(orders_dt, order_names, paste0("order_", order_names))
+              parent_dt <- parent_dt[rep(1L, nrow(orders_dt))]
+              parent_dt <- cbind(parent_dt, orders_dt)
+            }
+            return(parent_dt)
+          })
+          return(data.table::rbindlist(rows, fill = TRUE)[])
         }
       ))
     },
@@ -554,15 +608,18 @@ BinanceOcoOrders <- R6::R6Class(
     #' @param endTime Integer or NULL; end timestamp in milliseconds.
     #' @param limit Integer or NULL; max results (default 500, max 1000).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per OCO and the following columns:
-    #' - `order_list_id` (integer): OCO order list identifier.
+    #' @return `data.table` with one row per child order across all OCOs (long format).
+    #'   Columns include:
+    #' - `order_list_id` (integer): OCO order list identifier (repeated per child order).
     #' - `contingency_type` (character): Always `"OCO"`.
     #' - `list_status_type` (character): Status type.
     #' - `list_order_status` (character): Order status.
     #' - `list_client_order_id` (character): Client-assigned list ID.
-    #' - `transaction_time` (numeric): Transaction time in milliseconds.
-    #' - `symbol` (character): Trading pair.
-    #' - `orders` (list): List of order objects.
+    #' - `transaction_time` (POSIXct): Transaction time.
+    #' - `symbol` (character): Trading pair from parent OCO.
+    #' - `order_symbol` (character): Trading pair from child order.
+    #' - `order_id` (integer): Child order ID.
+    #' - `client_order_id` (character): Child order client ID.
     #'
     #' @examples
     #' \dontrun{
@@ -590,11 +647,24 @@ BinanceOcoOrders <- R6::R6Class(
           if (is.null(data) || length(data) == 0) {
             return(data.table::data.table()[])
           }
-          dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "transaction_time" %in% names(dt)) {
-            dt[, transaction_time := ms_to_datetime(transaction_time)]
-          }
-          return(dt[])
+          # Expand each OCO's orders to long format
+          rows <- lapply(data, function(oco) {
+            orders <- oco$orders
+            oco$orders <- NULL
+            parent_dt <- as_dt_row(oco)
+            if (nrow(parent_dt) > 0 && "transaction_time" %in% names(parent_dt)) {
+              parent_dt[, transaction_time := ms_to_datetime(transaction_time)]
+            }
+            if (!is.null(orders) && length(orders) > 0) {
+              orders_dt <- as_dt_list(orders)
+              order_names <- names(orders_dt)
+              data.table::setnames(orders_dt, order_names, paste0("order_", order_names))
+              parent_dt <- parent_dt[rep(1L, nrow(orders_dt))]
+              parent_dt <- cbind(parent_dt, orders_dt)
+            }
+            return(parent_dt)
+          })
+          return(data.table::rbindlist(rows, fill = TRUE)[])
         }
       ))
     }
