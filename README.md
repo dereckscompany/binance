@@ -3,7 +3,7 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/dereckmezquita/binance/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dereckmezquita/binance/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/dereckscompany/binance/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dereckscompany/binance/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
@@ -76,7 +76,7 @@ a common `time_source` parameter for clock drift correction.
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("dereckmezquita/binance")
+remotes::install_github("dereckscompany/binance")
 ```
 
 ## Setup
@@ -136,7 +136,7 @@ market <- BinanceMarketData$new(keys = KEYS, base_url = BASE)
 ### Price Ticker
 
 ``` r
-market$get_ticker("BTCUSDT")
+market$get_ticker(symbol = "BTCUSDT")
 ```
 
     #>     symbol          price
@@ -146,7 +146,7 @@ market$get_ticker("BTCUSDT")
 ### Klines (Candlestick Data)
 
 ``` r
-market$get_klines("BTCUSDT", interval = "1h", limit = 5)
+market$get_klines(symbol = "BTCUSDT", interval = "1h", limit = 5)
 ```
 
     #>     open_time      open   high      low    close   volume          close_time
@@ -186,7 +186,7 @@ market$get_klines(
 ### Order Book Depth
 
 ``` r
-market$get_depth("BTCUSDT", limit = 5)
+market$get_depth(symbol = "BTCUSDT", limit = 5)
 ```
 
     #>    last_update_id   side   price      size
@@ -201,7 +201,7 @@ market$get_depth("BTCUSDT", limit = 5)
 ### 24hr Statistics
 
 ``` r
-market$get_24hr_stats("BTCUSDT")
+market$get_24hr_stats(symbol = "BTCUSDT")
 ```
 
     #>     symbol  price_change price_change_percent weighted_avg_price
@@ -248,7 +248,7 @@ trading$add_order_test(
 ### Query an Order
 
 ``` r
-trading$get_order("BTCUSDT", orderId = 12345)
+trading$get_order(symbol = "BTCUSDT", orderId = 12345)
 ```
 
     #>     symbol order_id order_list_id        client_order_id          price
@@ -267,7 +267,7 @@ trading$get_order("BTCUSDT", orderId = 12345)
 ### Get Open Orders
 
 ``` r
-trading$get_open_orders("BTCUSDT")
+trading$get_open_orders(symbol = "BTCUSDT")
 ```
 
     #>     symbol order_id order_list_id        client_order_id          price
@@ -311,7 +311,7 @@ account$get_account_info()
 ### Trade History
 
 ``` r
-account$get_trades("BTCUSDT")
+account$get_trades(symbol = "BTCUSDT")
 ```
 
     #>     symbol    id order_id order_list_id          price        qty   quote_qty
@@ -365,7 +365,7 @@ margin$get_max_borrowable(asset = "USDT")
 ### Margin Trades
 
 ``` r
-margin$get_trades("BTCUSDT")
+margin$get_trades(symbol = "BTCUSDT")
 ```
 
     #>     symbol    id order_id          price        qty   quote_qty commission
@@ -389,7 +389,7 @@ fdata <- BinanceFuturesData$new(keys = KEYS, base_url = FBASE)
 #### Mark Price and Funding Rate
 
 ``` r
-fdata$get_mark_price("BTCUSDT")
+fdata$get_mark_price(symbol = "BTCUSDT")
 ```
 
     #>     symbol     mark_price    index_price estimated_settle_price
@@ -402,7 +402,7 @@ fdata$get_mark_price("BTCUSDT")
 #### Funding Rate History
 
 ``` r
-fdata$get_funding_rate("BTCUSDT", limit = 3)
+fdata$get_funding_rate(symbol = "BTCUSDT", limit = 3)
 ```
 
     #>     symbol funding_rate        funding_time     mark_price
@@ -413,7 +413,7 @@ fdata$get_funding_rate("BTCUSDT", limit = 3)
 #### Open Interest
 
 ``` r
-fdata$get_open_interest("BTCUSDT")
+fdata$get_open_interest(symbol = "BTCUSDT")
 ```
 
     #>     symbol open_interest                time
@@ -429,7 +429,7 @@ futures <- BinanceFutures$new(keys = KEYS, base_url = FBASE)
 #### Positions
 
 ``` r
-futures$get_positions("BTCUSDT")
+futures$get_positions(symbol = "BTCUSDT")
 ```
 
     #>     symbol position_amt entry_price break_even_price mark_price
@@ -465,7 +465,7 @@ futures$add_order_test(
 #### Set Leverage
 
 ``` r
-futures$set_leverage("BTCUSDT", leverage = 10)
+futures$set_leverage(symbol = "BTCUSDT", leverage = 10)
 ```
 
     #>    leverage max_notional_value  symbol
@@ -491,8 +491,8 @@ box::use(coro, later)
 market_async <- BinanceMarketData$new(async = TRUE)
 
 main <- coro$async(function() {
-  ticker <- await(market_async$get_ticker("BTCUSDT"))
-  klines <- await(market_async$get_klines("BTCUSDT", "1h", limit = 10))
+  ticker <- await(market_async$get_ticker(symbol = "BTCUSDT"))
+  klines <- await(market_async$get_klines(symbol = "BTCUSDT", interval = "1h", limit = 10))
 
   print(ticker)
   print(klines)
@@ -507,43 +507,43 @@ while (!later$loop_empty()) {
 
     #>     symbol          price
     #>     <char>         <char>
-    #> 1: BTCUSDT 69933.37000000
-    #>               open_time     open     high      low    close     volume
-    #>                  <POSc>    <num>    <num>    <num>    <num>      <num>
-    #>  1: 2026-03-10 22:00:00 69763.02 69869.90 69452.42 69721.58  937.20086
-    #>  2: 2026-03-10 23:00:00 69721.58 69981.80 69698.46 69948.63 1165.15914
-    #>  3: 2026-03-11 00:00:00 69948.64 70173.25 69759.63 70044.87  728.92961
-    #>  4: 2026-03-11 01:00:00 70044.87 70144.00 69880.00 70071.26  947.24879
-    #>  5: 2026-03-11 02:00:00 70071.26 70119.59 69614.00 69810.72 1612.87548
-    #>  6: 2026-03-11 03:00:00 69810.73 69887.11 69488.70 69551.91 1113.41409
-    #>  7: 2026-03-11 04:00:00 69551.91 70281.87 69501.55 70130.99  759.41600
-    #>  8: 2026-03-11 05:00:00 70130.99 70200.96 69420.00 69510.36  757.81378
-    #>  9: 2026-03-11 06:00:00 69510.37 69996.00 69500.01 69950.01  391.73761
-    #> 10: 2026-03-11 07:00:00 69950.01 70018.49 69881.25 69933.37   63.68791
+    #> 1: BTCUSDT 70588.67000000
+    #>               open_time     open     high      low    close    volume
+    #>                  <POSc>    <num>    <num>    <num>    <num>     <num>
+    #>  1: 2026-03-11 12:00:00 69172.99 69777.66 68977.91 69361.13 1045.6407
+    #>  2: 2026-03-11 13:00:00 69361.13 71091.18 69331.04 70186.09 2647.3215
+    #>  3: 2026-03-11 14:00:00 70186.08 70987.00 69906.77 70578.70 2251.7766
+    #>  4: 2026-03-11 15:00:00 70578.70 70654.43 69702.25 70227.91 1844.6963
+    #>  5: 2026-03-11 16:00:00 70227.92 70826.39 70161.78 70570.71 1837.9240
+    #>  6: 2026-03-11 17:00:00 70570.71 71321.00 70512.01 70785.99 2122.2065
+    #>  7: 2026-03-11 18:00:00 70785.99 70895.31 70415.27 70617.64 1134.1341
+    #>  8: 2026-03-11 19:00:00 70617.63 70742.38 70375.68 70641.82  644.2315
+    #>  9: 2026-03-11 20:00:00 70641.81 70700.00 70394.23 70634.96  383.3450
+    #> 10: 2026-03-11 21:00:00 70634.96 70776.71 70499.94 70588.67  177.7033
     #>              close_time quote_volume trades taker_buy_base_volume
     #>                  <POSc>        <num>  <int>                 <num>
-    #>  1: 2026-03-10 22:59:59     65279900 110217             464.68161
-    #>  2: 2026-03-10 23:59:59     81377772 119557             483.60908
-    #>  3: 2026-03-11 00:59:59     51015676 154124             338.21923
-    #>  4: 2026-03-11 01:59:59     66359226 132156             555.98820
-    #>  5: 2026-03-11 02:59:59    112718434 133771             971.95761
-    #>  6: 2026-03-11 03:59:59     77509259 121595             556.74333
-    #>  7: 2026-03-11 04:59:59     53066815 131224             454.60323
-    #>  8: 2026-03-11 05:59:59     52878113 114902             392.62501
-    #>  9: 2026-03-11 06:59:59     27328457  93779             261.28750
-    #> 10: 2026-03-11 07:59:59      4455919  10558              50.51951
+    #>  1: 2026-03-11 12:59:59     72482029 228899             510.41277
+    #>  2: 2026-03-11 13:59:59    185985831 529759            1327.90532
+    #>  3: 2026-03-11 14:59:59    158748246 515782            1118.16259
+    #>  4: 2026-03-11 15:59:59    129415293 427890             846.35834
+    #>  5: 2026-03-11 16:59:59    129634949 312976             946.41941
+    #>  6: 2026-03-11 17:59:59    150535351 401049            1188.53693
+    #>  7: 2026-03-11 18:59:59     80176342 225379             441.85105
+    #>  8: 2026-03-11 19:59:59     45451850 134850             278.53724
+    #>  9: 2026-03-11 20:59:59     27035744  84807             167.08903
+    #> 10: 2026-03-11 21:59:59     12553900  33826              94.14297
     #>     taker_buy_quote_volume ignore
     #>                      <num> <char>
-    #>  1:               32370447      0
-    #>  2:               33773404      0
-    #>  3:               23674731      0
-    #>  4:               38948457      0
-    #>  5:               67947297      0
-    #>  6:               38736107      0
-    #>  7:               31788196      0
-    #>  8:               27394714      0
-    #>  9:               18225286      0
-    #> 10:                3534687      0
+    #>  1:               35394305      0
+    #>  2:               93335113      0
+    #>  3:               78864177      0
+    #>  4:               59386903      0
+    #>  5:               66762796      0
+    #>  6:               84314438      0
+    #>  7:               31232309      0
+    #>  8:               19650193      0
+    #>  9:               11784374      0
+    #> 10:                6651493      0
 
 ## Sample Data
 

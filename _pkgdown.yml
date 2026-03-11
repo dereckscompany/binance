@@ -1,4 +1,4 @@
-url: https://dereckmezquita.github.io/binance/
+url: https://dereckscompany.github.io/binance/
 
 figures:
   fig.path: "man/figures/"
@@ -17,7 +17,7 @@ navbar:
   components:
     github:
       icon: fa-github fa-lg
-      href: https://github.com/dereckmezquita/binance
+      href: https://github.com/dereckscompany/binance
       target: _blank
 
 reference:
