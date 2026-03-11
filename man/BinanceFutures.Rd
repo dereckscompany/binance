@@ -1246,9 +1246,15 @@ Verified: 2026-03-10
 \item \code{total_cross_wallet_balance} (character): Total cross-wallet balance.
 \item \code{available_balance} (character): Available balance for new positions.
 \item \code{max_withdraw_amount} (character): Maximum withdrawable amount.
-\item \code{assets} (list): Nested list of per-asset balance details.
-\item \code{positions} (list): Nested list of per-symbol position details.
+\item \code{asset_name} (character): Per-asset name (one row per asset, expanded from \code{assets}).
+\item \code{asset_wallet_balance} (character): Per-asset wallet balance.
+\item \code{asset_unrealized_profit} (character): Per-asset unrealised PnL.
+\item \code{asset_margin_balance} (character): Per-asset margin balance.
+\item \code{asset_available_balance} (character): Per-asset available balance.
+\item \code{positions} (list): Nested list of per-symbol position details (kept as list-column).
 }
+
+When the account has multiple assets, account-level fields are repeated on each row.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

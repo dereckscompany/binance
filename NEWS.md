@@ -1,5 +1,16 @@
 # binance 0.0.1.9000
 
+## IMPROVEMENTS
+
+* **Long-format data.table returns**: Eliminated list-columns in favour of long (tidy) format throughout. Nested arrays from the API are now expanded to one row per element with parent fields repeated:
+    - `BinanceTrading$add_order()`: `fills` expanded to rows with `fill_`-prefixed columns.
+    - `BinanceOcoOrders` (add/cancel/get): `orders` expanded to rows with `order_`-prefixed columns.
+    - `BinanceAccount$get_account_info()`: `permissions` expanded to one row per `permission`.
+    - `BinanceMarketData$get_exchange_info()`: `order_types`, `permissions`, `allowed_self_trade_prevention_modes` comma-joined into character strings. `filters` kept as list-column (heterogeneous schemas).
+    - `BinanceMargin$get_isolated_account()`: `assets` expanded to one row per isolated margin pair.
+    - `BinanceFutures$get_account()`: `assets` expanded to rows with `asset_`-prefixed columns.
+    - `BinanceSubAccount$get_futures_account()`: `assets` expanded to rows with `asset_`-prefixed columns.
+
 ## BUG FIXES
 
 * Removed usage of `%||%` operator which was not defined or imported; replaced with explicit `if (is.null(...))` check in `helpers_request.R`.

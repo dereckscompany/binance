@@ -1794,12 +1794,18 @@ Verified: 2026-03-10
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and columns including:
+\code{data.table} with one row per isolated margin pair (long format) and columns including:
 \itemize{
-\item \code{total_asset_of_btc} (character): Total asset value in BTC.
-\item \code{total_liability_of_btc} (character): Total liability in BTC.
-\item \code{total_net_asset_of_btc} (character): Net asset value in BTC.
-\item \code{assets} (list): List of isolated margin asset objects.
+\item \code{total_asset_of_btc} (character): Total asset value in BTC (repeated per pair).
+\item \code{total_liability_of_btc} (character): Total liability in BTC (repeated per pair).
+\item \code{total_net_asset_of_btc} (character): Net asset value in BTC (repeated per pair).
+\item \code{base_asset} (list): Base asset details (nested object kept as list-column).
+\item \code{quote_asset} (list): Quote asset details (nested object kept as list-column).
+\item \code{symbol} (character): Isolated margin pair symbol.
+\item \code{isolated_created} (logical): Whether the isolated pair has been created.
+\item \code{enabled} (logical): Whether the pair is enabled.
+\item \code{margin_level} (character): Current margin level.
+\item \code{trade_enabled} (logical): Whether trading is enabled.
 }
 }
 \subsection{Examples}{

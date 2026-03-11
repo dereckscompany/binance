@@ -182,9 +182,11 @@ Verified: 2026-03-10
 \item \code{prevent_sor} (logical): Whether smart order routing is prevented.
 \item \code{update_time} (numeric): Last account update timestamp in milliseconds.
 \item \code{account_type} (character): Account type (e.g., \code{"SPOT"}).
-\item \code{permissions} (list): Account permissions (e.g., \code{"SPOT"}).
+\item \code{permission} (character): Account permission (one row per permission, e.g., \code{"SPOT"}, \code{"MARGIN"}).
 \item \code{uid} (integer): Unique account identifier.
 }
+
+When the account has multiple permissions, account fields are repeated on each row.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

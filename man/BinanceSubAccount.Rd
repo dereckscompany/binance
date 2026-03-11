@@ -796,11 +796,10 @@ Verified: 2026-03-10
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+\code{data.table} with one row per asset (long format) and the following columns:
 \itemize{
-\item \code{email} (character): Sub-account email.
+\item \code{email} (character): Sub-account email (repeated per asset).
 \item \code{asset} (character): Margin asset (e.g., \code{"USDT"}).
-\item \code{assets} (list): Nested list of per-asset balance details.
 \item \code{can_deposit} (logical): Whether deposits are permitted.
 \item \code{can_trade} (logical): Whether trading is permitted.
 \item \code{can_withdraw} (logical): Whether withdrawals are permitted.
@@ -811,7 +810,14 @@ Verified: 2026-03-10
 \item \code{total_wallet_balance} (character): Total wallet balance.
 \item \code{total_unrealized_profit} (character): Total unrealised PnL.
 \item \code{update_time} (numeric): Last update timestamp in ms.
+\item \code{asset_asset} (character): Per-asset name.
+\item \code{asset_wallet_balance} (character): Per-asset wallet balance.
+\item \code{asset_margin_balance} (character): Per-asset margin balance.
 }
+
+When the response contains an \code{assets} list, it is expanded to long format
+with parent account fields repeated. When there are no assets, returns a
+single row without asset-level columns.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

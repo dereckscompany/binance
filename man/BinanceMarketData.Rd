@@ -360,7 +360,7 @@ fields returned by the API, converted to snake_case. Key columns include:
 \item \code{quote_asset} (character): Quote asset code (e.g., \code{"USDT"}).
 \item \code{quote_asset_precision} (integer): Decimal precision for quote asset quantities.
 \item \code{quote_precision} (integer): Decimal precision for quote asset prices.
-\item \code{order_types} (list): Allowed order types for this symbol.
+\item \code{order_types} (character): Comma-separated allowed order types (e.g., \code{"LIMIT,MARKET"}).
 \item \code{iceberg_allowed} (logical): Whether iceberg orders are allowed.
 \item \code{oco_allowed} (logical): Whether OCO orders are allowed.
 \item \code{oto_allowed} (logical): Whether OTO orders are allowed.
@@ -369,10 +369,10 @@ fields returned by the API, converted to snake_case. Key columns include:
 \item \code{cancel_replace_allowed} (logical): Whether cancel-replace is allowed.
 \item \code{is_spot_trading_allowed} (logical): Whether spot trading is enabled.
 \item \code{is_margin_trading_allowed} (logical): Whether margin trading is enabled.
-\item \code{filters} (list): List of filter objects (LOT_SIZE, PRICE_FILTER, etc.).
-\item \code{permissions} (list): Trading permissions for this symbol.
+\item \code{filters} (list): List of filter objects (LOT_SIZE, PRICE_FILTER, etc.) — kept as list-column due to heterogeneous schemas.
+\item \code{permissions} (character): Comma-separated trading permissions (e.g., \code{"SPOT,MARGIN"}).
 \item \code{default_self_trade_prevention_mode} (character): Default STP mode.
-\item \code{allowed_self_trade_prevention_modes} (list): Allowed STP modes.
+\item \code{allowed_self_trade_prevention_modes} (character): Comma-separated allowed STP modes.
 }
 }
 \subsection{Examples}{

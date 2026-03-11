@@ -252,17 +252,19 @@ Verified: 2026-03-10
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+\code{data.table} with one row per child order (long format) and the following columns:
 \itemize{
-\item \code{order_list_id} (integer): OCO order list identifier.
+\item \code{order_list_id} (integer): OCO order list identifier (repeated per child order).
 \item \code{contingency_type} (character): Always \code{"OCO"}.
 \item \code{list_status_type} (character): Status type (e.g., \code{"EXEC_STARTED"}).
 \item \code{list_order_status} (character): Order status (e.g., \code{"EXECUTING"}).
 \item \code{list_client_order_id} (character): Client-assigned list ID.
 \item \code{transact_time} (POSIXct): Transaction time.
-\item \code{symbol} (character): Trading pair.
-\item \code{orders} (list): List of order objects.
-\item \code{order_reports} (list): List of order report objects.
+\item \code{symbol} (character): Trading pair from parent OCO.
+\item \code{order_symbol} (character): Trading pair from child order.
+\item \code{order_id} (integer): Child order ID.
+\item \code{client_order_id} (character): Child order client ID.
+\item \code{order_reports} (list): List of order report objects (kept as list-column).
 }
 }
 \subsection{Examples}{
@@ -388,16 +390,18 @@ Verified: 2026-03-10
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+\code{data.table} with one row per child order (long format) and the following columns:
 \itemize{
-\item \code{order_list_id} (integer): OCO order list identifier.
+\item \code{order_list_id} (integer): OCO order list identifier (repeated per child order).
 \item \code{contingency_type} (character): Always \code{"OCO"}.
 \item \code{list_status_type} (character): Status type (e.g., \code{"ALL_DONE"}).
 \item \code{list_order_status} (character): Order status (e.g., \code{"ALL_DONE"}).
 \item \code{list_client_order_id} (character): Client-assigned list ID.
 \item \code{transact_time} (POSIXct): Cancellation time (if present).
-\item \code{symbol} (character): Trading pair.
-\item \code{orders} (list): List of order objects.
+\item \code{symbol} (character): Trading pair from parent OCO.
+\item \code{order_symbol} (character): Trading pair from child order.
+\item \code{order_id} (integer): Child order ID.
+\item \code{client_order_id} (character): Child order client ID.
 }
 }
 \subsection{Examples}{
@@ -484,16 +488,18 @@ Verified: 2026-03-10
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+\code{data.table} with one row per child order (long format) and the following columns:
 \itemize{
-\item \code{order_list_id} (integer): OCO order list identifier.
+\item \code{order_list_id} (integer): OCO order list identifier (repeated per child order).
 \item \code{contingency_type} (character): Always \code{"OCO"}.
 \item \code{list_status_type} (character): Status type (e.g., \code{"ALL_DONE"}).
 \item \code{list_order_status} (character): Order status.
 \item \code{list_client_order_id} (character): Client-assigned list ID.
 \item \code{transaction_time} (POSIXct): Transaction time (if present).
-\item \code{symbol} (character): Trading pair.
-\item \code{orders} (list): List of order objects.
+\item \code{symbol} (character): Trading pair from parent OCO.
+\item \code{order_symbol} (character): Trading pair from child order.
+\item \code{order_id} (integer): Child order ID.
+\item \code{client_order_id} (character): Child order client ID.
 }
 }
 \subsection{Examples}{
@@ -573,16 +579,19 @@ Verified: 2026-03-10
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per open OCO and the following columns:
+\code{data.table} with one row per child order across all open OCOs (long format).
+Columns include:
 \itemize{
-\item \code{order_list_id} (integer): OCO order list identifier.
+\item \code{order_list_id} (integer): OCO order list identifier (repeated per child order).
 \item \code{contingency_type} (character): Always \code{"OCO"}.
 \item \code{list_status_type} (character): Status type.
 \item \code{list_order_status} (character): Order status.
 \item \code{list_client_order_id} (character): Client-assigned list ID.
-\item \code{transaction_time} (numeric): Transaction time in milliseconds.
-\item \code{symbol} (character): Trading pair.
-\item \code{orders} (list): List of order objects.
+\item \code{transaction_time} (POSIXct): Transaction time.
+\item \code{symbol} (character): Trading pair from parent OCO.
+\item \code{order_symbol} (character): Trading pair from child order.
+\item \code{order_id} (integer): Child order ID.
+\item \code{client_order_id} (character): Child order client ID.
 }
 }
 \subsection{Examples}{
@@ -699,16 +708,19 @@ Verified: 2026-03-10
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per OCO and the following columns:
+\code{data.table} with one row per child order across all OCOs (long format).
+Columns include:
 \itemize{
-\item \code{order_list_id} (integer): OCO order list identifier.
+\item \code{order_list_id} (integer): OCO order list identifier (repeated per child order).
 \item \code{contingency_type} (character): Always \code{"OCO"}.
 \item \code{list_status_type} (character): Status type.
 \item \code{list_order_status} (character): Order status.
 \item \code{list_client_order_id} (character): Client-assigned list ID.
-\item \code{transaction_time} (numeric): Transaction time in milliseconds.
-\item \code{symbol} (character): Trading pair.
-\item \code{orders} (list): List of order objects.
+\item \code{transaction_time} (POSIXct): Transaction time.
+\item \code{symbol} (character): Trading pair from parent OCO.
+\item \code{order_symbol} (character): Trading pair from child order.
+\item \code{order_id} (integer): Child order ID.
+\item \code{client_order_id} (character): Child order client ID.
 }
 }
 \subsection{Examples}{
