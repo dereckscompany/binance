@@ -16,7 +16,7 @@ snake_case throughout. No API version numbers in method names.
 
 ---
 
-## Planned
+## Implemented (v0.0.1)
 
 ### 1. Market Data — `BinanceMarketData` class
 
@@ -38,13 +38,40 @@ Deposit addresses and history.
 
 Withdrawal creation, cancellation, and history.
 
-### 6. SubAccount — `BinanceSubAccount` class
+### 6. Transfer — `BinanceTransfer` class
 
-Sub-account creation and balance queries.
+Internal asset transfers between wallets with paginated history.
+
+### 7. OCO Orders — `BinanceOcoOrders` class
+
+One-cancels-the-other order placement, queries, and cancellation.
+
+### 8. Margin Data — `BinanceMarginData` class
+
+Cross-margin pair info, price index, interest rate history, collateral data.
+
+### 9. Margin Trading — `BinanceMargin` class
+
+Margin borrowing/repayment, order placement, account info, max borrowable, trades.
+
+### 10. Sub-Account — `BinanceSubAccount` class
+
+Sub-account listing.
+
+### 11. Earn — `BinanceEarn` class
+
+Simple Earn flexible product listing, subscription, and position queries.
+
+### 12. Futures Data — `BinanceFuturesData` class
+
+Futures market data: exchange info, klines, mark price, funding rates, open interest.
+
+### 13. Futures Trading — `BinanceFutures` class
+
+Futures order lifecycle, account/balance/position queries, leverage and margin-type configuration, income history, position mode.
 
 ---
 
 ## Won't do (for now)
 
-- **Futures**: entirely different API domain
 - **WebSocket**: real-time feeds — significant separate architecture

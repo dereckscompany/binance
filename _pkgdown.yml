@@ -1,0 +1,73 @@
+url: https://dereckmezquita.github.io/binance/
+
+figures:
+  fig.path: "man/figures/"
+
+authors:
+  Dereck Mezquita:
+    href: https://derecksnotes.com
+
+template:
+  bootstrap: 5
+
+navbar:
+  structure:
+    left: [home, reference, articles]
+    right: [github, search]
+  components:
+    github:
+      icon: fa-github fa-lg
+      href: https://github.com/dereckmezquita/binance
+      target: _blank
+
+reference:
+  - title: API Client Classes
+    desc: R6 classes for interacting with Binance REST API
+    contents:
+      - BinanceBase
+      - BinanceMarketData
+      - BinanceTrading
+      - BinanceOcoOrders
+      - BinanceAccount
+      - BinanceDeposit
+      - BinanceWithdrawal
+      - BinanceTransfer
+      - BinanceSubAccount
+      - BinanceMarginData
+      - BinanceMargin
+      - BinanceEarn
+      - BinanceFuturesData
+      - BinanceFutures
+
+  - title: Configuration
+    desc: API credential and endpoint helpers
+    contents:
+      - get_api_keys
+      - get_base_url
+      - get_futures_base_url
+
+  - title: Low-Level Request Helpers
+    desc: Functions for building and executing Binance API requests
+    contents:
+      - binance_build_request
+      - verify_symbol
+
+  - title: Backfill and Data
+    desc: Bulk data download and included datasets
+    contents:
+      - binance_backfill_klines
+      - binance_btc_usdt_4h_ohlcv
+
+  - title: Utilities
+    desc: Time conversion helpers
+    contents:
+      - time_convert_from_binance
+      - time_convert_to_binance
+
+articles:
+  - title: Getting Started
+    navbar: ~
+    contents:
+      - getting-started
+      - async-usage
+      - margin-futures-trading

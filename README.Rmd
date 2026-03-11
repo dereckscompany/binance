@@ -9,7 +9,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   fig.align = "center",
   out.width = "100%",
-  collapse = TRUE,
+  results = "hold",
   comment = "#>"
 )
 ```
@@ -21,13 +21,45 @@ knitr::opts_chunk$set(
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-An R API wrapper for the [Binance](https://www.binance.com/) cryptocurrency exchange. Provides R6 classes for spot market data, trading, account management, deposits, withdrawals, and sub-accounts. Supports both synchronous and asynchronous (promise-based) operation via httr2.
+An R API wrapper for the [Binance](https://www.binance.com/) cryptocurrency exchange. Provides `R6` classes for spot market data, trading, account management, deposits, withdrawals, and sub-accounts. Supports both synchronous and asynchronous (promise based) operation via `httr2`.
 
 ## Disclaimer
 
 This software is provided "as is", without warranty of any kind. **This package interacts with live cryptocurrency exchange accounts and can execute real trades, transfers, and withdrawals involving real money.** By using this package you accept full responsibility for any financial losses, erroneous transactions, or other damages that may result. Always test with small amounts first, use API key permissions to restrict access to only what you need, and never share your API credentials. The author(s) and contributor(s) are not liable for any financial loss or damage arising from the use of this software.
 
 We invite you to read the source code and make contributions if you find a bug or wish to make an improvement.
+
+## Design Philosophy
+
+All API responses are returned as `data.table` objects with two transformations applied:
+
+1. **snake_case column names** - camelCase keys from the JSON response (e.g. `insertTime`, `quoteQty`) are converted to snake_case (`insert_time`, `quote_qty`). No columns are renamed beyond.
+1. **type coercion** - known columns are type coerced in `data.table` before return.
+
+That's it. **No fields are dropped and no columns are renamed** beyond snake case conversion. If a column exists in the Binance API response, it will exist in the returned `data.table`. If you don't need a column, drop it yourself.
+
+- The only exception is klines (candlestick data), where Binance returns positional arrays instead of named objects. These are assigned descriptive column names (`open_time`, `open`, `high`, `low`, `close`, `volume`, `close_time`, etc.) matching the Binance documentation.
+
+## Available Classes
+
+| Class | Purpose | Auth Required |
+|-------|---------|:---:|
+| `BinanceMarketData` | Spot market data: tickers, klines, depth, trades, exchange info | No |
+| `BinanceTrading` | Spot order placement, query, and cancellation | Yes |
+| `BinanceOcoOrders` | One-Cancels-Other order management | Yes |
+| `BinanceAccount` | Account info and trade history | Yes |
+| `BinanceDeposit` | Deposit addresses and deposit history | Yes |
+| `BinanceWithdrawal` | Withdrawal submission and history | Yes |
+| `BinanceTransfer` | Internal transfers between wallet types (spot, margin, futures) | Yes |
+| `BinanceSubAccount` | Sub-account listing and management | Yes |
+| `BinanceEarn` | Simple Earn: flexible savings products and positions | Yes |
+| `BinanceMarginData` | Margin pairs, price index, interest rates, cross/isolated data | Mixed |
+| `BinanceMargin` | Margin borrowing, repayment, orders, and account queries | Yes |
+| `BinanceFuturesData` | Futures exchange info, mark price, funding rates, klines | No |
+| `BinanceFutures` | Futures order placement, positions, leverage, account queries | Yes |
+| `BinanceBase` | Internal base class (not used directly) | — |
+
+All classes accept an `async = TRUE` argument at construction and share a common `time_source` parameter for clock drift correction.
 
 ## Installation
 
@@ -38,6 +70,39 @@ remotes::install_github("dereckmezquita/binance")
 
 ## Setup
 
+```{r}
+# special mock for local build
+box::use(
+  binance[
+    get_api_keys,
+    get_futures_base_url
+  ],
+  ./tests/testthat/mock_router[mock_router]
+)
+
+KEYS <- get_api_keys(
+  api_key = "fake-key",
+  api_secret = "fake-secret"
+)
+
+BASE <- "https://api.binance.com"
+FBASE <- "https://fapi.binance.com"
+
+options(httr2_mock = mock_router)
+
+# normal imports
+box::use(
+  binance[
+    BinanceMarketData,
+    BinanceTrading,
+    BinanceAccount,
+    BinanceMargin,
+    BinanceFutures,
+    BinanceFuturesData
+  ]
+)
+```
+
 Set your API credentials as environment variables in `.Renviron`:
 
 ```bash
@@ -47,6 +112,228 @@ BINANCE_API_SECRET = your-api-secret
 ```
 
 If you don't have a key, visit the [Binance API documentation](https://binance-docs.github.io/apidocs/).
+
+## Quick Start -- Market Data
+
+Market data endpoints are public and require no authentication.
+
+```{r}
+market <- BinanceMarketData$new(keys = KEYS, base_url = BASE)
+```
+
+### Price Ticker
+
+```{r}
+market$get_ticker("BTCUSDT")
+```
+
+### Klines (Candlestick Data)
+
+```{r}
+market$get_klines("BTCUSDT", interval = "1h", limit = 5)
+```
+
+### Fetch All Klines (Large Date Ranges)
+
+When you need historical data spanning more than 1000 candles, use `fetch_all = TRUE`. This automatically segments the time range into multiple API calls, deduplicates overlapping boundaries, and returns the combined result:
+
+```{r, eval = FALSE}
+# Fetch all 1h klines across a 5-month date range (multiple API calls)
+market$get_klines(
+  symbol = "BTCUSDT",
+  interval = "1h",
+  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
+  endTime = as.POSIXct("2024-06-01", tz = "UTC"),
+  fetch_all = TRUE,
+  sleep = 0.5
+)
+```
+
+> **Note:** Large date ranges consume multiple API requests. Use the `sleep` parameter to avoid hitting Binance rate limits. For bulk multi-symbol downloads, see `binance_backfill_klines()`.
+
+### Order Book Depth
+
+```{r}
+market$get_depth("BTCUSDT", limit = 5)
+```
+
+### 24hr Statistics
+
+```{r}
+market$get_24hr_stats("BTCUSDT")
+```
+
+## Trading
+
+Trading endpoints require authentication. Use `add_order_test()` to validate order parameters without placing a real order.
+
+```{r}
+trading <- BinanceTrading$new(keys = KEYS, base_url = BASE)
+```
+
+### Test Order (No Execution)
+
+```{r}
+trading$add_order_test(
+  type = "LIMIT",
+  symbol = "BTCUSDT",
+  side = "BUY",
+  price = 50000,
+  quantity = 0.0001
+)
+```
+
+### Query an Order
+
+```{r}
+trading$get_order("BTCUSDT", orderId = 12345)
+```
+
+### Get Open Orders
+
+```{r}
+trading$get_open_orders("BTCUSDT")
+```
+
+## Account
+
+```{r}
+account <- BinanceAccount$new(keys = KEYS, base_url = BASE)
+```
+
+### Account Info
+
+```{r}
+account$get_account_info()
+```
+
+### Trade History
+
+```{r}
+account$get_trades("BTCUSDT")
+```
+
+## Margin Trading
+
+Margin endpoints use the same credential setup. Here is a brief overview:
+
+```{r}
+margin <- BinanceMargin$new(keys = KEYS, base_url = BASE)
+```
+
+### Margin Account
+
+```{r}
+margin$get_account()
+```
+
+### Max Borrowable
+
+```{r}
+margin$get_max_borrowable(asset = "USDT")
+```
+
+### Margin Trades
+
+```{r}
+margin$get_trades("BTCUSDT")
+```
+
+## Futures
+
+### Futures Market Data
+
+```{r}
+fdata <- BinanceFuturesData$new(keys = KEYS, base_url = FBASE)
+```
+
+#### Mark Price and Funding Rate
+
+```{r}
+fdata$get_mark_price("BTCUSDT")
+```
+
+#### Funding Rate History
+
+```{r}
+fdata$get_funding_rate("BTCUSDT", limit = 3)
+```
+
+#### Open Interest
+
+```{r}
+fdata$get_open_interest("BTCUSDT")
+```
+
+### Futures Trading
+
+```{r}
+futures <- BinanceFutures$new(keys = KEYS, base_url = FBASE)
+```
+
+#### Positions
+
+```{r}
+futures$get_positions("BTCUSDT")
+```
+
+#### Futures Test Order
+
+```{r}
+futures$add_order_test(
+  symbol = "BTCUSDT",
+  side = "BUY",
+  type = "LIMIT",
+  quantity = 0.001,
+  price = 50000,
+  timeInForce = "GTC"
+)
+```
+
+#### Set Leverage
+
+```{r}
+futures$set_leverage("BTCUSDT", leverage = 10)
+```
+
+## Async Usage
+
+This package is meant to be used in an asynchronous non-blocking event loop (i.e. à la JavaScript) and is written around promises. Please use `later` to run your event loop. I recommend the pattern shown below.
+
+We offer a synchronous and asynchronous instance of the classes. All classes accept `async = TRUE`, this makes methods return promises instead of objects. You can resolve promises in whichever way you like, either `$then()` chaining or `async`/`await` patterns.
+
+I recommend use `coro::async()` to write sequential looking async code:
+
+```{r}
+box::use(coro, later)
+
+market_async <- BinanceMarketData$new(async = TRUE)
+
+main <- coro$async(function() {
+  ticker <- await(market_async$get_ticker("BTCUSDT"))
+  klines <- await(market_async$get_klines("BTCUSDT", "1h", limit = 10))
+
+  print(ticker)
+  print(klines)
+})
+
+main()
+
+while (!later$loop_empty()) {
+  later$run_now()
+}
+```
+
+## Sample Data
+
+The package ships with a sample dataset of 500 BTC-USDT 4-hour candles for demonstration and testing:
+
+```{r, eval = FALSE}
+data(binance_btc_usdt_4h_ohlcv)
+head(binance_btc_usdt_4h_ohlcv)
+```
+
+See `?binance_btc_usdt_4h_ohlcv` for column descriptions. This data was produced by `binance_backfill_klines()`.
 
 ## Citation
 
