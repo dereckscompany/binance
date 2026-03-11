@@ -79,7 +79,7 @@ while (!later::loop_empty()) later::run_now()
 market <- BinanceMarketData$new()
 st <- market$get_server_time()
 drift <- as.numeric(difftime(Sys.time(), st$server_time, units = "secs"))
-cat("Clock drift:", round(drift), "ms\n")
+cat("Clock drift:", round(drift * 1000), "ms\n")
 }
 
 ## ------------------------------------------------
@@ -259,7 +259,7 @@ Verified: 2026-03-10
 market <- BinanceMarketData$new()
 st <- market$get_server_time()
 drift <- as.numeric(difftime(Sys.time(), st$server_time, units = "secs"))
-cat("Clock drift:", round(drift), "ms\n")
+cat("Clock drift:", round(drift * 1000), "ms\n")
 }
 }
 \if{html}{\out{</div>}}
