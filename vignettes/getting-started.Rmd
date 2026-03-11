@@ -76,14 +76,14 @@ market <- BinanceMarketData$new(keys = keys, base_url = base)
 ### Exchange Info
 
 ```{r exchange-info}
-info <- market$get_exchange_info("BTCUSDT")
+info <- market$get_exchange_info(symbol = "BTCUSDT")
 info[, .(symbol, status, base_asset, quote_asset)]
 ```
 
 ### Ticker
 
 ```{r ticker}
-ticker <- market$get_ticker("BTCUSDT")
+ticker <- market$get_ticker(symbol = "BTCUSDT")
 ticker
 ```
 
@@ -99,42 +99,42 @@ tickers
 Best bid/ask prices and quantities:
 
 ```{r book-ticker}
-book <- market$get_book_ticker("BTCUSDT")
+book <- market$get_book_ticker(symbol = "BTCUSDT")
 book
 ```
 
 ### Average Price
 
 ```{r avg-price}
-avg <- market$get_avg_price("BTCUSDT")
+avg <- market$get_avg_price(symbol = "BTCUSDT")
 avg
 ```
 
 ### 24hr Statistics
 
 ```{r stats-24hr}
-stats <- market$get_24hr_stats("BTCUSDT")
+stats <- market$get_24hr_stats(symbol = "BTCUSDT")
 stats[, .(symbol, last_price, price_change_percent, volume)]
 ```
 
 ### Order Book Depth
 
 ```{r orderbook}
-depth <- market$get_depth("BTCUSDT", limit = 5)
+depth <- market$get_depth(symbol = "BTCUSDT", limit = 5)
 depth
 ```
 
 ### Recent Trades
 
 ```{r trades}
-trades <- market$get_trades("BTCUSDT")
+trades <- market$get_trades(symbol = "BTCUSDT")
 trades
 ```
 
 ### Klines (Candlestick Data)
 
 ```{r klines}
-klines <- market$get_klines("BTCUSDT", "1h", limit = 5)
+klines <- market$get_klines(symbol = "BTCUSDT", interval = "1h", limit = 5)
 klines[, .(open_time, open, high, low, close, volume)]
 ```
 
@@ -146,10 +146,13 @@ return the combined result:
 
 ```{r fetch-all-klines, eval = FALSE}
 # Fetch all 1h klines across a 5-month date range (multiple API calls)
-all_klines <- market$get_klines("BTCUSDT", "1h",
+all_klines <- market$get_klines(
+  symbol = "BTCUSDT",
+  interval = "1h",
   startTime = as.POSIXct("2024-01-01", tz = "UTC"),
   endTime = as.POSIXct("2024-06-01", tz = "UTC"),
-  fetch_all = TRUE, sleep = 0.5
+  fetch_all = TRUE,
+  sleep = 0.5
 )
 
 nrow(all_klines)
@@ -214,21 +217,21 @@ order
 ### Query an Order
 
 ```{r query-order}
-order <- trading$get_order("BTCUSDT", orderId = 12345)
+order <- trading$get_order(symbol = "BTCUSDT", orderId = 12345)
 order
 ```
 
 ### Get Open Orders
 
 ```{r open-orders}
-open_orders <- trading$get_open_orders("BTCUSDT")
+open_orders <- trading$get_open_orders(symbol = "BTCUSDT")
 open_orders
 ```
 
 ### Cancel an Order
 
 ```{r cancel-order, eval = FALSE}
-cancelled <- trading$cancel_order("BTCUSDT", orderId = 12345)
+cancelled <- trading$cancel_order(symbol = "BTCUSDT", orderId = 12345)
 cancelled
 ```
 
@@ -289,7 +292,7 @@ info[, .(maker_commission, taker_commission, can_trade, account_type)]
 ### Trade History
 
 ```{r trade-history}
-trades <- account$get_trades("BTCUSDT")
+trades <- account$get_trades(symbol = "BTCUSDT")
 trades
 ```
 
@@ -478,5 +481,5 @@ binance_backfill_klines(
 
 - See `vignette("async-usage")` for promise-based asynchronous operation.
 - See `vignette("margin-futures-trading")` for margin and USD-M futures trading.
-- Browse the [pkgdown site](https://dereckmezquita.github.io/binance/) for full method documentation.
+- Browse the [pkgdown site](https://dereckscompany.github.io/binance/) for full method documentation.
 - For bulk historical data, see `?binance_backfill_klines`.

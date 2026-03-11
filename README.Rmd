@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 # binance
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/dereckmezquita/binance/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dereckmezquita/binance/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/dereckscompany/binance/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/dereckscompany/binance/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
@@ -65,7 +65,7 @@ All classes accept an `async = TRUE` argument at construction and share a common
 
 ```{r, eval = FALSE}
 # install.packages("remotes")
-remotes::install_github("dereckmezquita/binance")
+remotes::install_github("dereckscompany/binance")
 ```
 
 ## Setup
@@ -124,13 +124,13 @@ market <- BinanceMarketData$new(keys = KEYS, base_url = BASE)
 ### Price Ticker
 
 ```{r}
-market$get_ticker("BTCUSDT")
+market$get_ticker(symbol = "BTCUSDT")
 ```
 
 ### Klines (Candlestick Data)
 
 ```{r}
-market$get_klines("BTCUSDT", interval = "1h", limit = 5)
+market$get_klines(symbol = "BTCUSDT", interval = "1h", limit = 5)
 ```
 
 ### Fetch All Klines (Large Date Ranges)
@@ -154,13 +154,13 @@ market$get_klines(
 ### Order Book Depth
 
 ```{r}
-market$get_depth("BTCUSDT", limit = 5)
+market$get_depth(symbol = "BTCUSDT", limit = 5)
 ```
 
 ### 24hr Statistics
 
 ```{r}
-market$get_24hr_stats("BTCUSDT")
+market$get_24hr_stats(symbol = "BTCUSDT")
 ```
 
 ## Trading
@@ -186,13 +186,13 @@ trading$add_order_test(
 ### Query an Order
 
 ```{r}
-trading$get_order("BTCUSDT", orderId = 12345)
+trading$get_order(symbol = "BTCUSDT", orderId = 12345)
 ```
 
 ### Get Open Orders
 
 ```{r}
-trading$get_open_orders("BTCUSDT")
+trading$get_open_orders(symbol = "BTCUSDT")
 ```
 
 ## Account
@@ -210,7 +210,7 @@ account$get_account_info()
 ### Trade History
 
 ```{r}
-account$get_trades("BTCUSDT")
+account$get_trades(symbol = "BTCUSDT")
 ```
 
 ## Margin Trading
@@ -236,7 +236,7 @@ margin$get_max_borrowable(asset = "USDT")
 ### Margin Trades
 
 ```{r}
-margin$get_trades("BTCUSDT")
+margin$get_trades(symbol = "BTCUSDT")
 ```
 
 ## Futures
@@ -250,19 +250,19 @@ fdata <- BinanceFuturesData$new(keys = KEYS, base_url = FBASE)
 #### Mark Price and Funding Rate
 
 ```{r}
-fdata$get_mark_price("BTCUSDT")
+fdata$get_mark_price(symbol = "BTCUSDT")
 ```
 
 #### Funding Rate History
 
 ```{r}
-fdata$get_funding_rate("BTCUSDT", limit = 3)
+fdata$get_funding_rate(symbol = "BTCUSDT", limit = 3)
 ```
 
 #### Open Interest
 
 ```{r}
-fdata$get_open_interest("BTCUSDT")
+fdata$get_open_interest(symbol = "BTCUSDT")
 ```
 
 ### Futures Trading
@@ -274,7 +274,7 @@ futures <- BinanceFutures$new(keys = KEYS, base_url = FBASE)
 #### Positions
 
 ```{r}
-futures$get_positions("BTCUSDT")
+futures$get_positions(symbol = "BTCUSDT")
 ```
 
 #### Futures Test Order
@@ -293,7 +293,7 @@ futures$add_order_test(
 #### Set Leverage
 
 ```{r}
-futures$set_leverage("BTCUSDT", leverage = 10)
+futures$set_leverage(symbol = "BTCUSDT", leverage = 10)
 ```
 
 ## Async Usage
@@ -310,8 +310,8 @@ box::use(coro, later)
 market_async <- BinanceMarketData$new(async = TRUE)
 
 main <- coro$async(function() {
-  ticker <- await(market_async$get_ticker("BTCUSDT"))
-  klines <- await(market_async$get_klines("BTCUSDT", "1h", limit = 10))
+  ticker <- await(market_async$get_ticker(symbol = "BTCUSDT"))
+  klines <- await(market_async$get_klines(symbol = "BTCUSDT", interval = "1h", limit = 10))
 
   print(ticker)
   print(klines)
