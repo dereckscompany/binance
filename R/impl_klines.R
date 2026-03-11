@@ -41,7 +41,10 @@ binance_fetch_klines <- function(
   from = lubridate::now("UTC") - lubridate::dhours(24),
   to = lubridate::now("UTC"),
   .req_fn,
-  is_async = FALSE
+  is_async = FALSE,
+  endpoint = "/api/v3/klines",
+  max_candles = 1000L,
+  sleep = 0
 ) {
   if (!timeframe %in% names(binance_timeframe_map)) {
     rlang::abort(paste0(
@@ -55,9 +58,8 @@ binance_fetch_klines <- function(
   timeframe_seconds <- binance_timeframe_map[[timeframe]]
   from_ms <- as.numeric(from) * 1000
   to_ms <- as.numeric(to) * 1000
-  max_candles <- 1000L
 
-  # Split into segments of up to 1000 candles each, with 1-candle overlap
+  # Split into segments of up to max_candles each, with 1-candle overlap
   # to prevent gaps at segment boundaries. Dedup handles the overlap.
   segments <- list()
   seg_start <- from_ms
@@ -93,7 +95,7 @@ binance_fetch_klines <- function(
   # Fetch function for one segment
   fetch_segment <- function(seg) {
     return(.req_fn(
-      endpoint = "/api/v3/klines",
+      endpoint = endpoint,
       method = "GET",
       query = list(
         symbol = symbol,
@@ -125,7 +127,13 @@ binance_fetch_klines <- function(
     return(chain$then(combine_klines))
   }
 
-  # Sync: sequential
-  all_results <- lapply(segments, fetch_segment)
+  # Sync: sequential with sleep between segments
+  all_results <- vector("list", length(segments))
+  for (i in seq_along(segments)) {
+    all_results[[i]] <- fetch_segment(segments[[i]])
+    if (i < length(segments) && sleep > 0) {
+      Sys.sleep(sleep)
+    }
+  }
   return(combine_klines(all_results))
 }

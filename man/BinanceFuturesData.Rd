@@ -93,7 +93,14 @@ print(info[, .(symbol, contract_type, status, base_asset)])
 \dontrun{
 futures <- BinanceFuturesData$new()
 klines <- futures$get_klines("BTCUSDT", "1h", limit = 24)
-print(klines)
+
+# Fetch all candles across a large date range (multiple API calls)
+all_klines <- futures$get_klines(
+  "BTCUSDT", "1h",
+  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
+  endTime = as.POSIXct("2024-06-01", tz = "UTC"),
+  fetch_all = TRUE, sleep = 0.5
+)
 }
 
 ## ------------------------------------------------
@@ -344,7 +351,9 @@ Retrieves historical kline/candlestick data for a futures symbol.
   interval = "1h",
   startTime = NULL,
   endTime = NULL,
-  limit = NULL
+  limit = NULL,
+  fetch_all = FALSE,
+  sleep = 0.2
 )}\if{html}{\out{</div>}}
 }
 
@@ -363,6 +372,18 @@ Retrieves historical kline/candlestick data for a futures symbol.
 \item{\code{endTime}}{POSIXct or numeric or NULL; end time (ms or POSIXct).}
 
 \item{\code{limit}}{Integer or NULL; max results (default 500, max 1500).}
+
+\item{\code{fetch_all}}{Logical; if \code{TRUE}, automatically segments the time range
+into multiple API calls of up to 1500 candles each, fetches all segments,
+deduplicates overlapping boundaries, and returns the combined result sorted
+by \code{open_time}. Both \code{startTime} and \code{endTime} are required when enabled.
+\strong{Warning}: large date ranges will consume multiple API requests and may
+impact your rate-limit quota. Default \code{FALSE}.}
+
+\item{\code{sleep}}{Numeric; seconds to wait between consecutive API calls when
+\code{fetch_all = TRUE}. Use this to avoid hitting Binance rate limits. Only
+applies in synchronous mode; async mode chains requests sequentially via
+promises. Default \code{0.2}.}
 }
 \if{html}{\out{</div>}}
 }
@@ -388,7 +409,14 @@ Retrieves historical kline/candlestick data for a futures symbol.
 \preformatted{\dontrun{
 futures <- BinanceFuturesData$new()
 klines <- futures$get_klines("BTCUSDT", "1h", limit = 24)
-print(klines)
+
+# Fetch all candles across a large date range (multiple API calls)
+all_klines <- futures$get_klines(
+  "BTCUSDT", "1h",
+  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
+  endTime = as.POSIXct("2024-06-01", tz = "UTC"),
+  fetch_all = TRUE, sleep = 0.5
+)
 }
 }
 \if{html}{\out{</div>}}
@@ -799,7 +827,7 @@ Retrieves the order book (bids and asks) for a futures symbol.
 \item \code{last_update_id} (character): Sequence ID for orderbook synchronisation.
 \item \code{side} (character): \code{"bid"} or \code{"ask"}.
 \item \code{price} (numeric): Price level.
-\item \code{quantity} (numeric): Available quantity at this price level.
+\item \code{size} (numeric): Available size at this price level.
 }
 }
 \subsection{Examples}{

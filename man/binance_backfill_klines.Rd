@@ -6,7 +6,7 @@
 \usage{
 binance_backfill_klines(
   symbols,
-  intervals = "1d",
+  timeframes = "1d",
   from = lubridate::now("UTC") - lubridate::ddays(365),
   to = lubridate::now("UTC"),
   file = "binance_klines.csv",
@@ -19,7 +19,7 @@ binance_backfill_klines(
 \item{symbols}{Character vector of trading pair symbols (e.g.,
 \code{c("BTCUSDT", "ETHUSDT")}). Must not be NULL or empty.}
 
-\item{intervals}{Character vector of candle intervals (e.g., \code{c("1d", "1h")}).
+\item{timeframes}{Character vector of candle timeframes (e.g., \code{c("1d", "1h")}).
 Valid values: \code{"1s"}, \code{"1m"}, \code{"3m"}, \code{"5m"}, \code{"15m"}, \code{"30m"}, \code{"1h"},
 \code{"2h"}, \code{"4h"}, \code{"6h"}, \code{"8h"}, \code{"12h"}, \code{"1d"}, \code{"3d"}, \code{"1w"}, \code{"1M"}.}
 
@@ -35,27 +35,27 @@ incrementally so progress is saved even if the process is interrupted.}
 
 \item{base_url}{Character; Binance API base URL.}
 
-\item{sleep}{Numeric; seconds to sleep between each symbol-interval
+\item{sleep}{Numeric; seconds to sleep between each symbol-timeframe
 combination to respect rate limits.}
 
 \item{verbose}{Logical; if \code{TRUE}, prints progress messages via \code{\link[rlang:abort]{rlang::inform()}}.}
 }
 \value{
-The file path (invisibly). If any symbol-interval combinations
+The file path (invisibly). If any symbol-timeframe combinations
 failed, a \code{"failures"} attribute is attached containing a
-\link[data.table:data.table]{data.table::data.table} with columns \code{symbol}, \code{interval}, and \code{error}.
+\link[data.table:data.table]{data.table::data.table} with columns \code{symbol}, \code{timeframe}, and \code{error}.
 }
 \description{
 Downloads historical OHLCV candlestick data for one or more trading pairs and
-intervals, writing results incrementally to a CSV file. Supports resuming
+timeframes, writing results incrementally to a CSV file. Supports resuming
 from a partially completed backfill by reading the existing file and skipping
-symbol-interval combinations that are already up to date.
+symbol-timeframe combinations that are already up to date.
 }
 \examples{
 \dontrun{
 binance_backfill_klines(
   symbols = c("BTCUSDT", "ETHUSDT"),
-  intervals = c("1d", "1h"),
+  timeframes = c("1d", "1h"),
   from = lubridate::as_datetime("2020-01-01"),
   file = "my_klines.csv"
 )

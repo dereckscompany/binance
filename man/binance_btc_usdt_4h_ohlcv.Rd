@@ -6,21 +6,21 @@
 \title{BTC-USDT 4-Hour OHLCV Data from Binance}
 \format{
 A \link[data.table:data.table]{data.table::data.table} with 500 rows and 14 columns:
-\describe{
-\item{open_time}{POSIXct. Candle open time in UTC.}
-\item{open}{Numeric. Opening price.}
-\item{high}{Numeric. Highest price during the interval.}
-\item{low}{Numeric. Lowest price during the interval.}
-\item{close}{Numeric. Closing price.}
-\item{volume}{Numeric. Trading volume in base currency (BTC).}
-\item{close_time}{POSIXct. Candle close time in UTC.}
-\item{quote_volume}{Numeric. Trading volume in quote currency (USDT).}
-\item{trades}{Integer. Number of trades during the interval.}
-\item{taker_buy_base_volume}{Numeric. Taker buy volume in base currency.}
-\item{taker_buy_quote_volume}{Numeric. Taker buy volume in quote currency.}
-\item{ignore}{Character. Unused field from Binance API.}
-\item{symbol}{Character. Trading pair identifier, \code{"BTCUSDT"}.}
-\item{interval}{Character. Candle interval, \code{"4h"}.}
+\itemize{
+\item \code{open_time} (POSIXct): Candle open time in UTC.
+\item \code{open} (Numeric): Opening price.
+\item \code{high} (Numeric): Highest price during the interval.
+\item \code{low} (Numeric): Lowest price during the interval.
+\item \code{close} (Numeric): Closing price.
+\item \code{volume} (Numeric): Trading volume in base currency (BTC).
+\item \code{close_time} (POSIXct): Candle close time in UTC.
+\item \code{quote_volume} (Numeric): Trading volume in quote currency (USDT).
+\item \code{trades} (Integer): Number of trades during the interval.
+\item \code{taker_buy_base_volume} (Numeric): Taker buy volume in base currency.
+\item \code{taker_buy_quote_volume} (Numeric): Taker buy volume in quote currency.
+\item \code{ignore} (Character): Unused field from Binance API.
+\item \code{symbol} (Character): Trading pair identifier, \code{"BTCUSDT"}.
+\item \code{interval} (Character): Candle interval, \code{"4h"}.
 }
 }
 \source{

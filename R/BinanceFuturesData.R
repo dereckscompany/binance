@@ -181,6 +181,16 @@ BinanceFuturesData <- R6::R6Class(
     #' @param startTime POSIXct or numeric or NULL; start time (ms or POSIXct).
     #' @param endTime POSIXct or numeric or NULL; end time (ms or POSIXct).
     #' @param limit Integer or NULL; max results (default 500, max 1500).
+    #' @param fetch_all Logical; if `TRUE`, automatically segments the time range
+    #'   into multiple API calls of up to 1500 candles each, fetches all segments,
+    #'   deduplicates overlapping boundaries, and returns the combined result sorted
+    #'   by `open_time`. Both `startTime` and `endTime` are required when enabled.
+    #'   **Warning**: large date ranges will consume multiple API requests and may
+    #'   impact your rate-limit quota. Default `FALSE`.
+    #' @param sleep Numeric; seconds to wait between consecutive API calls when
+    #'   `fetch_all = TRUE`. Use this to avoid hitting Binance rate limits. Only
+    #'   applies in synchronous mode; async mode chains requests sequentially via
+    #'   promises. Default `0.2`.
     #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
     #'   - `open_time` (POSIXct): Candle open time.
     #'   - `open` (numeric): Opening price.
@@ -199,14 +209,23 @@ BinanceFuturesData <- R6::R6Class(
     #' \dontrun{
     #' futures <- BinanceFuturesData$new()
     #' klines <- futures$get_klines("BTCUSDT", "1h", limit = 24)
-    #' print(klines)
+    #'
+    #' # Fetch all candles across a large date range (multiple API calls)
+    #' all_klines <- futures$get_klines(
+    #'   "BTCUSDT", "1h",
+    #'   startTime = as.POSIXct("2024-01-01", tz = "UTC"),
+    #'   endTime = as.POSIXct("2024-06-01", tz = "UTC"),
+    #'   fetch_all = TRUE, sleep = 0.5
+    #' )
     #' }
     get_klines = function(
       symbol,
       interval = "1h",
       startTime = NULL,
       endTime = NULL,
-      limit = NULL
+      limit = NULL,
+      fetch_all = FALSE,
+      sleep = 0.2
     ) {
       valid_intervals <- c(
         "1s",
@@ -228,7 +247,35 @@ BinanceFuturesData <- R6::R6Class(
       )
       interval <- rlang::arg_match0(interval, valid_intervals)
 
-      # Convert POSIXct to milliseconds
+      # fetch_all mode: segment the time range into multiple API calls
+      if (isTRUE(fetch_all)) {
+        if (is.null(startTime) || is.null(endTime)) {
+          rlang::abort("Both `startTime` and `endTime` are required when `fetch_all = TRUE`.")
+        }
+        from <- if (inherits(startTime, "POSIXct")) {
+          startTime
+        } else {
+          as.POSIXct(as.numeric(startTime) / 1000, origin = "1970-01-01", tz = "UTC")
+        }
+        to <- if (inherits(endTime, "POSIXct")) {
+          endTime
+        } else {
+          as.POSIXct(as.numeric(endTime) / 1000, origin = "1970-01-01", tz = "UTC")
+        }
+        return(binance_fetch_klines(
+          symbol = symbol,
+          timeframe = interval,
+          from = from,
+          to = to,
+          .req_fn = private$.request,
+          is_async = private$.is_async,
+          endpoint = "/fapi/v1/klines",
+          max_candles = 1500L,
+          sleep = sleep
+        ))
+      }
+
+      # Single-call mode (default)
       if (inherits(startTime, "POSIXct")) {
         startTime <- format(floor(as.numeric(startTime) * 1000), scientific = FALSE)
       }
