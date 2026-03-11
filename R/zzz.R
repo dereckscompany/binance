@@ -29,5 +29,6 @@ utils::globalVariables(c(
   "order_id",
   "client_order_id",
   "symbol",
+  "timeframe",
   "interval"
 ))
