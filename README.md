@@ -9,10 +9,10 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 <!-- badges: end -->
 
 An R API wrapper for the [Binance](https://www.binance.com/)
-cryptocurrency exchange. Provides R6 classes for spot market data,
+cryptocurrency exchange. Provides `R6` classes for spot market data,
 trading, account management, deposits, withdrawals, and sub-accounts.
-Supports both synchronous and asynchronous (promise-based) operation via
-httr2.
+Supports both synchronous and asynchronous (promise based) operation via
+`httr2`.
 
 ## Disclaimer
 
@@ -34,25 +34,21 @@ a bug or wish to make an improvement.
 All API responses are returned as `data.table` objects with two
 transformations applied:
 
-1.  **snake_case column names** — camelCase keys from the JSON response
-    (e.g. `insertTime`, `quoteQty`) are converted to snake_case
-    (`insert_time`, `quote_qty`) via a mechanical transformation. No
-    columns are renamed beyond this.
-
-2.  **Millisecond timestamps to POSIXct** — Columns containing
-    epoch-millisecond timestamps are converted to `POSIXct` in-place
-    under their snake_case name (e.g. `insertTime` becomes `insert_time`
-    as a `POSIXct`).
+1.  **snake_case column names**\[^1\] - camelCase keys from the JSON
+    response (e.g. `insertTime`, `quoteQty`) are converted to snake_case
+    (`insert_time`, `quote_qty`). No columns are renamed beyond.
+2.  **type coercion** - known columns are type coerced in `data.table`
+    before return.
 
 That’s it. **No fields are dropped and no columns are renamed** beyond
-the camelCase-to-snake_case conversion. If a column exists in the
-Binance API response, it will exist in the returned `data.table`. If you
-don’t need a column, drop it yourself.
+snake case conversion. If a column exists in the Binance API response,
+it will exist in the returned `data.table`. If you don’t need a column,
+drop it yourself.
 
-The only exception is klines (candlestick data), where Binance returns
-positional arrays instead of named objects. These are assigned
-descriptive column names (`open_time`, `open`, `high`, `low`, `close`,
-`volume`, `close_time`, etc.) matching the Binance documentation.
+- \[1\] The only exception is klines (candlestick data), where Binance
+  returns positional arrays instead of named objects. These are assigned
+  descriptive column names (`open_time`, `open`, `high`, `low`, `close`,
+  `volume`, `close_time`, etc.) matching the Binance documentation.
 
 ## Available Classes
 
