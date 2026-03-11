@@ -135,7 +135,7 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data))
+          return(parse_paginated(data)[])
         }
       ))
     },
@@ -205,7 +205,7 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data))
+          return(parse_paginated(data)[])
         }
       ))
     },
@@ -271,7 +271,7 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -329,7 +329,7 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -395,7 +395,7 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -447,7 +447,7 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -518,7 +518,7 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data))
+          return(parse_paginated(data)[])
         }
       ))
     },
@@ -583,7 +583,7 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data))
+          return(parse_paginated(data)[])
         }
       ))
     },
@@ -671,7 +671,7 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data, time_cols = "time"))
+          return(parse_paginated(data, time_cols = "time")[])
         }
       ))
     },
@@ -738,7 +738,7 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data, time_cols = "time"))
+          return(parse_paginated(data, time_cols = "time")[])
         }
       ))
     },
@@ -806,7 +806,7 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data, time_cols = "time"))
+          return(parse_paginated(data, time_cols = "time")[])
         }
       ))
     },
@@ -874,7 +874,7 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data, time_cols = "time"))
+          return(parse_paginated(data, time_cols = "time")[])
         }
       ))
     }

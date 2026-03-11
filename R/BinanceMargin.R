@@ -116,7 +116,7 @@ BinanceMargin <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -160,7 +160,7 @@ BinanceMargin <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -279,7 +279,7 @@ BinanceMargin <- R6::R6Class(
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
             dt[, transact_time := ms_to_datetime(transact_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -334,7 +334,7 @@ BinanceMargin <- R6::R6Class(
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
             dt[, transact_time := ms_to_datetime(transact_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -378,13 +378,13 @@ BinanceMargin <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
             dt[, transact_time := ms_to_datetime(transact_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -449,7 +449,7 @@ BinanceMargin <- R6::R6Class(
           if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
             dt[, update_time := ms_to_datetime(update_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -498,7 +498,7 @@ BinanceMargin <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
@@ -507,7 +507,7 @@ BinanceMargin <- R6::R6Class(
           if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
             dt[, update_time := ms_to_datetime(update_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -572,7 +572,7 @@ BinanceMargin <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
@@ -581,7 +581,7 @@ BinanceMargin <- R6::R6Class(
           if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
             dt[, update_time := ms_to_datetime(update_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -622,7 +622,7 @@ BinanceMargin <- R6::R6Class(
         endpoint = "/sapi/v1/margin/account",
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -660,7 +660,7 @@ BinanceMargin <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -697,7 +697,7 @@ BinanceMargin <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -758,7 +758,7 @@ BinanceMargin <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data, time_cols = "interest_accured_time"))
+          return(parse_paginated(data, time_cols = "interest_accured_time")[])
         }
       ))
     },
@@ -817,7 +817,7 @@ BinanceMargin <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data, time_cols = "time"))
+          return(parse_paginated(data, time_cols = "time")[])
         }
       ))
     },
@@ -886,13 +886,13 @@ BinanceMargin <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
             dt[, time := ms_to_datetime(time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -932,7 +932,7 @@ BinanceMargin <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -985,7 +985,7 @@ BinanceMargin <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     }

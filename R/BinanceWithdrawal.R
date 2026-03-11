@@ -284,10 +284,10 @@ BinanceWithdrawal <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
-          return(dt)
+          return(dt[])
         }
       ))
     }

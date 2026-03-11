@@ -166,7 +166,7 @@ BinanceTransfer <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -277,7 +277,7 @@ BinanceTransfer <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data, time_cols = "timestamp"))
+          return(parse_paginated(data, time_cols = "timestamp")[])
         }
       ))
     }
