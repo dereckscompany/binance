@@ -1,3 +1,10 @@
+# binance 0.0.1.9000
+
+## BUG FIXES
+
+* Removed usage of `%||%` operator which was not defined or imported; replaced with explicit `if (is.null(...))` check in `helpers_request.R`.
+* Fixed clock drift example in `BinanceMarketData$get_server_time()` — drift was computed in seconds but printed as "ms". Now correctly converts to milliseconds with `round(drift * 1000)`.
+
 # binance 0.0.1
 
 Initial release of the `binance` R package — a comprehensive API wrapper for

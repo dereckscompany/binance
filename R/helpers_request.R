@@ -203,7 +203,7 @@ parse_binance_response <- function(resp) {
       "Binance API error ",
       parsed$code,
       ": ",
-      parsed$msg %||% "No error message provided."
+      if (is.null(parsed$msg)) "No error message provided." else parsed$msg
     ))
   }
 

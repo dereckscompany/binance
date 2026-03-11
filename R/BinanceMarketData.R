@@ -101,7 +101,7 @@ BinanceMarketData <- R6::R6Class(
     #' market <- BinanceMarketData$new()
     #' st <- market$get_server_time()
     #' drift <- as.numeric(difftime(Sys.time(), st$server_time, units = "secs"))
-    #' cat("Clock drift:", round(drift), "ms\n")
+    #' cat("Clock drift:", round(drift * 1000), "ms\n")
     #' }
     get_server_time = function() {
       return(private$.request(
