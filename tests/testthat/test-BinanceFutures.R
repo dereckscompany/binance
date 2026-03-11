@@ -68,7 +68,7 @@ test_that("add_order rejects invalid type", {
 
 # -- add_order_test --
 
-test_that("add_order_test returns empty data.table on success", {
+test_that("add_order_test returns confirmation dt on success", {
   resp <- mock_binance_response(data = list())
   httr2::local_mocked_responses(function(req) resp)
 
@@ -81,6 +81,11 @@ test_that("add_order_test returns empty data.table on success", {
     timeInForce = "GTC"
   )
   expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 1L)
+  expect_equal(dt$symbol, "BTCUSDT")
+  expect_equal(dt$side, "BUY")
+  expect_equal(dt$type, "LIMIT")
+  expect_equal(dt$status, "validated")
 })
 
 test_that("add_order_test hits /fapi/v1/order/test", {

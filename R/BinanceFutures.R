@@ -267,7 +267,11 @@ BinanceFutures <- R6::R6Class(
     #' @param workingType Character or NULL; `"MARK_PRICE"` or `"CONTRACT_PRICE"`.
     #' @param newOrderRespType Character or NULL; `"ACK"`, `"RESULT"`.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` (empty on success, confirming validation passed).
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`), single row with columns:
+    #'   - `symbol` (character): The validated trading pair.
+    #'   - `side` (character): `"BUY"` or `"SELL"`.
+    #'   - `type` (character): Order type.
+    #'   - `status` (character): `"validated"`.
     #'
     #' @examples
     #' \dontrun{
@@ -351,7 +355,12 @@ BinanceFutures <- R6::R6Class(
         body = body,
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(data.table::data.table(
+              symbol = symbol,
+              side = side,
+              type = type,
+              status = "validated"
+            )[])
           }
           return(as_dt_row(data)[])
         }

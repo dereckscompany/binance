@@ -231,7 +231,11 @@ BinanceTrading <- R6::R6Class(
     #' @param newOrderRespType Character or NULL; `"ACK"`, `"RESULT"`, or `"FULL"`.
     #' @param selfTradePreventionMode Character or NULL.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` (empty on success, confirming validation passed).
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`), single row with columns:
+    #'   - `symbol` (character): The validated trading pair.
+    #'   - `side` (character): `"BUY"` or `"SELL"`.
+    #'   - `type` (character): Order type.
+    #'   - `status` (character): `"validated"`.
     #'
     #' @examples
     #' \dontrun{
@@ -279,7 +283,12 @@ BinanceTrading <- R6::R6Class(
         body = body,
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(data.table::data.table(
+              symbol = symbol,
+              side = side,
+              type = type,
+              status = "validated"
+            )[])
           }
           return(as_dt_row(data)[])
         }
@@ -363,22 +372,27 @@ BinanceTrading <- R6::R6Class(
     #'
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per cancelled order and the following columns:
-    #' - `symbol` (character): Trading pair.
-    #' - `orig_client_order_id` (character): Original client order ID.
-    #' - `order_id` (integer): Unique order identifier.
-    #' - `order_list_id` (integer): OCO order list ID; `-1` if not an OCO.
-    #' - `client_order_id` (character): New client order ID after cancellation.
-    #' - `price` (character): Order price.
-    #' - `orig_qty` (character): Original requested quantity.
-    #' - `executed_qty` (character): Quantity filled before cancellation.
-    #' - `cummulative_quote_qty` (character): Cumulative quote asset transacted.
-    #' - `status` (character): Order status (typically `"CANCELED"`).
-    #' - `time_in_force` (character): Time-in-force policy.
-    #' - `type` (character): Order type.
-    #' - `side` (character): `"BUY"` or `"SELL"`.
-    #' - `self_trade_prevention_mode` (character): STP mode applied.
-    #' - `transact_time` (POSIXct): Cancellation time converted from `transactTime`.
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`).
+    #'   When orders are cancelled, one row per order with columns:
+    #'   - `symbol` (character): Trading pair.
+    #'   - `orig_client_order_id` (character): Original client order ID.
+    #'   - `order_id` (integer): Unique order identifier.
+    #'   - `order_list_id` (integer): OCO order list ID; `-1` if not an OCO.
+    #'   - `client_order_id` (character): New client order ID after cancellation.
+    #'   - `price` (character): Order price.
+    #'   - `orig_qty` (character): Original requested quantity.
+    #'   - `executed_qty` (character): Quantity filled before cancellation.
+    #'   - `cummulative_quote_qty` (character): Cumulative quote asset transacted.
+    #'   - `status` (character): Order status (typically `"CANCELED"`).
+    #'   - `time_in_force` (character): Time-in-force policy.
+    #'   - `type` (character): Order type.
+    #'   - `side` (character): `"BUY"` or `"SELL"`.
+    #'   - `self_trade_prevention_mode` (character): STP mode applied.
+    #'   - `transact_time` (POSIXct): Cancellation time.
+    #'
+    #'   When no open orders exist, a single confirmation row with columns:
+    #'   - `symbol` (character): The requested trading pair.
+    #'   - `status` (character): `"cancelled"`.
     #'
     #' @examples
     #' \dontrun{
@@ -393,7 +407,7 @@ BinanceTrading <- R6::R6Class(
         query = list(symbol = symbol, recvWindow = recvWindow),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(data.table::data.table(symbol = symbol, status = "cancelled")[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {

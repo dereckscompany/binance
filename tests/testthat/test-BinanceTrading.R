@@ -63,7 +63,7 @@ test_that("add_order sends correct endpoint", {
 
 # -- add_order_test --
 
-test_that("add_order_test hits test endpoint and returns empty data.table", {
+test_that("add_order_test hits test endpoint and returns confirmation dt", {
   captured_url <- NULL
   resp <- mock_binance_response(data = list())
   httr2::local_mocked_responses(function(req) {
@@ -80,7 +80,11 @@ test_that("add_order_test hits test endpoint and returns empty data.table", {
   )
   expect_true(grepl("order/test", captured_url))
   expect_s3_class(dt, "data.table")
-  expect_equal(nrow(dt), 0L)
+  expect_equal(nrow(dt), 1L)
+  expect_equal(dt$symbol, "BTCUSDT")
+  expect_equal(dt$side, "BUY")
+  expect_equal(dt$type, "LIMIT")
+  expect_equal(dt$status, "validated")
 })
 
 # -- cancel_order --

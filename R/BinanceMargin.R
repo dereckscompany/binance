@@ -353,13 +353,18 @@ BinanceMargin <- R6::R6Class(
     #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
     #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per cancelled order and the following columns:
-    #' - `symbol` (character): Trading pair.
-    #' - `order_id` (integer): Unique order identifier.
-    #' - `orig_client_order_id` (character): Original client order ID.
-    #' - `status` (character): Order status (typically `"CANCELED"`).
-    #' - `transact_time` (POSIXct): Cancellation time.
-    #' - `is_isolated` (logical): Whether this is an isolated margin order.
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`).
+    #'   When orders are cancelled, one row per order with columns:
+    #'   - `symbol` (character): Trading pair.
+    #'   - `order_id` (integer): Unique order identifier.
+    #'   - `orig_client_order_id` (character): Original client order ID.
+    #'   - `status` (character): Order status (typically `"CANCELED"`).
+    #'   - `transact_time` (POSIXct): Cancellation time.
+    #'   - `is_isolated` (logical): Whether this is an isolated margin order.
+    #'
+    #'   When no open orders exist, a single confirmation row with columns:
+    #'   - `symbol` (character): The requested trading pair.
+    #'   - `status` (character): `"cancelled"`.
     #'
     #' @examples
     #' \dontrun{
@@ -378,7 +383,7 @@ BinanceMargin <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(data.table::data.table(symbol = symbol, status = "cancelled")[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
