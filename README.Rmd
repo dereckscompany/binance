@@ -60,6 +60,27 @@ That's it. **No fields are dropped and no columns are renamed** beyond the camel
 
 The only exception is klines (candlestick data), where Binance returns positional arrays instead of named objects. These are assigned descriptive column names (`open_time`, `open`, `high`, `low`, `close`, `volume`, `close_time`, etc.) matching the Binance documentation.
 
+## Available Classes
+
+| Class | Purpose | Auth Required |
+|-------|---------|:---:|
+| `BinanceMarketData` | Spot market data: tickers, klines, depth, trades, exchange info | No |
+| `BinanceTrading` | Spot order placement, query, and cancellation | Yes |
+| `BinanceOcoOrders` | One-Cancels-Other order management | Yes |
+| `BinanceAccount` | Account info and trade history | Yes |
+| `BinanceDeposit` | Deposit addresses and deposit history | Yes |
+| `BinanceWithdrawal` | Withdrawal submission and history | Yes |
+| `BinanceTransfer` | Internal transfers between wallet types (spot, margin, futures) | Yes |
+| `BinanceSubAccount` | Sub-account listing and management | Yes |
+| `BinanceEarn` | Simple Earn: flexible savings products and positions | Yes |
+| `BinanceMarginData` | Margin pairs, price index, interest rates, cross/isolated data | Mixed |
+| `BinanceMargin` | Margin borrowing, repayment, orders, and account queries | Yes |
+| `BinanceFuturesData` | Futures exchange info, mark price, funding rates, klines | No |
+| `BinanceFutures` | Futures order placement, positions, leverage, account queries | Yes |
+| `BinanceBase` | Internal base class (not used directly) | — |
+
+All classes accept `async = TRUE` at construction and share a common `time_source` parameter for clock-drift correction.
+
 ## Installation
 
 ```{r, eval = FALSE}
@@ -99,6 +120,23 @@ market$get_ticker("BTCUSDT")
 klines <- market$get_klines("BTCUSDT", interval = "1h", limit = 5)
 klines[, .(open_time, open, high, low, close, volume)]
 ```
+
+### Fetch All Klines (Large Date Ranges)
+
+When you need historical data spanning more than 1000 candles, use `fetch_all = TRUE`. This automatically segments the time range into multiple API calls, deduplicates overlapping boundaries, and returns the combined result:
+
+```{r, eval = FALSE}
+# Fetch all 1h klines across a 5-month date range (multiple API calls)
+all_klines <- market$get_klines("BTCUSDT", "1h",
+  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
+  endTime = as.POSIXct("2024-06-01", tz = "UTC"),
+  fetch_all = TRUE, sleep = 0.5
+)
+
+nrow(all_klines)
+```
+
+> **Note:** Large date ranges consume multiple API requests. Use the `sleep` parameter to avoid hitting Binance rate limits. For bulk multi-symbol downloads, see `binance_backfill_klines()`.
 
 ### Order Book Depth
 
@@ -262,6 +300,17 @@ main <- coro::async(function() {
 main()
 while (!later::loop_empty()) later::run_now()
 ```
+
+## Sample Data
+
+The package ships with a sample dataset of 500 BTC-USDT 4-hour candles for demonstration and testing:
+
+```{r, eval = FALSE}
+data(binance_btc_usdt_4h_ohlcv)
+head(binance_btc_usdt_4h_ohlcv)
+```
+
+See `?binance_btc_usdt_4h_ohlcv` for column descriptions. This data was produced by `binance_backfill_klines()`.
 
 ## Citation
 

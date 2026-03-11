@@ -138,6 +138,28 @@ klines <- market$get_klines("BTCUSDT", "1h", limit = 5)
 klines[, .(open_time, open, high, low, close, volume)]
 ```
 
+### Fetch All Klines (Large Date Ranges)
+
+When you need more than 1000 candles, use `fetch_all = TRUE` to automatically
+segment the time range into multiple API calls, deduplicate boundaries, and
+return the combined result:
+
+```{r fetch-all-klines, eval = FALSE}
+# Fetch all 1h klines across a 5-month date range (multiple API calls)
+all_klines <- market$get_klines("BTCUSDT", "1h",
+  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
+  endTime = as.POSIXct("2024-06-01", tz = "UTC"),
+  fetch_all = TRUE, sleep = 0.5
+)
+
+nrow(all_klines)
+head(all_klines[, .(open_time, open, high, low, close, volume)])
+```
+
+> **Note:** Large date ranges consume multiple API requests. Use the `sleep`
+> parameter to respect Binance rate limits. For bulk multi-symbol downloads,
+> see `?binance_backfill_klines`.
+
 ### Server Time
 
 ```{r server-time}
