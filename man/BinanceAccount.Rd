@@ -123,6 +123,7 @@ and account type. For balances, use \code{get_balances()}.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data}{Binance Account Information}
+Verified: 2026-03-10
 }
 
 \subsection{Automated Trading Usage}{
@@ -213,6 +214,7 @@ Retrieves asset balances for the account.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data}{Binance Account Information}
+Verified: 2026-03-10
 }
 
 \subsection{Automated Trading Usage}{
@@ -220,6 +222,31 @@ Retrieves asset balances for the account.
 \item \strong{Balance Check}: Verify available funds before placing orders.
 \item \strong{Portfolio Overview}: Get all asset balances in a single call.
 }
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/api/v3/account?omitZeroBalances=true' \\
+  -H 'X-MBX-APIKEY: your-api-key' \\
+  -d 'timestamp=1729176273859&signature=...'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "asset": "BTC",
+    "free": "0.00100000",
+    "locked": "0.00000000"
+  \},
+  \{
+    "asset": "USDT",
+    "free": "500.00000000",
+    "locked": "50.00000000"
+  \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceAccount$get_balances(omitZeroBalances = NULL, recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -270,6 +297,7 @@ Retrieves trades for a specific symbol. Requires authentication.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#account-trade-list-user_data}{Binance Account Trade List}
+Verified: 2026-03-10
 }
 
 \subsection{Automated Trading Usage}{

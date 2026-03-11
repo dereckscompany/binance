@@ -212,6 +212,7 @@ Creates a new virtual sub-account under the master account.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/account-management/Create-a-Virtual-Sub-account}{Binance Create Virtual Sub-Account}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
@@ -277,6 +278,14 @@ filtered by email or freeze status.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/account-management/Query-Sub-account-List}{Binance Query Sub-Account List}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/sub-account/list?timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
 }
 
 \subsection{JSON Response}{
@@ -357,6 +366,14 @@ Retrieves asset balances for a specific sub-account.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/asset-management/Query-Sub-account-Assets-V3}{Binance Sub-Account Assets}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v3/sub-account/assets?email=sub\%40virtual.com&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
 }
 
 \subsection{JSON Response}{
@@ -418,6 +435,33 @@ Retrieves spot account summary for sub-accounts.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/asset-management/Query-Sub-account-Spot-Assets-Summary}{Binance Sub-Account Spot Summary}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/sub-account/spotSummary?timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "totalCount": 2,
+  "masterAccountTotalAsset": "0.23456789",
+  "spotSubUserAssetBtcVoList": [
+    \{
+      "email": "testsub01@virtual.com",
+      "totalAsset": "0.12345678"
+    \},
+    \{
+      "email": "testsub02@virtual.com",
+      "totalAsset": "0.11111111"
+    \}
+  ]
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_spot_summary(
@@ -478,6 +522,29 @@ across different account types (SPOT, futures, margin).
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/asset-management/Universal-Transfer}{Binance Universal Transfer}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://api.binance.com/sapi/v1/sub-account/universalTransfer' \\
+  -H 'X-MBX-APIKEY: your-api-key' \\
+  -d 'toEmail=sub\%40virtual.com&fromAccountType=SPOT&toAccountType=SPOT&asset=USDT&amount=100&timestamp=...&signature=...'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "fromEmail": "master@test.com",
+  "toEmail": "sub@virtual.com",
+  "fromAccountType": "SPOT",
+  "toAccountType": "SPOT",
+  "asset": "USDT",
+  "amount": "100",
+  "clientTranId": "test_transfer_001"
+\}
+}\if{html}{\out{</div>}}
 }
 
 \subsection{JSON Response}{
@@ -563,6 +630,14 @@ Retrieves universal transfer history between master and sub-accounts.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/asset-management/Query-Universal-Transfer-History}{Binance Universal Transfer History}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/sub-account/universalTransfer?timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
 }
 
 \subsection{JSON Response}{
@@ -662,6 +737,48 @@ Retrieves futures account details for a sub-account.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/asset-management/Get-Detail-on-Sub-accounts-Futures-Account-V2}{Binance Sub-Account Futures Account V2}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v2/sub-account/futures/account?email=sub\%40virtual.com&futuresType=1&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "futureAccountResp": \{
+    "email": "sub@virtual.com",
+    "asset": "USDT",
+    "assets": [
+      \{
+        "asset": "USDT",
+        "initialMargin": "0.00000000",
+        "maintenanceMargin": "0.00000000",
+        "marginBalance": "1500.00000000",
+        "maxWithdrawAmount": "1500.00000000",
+        "openOrderInitialMargin": "0.00000000",
+        "positionInitialMargin": "0.00000000",
+        "unrealizedProfit": "0.00000000",
+        "walletBalance": "1500.00000000"
+      \}
+    ],
+    "canDeposit": true,
+    "canTrade": true,
+    "canWithdraw": true,
+    "feeTier": 0,
+    "maxWithdrawAmount": "1500.00000000",
+    "totalInitialMargin": "0.00000000",
+    "totalMarginBalance": "1500.00000000",
+    "totalWalletBalance": "1500.00000000",
+    "totalUnrealizedProfit": "0.00000000",
+    "updateTime": 1661493146000
+  \}
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_futures_account(email, futuresType, recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -724,6 +841,31 @@ Retrieves margin account details for a sub-account.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/asset-management/Get-Detail-on-Sub-accounts-Margin-Account}{Binance Sub-Account Margin Account}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/sub-account/margin/account?email=sub\%40virtual.com&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "email": "sub@virtual.com",
+  "marginLevel": "11.64405625",
+  "totalAssetOfBtc": "6.82728457",
+  "totalLiabilityOfBtc": "0.58633215",
+  "totalNetAssetOfBtc": "6.24095242",
+  "marginTradeCoeffVo": \{
+    "forceLiquidationBar": "1.1",
+    "marginCallBar": "1.3",
+    "normalBar": "1.5"
+  \}
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_margin_account(email, recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -778,6 +920,14 @@ activity state.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/account-management/Get-Sub-accounts-Status-on-Margin-Or-Futures}{Binance Sub-Account Status}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/sub-account/status?timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
 }
 
 \subsection{JSON Response}{

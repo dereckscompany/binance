@@ -221,6 +221,7 @@ Useful for detecting clock drift and ensuring HMAC signatures are valid.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#check-server-time}{Binance Check Server Time}
+Verified: 2026-03-10
 }
 
 \subsection{Automated Trading Usage}{
@@ -282,6 +283,7 @@ precision, order types, filters, and trading status for each symbol.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#exchange-information}{Binance Exchange Info}
+Verified: 2026-03-10
 }
 
 \subsection{Automated Trading Usage}{
@@ -295,6 +297,43 @@ precision, order types, filters, and trading status for each symbol.
 \subsection{curl}{
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/api/v3/exchangeInfo?symbol=BTCUSDT'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "timezone": "UTC",
+  "serverTime": 1710072000000,
+  "symbols": [
+    \{
+      "symbol": "BTCUSDT",
+      "status": "TRADING",
+      "baseAsset": "BTC",
+      "baseAssetPrecision": 8,
+      "quoteAsset": "USDT",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "orderTypes": ["LIMIT","LIMIT_MAKER","MARKET","STOP_LOSS_LIMIT","TAKE_PROFIT_LIMIT"],
+      "icebergAllowed": true,
+      "ocoAllowed": true,
+      "otoAllowed": true,
+      "quoteOrderQtyMarketAllowed": true,
+      "allowTrailingStop": true,
+      "cancelReplaceAllowed": true,
+      "isSpotTradingAllowed": true,
+      "isMarginTradingAllowed": true,
+      "filters": [
+        \{"filterType":"PRICE_FILTER","minPrice":"0.01000000","maxPrice":"1000000.00","tickSize":"0.01000000"\},
+        \{"filterType":"LOT_SIZE","minQty":"0.00001000","maxQty":"9000.00000000","stepSize":"0.00001000"\},
+        \{"filterType":"MIN_NOTIONAL","minNotional":"5.00000000"\}
+      ],
+      "permissions": ["SPOT","MARGIN"],
+      "defaultSelfTradePreventionMode": "EXPIRE_MAKER",
+      "allowedSelfTradePreventionModes": ["EXPIRE_TAKER","EXPIRE_MAKER","EXPIRE_BOTH"]
+    \}
+  ]
+\}
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
@@ -364,6 +403,7 @@ Retrieves the latest price for a specific symbol.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#symbol-price-ticker}{Binance Symbol Price Ticker}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
@@ -423,6 +463,23 @@ Retrieves the latest price for all trading pairs in a single request.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#symbol-price-ticker}{Binance Symbol Price Ticker}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/api/v3/ticker/price'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{ "symbol": "BTCUSDT", "price": "67232.90000000" \},
+  \{ "symbol": "ETHUSDT", "price": "3456.78000000" \},
+  \{ "symbol": "BNBUSDT", "price": "543.21000000" \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_all_tickers()}\if{html}{\out{</div>}}
@@ -463,6 +520,7 @@ Retrieves the best bid and ask price and quantity for a symbol.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#symbol-order-book-ticker}{Binance Symbol Order Book Ticker}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
@@ -531,11 +589,40 @@ Retrieves rolling 24-hour price change statistics for a symbol.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#24hr-ticker-price-change-statistics}{Binance 24hr Ticker Price Change Statistics}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT",
+  "priceChange": "-150.23000000",
+  "priceChangePercent": "-0.223",
+  "weightedAvgPrice": "67150.45000000",
+  "prevClosePrice": "67380.00000000",
+  "lastPrice": "67232.90000000",
+  "lastQty": "0.00120000",
+  "bidPrice": "67232.00000000",
+  "bidQty": "0.41861839",
+  "askPrice": "67232.90000000",
+  "askQty": "1.24808993",
+  "openPrice": "67383.13000000",
+  "highPrice": "67890.00000000",
+  "lowPrice": "66500.00000000",
+  "volume": "18532.41200000",
+  "quoteVolume": "1244567890.12345678",
+  "openTime": 1710072000000,
+  "closeTime": 1710158399999,
+  "firstId": 3553450112,
+  "lastId": 3554123456,
+  "count": 673344
+\}
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
@@ -603,6 +690,7 @@ Retrieves the current average price for a symbol (5-minute weighted average).
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#current-average-price}{Binance Current Average Price}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
@@ -663,11 +751,28 @@ Retrieves the order book (bids and asks) for a symbol.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#order-book}{Binance Order Book}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/api/v3/depth?symbol=BTCUSDT&limit=20'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "lastUpdateId": 1027024,
+  "bids": [
+    ["67232.00000000", "0.41861839"],
+    ["67231.50000000", "1.20000000"]
+  ],
+  "asks": [
+    ["67232.90000000", "1.24808993"],
+    ["67233.00000000", "0.85000000"]
+  ]
+\}
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
@@ -721,6 +826,7 @@ Retrieves the most recent trades for a symbol.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#recent-trades-list}{Binance Recent Trades List}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
@@ -797,11 +903,33 @@ Retrieves historical kline/candlestick data for a symbol.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#kline-candlestick-data}{Binance Kline/Candlestick Data}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=100'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  [
+    1710072000000,
+    "67100.00000000",
+    "67250.00000000",
+    "67050.00000000",
+    "67232.90000000",
+    "523.41200000",
+    1710075599999,
+    "35134567.89012345",
+    1234,
+    "261.70600000",
+    "17567283.94506172",
+    "0"
+  ]
+]
 }\if{html}{\out{</div>}}
 }
 

@@ -167,12 +167,39 @@ Retrieves a list of all cross margin trading pairs available on Binance.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#get-all-cross-margin-pairs-market_data}{Binance Get All Cross Margin Pairs}
+
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/margin/allPairs' \\
   -H 'X-MBX-APIKEY: <key>'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "base": "BTC",
+    "id": 351637150,
+    "isBuyAllowed": true,
+    "isMarginTrade": true,
+    "isSellAllowed": true,
+    "quote": "USDT",
+    "symbol": "BTCUSDT"
+  \},
+  \{
+    "base": "ETH",
+    "id": 351637155,
+    "isBuyAllowed": true,
+    "isMarginTrade": true,
+    "isSellAllowed": true,
+    "quote": "USDT",
+    "symbol": "ETHUSDT"
+  \}
+]
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
@@ -226,12 +253,37 @@ Retrieves a list of all isolated margin trading pairs available on Binance.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#get-all-isolated-margin-symbol-user_data}{Binance Get All Isolated Margin Symbol}
+
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/margin/isolated/allPairs' \\
   -H 'X-MBX-APIKEY: <key>'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "symbol": "BTCUSDT",
+    "base": "BTC",
+    "quote": "USDT",
+    "isMarginTrade": true,
+    "isBuyAllowed": true,
+    "isSellAllowed": true
+  \},
+  \{
+    "symbol": "ETHUSDT",
+    "base": "ETH",
+    "quote": "USDT",
+    "isMarginTrade": true,
+    "isBuyAllowed": true,
+    "isSellAllowed": true
+  \}
+]
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
@@ -285,6 +337,8 @@ endpoint that does not require authentication.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#query-margin-priceindex-market_data}{Binance Query Margin PriceIndex}
+
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
@@ -345,12 +399,33 @@ Retrieves historical interest rate data for a given asset.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#query-margin-interest-rate-history-user_data}{Binance Query Margin Interest Rate History}
+
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/margin/interestRateHistory?asset=BTC' \\
   -H 'X-MBX-APIKEY: <key>'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "asset": "BTC",
+    "dailyInterestRate": "0.00025000",
+    "timestamp": 1611544731000,
+    "vipLevel": 0
+  \},
+  \{
+    "asset": "BTC",
+    "dailyInterestRate": "0.00020000",
+    "timestamp": 1611458331000,
+    "vipLevel": 0
+  \}
+]
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
@@ -415,12 +490,41 @@ Retrieves cross margin data including borrowing limits and interest rates.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#query-cross-margin-fee-data-user_data}{Binance Query Cross Margin Fee Data}
+
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/margin/crossMarginData' \\
   -H 'X-MBX-APIKEY: <key>'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "vipLevel": 0,
+    "coin": "BTC",
+    "transferIn": true,
+    "transferOut": true,
+    "borrowable": true,
+    "dailyInterest": "0.00026125",
+    "yearlyInterest": "0.0953",
+    "marginablePairs": ["BTCUSDT", "BTCBUSD"]
+  \},
+  \{
+    "vipLevel": 0,
+    "coin": "ETH",
+    "transferIn": true,
+    "transferOut": true,
+    "borrowable": true,
+    "dailyInterest": "0.00027400",
+    "yearlyInterest": "0.1000",
+    "marginablePairs": ["ETHUSDT", "ETHBUSD", "ETHBTC"]
+  \}
+]
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
@@ -483,12 +587,55 @@ Retrieves isolated margin data including leverage and borrowing limits.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#query-isolated-margin-fee-data-user_data}{Binance Query Isolated Margin Fee Data}
+
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/margin/isolatedMarginData' \\
   -H 'X-MBX-APIKEY: <key>'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "vipLevel": 0,
+    "symbol": "BTCUSDT",
+    "leverage": "10",
+    "data": [
+      \{
+        "coin": "BTC",
+        "dailyInterest": "0.00026125",
+        "borrowLimit": "9.00000000"
+      \},
+      \{
+        "coin": "USDT",
+        "dailyInterest": "0.000475",
+        "borrowLimit": "270000.00000000"
+      \}
+    ]
+  \},
+  \{
+    "vipLevel": 0,
+    "symbol": "ETHUSDT",
+    "leverage": "10",
+    "data": [
+      \{
+        "coin": "ETH",
+        "dailyInterest": "0.00027400",
+        "borrowLimit": "90.00000000"
+      \},
+      \{
+        "coin": "USDT",
+        "dailyInterest": "0.000475",
+        "borrowLimit": "270000.00000000"
+      \}
+    ]
+  \}
+]
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{

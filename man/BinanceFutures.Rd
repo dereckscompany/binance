@@ -361,7 +361,60 @@ Places a new USD-M futures order on Binance.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#new-order-trade}{Binance Futures New Order}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/New-Order}{Binance Futures New Order}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://fapi.binance.com/fapi/v1/order' \\
+  -H 'X-MBX-APIKEY: your-api-key' \\
+  -d 'symbol=BTCUSDT&side=BUY&type=LIMIT&quantity=0.001&price=50000&timeInForce=GTC&timestamp=1710000000000&signature=...'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT",
+  "side": "BUY",
+  "type": "LIMIT",
+  "quantity": "0.001",
+  "price": "50000",
+  "timeInForce": "GTC",
+  "timestamp": 1710000000000,
+  "signature": "..."
+\}
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "orderId": 283194212,
+  "symbol": "BTCUSDT",
+  "status": "NEW",
+  "clientOrderId": "x-HNA2TXFJ1710000000",
+  "price": "50000.00",
+  "avgPrice": "0.00",
+  "origQty": "0.001",
+  "executedQty": "0.000",
+  "cumQty": "0.000",
+  "cumQuote": "0.00000",
+  "timeInForce": "GTC",
+  "type": "LIMIT",
+  "reduceOnly": false,
+  "closePosition": false,
+  "side": "BUY",
+  "positionSide": "BOTH",
+  "stopPrice": "0.00",
+  "workingType": "CONTRACT_PRICE",
+  "priceProtect": false,
+  "origType": "LIMIT",
+  "updateTime": 1710000000123
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$add_order(
@@ -464,6 +517,42 @@ and authentication exactly as \code{add_order()}, but no order is actually creat
 
 \verb{POST https://fapi.binance.com/fapi/v1/order/test}
 }
+
+\subsection{Official Documentation}{
+
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/New-Order-Test}{Binance Futures New Order Test}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://fapi.binance.com/fapi/v1/order/test' \\
+  -H 'X-MBX-APIKEY: your-api-key' \\
+  -d 'symbol=BTCUSDT&side=BUY&type=LIMIT&quantity=0.001&price=50000&timeInForce=GTC&timestamp=1710000000000&signature=...'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT",
+  "side": "BUY",
+  "type": "LIMIT",
+  "quantity": "0.001",
+  "price": "50000",
+  "timeInForce": "GTC",
+  "timestamp": 1710000000000,
+  "signature": "..."
+\}
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{\}
+}\if{html}{\out{</div>}}
+}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$add_order_test(
   symbol,
@@ -517,7 +606,13 @@ and authentication exactly as \code{add_order()}, but no order is actually creat
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (empty on success, confirming validation passed).
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}), single row with columns:
+\itemize{
+\item \code{symbol} (character): The validated trading pair.
+\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
+\item \code{type} (character): Order type.
+\item \code{status} (character): \code{"validated"}.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -549,7 +644,53 @@ Cancels an active futures order by order ID or client order ID.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#cancel-order-trade}{Binance Futures Cancel Order}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Cancel-Order}{Binance Futures Cancel Order}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X DELETE 'https://fapi.binance.com/fapi/v1/order?symbol=BTCUSDT&orderId=283194212&timestamp=1710000000000&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT",
+  "orderId": 283194212,
+  "timestamp": 1710000000000,
+  "signature": "..."
+\}
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "orderId": 283194212,
+  "symbol": "BTCUSDT",
+  "status": "CANCELED",
+  "clientOrderId": "x-HNA2TXFJ1710000000",
+  "price": "50000.00",
+  "origQty": "0.001",
+  "executedQty": "0.000",
+  "cumQty": "0.000",
+  "cumQuote": "0.00000",
+  "timeInForce": "GTC",
+  "type": "LIMIT",
+  "reduceOnly": false,
+  "closePosition": false,
+  "side": "BUY",
+  "positionSide": "BOTH",
+  "stopPrice": "0.00",
+  "workingType": "CONTRACT_PRICE",
+  "origType": "LIMIT",
+  "updateTime": 1710000005678
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$cancel_order(
@@ -614,7 +755,35 @@ Cancels all active futures orders on a trading pair.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#cancel-all-open-orders-trade}{Binance Futures Cancel All Open Orders}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Cancel-All-Open-Orders}{Binance Futures Cancel All Open Orders}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X DELETE 'https://fapi.binance.com/fapi/v1/allOpenOrders?symbol=BTCUSDT&timestamp=1710000000000&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT",
+  "timestamp": 1710000000000,
+  "signature": "..."
+\}
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "code": 200,
+  "msg": "The operation of cancel all open order is done."
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$cancel_all_orders(symbol, recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -663,7 +832,43 @@ Retrieves details for a specific futures order by order ID or client order ID.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#query-order-user_data}{Binance Futures Query Order}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Query-Order}{Binance Futures Query Order}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://fapi.binance.com/fapi/v1/order?symbol=BTCUSDT&orderId=283194212&timestamp=1710000000000&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "orderId": 283194212,
+  "symbol": "BTCUSDT",
+  "status": "NEW",
+  "clientOrderId": "x-HNA2TXFJ1710000000",
+  "price": "50000.00",
+  "avgPrice": "0.00",
+  "origQty": "0.001",
+  "executedQty": "0.000",
+  "cumQuote": "0.00000",
+  "timeInForce": "GTC",
+  "type": "LIMIT",
+  "reduceOnly": false,
+  "closePosition": false,
+  "side": "BUY",
+  "positionSide": "BOTH",
+  "stopPrice": "0.00",
+  "workingType": "CONTRACT_PRICE",
+  "origType": "LIMIT",
+  "time": 1710000000123,
+  "updateTime": 1710000000123
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_order(
@@ -733,7 +938,45 @@ Retrieves all currently open futures orders, optionally filtered by symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#current-open-orders-user_data}{Binance Futures Current Open Orders}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Current-All-Open-Orders}{Binance Futures Current Open Orders}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://fapi.binance.com/fapi/v1/openOrders?symbol=BTCUSDT&timestamp=1710000000000&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "orderId": 283194212,
+    "symbol": "BTCUSDT",
+    "status": "NEW",
+    "clientOrderId": "x-HNA2TXFJ1710000000",
+    "price": "50000.00",
+    "avgPrice": "0.00",
+    "origQty": "0.001",
+    "executedQty": "0.000",
+    "cumQuote": "0.00000",
+    "timeInForce": "GTC",
+    "type": "LIMIT",
+    "reduceOnly": false,
+    "closePosition": false,
+    "side": "BUY",
+    "positionSide": "BOTH",
+    "stopPrice": "0.00",
+    "workingType": "CONTRACT_PRICE",
+    "origType": "LIMIT",
+    "time": 1710000000123,
+    "updateTime": 1710000000123
+  \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_open_orders(symbol = NULL, recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -792,7 +1035,45 @@ Retrieves all futures orders for a symbol (open, cancelled, filled).
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#all-orders-user_data}{Binance Futures All Orders}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/All-Orders}{Binance Futures All Orders}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://fapi.binance.com/fapi/v1/allOrders?symbol=BTCUSDT&limit=50&timestamp=1710000000000&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "orderId": 283194212,
+    "symbol": "BTCUSDT",
+    "status": "FILLED",
+    "clientOrderId": "x-HNA2TXFJ1710000000",
+    "price": "50000.00",
+    "avgPrice": "50000.00",
+    "origQty": "0.001",
+    "executedQty": "0.001",
+    "cumQuote": "50.00000",
+    "timeInForce": "GTC",
+    "type": "LIMIT",
+    "reduceOnly": false,
+    "closePosition": false,
+    "side": "BUY",
+    "positionSide": "BOTH",
+    "stopPrice": "0.00",
+    "workingType": "CONTRACT_PRICE",
+    "origType": "LIMIT",
+    "time": 1710000000123,
+    "updateTime": 1710000001234
+  \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_all_orders(
@@ -867,7 +1148,77 @@ and positions (kept as list columns).
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#account-information-v2-user_data}{Binance Futures Account Information}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Account-Information-V2}{Binance Futures Account Information V2}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://fapi.binance.com/fapi/v2/account?timestamp=1710000000000&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "feeTier": 0,
+  "canTrade": true,
+  "canDeposit": true,
+  "canWithdraw": true,
+  "updateTime": 0,
+  "multiAssetsMargin": false,
+  "totalInitialMargin": "0.00000000",
+  "totalMaintMargin": "0.00000000",
+  "totalWalletBalance": "1500.00000000",
+  "totalUnrealizedProfit": "23.45000000",
+  "totalMarginBalance": "1523.45000000",
+  "totalPositionInitialMargin": "0.00000000",
+  "totalOpenOrderInitialMargin": "0.00000000",
+  "totalCrossWalletBalance": "1500.00000000",
+  "totalCrossUnPnl": "23.45000000",
+  "availableBalance": "1500.00000000",
+  "maxWithdrawAmount": "1500.00000000",
+  "assets": [
+    \{
+      "asset": "USDT",
+      "walletBalance": "1500.00000000",
+      "unrealizedProfit": "23.45000000",
+      "marginBalance": "1523.45000000",
+      "maintMargin": "0.00000000",
+      "initialMargin": "0.00000000",
+      "positionInitialMargin": "0.00000000",
+      "openOrderInitialMargin": "0.00000000",
+      "crossWalletBalance": "1500.00000000",
+      "crossUnPnl": "23.45000000",
+      "availableBalance": "1500.00000000",
+      "maxWithdrawAmount": "1500.00000000",
+      "marginAvailable": true,
+      "updateTime": 1710000000000
+    \}
+  ],
+  "positions": [
+    \{
+      "symbol": "BTCUSDT",
+      "initialMargin": "0",
+      "maintMargin": "0",
+      "unrealizedProfit": "0.00000000",
+      "positionInitialMargin": "0",
+      "openOrderInitialMargin": "0",
+      "leverage": "20",
+      "isolated": false,
+      "entryPrice": "0.0",
+      "maxNotional": "250000",
+      "positionSide": "BOTH",
+      "positionAmt": "0.000",
+      "notional": "0",
+      "isolatedWallet": "0",
+      "updateTime": 0
+    \}
+  ]
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_account(recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -926,7 +1277,45 @@ Retrieves all asset balances for the futures account.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#futures-account-balance-v2-user_data}{Binance Futures Account Balance}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Futures-Account-Balance-V2}{Binance Futures Account Balance V2}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://fapi.binance.com/fapi/v2/balance?timestamp=1710000000000&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "accountAlias": "SgsR",
+    "asset": "USDT",
+    "balance": "1500.00000000",
+    "crossWalletBalance": "1500.00000000",
+    "crossUnPnl": "23.45000000",
+    "availableBalance": "1476.55000000",
+    "maxWithdrawAmount": "1476.55000000",
+    "marginAvailable": true,
+    "updateTime": 1710000000000
+  \},
+  \{
+    "accountAlias": "SgsR",
+    "asset": "BNB",
+    "balance": "0.50000000",
+    "crossWalletBalance": "0.50000000",
+    "crossUnPnl": "0.00000000",
+    "availableBalance": "0.50000000",
+    "maxWithdrawAmount": "0.50000000",
+    "marginAvailable": true,
+    "updateTime": 1710000000000
+  \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_balances(recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -980,7 +1369,40 @@ Retrieves position risk information, optionally filtered by symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#position-information-v2-user_data}{Binance Futures Position Information}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Position-Information-V2}{Binance Futures Position Information V2}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://fapi.binance.com/fapi/v2/positionRisk?symbol=BTCUSDT&timestamp=1710000000000&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "symbol": "BTCUSDT",
+    "positionAmt": "0.001",
+    "entryPrice": "50000.0",
+    "markPrice": "51234.56000000",
+    "unRealizedProfit": "1.23456000",
+    "liquidationPrice": "25123.45678901",
+    "leverage": "20",
+    "maxNotionalValue": "250000",
+    "marginType": "cross",
+    "isolatedMargin": "0.00000000",
+    "isAutoAddMargin": "false",
+    "positionSide": "BOTH",
+    "notional": "51.23456000",
+    "isolatedWallet": "0",
+    "updateTime": 1710000000123
+  \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_positions(symbol = NULL, recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -1039,7 +1461,38 @@ Changes the initial leverage for a futures symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#change-initial-leverage-trade}{Binance Futures Change Initial Leverage}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Initial-Leverage}{Binance Futures Change Initial Leverage}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://fapi.binance.com/fapi/v1/leverage' \\
+  -H 'X-MBX-APIKEY: your-api-key' \\
+  -d 'symbol=BTCUSDT&leverage=20&timestamp=1710000000000&signature=...'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT",
+  "leverage": 20,
+  "timestamp": 1710000000000,
+  "signature": "..."
+\}
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "leverage": 20,
+  "maxNotionalValue": "250000",
+  "symbol": "BTCUSDT"
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$set_leverage(symbol, leverage, recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -1091,7 +1544,37 @@ Changes the margin type for a futures symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#change-margin-type-trade}{Binance Futures Change Margin Type}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Margin-Type}{Binance Futures Change Margin Type}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://fapi.binance.com/fapi/v1/marginType' \\
+  -H 'X-MBX-APIKEY: your-api-key' \\
+  -d 'symbol=BTCUSDT&marginType=ISOLATED&timestamp=1710000000000&signature=...'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT",
+  "marginType": "ISOLATED",
+  "timestamp": 1710000000000,
+  "signature": "..."
+\}
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "code": 200,
+  "msg": "success"
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$set_margin_type(symbol, marginType, recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -1142,7 +1625,40 @@ Adds or reduces the isolated margin for a position.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#modify-isolated-position-margin-trade}{Binance Futures Modify Isolated Position Margin}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Modify-Isolated-Position-Margin}{Binance Futures Modify Isolated Position Margin}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://fapi.binance.com/fapi/v1/positionMargin' \\
+  -H 'X-MBX-APIKEY: your-api-key' \\
+  -d 'symbol=BTCUSDT&amount=100&type=1&timestamp=1710000000000&signature=...'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT",
+  "amount": "100",
+  "type": 1,
+  "timestamp": 1710000000000,
+  "signature": "..."
+\}
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "amount": 100.0,
+  "code": 200,
+  "msg": "Successfully modify position margin.",
+  "type": 1
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$modify_position_margin(
@@ -1205,7 +1721,32 @@ Retrieves the history of position margin changes.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#get-position-margin-change-history-trade}{Binance Futures Get Position Margin Change History}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Get-Position-Margin-Change-History}{Binance Futures Get Position Margin Change History}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://fapi.binance.com/fapi/v1/positionMargin/history?symbol=BTCUSDT&timestamp=1710000000000&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "symbol": "BTCUSDT",
+    "type": 1,
+    "deltaType": "INCREASE_MARGIN",
+    "amount": "100.00000000",
+    "asset": "USDT",
+    "time": 1710000000000,
+    "positionSide": "BOTH"
+  \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_position_margin_history(
@@ -1274,7 +1815,40 @@ Retrieves the trade history for the futures account.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#account-trade-list-user_data}{Binance Futures Account Trade List}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Account-Trade-List}{Binance Futures Account Trade List}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://fapi.binance.com/fapi/v1/userTrades?symbol=BTCUSDT&limit=50&timestamp=1710000000000&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "symbol": "BTCUSDT",
+    "id": 698759,
+    "orderId": 283194212,
+    "side": "BUY",
+    "price": "50000.00",
+    "qty": "0.001",
+    "realizedPnl": "0",
+    "marginAsset": "USDT",
+    "quoteQty": "50.00000",
+    "commission": "0.02000000",
+    "commissionAsset": "USDT",
+    "time": 1710000000123,
+    "positionSide": "BOTH",
+    "buyer": true,
+    "maker": false
+  \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_trades(
@@ -1354,7 +1928,43 @@ realized PnL, commissions, etc.).
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#get-income-history-user_data}{Binance Futures Get Income History}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Get-Income-History}{Binance Futures Get Income History}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://fapi.binance.com/fapi/v1/income?symbol=BTCUSDT&incomeType=FUNDING_FEE&timestamp=1710000000000&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "symbol": "BTCUSDT",
+    "incomeType": "FUNDING_FEE",
+    "income": "-0.01234500",
+    "asset": "USDT",
+    "info": "",
+    "time": 1710000000000,
+    "tranId": 1567890123456,
+    "tradeId": ""
+  \},
+  \{
+    "symbol": "BTCUSDT",
+    "incomeType": "REALIZED_PNL",
+    "income": "15.67890000",
+    "asset": "USDT",
+    "info": "",
+    "time": 1710000001000,
+    "tranId": 1567890123457,
+    "tradeId": "698759"
+  \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_income_history(
@@ -1431,7 +2041,36 @@ Changes the position mode between one-way and hedge mode.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#change-position-mode-trade}{Binance Futures Change Position Mode}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Position-Mode}{Binance Futures Change Position Mode}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://fapi.binance.com/fapi/v1/positionSide/dual' \\
+  -H 'X-MBX-APIKEY: your-api-key' \\
+  -d 'dualSidePosition=true&timestamp=1710000000000&signature=...'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "dualSidePosition": "true",
+  "timestamp": 1710000000000,
+  "signature": "..."
+\}
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "code": 200,
+  "msg": "success"
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$set_position_mode(dualSidePosition, recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -1480,7 +2119,24 @@ Retrieves the current position mode (one-way or hedge mode).
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#get-current-position-mode-user_data}{Binance Futures Get Current Position Mode}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Get-Current-Position-Mode}{Binance Futures Get Current Position Mode}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://fapi.binance.com/fapi/v1/positionSide/dual?timestamp=1710000000000&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "dualSidePosition": true
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_position_mode(recvWindow = NULL)}\if{html}{\out{</div>}}

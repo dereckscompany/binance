@@ -153,6 +153,7 @@ a limit order and a stop-loss (or stop-loss-limit) order.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#new-oco-trade}{Binance New OCO}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
@@ -160,6 +161,22 @@ a limit order and a stop-loss (or stop-loss-limit) order.
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://api.binance.com/api/v3/order/oco' \\
   -H 'X-MBX-APIKEY: your-api-key' \\
   -d 'symbol=BTCUSDT&side=SELL&quantity=0.0001&price=55000&stopPrice=49000&timestamp=...&signature=...'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT",
+  "side": "SELL",
+  "quantity": "0.0001",
+  "price": "55000",
+  "stopPrice": "49000",
+  "stopLimitPrice": "48500",
+  "stopLimitTimeInForce": "GTC",
+  "timestamp": 1563417480525,
+  "signature": "..."
+\}
 }\if{html}{\out{</div>}}
 }
 
@@ -280,6 +297,73 @@ Cancels an entire OCO order list by order list ID or client order ID.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#cancel-oco-trade}{Binance Cancel OCO}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X DELETE 'https://api.binance.com/api/v3/orderList?symbol=BTCUSDT&orderListId=0&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "orderListId": 0,
+  "contingencyType": "OCO",
+  "listStatusType": "ALL_DONE",
+  "listOrderStatus": "ALL_DONE",
+  "listClientOrderId": "C3wyj4WVEktd7u9aVBRXcN",
+  "transactTime": 1563417480525,
+  "symbol": "BTCUSDT",
+  "orders": [
+    \{
+      "symbol": "BTCUSDT",
+      "orderId": 12569099453,
+      "clientOrderId": "bfYPSQdLoqAJeNrOr9adzq"
+    \},
+    \{
+      "symbol": "BTCUSDT",
+      "orderId": 12569099454,
+      "clientOrderId": "0NPFMfBo6cMGlwnSfzBrdg"
+    \}
+  ],
+  "orderReports": [
+    \{
+      "symbol": "BTCUSDT",
+      "orderId": 12569099453,
+      "orderListId": 0,
+      "clientOrderId": "bfYPSQdLoqAJeNrOr9adzq",
+      "transactTime": 1563417480525,
+      "price": "55000.00000000",
+      "origQty": "0.00010000",
+      "executedQty": "0.00000000",
+      "cummulativeQuoteQty": "0.00000000",
+      "status": "CANCELED",
+      "timeInForce": "GTC",
+      "type": "LIMIT_MAKER",
+      "side": "SELL"
+    \},
+    \{
+      "symbol": "BTCUSDT",
+      "orderId": 12569099454,
+      "orderListId": 0,
+      "clientOrderId": "0NPFMfBo6cMGlwnSfzBrdg",
+      "transactTime": 1563417480525,
+      "price": "48500.00000000",
+      "origQty": "0.00010000",
+      "executedQty": "0.00000000",
+      "cummulativeQuoteQty": "0.00000000",
+      "status": "CANCELED",
+      "timeInForce": "GTC",
+      "type": "STOP_LOSS_LIMIT",
+      "side": "SELL",
+      "stopPrice": "49000.00000000"
+    \}
+  ]
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceOcoOrders$cancel_oco_order(
@@ -345,6 +429,40 @@ original client order ID.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#query-oco-user_data}{Binance Query OCO}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/api/v3/orderList?orderListId=0&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "orderListId": 0,
+  "contingencyType": "OCO",
+  "listStatusType": "ALL_DONE",
+  "listOrderStatus": "ALL_DONE",
+  "listClientOrderId": "C3wyj4WVEktd7u9aVBRXcN",
+  "transactionTime": 1563417480525,
+  "symbol": "BTCUSDT",
+  "orders": [
+    \{
+      "symbol": "BTCUSDT",
+      "orderId": 12569099453,
+      "clientOrderId": "bfYPSQdLoqAJeNrOr9adzq"
+    \},
+    \{
+      "symbol": "BTCUSDT",
+      "orderId": 12569099454,
+      "clientOrderId": "0NPFMfBo6cMGlwnSfzBrdg"
+    \}
+  ]
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceOcoOrders$get_oco_order(
@@ -406,6 +524,42 @@ Retrieves all currently open OCO order lists.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#query-open-oco-user_data}{Binance Query Open OCO}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/api/v3/openOrderList?timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "orderListId": 31,
+    "contingencyType": "OCO",
+    "listStatusType": "EXEC_STARTED",
+    "listOrderStatus": "EXECUTING",
+    "listClientOrderId": "wuB13fmulKj3YjdqWEcsnp",
+    "transactionTime": 1565246080644,
+    "symbol": "LTCBTC",
+    "orders": [
+      \{
+        "symbol": "LTCBTC",
+        "orderId": 4,
+        "clientOrderId": "r3EH2N76dHfLoSZWIUw1bT"
+      \},
+      \{
+        "symbol": "LTCBTC",
+        "orderId": 5,
+        "clientOrderId": "Cv1SnyPD3qhqpbjpYEHbd2"
+      \}
+    ]
+  \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceOcoOrders$get_open_oco_orders(recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -461,6 +615,63 @@ recent OCOs.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#query-all-oco-user_data}{Binance Query All OCO}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/api/v3/allOrderList?limit=50&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "orderListId": 29,
+    "contingencyType": "OCO",
+    "listStatusType": "EXEC_STARTED",
+    "listOrderStatus": "EXECUTING",
+    "listClientOrderId": "amEEAXryFzFwYF1FeRpUoZ",
+    "transactionTime": 1565245913483,
+    "symbol": "LTCBTC",
+    "orders": [
+      \{
+        "symbol": "LTCBTC",
+        "orderId": 4,
+        "clientOrderId": "oD7aesZqjEGlZrbtRpy5zB"
+      \},
+      \{
+        "symbol": "LTCBTC",
+        "orderId": 5,
+        "clientOrderId": "Jr1h6xirOxgeJOUuYQS7V3"
+      \}
+    ]
+  \},
+  \{
+    "orderListId": 30,
+    "contingencyType": "OCO",
+    "listStatusType": "ALL_DONE",
+    "listOrderStatus": "ALL_DONE",
+    "listClientOrderId": "XbijSrMBk4cGLvoDYtU08w",
+    "transactionTime": 1565245913847,
+    "symbol": "BTCUSDT",
+    "orders": [
+      \{
+        "symbol": "BTCUSDT",
+        "orderId": 8,
+        "clientOrderId": "pO9ufTiFGg3ndn3Kq7BuSA"
+      \},
+      \{
+        "symbol": "BTCUSDT",
+        "orderId": 9,
+        "clientOrderId": "TXOvglzXuaubXAaENpaRCB"
+      \}
+    ]
+  \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceOcoOrders$get_all_oco_orders(

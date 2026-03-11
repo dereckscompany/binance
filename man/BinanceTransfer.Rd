@@ -138,6 +138,7 @@ Transfers assets between wallet types (spot, margin, futures, funding).
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/wallet/asset/user-universal-transfer}{Binance Universal Transfer}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
@@ -145,6 +146,18 @@ Transfers assets between wallet types (spot, margin, futures, funding).
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://api.binance.com/sapi/v1/asset/transfer' \\
   -H 'X-MBX-APIKEY: your-api-key' \\
   -d 'type=MAIN_UMFUTURE&asset=USDT&amount=100&timestamp=1661493146000&signature=...'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "type": "MAIN_UMFUTURE",
+  "asset": "USDT",
+  "amount": "100",
+  "timestamp": 1661493146000,
+  "signature": "..."
+\}
 }\if{html}{\out{</div>}}
 }
 
@@ -228,6 +241,7 @@ time range and pagination.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/wallet/asset/query-user-universal-transfer}{Binance Universal Transfer}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{

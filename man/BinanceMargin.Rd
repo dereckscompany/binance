@@ -306,6 +306,34 @@ Uses the consolidated borrow-repay endpoint with \code{type = "BORROW"}.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay}{Binance Margin Borrow-Repay}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://api.binance.com/sapi/v1/margin/borrow-repay?asset=USDT&amount=100&type=BORROW&isIsolated=FALSE&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "asset": "USDT",
+  "amount": "100",
+  "type": "BORROW",
+  "isIsolated": "FALSE"
+\}
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "tranId": 100000001
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$add_borrow(
@@ -367,6 +395,34 @@ Uses the consolidated borrow-repay endpoint with \code{type = "REPAY"}.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay}{Binance Margin Borrow-Repay}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://api.binance.com/sapi/v1/margin/borrow-repay?asset=USDT&amount=100&type=REPAY&isIsolated=FALSE&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "asset": "USDT",
+  "amount": "100",
+  "type": "REPAY",
+  "isIsolated": "FALSE"
+\}
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "tranId": 100000002
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$add_repay(
@@ -427,6 +483,49 @@ Places a new margin order on Binance.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/margin_trading/trade/Margin-Account-New-Order}{Binance Margin New Order}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://api.binance.com/sapi/v1/margin/order?symbol=BTCUSDT&side=BUY&type=LIMIT&quantity=0.0001&price=50000&timeInForce=GTC&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT",
+  "side": "BUY",
+  "type": "LIMIT",
+  "quantity": "0.0001",
+  "price": "50000",
+  "timeInForce": "GTC",
+  "sideEffectType": "NO_SIDE_EFFECT"
+\}
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT",
+  "orderId": 28,
+  "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+  "transactTime": 1507725176595,
+  "price": "50000.00000000",
+  "origQty": "0.00010000",
+  "executedQty": "0.00000000",
+  "cummulativeQuoteQty": "0.00000000",
+  "status": "NEW",
+  "timeInForce": "GTC",
+  "type": "LIMIT",
+  "side": "BUY",
+  "isIsolated": false
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$add_order(
@@ -525,6 +624,45 @@ Cancels an active margin order by order ID or client order ID.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/margin_trading/trade/Margin-Account-Cancel-Order}{Binance Margin Cancel Order}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X DELETE 'https://api.binance.com/sapi/v1/margin/order?symbol=BTCUSDT&orderId=28&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT",
+  "orderId": 28
+\}
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT",
+  "orderId": 28,
+  "origClientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+  "clientOrderId": "cancelMyOrder1",
+  "transactTime": 1507725176595,
+  "price": "50000.00000000",
+  "origQty": "0.00010000",
+  "executedQty": "0.00000000",
+  "cummulativeQuoteQty": "0.00000000",
+  "status": "CANCELED",
+  "timeInForce": "GTC",
+  "type": "LIMIT",
+  "side": "BUY",
+  "isIsolated": false
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$cancel_order(
@@ -590,6 +728,46 @@ Cancels all active margin orders on a trading pair.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/margin_trading/trade/Margin-Account-Cancel-All-Open-Orders}{Binance Margin Cancel All Orders}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X DELETE 'https://api.binance.com/sapi/v1/margin/openOrders?symbol=BTCUSDT&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT"
+\}
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "symbol": "BTCUSDT",
+    "orderId": 28,
+    "origClientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+    "clientOrderId": "cancelMyOrder1",
+    "transactTime": 1507725176595,
+    "price": "50000.00000000",
+    "origQty": "0.00010000",
+    "executedQty": "0.00000000",
+    "cummulativeQuoteQty": "0.00000000",
+    "status": "CANCELED",
+    "timeInForce": "GTC",
+    "type": "LIMIT",
+    "side": "BUY",
+    "isIsolated": false
+  \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$cancel_all_orders(symbol, isIsolated = NULL, recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -607,7 +785,8 @@ Cancels all active margin orders on a trading pair.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per cancelled order and the following columns:
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}).
+When orders are cancelled, one row per order with columns:
 \itemize{
 \item \code{symbol} (character): Trading pair.
 \item \code{order_id} (integer): Unique order identifier.
@@ -615,6 +794,12 @@ Cancels all active margin orders on a trading pair.
 \item \code{status} (character): Order status (typically \code{"CANCELED"}).
 \item \code{transact_time} (POSIXct): Cancellation time.
 \item \code{is_isolated} (logical): Whether this is an isolated margin order.
+}
+
+When no open orders exist, a single confirmation row with columns:
+\itemize{
+\item \code{symbol} (character): The requested trading pair.
+\item \code{status} (character): \code{"cancelled"}.
 }
 }
 \subsection{Examples}{
@@ -645,6 +830,38 @@ Retrieves details for a specific margin order by order ID or client order ID.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Order}{Binance Margin Query Order}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/margin/order?symbol=BTCUSDT&orderId=28&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT",
+  "orderId": 28,
+  "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+  "price": "50000.00000000",
+  "origQty": "0.00010000",
+  "executedQty": "0.00010000",
+  "cummulativeQuoteQty": "5.00000000",
+  "status": "FILLED",
+  "timeInForce": "GTC",
+  "type": "LIMIT",
+  "side": "BUY",
+  "stopPrice": "0.00000000",
+  "icebergQty": "0.00000000",
+  "time": 1507725176595,
+  "updateTime": 1507725176595,
+  "isIsolated": false
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_order(
@@ -716,6 +933,40 @@ Retrieves all currently open margin orders, optionally filtered by symbol.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Open-Orders}{Binance Margin Open Orders}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/margin/openOrders?symbol=BTCUSDT&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "symbol": "BTCUSDT",
+    "orderId": 28,
+    "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+    "price": "50000.00000000",
+    "origQty": "0.00010000",
+    "executedQty": "0.00000000",
+    "cummulativeQuoteQty": "0.00000000",
+    "status": "NEW",
+    "timeInForce": "GTC",
+    "type": "LIMIT",
+    "side": "BUY",
+    "stopPrice": "0.00000000",
+    "icebergQty": "0.00000000",
+    "time": 1507725176595,
+    "updateTime": 1507725176595,
+    "isIsolated": false
+  \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_open_orders(
@@ -781,6 +1032,58 @@ Retrieves all margin orders for a symbol (open, cancelled, filled).
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-All-Orders}{Binance Margin All Orders}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/margin/allOrders?symbol=BTCUSDT&limit=50&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "symbol": "BTCUSDT",
+    "orderId": 28,
+    "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+    "price": "50000.00000000",
+    "origQty": "0.00010000",
+    "executedQty": "0.00010000",
+    "cummulativeQuoteQty": "5.00000000",
+    "status": "FILLED",
+    "timeInForce": "GTC",
+    "type": "LIMIT",
+    "side": "BUY",
+    "stopPrice": "0.00000000",
+    "icebergQty": "0.00000000",
+    "time": 1507725176595,
+    "updateTime": 1507725176595,
+    "isIsolated": false
+  \},
+  \{
+    "symbol": "BTCUSDT",
+    "orderId": 29,
+    "clientOrderId": "x]]Xk3RFN1g2MjEDKWNq8t",
+    "price": "0.00000000",
+    "origQty": "0.00020000",
+    "executedQty": "0.00020000",
+    "cummulativeQuoteQty": "10.48000000",
+    "status": "FILLED",
+    "timeInForce": "GTC",
+    "type": "MARKET",
+    "side": "SELL",
+    "stopPrice": "0.00000000",
+    "icebergQty": "0.00000000",
+    "time": 1507725276595,
+    "updateTime": 1507725276595,
+    "isIsolated": false
+  \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_all_orders(
@@ -858,6 +1161,48 @@ Retrieves cross margin account details including balances and margin level.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/margin_trading/account/Query-Cross-Margin-Account-Details}{Binance Margin Account}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/margin/account?timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "borrowEnabled": true,
+  "marginLevel": "11.64405625",
+  "totalAssetOfBtc": "6.82728457",
+  "totalLiabilityOfBtc": "0.58633215",
+  "totalNetAssetOfBtc": "6.24095242",
+  "tradeEnabled": true,
+  "transferEnabled": true,
+  "accountType": "MARGIN",
+  "userAssets": [
+    \{
+      "asset": "BTC",
+      "borrowed": "0.00000000",
+      "free": "0.00499500",
+      "interest": "0.00000000",
+      "locked": "0.00000000",
+      "netAsset": "0.00499500"
+    \},
+    \{
+      "asset": "USDT",
+      "borrowed": "200.00000000",
+      "free": "1500.50000000",
+      "interest": "0.01055556",
+      "locked": "0.00000000",
+      "netAsset": "1300.48944444"
+    \}
+  ]
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_account(recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -912,6 +1257,24 @@ Queries the maximum borrowable amount for an asset on margin.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/margin_trading/borrow-and-repay/Query-Max-Borrow}{Binance Max Borrowable}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/margin/maxBorrowable?asset=USDT&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "amount": "1.69248805",
+  "borrowLimit": "60"
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_max_borrowable(
@@ -967,6 +1330,23 @@ Queries the maximum transferable-out amount for an asset on margin.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/margin_trading/transfer/Query-Max-Transfer-Out-Amount}{Binance Max Transferable}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/margin/maxTransferable?asset=USDT&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "amount": "3.59498107"
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_max_transferable(
@@ -1021,6 +1401,43 @@ Retrieves margin interest accrual history with pagination.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/margin_trading/borrow-and-repay/Get-Interest-History}{Binance Interest History}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/margin/interestHistory?asset=USDT&current=1&size=10&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "rows": [
+    \{
+      "isolatedSymbol": "",
+      "asset": "USDT",
+      "interest": "0.01055556",
+      "interestAccuredTime": 1672012800000,
+      "interestRate": "0.00019",
+      "principal": "200.00000000",
+      "type": "ON_BORROW"
+    \},
+    \{
+      "isolatedSymbol": "",
+      "asset": "USDT",
+      "interest": "0.01055556",
+      "interestAccuredTime": 1672099200000,
+      "interestRate": "0.00019",
+      "principal": "200.00000000",
+      "type": "PERIODIC"
+    \}
+  ],
+  "total": 2
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_interest_history(
@@ -1093,6 +1510,38 @@ Retrieves margin force liquidation records with pagination.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/margin_trading/trade/Get-Force-Liquidation-Record}{Binance Force Liquidation}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/margin/forceLiquidationRec?current=1&size=10&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "rows": [
+    \{
+      "avgPrice": "52341.12000000",
+      "executedQty": "0.00100000",
+      "orderId": 12345678,
+      "price": "52000.00000000",
+      "qty": "0.00100000",
+      "side": "SELL",
+      "symbol": "BTCUSDT",
+      "timeInForce": "GTC",
+      "isIsolated": false,
+      "updatedTime": 1672099200000,
+      "time": 1672099100000
+    \}
+  ],
+  "total": 1
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_force_liquidation_history(
@@ -1165,6 +1614,36 @@ Retrieves margin trade history for a symbol.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Trade-List}{Binance Margin Trades}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/margin/myTrades?symbol=BTCUSDT&limit=500&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "commission": "0.00000500",
+    "commissionAsset": "BTC",
+    "id": 6,
+    "isBestMatch": true,
+    "isBuyer": true,
+    "isMaker": false,
+    "orderId": 28,
+    "price": "52341.12000000",
+    "qty": "0.00010000",
+    "symbol": "BTCUSDT",
+    "isIsolated": false,
+    "time": 1507725176595
+  \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_trades(
@@ -1244,6 +1723,62 @@ Retrieves isolated margin account details.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/margin_trading/account/Query-Isolated-Margin-Account-Info}{Binance Isolated Margin Account}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/margin/isolated/account?symbols=BTCUSDT,ETHUSDT&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "assets": [
+    \{
+      "baseAsset": \{
+        "asset": "BTC",
+        "borrowEnabled": true,
+        "borrowed": "0.00000000",
+        "free": "0.00100000",
+        "interest": "0.00000000",
+        "locked": "0.00000000",
+        "netAsset": "0.00100000",
+        "netAssetOfBtc": "0.00100000",
+        "repayEnabled": true,
+        "totalAsset": "0.00100000"
+      \},
+      "quoteAsset": \{
+        "asset": "USDT",
+        "borrowEnabled": true,
+        "borrowed": "0.00000000",
+        "free": "50.00000000",
+        "interest": "0.00000000",
+        "locked": "0.00000000",
+        "netAsset": "50.00000000",
+        "netAssetOfBtc": "0.00094750",
+        "repayEnabled": true,
+        "totalAsset": "50.00000000"
+      \},
+      "symbol": "BTCUSDT",
+      "isolatedCreated": true,
+      "enabled": true,
+      "marginLevel": "999.00000000",
+      "marginRatio": "5.00000000",
+      "indexPrice": "52800.00000000",
+      "liquidatePrice": "0.00000000",
+      "liquidateRate": "0.00000000",
+      "tradeEnabled": true
+    \}
+  ],
+  "totalAssetOfBtc": "0.00194750",
+  "totalLiabilityOfBtc": "0.00000000",
+  "totalNetAssetOfBtc": "0.00194750"
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_isolated_account(symbols = NULL, recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -1294,7 +1829,36 @@ Transfers assets between spot and isolated margin accounts.
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/margin_trading/Introduction}{Binance Isolated Margin Transfer}
+\href{https://developers.binance.com/docs/margin_trading/transfer/Isolated-Margin-Account-Transfer}{Binance Isolated Margin Transfer}
+
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://api.binance.com/sapi/v1/margin/isolated/transfer?asset=USDT&symbol=BTCUSDT&transFrom=SPOT&transTo=ISOLATED_MARGIN&amount=100&timestamp=...&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "asset": "USDT",
+  "symbol": "BTCUSDT",
+  "transFrom": "SPOT",
+  "transTo": "ISOLATED_MARGIN",
+  "amount": "100"
+\}
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "tranId": 100000003
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$add_isolated_transfer(

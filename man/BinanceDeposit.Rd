@@ -136,6 +136,7 @@ specified, returns the address for the coin's default network.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/wallet/capital/deposite-address}{Binance Deposit Address}
+Verified: 2026-03-10
 }
 
 \subsection{Automated Trading Usage}{
@@ -224,6 +225,7 @@ status, and time range. Converts \code{insertTime} timestamps to POSIXct.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/wallet/capital/deposite-history}{Binance Deposit History}
+Verified: 2026-03-10
 }
 
 \subsection{Automated Trading Usage}{

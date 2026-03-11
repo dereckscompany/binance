@@ -205,6 +205,7 @@ Places a new spot order on Binance.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#new-order-trade}{Binance New Order}
+Verified: 2026-03-10
 }
 
 \subsection{Automated Trading Usage}{
@@ -346,6 +347,7 @@ Returns \code{{}} on success.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#test-new-order-trade}{Binance Test New Order}
+Verified: 2026-03-10
 }
 
 \subsection{Automated Trading Usage}{
@@ -354,6 +356,35 @@ Returns \code{{}} on success.
 \item \strong{Auth Testing}: Confirm API credentials work for order placement.
 \item \strong{Integration Testing}: Test your trading pipeline end-to-end without risk.
 }
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://api.binance.com/api/v3/order/test' \\
+  -H 'X-MBX-APIKEY: your-api-key' \\
+  -d 'symbol=BTCUSDT&side=BUY&type=LIMIT&timeInForce=GTC&quantity=0.0001&price=50000.00&timestamp=1729176273859&signature=...'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT",
+  "side": "BUY",
+  "type": "LIMIT",
+  "timeInForce": "GTC",
+  "quantity": "0.00010000",
+  "price": "50000.00000000",
+  "timestamp": 1729176273859,
+  "signature": "..."
+\}
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$add_order_test(
@@ -405,7 +436,13 @@ Returns \code{{}} on success.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (empty on success, confirming validation passed).
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}), single row with columns:
+\itemize{
+\item \code{symbol} (character): The validated trading pair.
+\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
+\item \code{type} (character): Order type.
+\item \code{status} (character): \code{"validated"}.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -438,6 +475,36 @@ Cancels an active order by order ID or client order ID.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#cancel-order-trade}{Binance Cancel Order}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X DELETE 'https://api.binance.com/api/v3/order?symbol=BTCUSDT&orderId=4293153&timestamp=1729176273859&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT",
+  "origClientOrderId": "msXkySR3u5uYwpvRMFsi3u",
+  "orderId": 4293153,
+  "orderListId": -1,
+  "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+  "transactTime": 1507725176595,
+  "price": "50000.00000000",
+  "origQty": "0.00010000",
+  "executedQty": "0.00000000",
+  "cummulativeQuoteQty": "0.00000000",
+  "status": "CANCELED",
+  "timeInForce": "GTC",
+  "type": "LIMIT",
+  "side": "BUY",
+  "selfTradePreventionMode": "NONE"
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$cancel_order(
@@ -509,6 +576,55 @@ Cancels all active orders on a trading pair.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#cancel-all-open-orders-on-a-symbol-trade}{Binance Cancel All Open Orders}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X DELETE 'https://api.binance.com/api/v3/openOrders?symbol=BTCUSDT&timestamp=1729176273859&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "symbol": "BTCUSDT",
+    "origClientOrderId": "E6APeyTJvkMvLMYMqu1KQ4",
+    "orderId": 11,
+    "orderListId": -1,
+    "clientOrderId": "pXLV6Hz6mprAcVYpVMTGgx",
+    "transactTime": 1684804350068,
+    "price": "50000.00000000",
+    "origQty": "0.00010000",
+    "executedQty": "0.00000000",
+    "cummulativeQuoteQty": "0.00000000",
+    "status": "CANCELED",
+    "timeInForce": "GTC",
+    "type": "LIMIT",
+    "side": "BUY",
+    "selfTradePreventionMode": "NONE"
+  \},
+  \{
+    "symbol": "BTCUSDT",
+    "origClientOrderId": "A3EF2HCwxgZPFMrfwbgrhv",
+    "orderId": 13,
+    "orderListId": -1,
+    "clientOrderId": "pXLV6Hz6mprAcVYpVMTGgx",
+    "transactTime": 1684804350068,
+    "price": "48000.00000000",
+    "origQty": "0.00020000",
+    "executedQty": "0.00000000",
+    "cummulativeQuoteQty": "0.00000000",
+    "status": "CANCELED",
+    "timeInForce": "GTC",
+    "type": "LIMIT",
+    "side": "BUY",
+    "selfTradePreventionMode": "NONE"
+  \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$cancel_all_orders(symbol, recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -524,7 +640,8 @@ Cancels all active orders on a trading pair.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per cancelled order and the following columns:
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}).
+When orders are cancelled, one row per order with columns:
 \itemize{
 \item \code{symbol} (character): Trading pair.
 \item \code{orig_client_order_id} (character): Original client order ID.
@@ -540,7 +657,13 @@ Cancels all active orders on a trading pair.
 \item \code{type} (character): Order type.
 \item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
-\item \code{transact_time} (POSIXct): Cancellation time converted from \code{transactTime}.
+\item \code{transact_time} (POSIXct): Cancellation time.
+}
+
+When no open orders exist, a single confirmation row with columns:
+\itemize{
+\item \code{symbol} (character): The requested trading pair.
+\item \code{status} (character): \code{"cancelled"}.
 }
 }
 \subsection{Examples}{
@@ -571,6 +694,41 @@ Retrieves details for a specific order by order ID or client order ID.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#query-order-user_data}{Binance Query Order}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/api/v3/order?symbol=BTCUSDT&orderId=4293153&timestamp=1729176273859&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "symbol": "BTCUSDT",
+  "orderId": 4293153,
+  "orderListId": -1,
+  "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+  "price": "50000.00000000",
+  "origQty": "0.00010000",
+  "executedQty": "0.00010000",
+  "cummulativeQuoteQty": "5.00000000",
+  "status": "FILLED",
+  "timeInForce": "GTC",
+  "type": "LIMIT",
+  "side": "BUY",
+  "stopPrice": "0.00000000",
+  "icebergQty": "0.00000000",
+  "time": 1507725176595,
+  "updateTime": 1507725176595,
+  "isWorking": true,
+  "workingTime": 1507725176595,
+  "origQuoteOrderQty": "0.00000000",
+  "selfTradePreventionMode": "NONE"
+\}
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$get_order(
@@ -647,6 +805,43 @@ Retrieves all currently open orders, optionally filtered by symbol.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#current-open-orders-user_data}{Binance Current Open Orders}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/api/v3/openOrders?symbol=BTCUSDT&timestamp=1729176273859&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "symbol": "BTCUSDT",
+    "orderId": 4293153,
+    "orderListId": -1,
+    "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+    "price": "50000.00000000",
+    "origQty": "0.00010000",
+    "executedQty": "0.00000000",
+    "cummulativeQuoteQty": "0.00000000",
+    "status": "NEW",
+    "timeInForce": "GTC",
+    "type": "LIMIT",
+    "side": "BUY",
+    "stopPrice": "0.00000000",
+    "icebergQty": "0.00000000",
+    "time": 1507725176595,
+    "updateTime": 1507725176595,
+    "isWorking": true,
+    "workingTime": 1507725176595,
+    "origQuoteOrderQty": "0.00000000",
+    "selfTradePreventionMode": "NONE"
+  \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$get_open_orders(symbol = NULL, recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -717,6 +912,65 @@ the most recent orders are returned.
 \subsection{Official Documentation}{
 
 \href{https://binance-docs.github.io/apidocs/spot/en/#all-orders-user_data}{Binance All Orders}
+Verified: 2026-03-10
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/api/v3/allOrders?symbol=BTCUSDT&limit=50&timestamp=1729176273859&signature=...' \\
+  -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "symbol": "BTCUSDT",
+    "orderId": 4293153,
+    "orderListId": -1,
+    "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+    "price": "50000.00000000",
+    "origQty": "0.00010000",
+    "executedQty": "0.00010000",
+    "cummulativeQuoteQty": "5.00000000",
+    "status": "FILLED",
+    "timeInForce": "GTC",
+    "type": "LIMIT",
+    "side": "BUY",
+    "stopPrice": "0.00000000",
+    "icebergQty": "0.00000000",
+    "time": 1507725176595,
+    "updateTime": 1507725176595,
+    "isWorking": true,
+    "workingTime": 1507725176595,
+    "origQuoteOrderQty": "0.00000000",
+    "selfTradePreventionMode": "NONE"
+  \},
+  \{
+    "symbol": "BTCUSDT",
+    "orderId": 4293154,
+    "orderListId": -1,
+    "clientOrderId": "x]]C3kvs44T7fYqJ09VBfg",
+    "price": "0.00000000",
+    "origQty": "0.00010000",
+    "executedQty": "0.00010000",
+    "cummulativeQuoteQty": "5.10230000",
+    "status": "FILLED",
+    "timeInForce": "GTC",
+    "type": "MARKET",
+    "side": "SELL",
+    "stopPrice": "0.00000000",
+    "icebergQty": "0.00000000",
+    "time": 1507725276595,
+    "updateTime": 1507725276595,
+    "isWorking": true,
+    "workingTime": 1507725276595,
+    "origQuoteOrderQty": "0.00000000",
+    "selfTradePreventionMode": "NONE"
+  \}
+]
+}\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$get_all_orders(

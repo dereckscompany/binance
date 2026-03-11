@@ -54,6 +54,28 @@ positional arrays instead of named objects. These are assigned
 descriptive column names (`open_time`, `open`, `high`, `low`, `close`,
 `volume`, `close_time`, etc.) matching the Binance documentation.
 
+## Available Classes
+
+| Class | Purpose | Auth Required |
+|----|----|:--:|
+| `BinanceMarketData` | Spot market data: tickers, klines, depth, trades, exchange info | No |
+| `BinanceTrading` | Spot order placement, query, and cancellation | Yes |
+| `BinanceOcoOrders` | One-Cancels-Other order management | Yes |
+| `BinanceAccount` | Account info and trade history | Yes |
+| `BinanceDeposit` | Deposit addresses and deposit history | Yes |
+| `BinanceWithdrawal` | Withdrawal submission and history | Yes |
+| `BinanceTransfer` | Internal transfers between wallet types (spot, margin, futures) | Yes |
+| `BinanceSubAccount` | Sub-account listing and management | Yes |
+| `BinanceEarn` | Simple Earn: flexible savings products and positions | Yes |
+| `BinanceMarginData` | Margin pairs, price index, interest rates, cross/isolated data | Mixed |
+| `BinanceMargin` | Margin borrowing, repayment, orders, and account queries | Yes |
+| `BinanceFuturesData` | Futures exchange info, mark price, funding rates, klines | No |
+| `BinanceFutures` | Futures order placement, positions, leverage, account queries | Yes |
+| `BinanceBase` | Internal base class (not used directly) | — |
+
+All classes accept `async = TRUE` at construction and share a common
+`time_source` parameter for clock-drift correction.
+
 ## Installation
 
 ``` r
@@ -103,11 +125,41 @@ klines[, .(open_time, open, high, low, close, volume)]
 #> 3: 2017-07-17 0.0157880 0.0159 0.015700 0.015850 120000.0
 ```
 
+### Fetch All Klines (Large Date Ranges)
+
+When you need historical data spanning more than 1000 candles, use
+`fetch_all = TRUE`. This automatically segments the time range into
+multiple API calls, deduplicates overlapping boundaries, and returns the
+combined result:
+
+``` r
+# Fetch all 1h klines across a 5-month date range (multiple API calls)
+all_klines <- market$get_klines("BTCUSDT", "1h",
+  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
+  endTime = as.POSIXct("2024-06-01", tz = "UTC"),
+  fetch_all = TRUE, sleep = 0.5
+)
+
+nrow(all_klines)
+```
+
+> **Note:** Large date ranges consume multiple API requests. Use the
+> `sleep` parameter to avoid hitting Binance rate limits. For bulk
+> multi-symbol downloads, see `binance_backfill_klines()`.
+
 ### Order Book Depth
 
 ``` r
 depth <- market$get_depth("BTCUSDT", limit = 5)
 depth
+#>    last_update_id   side   price      size
+#>            <char> <char>   <num>     <num>
+#> 1:        1027024    bid 67232.8 0.4186184
+#> 2:        1027024    bid 67232.5 1.5000000
+#> 3:        1027024    bid 67230.0 0.8000000
+#> 4:        1027024    ask 67232.9 1.2480899
+#> 5:        1027024    ask 67233.5 0.5000000
+#> 6:        1027024    ask 67235.0 2.1000000
 ```
 
 ### 24hr Statistics
@@ -136,19 +188,45 @@ trading$add_order_test(
   type = "LIMIT", symbol = "BTCUSDT", side = "BUY",
   price = 50000, quantity = 0.0001
 )
-#> Null data.table (0 rows and 0 cols)
+#>     symbol   side   type    status
+#>     <char> <char> <char>    <char>
+#> 1: BTCUSDT    BUY  LIMIT validated
 ```
 
 ### Query an Order
 
 ``` r
 trading$get_order("BTCUSDT", orderId = 12345)
+#>     symbol order_id order_list_id        client_order_id          price
+#>     <char>    <int>         <int>                 <char>         <char>
+#> 1: BTCUSDT       28            -1 6gCrw2kRUAF9CvJDGP16IP 50000.00000000
+#>      orig_qty executed_qty cummulative_quote_qty status time_in_force   type
+#>        <char>       <char>                <char> <char>        <char> <char>
+#> 1: 0.00010000   0.00010000            5.00000000 FILLED           GTC  LIMIT
+#>      side stop_price iceberg_qty                time         update_time
+#>    <char>     <char>      <char>              <POSc>              <POSc>
+#> 1:    BUY 0.00000000  0.00000000 2017-10-11 12:32:56 2017-10-11 12:32:56
+#>    is_working orig_quote_order_qty working_time self_trade_prevention_mode
+#>        <lgcl>               <char>        <num>                     <char>
+#> 1:       TRUE           0.00000000 1.507725e+12                       NONE
 ```
 
 ### Get Open Orders
 
 ``` r
 trading$get_open_orders("BTCUSDT")
+#>     symbol order_id order_list_id        client_order_id          price
+#>     <char>    <int>         <int>                 <char>         <char>
+#> 1: BTCUSDT       28            -1 6gCrw2kRUAF9CvJDGP16IP 50000.00000000
+#>      orig_qty executed_qty cummulative_quote_qty status time_in_force   type
+#>        <char>       <char>                <char> <char>        <char> <char>
+#> 1: 0.00010000   0.00000000            0.00000000    NEW           GTC  LIMIT
+#>      side stop_price iceberg_qty                time is_working
+#>    <char>     <char>      <char>              <POSc>     <lgcl>
+#> 1:    BUY 0.00000000  0.00000000 2017-10-11 12:32:56       TRUE
+#>    orig_quote_order_qty working_time self_trade_prevention_mode
+#>                  <char>        <num>                     <char>
+#> 1:           0.00000000 1.507725e+12                       NONE
 ```
 
 ## Account
@@ -171,6 +249,18 @@ info[, .(maker_commission, taker_commission, can_trade, account_type)]
 
 ``` r
 account$get_trades("BTCUSDT")
+#>     symbol    id order_id order_list_id          price        qty   quote_qty
+#>     <char> <int>    <int>         <int>         <char>     <char>      <char>
+#> 1: BTCUSDT 28457   100234            -1 67232.90000000 0.00100000 67.23290000
+#> 2: BTCUSDT 28458   100235            -1 67200.00000000 0.00050000 33.60000000
+#>    commission commission_asset                time is_buyer is_maker
+#>        <char>           <char>              <POSc>   <lgcl>   <lgcl>
+#> 1: 0.00000100              BTC 2017-07-12 13:19:09     TRUE    FALSE
+#> 2: 0.00000050              BTC 2017-07-12 13:19:10    FALSE     TRUE
+#>    is_best_match
+#>           <lgcl>
+#> 1:          TRUE
+#> 2:          TRUE
 ```
 
 ## Margin Trading
@@ -205,6 +295,15 @@ margin$get_max_borrowable(asset = "USDT")
 
 ``` r
 margin$get_trades("BTCUSDT")
+#>     symbol    id order_id          price        qty   quote_qty commission
+#>     <char> <int>    <int>         <char>     <char>      <char>     <char>
+#> 1: BTCUSDT 28457   100234 67232.90000000 0.00100000 67.23290000 0.00000100
+#>    commission_asset                time is_buyer is_maker is_best_match
+#>              <char>              <POSc>   <lgcl>   <lgcl>        <lgcl>
+#> 1:              BTC 2017-07-12 13:19:09     TRUE    FALSE          TRUE
+#>    is_isolated
+#>         <lgcl>
+#> 1:       FALSE
 ```
 
 ## Futures
@@ -219,18 +318,31 @@ fdata <- BinanceFuturesData$new(keys = KEYS, base_url = FBASE)
 
 ``` r
 fdata$get_mark_price("BTCUSDT")
+#>     symbol     mark_price    index_price estimated_settle_price
+#>     <char>         <char>         <char>                 <char>
+#> 1: BTCUSDT 67232.90000000 67230.50000000         67231.70000000
+#>    last_funding_rate   next_funding_time interest_rate                time
+#>               <char>              <POSc>        <char>              <POSc>
+#> 1:        0.00010000 2022-08-26 06:00:00    0.00010000 2022-08-26 05:52:26
 ```
 
 #### Funding Rate History
 
 ``` r
 fdata$get_funding_rate("BTCUSDT", limit = 3)
+#>     symbol funding_rate        funding_time     mark_price
+#>     <char>       <char>              <POSc>         <char>
+#> 1: BTCUSDT   0.00010000 2022-08-26 06:00:00 67232.90000000
+#> 2: BTCUSDT   0.00012000 2022-08-26 14:00:00 67500.00000000
 ```
 
 #### Open Interest
 
 ``` r
 fdata$get_open_interest("BTCUSDT")
+#>     symbol open_interest                time
+#>     <char>        <char>              <POSc>
+#> 1: BTCUSDT     12345.678 2022-08-26 05:52:26
 ```
 
 ### Futures Trading
@@ -243,6 +355,18 @@ futures <- BinanceFutures$new(keys = KEYS, base_url = FBASE)
 
 ``` r
 futures$get_positions("BTCUSDT")
+#>     symbol position_amt entry_price break_even_price mark_price
+#>     <char>       <char>      <char>           <char>     <char>
+#> 1: BTCUSDT        0.001    50000.00         50025.00   67232.90
+#>    un_realized_profit liquidation_price leverage max_notional_value margin_type
+#>                <char>            <char>   <char>             <char>      <char>
+#> 1:        17.23290000                 0       20           25000000       cross
+#>    isolated_margin is_auto_add_margin position_side    notional isolated_wallet
+#>             <char>             <char>        <char>      <char>          <char>
+#> 1:      0.00000000              false          BOTH 67.23290000               0
+#>            update_time
+#>                 <POSc>
+#> 1: 2022-08-26 05:52:26
 ```
 
 #### Futures Test Order
@@ -252,7 +376,9 @@ futures$add_order_test(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
   quantity = 0.001, price = 50000, timeInForce = "GTC"
 )
-#> Null data.table (0 rows and 0 cols)
+#>     symbol   side   type    status
+#>     <char> <char> <char>    <char>
+#> 1: BTCUSDT    BUY  LIMIT validated
 ```
 
 #### Set Leverage
@@ -283,6 +409,19 @@ main <- coro::async(function() {
 main()
 while (!later::loop_empty()) later::run_now()
 ```
+
+## Sample Data
+
+The package ships with a sample dataset of 500 BTC-USDT 4-hour candles
+for demonstration and testing:
+
+``` r
+data(binance_btc_usdt_4h_ohlcv)
+head(binance_btc_usdt_4h_ohlcv)
+```
+
+See `?binance_btc_usdt_4h_ohlcv` for column descriptions. This data was
+produced by `binance_backfill_klines()`.
 
 ## Citation
 

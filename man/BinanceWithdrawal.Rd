@@ -139,6 +139,7 @@ enabled. Returns a withdrawal ID on success.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/wallet/capital/withdraw}{Binance Withdraw}
+Verified: 2026-03-10
 }
 
 \subsection{Automated Trading Usage}{
@@ -155,6 +156,19 @@ to select the cheapest or fastest network.
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://api.binance.com/sapi/v1/capital/withdraw/apply' \\
   -H 'X-MBX-APIKEY: your-api-key' \\
   -d 'coin=USDT&address=TKFRQXSDcY4kd3QLzw7uK16GmLrjJggwX8&amount=10&network=TRX&timestamp=...&signature=...'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "coin": "USDT",
+  "address": "TKFRQXSDcY4kd3QLzw7uK16GmLrjJggwX8",
+  "amount": "10",
+  "network": "TRX",
+  "timestamp": 1661493146000,
+  "signature": "..."
+\}
 }\if{html}{\out{</div>}}
 }
 
@@ -248,6 +262,7 @@ status, and time range. Max time range is 90 days.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/wallet/capital/withdraw-history}{Binance Withdraw History}
+Verified: 2026-03-10
 }
 
 \subsection{Automated Trading Usage}{

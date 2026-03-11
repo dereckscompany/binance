@@ -235,6 +235,7 @@ Lists available Simple Earn flexible products, optionally filtered by asset.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Simple-Earn-Flexible-Product-List}{Binance Simple Earn Flexible List}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
@@ -330,6 +331,7 @@ Lists available Simple Earn locked products, optionally filtered by asset.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Simple-Earn-Locked-Product-List}{Binance Simple Earn Locked List}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
@@ -420,6 +422,7 @@ Subscribes to a Simple Earn flexible product.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/earn}{Binance Simple Earn Flexible Subscribe}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
@@ -427,6 +430,17 @@ Subscribes to a Simple Earn flexible product.
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://api.binance.com/sapi/v1/simple-earn/flexible/subscribe' \\
   -H 'X-MBX-APIKEY: your-api-key' \\
   -d 'productId=USDT001&amount=100&timestamp=1661493146000&signature=...'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "productId": "USDT001",
+  "amount": "100",
+  "autoSubscribe": true,
+  "sourceAccount": "SPOT"
+\}
 }\if{html}{\out{</div>}}
 }
 
@@ -498,6 +512,7 @@ Subscribes to a Simple Earn locked product.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Subscribe-Locked-Product}{Binance Simple Earn Locked Subscribe}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
@@ -505,6 +520,16 @@ Subscribes to a Simple Earn locked product.
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://api.binance.com/sapi/v1/simple-earn/locked/subscribe' \\
   -H 'X-MBX-APIKEY: your-api-key' \\
   -d 'projectId=BTC30d001&amount=0.01&timestamp=1661493146000&signature=...'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "projectId": "BTC30d001",
+  "amount": "0.01",
+  "autoSubscribe": true
+\}
 }\if{html}{\out{</div>}}
 }
 
@@ -575,6 +600,7 @@ Redeems from a Simple Earn flexible product.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Redeem-Flexible-Product}{Binance Simple Earn Flexible Redeem}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
@@ -582,6 +608,17 @@ Redeems from a Simple Earn flexible product.
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://api.binance.com/sapi/v1/simple-earn/flexible/redeem' \\
   -H 'X-MBX-APIKEY: your-api-key' \\
   -d 'productId=USDT001&amount=50&timestamp=1661493146000&signature=...'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "productId": "USDT001",
+  "amount": "50",
+  "redeemAll": false,
+  "destAccount": "SPOT"
+\}
 }\if{html}{\out{</div>}}
 }
 
@@ -653,6 +690,7 @@ Redeems from a Simple Earn locked product.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Redeem-Locked-Product}{Binance Simple Earn Locked Redeem}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
@@ -660,6 +698,14 @@ Redeems from a Simple Earn locked product.
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://api.binance.com/sapi/v1/simple-earn/locked/redeem' \\
   -H 'X-MBX-APIKEY: your-api-key' \\
   -d 'positionId=12345&timestamp=1661493146000&signature=...'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Request}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "positionId": "12345"
+\}
 }\if{html}{\out{</div>}}
 }
 
@@ -719,6 +765,7 @@ Retrieves current flexible earn positions, optionally filtered by asset or produ
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Flexible-Product-Position}{Binance Simple Earn Flexible Position}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
@@ -810,12 +857,37 @@ position ID, or project ID.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Locked-Product-Position}{Binance Simple Earn Locked Position}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/simple-earn/locked/position?asset=BTC&timestamp=1661493146000&signature=...' \\
   -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "total": 1,
+  "rows": [
+    \{
+      "positionId": "12345",
+      "projectId": "BTC30d001",
+      "asset": "BTC",
+      "amount": "0.01000000",
+      "purchaseTime": 1661493146000,
+      "duration": 30,
+      "accrualDays": 15,
+      "rewardAsset": "BTC",
+      "apy": "0.05000000",
+      "isRenewable": true,
+      "isAutoRenew": true,
+      "redeemDate": 1664085146000
+    \}
+  ]
+\}
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
@@ -888,6 +960,7 @@ Retrieves subscription history for flexible earn products.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/history}{Binance Simple Earn Flexible Subscription Record}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
@@ -989,12 +1062,34 @@ Retrieves subscription history for locked earn products.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Locked-Subscription-Record}{Binance Simple Earn Locked Subscription Record}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/simple-earn/locked/history/subscriptionRecord?asset=BTC&timestamp=1661493146000&signature=...' \\
   -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "total": 1,
+  "rows": [
+    \{
+      "amount": "0.01000000",
+      "asset": "BTC",
+      "time": 1661493146000,
+      "purchaseId": 40608,
+      "positionId": "12345",
+      "lockPeriod": 30,
+      "type": "NORMAL",
+      "sourceAccount": "SPOT",
+      "status": "SUCCESS"
+    \}
+  ]
+\}
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
@@ -1070,12 +1165,32 @@ Retrieves redemption history for flexible earn products.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Flexible-Redemption-Record}{Binance Simple Earn Flexible Redemption Record}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/simple-earn/flexible/history/redemptionRecord?asset=USDT&timestamp=1661493146000&signature=...' \\
   -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "total": 1,
+  "rows": [
+    \{
+      "amount": "50.00000000",
+      "asset": "USDT",
+      "time": 1661493146000,
+      "projectId": "USDT001",
+      "redeemId": 40609,
+      "destAccount": "SPOT",
+      "status": "PAID"
+    \}
+  ]
+\}
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
@@ -1152,12 +1267,32 @@ Retrieves redemption history for locked earn products.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Locked-Redemption-Record}{Binance Simple Earn Locked Redemption Record}
+Verified: 2026-03-10
 }
 
 \subsection{curl}{
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://api.binance.com/sapi/v1/simple-earn/locked/history/redemptionRecord?asset=BTC&timestamp=1661493146000&signature=...' \\
   -H 'X-MBX-APIKEY: your-api-key'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
+  "total": 1,
+  "rows": [
+    \{
+      "amount": "0.01000000",
+      "asset": "BTC",
+      "time": 1661493146000,
+      "positionId": "12345",
+      "redeemId": 40610,
+      "deliverDate": "1664085146000",
+      "status": "PAID"
+    \}
+  ]
+\}
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
