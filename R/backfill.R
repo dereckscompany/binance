@@ -134,7 +134,7 @@ binance_backfill_klines <- function(
           }
           next
         }
-        combo_from <- last_dt
+        combo_from <- last_dt + 1 # Offset by 1 second to avoid re-fetching the last candle
         resumed_from <- last_dt
       }
     }

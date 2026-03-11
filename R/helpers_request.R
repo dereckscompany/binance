@@ -68,11 +68,18 @@ sign_request <- function(req, keys, .get_timestamp_ms = NULL) {
   # Add timestamp to query
   req <- httr2::req_url_query(req, timestamp = timestamp)
 
-  # Extract full query string for signing
+  # Extract full query string for signing (must match URL-encoded form httr2 sends)
   parsed_url <- httr2::url_parse(req$url)
   query_string <- ""
   if (length(parsed_url$query) > 0) {
-    query_string <- paste0(names(parsed_url$query), "=", parsed_url$query, collapse = "&")
+    encoded_vals <- vapply(
+      parsed_url$query,
+      function(v) {
+        utils::URLencode(v, reserved = TRUE)
+      },
+      character(1)
+    )
+    query_string <- paste0(names(parsed_url$query), "=", encoded_vals, collapse = "&")
   }
 
   # Compute HMAC-SHA256 signature (hex-encoded)

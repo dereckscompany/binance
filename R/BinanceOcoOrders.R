@@ -325,7 +325,11 @@ BinanceOcoOrders <- R6::R6Class(
           if (is.null(data) || length(data) == 0) {
             return(data.table::data.table())
           }
-          return(as_dt_list(data))
+          dt <- as_dt_list(data)
+          if (nrow(dt) > 0 && "transaction_time" %in% names(dt)) {
+            dt[, transaction_time := ms_to_datetime(transaction_time)]
+          }
+          return(dt)
         }
       ))
     },
@@ -384,7 +388,11 @@ BinanceOcoOrders <- R6::R6Class(
           if (is.null(data) || length(data) == 0) {
             return(data.table::data.table())
           }
-          return(as_dt_list(data))
+          dt <- as_dt_list(data)
+          if (nrow(dt) > 0 && "transaction_time" %in% names(dt)) {
+            dt[, transaction_time := ms_to_datetime(transaction_time)]
+          }
+          return(dt)
         }
       ))
     }

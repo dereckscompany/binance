@@ -160,7 +160,7 @@ BinanceTransfer <- R6::R6Class(
         query = list(
           type = type,
           asset = asset,
-          amount = amount,
+          amount = as.character(amount),
           fromSymbol = fromSymbol,
           toSymbol = toSymbol,
           recvWindow = recvWindow

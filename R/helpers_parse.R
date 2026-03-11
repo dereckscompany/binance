@@ -40,7 +40,7 @@ as_dt_row <- function(x) {
     if (is.list(val) && length(val) == 0) {
       return(NA)
     }
-    if (is.list(val) && length(val) > 1) {
+    if (is.list(val) && length(val) >= 1) {
       return(list(val))
     }
     return(val)
@@ -165,7 +165,7 @@ parse_klines <- function(data) {
     volume = as.numeric(vapply(data, `[[`, character(1), 6L)),
     close_time = lubridate::as_datetime(as.numeric(vapply(data, `[[`, numeric(1), 7L)) / 1000),
     quote_volume = as.numeric(vapply(data, `[[`, character(1), 8L)),
-    trades = as.integer(vapply(data, `[[`, integer(1), 9L)),
+    trades = as.integer(vapply(data, `[[`, numeric(1), 9L)),
     taker_buy_base_volume = as.numeric(vapply(data, `[[`, character(1), 10L)),
     taker_buy_quote_volume = as.numeric(vapply(data, `[[`, character(1), 11L)),
     ignore = vapply(data, `[[`, character(1), 12L)

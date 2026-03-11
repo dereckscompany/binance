@@ -639,7 +639,15 @@ BinanceMarketData <- R6::R6Class(
           limit = limit
         ),
         auth = FALSE,
-        .parser = parse_klines
+        .parser = function(data) {
+          dt <- parse_klines(data)
+          if (nrow(dt) >= 1000L && is.null(limit)) {
+            rlang::warn(
+              "Binance returned 1000 candles (the maximum). Results may be truncated. Use binance_backfill_klines() for large date ranges, or pass an explicit `limit`."
+            )
+          }
+          return(dt)
+        }
       ))
     }
   )

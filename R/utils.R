@@ -44,6 +44,11 @@ get_api_keys <- function(
   api_key = Sys.getenv("BINANCE_API_KEY"),
   api_secret = Sys.getenv("BINANCE_API_SECRET")
 ) {
+  if (!nzchar(api_key) || !nzchar(api_secret)) {
+    rlang::warn(
+      "Binance API credentials are empty. Set BINANCE_API_KEY and BINANCE_API_SECRET environment variables or pass them explicitly."
+    )
+  }
   return(list(
     api_key = api_key,
     api_secret = api_secret
