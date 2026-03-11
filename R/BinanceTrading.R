@@ -195,7 +195,7 @@ BinanceTrading <- R6::R6Class(
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
             dt[, transact_time := ms_to_datetime(transact_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -279,9 +279,9 @@ BinanceTrading <- R6::R6Class(
         body = body,
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -345,7 +345,7 @@ BinanceTrading <- R6::R6Class(
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
             dt[, transact_time := ms_to_datetime(transact_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -393,13 +393,13 @@ BinanceTrading <- R6::R6Class(
         query = list(symbol = symbol, recvWindow = recvWindow),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
             dt[, transact_time := ms_to_datetime(transact_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -470,7 +470,7 @@ BinanceTrading <- R6::R6Class(
           if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
             dt[, update_time := ms_to_datetime(update_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -523,7 +523,7 @@ BinanceTrading <- R6::R6Class(
         query = list(symbol = symbol, recvWindow = recvWindow),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
@@ -532,7 +532,7 @@ BinanceTrading <- R6::R6Class(
           if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
             dt[, update_time := ms_to_datetime(update_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -604,7 +604,7 @@ BinanceTrading <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
@@ -613,7 +613,7 @@ BinanceTrading <- R6::R6Class(
           if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
             dt[, update_time := ms_to_datetime(update_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     }

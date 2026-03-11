@@ -111,7 +111,7 @@ BinanceMarketData <- R6::R6Class(
           if (nrow(dt) > 0 && "server_time" %in% names(dt)) {
             dt[, server_time := ms_to_datetime(server_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -186,13 +186,13 @@ BinanceMarketData <- R6::R6Class(
         .parser = function(data) {
           syms <- data$symbols
           if (is.null(syms) || length(syms) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- data.table::rbindlist(
             lapply(syms, as_dt_row),
             fill = TRUE
           )
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -381,7 +381,7 @@ BinanceMarketData <- R6::R6Class(
               }
             }
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -431,7 +431,7 @@ BinanceMarketData <- R6::R6Class(
           if (nrow(dt) > 0 && "close_time" %in% names(dt)) {
             dt[, close_time := ms_to_datetime(close_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -538,7 +538,7 @@ BinanceMarketData <- R6::R6Class(
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
             dt[, time := ms_to_datetime(time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -694,7 +694,7 @@ BinanceMarketData <- R6::R6Class(
               "Binance returned 1000 candles (the maximum). Results may be truncated. Use `fetch_all = TRUE` for large date ranges, or pass an explicit `limit`."
             )
           }
-          return(dt)
+          return(dt[])
         }
       ))
     }

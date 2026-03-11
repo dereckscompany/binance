@@ -144,13 +144,13 @@ BinanceFuturesData <- R6::R6Class(
         .parser = function(data) {
           syms <- data$symbols
           if (is.null(syms) || length(syms) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- data.table::rbindlist(
             lapply(syms, as_dt_row),
             fill = TRUE
           )
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -361,7 +361,7 @@ BinanceFuturesData <- R6::R6Class(
               }
             }
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -420,13 +420,13 @@ BinanceFuturesData <- R6::R6Class(
         auth = FALSE,
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "funding_time" %in% names(dt)) {
             dt[, funding_time := ms_to_datetime(funding_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -492,7 +492,7 @@ BinanceFuturesData <- R6::R6Class(
               }
             }
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -547,7 +547,7 @@ BinanceFuturesData <- R6::R6Class(
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
             dt[, time := ms_to_datetime(time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -606,7 +606,7 @@ BinanceFuturesData <- R6::R6Class(
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
             dt[, time := ms_to_datetime(time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -651,7 +651,7 @@ BinanceFuturesData <- R6::R6Class(
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
             dt[, time := ms_to_datetime(time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -739,13 +739,13 @@ BinanceFuturesData <- R6::R6Class(
         auth = FALSE,
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
             dt[, time := ms_to_datetime(time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },

@@ -150,7 +150,7 @@ parse_paginated <- function(data, time_cols = character(0)) {
 #' @noRd
 parse_klines <- function(data) {
   if (is.null(data) || length(data) == 0) {
-    return(data.table::data.table())
+    return(data.table::data.table()[])
   }
   # Binance kline fields (0-indexed):
   # [0] Open time, [1] Open, [2] High, [3] Low, [4] Close, [5] Volume,
@@ -170,5 +170,5 @@ parse_klines <- function(data) {
     taker_buy_quote_volume = as.numeric(vapply(data, `[[`, character(1), 11L)),
     ignore = vapply(data, `[[`, character(1), 12L)
   )
-  return(dt)
+  return(dt[])
 }

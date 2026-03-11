@@ -233,7 +233,7 @@ BinanceDeposit <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "insert_time" %in% names(dt)) {
@@ -242,7 +242,7 @@ BinanceDeposit <- R6::R6Class(
           if (nrow(dt) > 0 && "complete_time" %in% names(dt)) {
             dt[, complete_time := ms_to_datetime(complete_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     }

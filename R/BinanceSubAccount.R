@@ -175,13 +175,13 @@ BinanceSubAccount <- R6::R6Class(
         .parser = function(data) {
           items <- data$subAccounts
           if (is.null(items) || length(items) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(items)
           if (nrow(dt) > 0 && "create_time" %in% names(dt)) {
             dt[, create_time := ms_to_datetime(create_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -230,9 +230,9 @@ BinanceSubAccount <- R6::R6Class(
         .parser = function(data) {
           items <- data$balances
           if (is.null(items) || length(items) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
-          return(as_dt_list(items))
+          return(as_dt_list(items)[])
         }
       ))
     },
@@ -274,9 +274,9 @@ BinanceSubAccount <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -456,13 +456,13 @@ BinanceSubAccount <- R6::R6Class(
         .parser = function(data) {
           items <- data$result
           if (is.null(items) || length(items) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(items)
           if (nrow(dt) > 0 && "create_time_stamp" %in% names(dt)) {
             dt[, create_time_stamp := ms_to_datetime(create_time_stamp)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -609,9 +609,9 @@ BinanceSubAccount <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
-          return(as_dt_list(data))
+          return(as_dt_list(data)[])
         }
       ))
     }

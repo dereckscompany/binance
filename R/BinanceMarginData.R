@@ -104,9 +104,9 @@ BinanceMarginData <- R6::R6Class(
         auth = TRUE,
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
-          return(as_dt_list(data))
+          return(as_dt_list(data)[])
         }
       ))
     },
@@ -153,9 +153,9 @@ BinanceMarginData <- R6::R6Class(
         auth = TRUE,
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
-          return(as_dt_list(data))
+          return(as_dt_list(data)[])
         }
       ))
     },
@@ -206,7 +206,7 @@ BinanceMarginData <- R6::R6Class(
           if (nrow(dt) > 0 && "calc_time" %in% names(dt)) {
             dt[, calc_time := ms_to_datetime(calc_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -261,13 +261,13 @@ BinanceMarginData <- R6::R6Class(
         auth = TRUE,
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "timestamp" %in% names(dt)) {
             dt[, timestamp := ms_to_datetime(timestamp)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -322,9 +322,9 @@ BinanceMarginData <- R6::R6Class(
         auth = TRUE,
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
-          return(as_dt_list(data))
+          return(as_dt_list(data)[])
         }
       ))
     },
@@ -375,9 +375,9 @@ BinanceMarginData <- R6::R6Class(
         auth = TRUE,
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
-          return(as_dt_list(data))
+          return(as_dt_list(data)[])
         }
       ))
     }

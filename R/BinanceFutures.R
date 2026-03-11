@@ -239,7 +239,7 @@ BinanceFutures <- R6::R6Class(
           if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
             dt[, update_time := ms_to_datetime(update_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -351,9 +351,9 @@ BinanceFutures <- R6::R6Class(
         body = body,
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -411,7 +411,7 @@ BinanceFutures <- R6::R6Class(
           if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
             dt[, update_time := ms_to_datetime(update_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -445,7 +445,7 @@ BinanceFutures <- R6::R6Class(
         method = "DELETE",
         query = list(symbol = symbol, recvWindow = recvWindow),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -510,7 +510,7 @@ BinanceFutures <- R6::R6Class(
           if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
             dt[, update_time := ms_to_datetime(update_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -554,7 +554,7 @@ BinanceFutures <- R6::R6Class(
         query = list(symbol = symbol, recvWindow = recvWindow),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
@@ -563,7 +563,7 @@ BinanceFutures <- R6::R6Class(
           if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
             dt[, update_time := ms_to_datetime(update_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -625,7 +625,7 @@ BinanceFutures <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
@@ -634,7 +634,7 @@ BinanceFutures <- R6::R6Class(
           if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
             dt[, update_time := ms_to_datetime(update_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -681,7 +681,7 @@ BinanceFutures <- R6::R6Class(
         endpoint = "/fapi/v2/account",
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -721,13 +721,13 @@ BinanceFutures <- R6::R6Class(
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
             dt[, update_time := ms_to_datetime(update_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -771,13 +771,13 @@ BinanceFutures <- R6::R6Class(
         query = list(symbol = symbol, recvWindow = recvWindow),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
             dt[, update_time := ms_to_datetime(update_time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -819,7 +819,7 @@ BinanceFutures <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -861,7 +861,7 @@ BinanceFutures <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -911,7 +911,7 @@ BinanceFutures <- R6::R6Class(
         method = "POST",
         body = body,
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -968,13 +968,13 @@ BinanceFutures <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
             dt[, time := ms_to_datetime(time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -1043,13 +1043,13 @@ BinanceFutures <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
             dt[, time := ms_to_datetime(time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -1143,13 +1143,13 @@ BinanceFutures <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
             dt[, time := ms_to_datetime(time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     },
@@ -1190,7 +1190,7 @@ BinanceFutures <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -1221,7 +1221,7 @@ BinanceFutures <- R6::R6Class(
         endpoint = "/fapi/v1/positionSide/dual",
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     }

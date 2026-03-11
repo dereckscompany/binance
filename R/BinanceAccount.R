@@ -116,7 +116,7 @@ BinanceAccount <- R6::R6Class(
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
           data$balances <- NULL
-          return(as_dt_row(data))
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -161,9 +161,9 @@ BinanceAccount <- R6::R6Class(
         .parser = function(data) {
           balances <- data$balances
           if (is.null(balances) || length(balances) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
-          return(as_dt_list(balances))
+          return(as_dt_list(balances)[])
         }
       ))
     },
@@ -261,13 +261,13 @@ BinanceAccount <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table())
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "time" %in% names(dt)) {
             dt[, time := ms_to_datetime(time)]
           }
-          return(dt)
+          return(dt[])
         }
       ))
     }

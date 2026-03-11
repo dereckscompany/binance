@@ -77,19 +77,19 @@ binance_fetch_klines <- function(
   }
 
   if (length(segments) == 0L) {
-    return(data.table::data.table())
+    return(data.table::data.table()[])
   }
 
   # Combiner: rbindlist, dedup by open_time, sort ascending
   combine_klines <- function(results_list) {
     dts <- Filter(function(x) nrow(x) > 0, results_list)
     if (length(dts) == 0L) {
-      return(data.table::data.table())
+      return(data.table::data.table()[])
     }
     dt <- data.table::rbindlist(dts)
     dt <- unique(dt, by = "open_time")
     data.table::setorder(dt, open_time)
-    return(dt)
+    return(dt[])
   }
 
   # Fetch function for one segment
