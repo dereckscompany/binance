@@ -8,7 +8,7 @@ BinanceEarn: Simple Earn Management
 
 Provides methods for subscribing, redeeming, and querying Simple Earn
 flexible and locked products on Binance. Inherits from
-[BinanceBase](https://dereckmezquita.github.io/binance/reference/BinanceBase.md).
+[BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
 
 ### Purpose and Scope
 
@@ -53,7 +53,7 @@ Earn](https://developers.binance.com/docs/simple_earn/Introduction)
 
 ## Super class
 
-[`binance::BinanceBase`](https://dereckmezquita.github.io/binance/reference/BinanceBase.md)
+[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceEarn`
 
 ## Methods
@@ -88,7 +88,7 @@ Earn](https://developers.binance.com/docs/simple_earn/Introduction)
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckmezquita.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 

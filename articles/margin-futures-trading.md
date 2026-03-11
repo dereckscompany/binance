@@ -65,7 +65,7 @@ The margin price index is a public endpoint (no authentication
 required). It returns the index price used for margin calculations:
 
 ``` r
-idx <- margin_data$get_price_index("BTCUSDT")
+idx <- margin_data$get_price_index(symbol = "BTCUSDT")
 print(idx)
 ```
 
@@ -95,7 +95,7 @@ print(cm_data)
 Check historical interest rates for a specific asset:
 
 ``` r
-rate_history <- margin_data$get_interest_rate_history("BTC")
+rate_history <- margin_data$get_interest_rate_history(asset = "BTC")
 print(rate_history)
 ```
 
@@ -158,7 +158,7 @@ print(order)
 Query open margin orders:
 
 ``` r
-open <- margin$get_open_orders("BTCUSDT")
+open <- margin$get_open_orders(symbol = "BTCUSDT")
 print(open)
 ```
 
@@ -195,7 +195,7 @@ print(account[, .(borrow_enabled, margin_level, total_asset_of_btc,
 Retrieve executed margin trades for a symbol:
 
 ``` r
-trades <- margin$get_trades("BTCUSDT")
+trades <- margin$get_trades(symbol = "BTCUSDT")
 print(trades)
 ```
 
@@ -233,7 +233,7 @@ The mark price is used for liquidation and unrealised PnL calculations.
 Funding rates are periodic payments between long and short positions:
 
 ``` r
-mark <- futures_data$get_mark_price("BTCUSDT")
+mark <- futures_data$get_mark_price(symbol = "BTCUSDT")
 print(mark)
 ```
 
@@ -245,7 +245,7 @@ print(mark)
     #> 1:        0.00010000 2022-08-26 06:00:00    0.00010000 2022-08-26 05:52:26
 
 ``` r
-rates <- futures_data$get_funding_rate("BTCUSDT", limit = 5)
+rates <- futures_data$get_funding_rate(symbol = "BTCUSDT", limit = 5)
 print(rates)
 ```
 
@@ -259,7 +259,7 @@ print(rates)
 Fetch historical candlestick data for futures contracts:
 
 ``` r
-klines <- futures_data$get_klines("BTCUSDT", interval = "1h", limit = 5)
+klines <- futures_data$get_klines(symbol = "BTCUSDT", interval = "1h", limit = 5)
 print(klines)
 ```
 
@@ -279,7 +279,7 @@ print(klines)
 Check the total open interest for a futures symbol:
 
 ``` r
-oi <- futures_data$get_open_interest("BTCUSDT")
+oi <- futures_data$get_open_interest(symbol = "BTCUSDT")
 print(oi)
 ```
 
@@ -306,7 +306,7 @@ print(account[, .(total_initial_margin, total_maint_margin,
     #> 1:              0.00000000     1000.00000000
 
 ``` r
-positions <- futures$get_positions("BTCUSDT")
+positions <- futures$get_positions(symbol = "BTCUSDT")
 print(positions)
 ```
 
@@ -344,7 +344,7 @@ print(balances)
 Adjust the initial leverage for a futures symbol (1-125x):
 
 ``` r
-result <- futures$set_leverage("BTCUSDT", leverage = 10)
+result <- futures$set_leverage(symbol = "BTCUSDT", leverage = 10)
 print(result)
 ```
 
@@ -406,7 +406,7 @@ hedge mode:
 
 ``` r
 # Switch to isolated margin
-futures$set_margin_type("BTCUSDT", "ISOLATED")
+futures$set_margin_type(symbol = "BTCUSDT", marginType = "ISOLATED")
 
 # Enable hedge mode (dual side positions)
 futures$set_position_mode(dualSidePosition = TRUE)
@@ -434,7 +434,7 @@ print(income)
 Query executed trades on the futures account:
 
 ``` r
-trades <- futures$get_trades("BTCUSDT")
+trades <- futures$get_trades(symbol = "BTCUSDT")
 print(trades)
 ```
 

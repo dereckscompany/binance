@@ -8,7 +8,7 @@ BinanceTrading: Spot Order Management
 
 Provides methods for placing, cancelling, and querying spot orders on
 Binance. Inherits from
-[BinanceBase](https://dereckmezquita.github.io/binance/reference/BinanceBase.md).
+[BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
 
 ### Purpose and Scope
 
@@ -73,7 +73,7 @@ Trading](https://binance-docs.github.io/apidocs/spot/en/#spot-account-trade)
 
 ## Super class
 
-[`binance::BinanceBase`](https://dereckmezquita.github.io/binance/reference/BinanceBase.md)
+[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceTrading`
 
 ## Methods
@@ -98,7 +98,7 @@ Trading](https://binance-docs.github.io/apidocs/spot/en/#spot-account-trade)
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckmezquita.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 

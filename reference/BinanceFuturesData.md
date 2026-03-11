@@ -11,7 +11,7 @@ API, including exchange info, klines, mark prices, funding rates,
 tickers, order books, open interest, and trade history.
 
 Inherits from
-[BinanceBase](https://dereckmezquita.github.io/binance/reference/BinanceBase.md).
+[BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
 All methods support both synchronous and asynchronous execution
 depending on the `async` parameter at construction.
 
@@ -42,7 +42,7 @@ depending on the `async` parameter at construction.
 
 All methods are public endpoints requiring no authentication. The base
 URL defaults to `https://fapi.binance.com` via
-[`get_futures_base_url()`](https://dereckmezquita.github.io/binance/reference/get_futures_base_url.md).
+[`get_futures_base_url()`](https://dereckscompany.github.io/binance/reference/get_futures_base_url.md).
 
 ### Official Documentation
 
@@ -69,7 +69,7 @@ Data](https://binance-docs.github.io/apidocs/futures/en/#market-data-endpoints)
 
 ## Super class
 
-[`binance::BinanceBase`](https://dereckmezquita.github.io/binance/reference/BinanceBase.md)
+[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceFuturesData`
 
 ## Methods
@@ -128,14 +128,14 @@ configures the server time endpoint for futures when
 - `keys`:
 
   List; API credentials from
-  [`get_api_keys()`](https://dereckmezquita.github.io/binance/reference/get_api_keys.md).
+  [`get_api_keys()`](https://dereckscompany.github.io/binance/reference/get_api_keys.md).
   Defaults to
-  [`get_api_keys()`](https://dereckmezquita.github.io/binance/reference/get_api_keys.md).
+  [`get_api_keys()`](https://dereckscompany.github.io/binance/reference/get_api_keys.md).
 
 - `base_url`:
 
   Character; API base URL. Defaults to
-  [`get_futures_base_url()`](https://dereckmezquita.github.io/binance/reference/get_futures_base_url.md).
+  [`get_futures_base_url()`](https://dereckscompany.github.io/binance/reference/get_futures_base_url.md).
 
 - `async`:
 

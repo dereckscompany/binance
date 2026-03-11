@@ -9,7 +9,7 @@ BinanceSubAccount: Sub-Account Management
 Provides methods for creating and managing Binance sub-accounts,
 querying balances, performing universal transfers, and retrieving
 futures/margin account details. Inherits from
-[BinanceBase](https://dereckmezquita.github.io/binance/reference/BinanceBase.md).
+[BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
 
 ### Purpose and Scope
 
@@ -66,7 +66,7 @@ Endpoints](https://developers.binance.com/docs/sub_account/Introduction)
 
 ## Super class
 
-[`binance::BinanceBase`](https://dereckmezquita.github.io/binance/reference/BinanceBase.md)
+[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceSubAccount`
 
 ## Methods
@@ -95,7 +95,7 @@ Endpoints](https://developers.binance.com/docs/sub_account/Introduction)
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckmezquita.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 

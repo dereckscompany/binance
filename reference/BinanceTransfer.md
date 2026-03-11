@@ -8,7 +8,7 @@ BinanceTransfer: Universal Transfer Management
 
 Provides methods for initiating and querying universal transfers between
 wallet types on Binance. Inherits from
-[BinanceBase](https://dereckmezquita.github.io/binance/reference/BinanceBase.md).
+[BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
 
 ### Purpose and Scope
 
@@ -75,7 +75,7 @@ Transfer](https://developers.binance.com/docs/wallet/asset/user-universal-transf
 
 ## Super class
 
-[`binance::BinanceBase`](https://dereckmezquita.github.io/binance/reference/BinanceBase.md)
+[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceTransfer`
 
 ## Methods
@@ -90,7 +90,7 @@ Transfer](https://developers.binance.com/docs/wallet/asset/user-universal-transf
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckmezquita.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 

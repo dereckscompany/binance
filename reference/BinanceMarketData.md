@@ -11,7 +11,7 @@ API, including exchange info, klines, tickers, orderbooks, trade
 history, and 24-hour statistics.
 
 Inherits from
-[BinanceBase](https://dereckmezquita.github.io/binance/reference/BinanceBase.md).
+[BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
 All methods support both synchronous and asynchronous execution
 depending on the `async` parameter at construction.
 
@@ -60,7 +60,7 @@ Data](https://binance-docs.github.io/apidocs/spot/en/#market-data-endpoints)
 
 ## Super class
 
-[`binance::BinanceBase`](https://dereckmezquita.github.io/binance/reference/BinanceBase.md)
+[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceMarketData`
 
 ## Methods
@@ -91,7 +91,7 @@ Data](https://binance-docs.github.io/apidocs/spot/en/#market-data-endpoints)
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckmezquita.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 

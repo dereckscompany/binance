@@ -8,7 +8,7 @@ BinanceMargin: Margin Trading Operations
 
 Provides methods for margin borrowing, repaying, order management, and
 account queries on Binance. Inherits from
-[BinanceBase](https://dereckmezquita.github.io/binance/reference/BinanceBase.md).
+[BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
 
 ### Purpose and Scope
 
@@ -80,7 +80,7 @@ Trading](https://developers.binance.com/docs/margin_trading/Introduction)
 
 ## Super class
 
-[`binance::BinanceBase`](https://dereckmezquita.github.io/binance/reference/BinanceBase.md)
+[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceMargin`
 
 ## Methods
@@ -123,7 +123,7 @@ Trading](https://developers.binance.com/docs/margin_trading/Introduction)
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckmezquita.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 

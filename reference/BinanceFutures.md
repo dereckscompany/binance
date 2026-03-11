@@ -9,7 +9,7 @@ BinanceFutures: USD-M Futures Trading
 Provides methods for placing, cancelling, and querying USD-M futures
 orders, managing positions, leverage, and margin on Binance. Inherits
 from
-[BinanceBase](https://dereckmezquita.github.io/binance/reference/BinanceBase.md).
+[BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
 
 ### Purpose and Scope
 
@@ -25,7 +25,7 @@ from
 
 All methods require authentication (valid API key and secret). The base
 URL defaults to `https://fapi.binance.com` via
-[`get_futures_base_url()`](https://dereckmezquita.github.io/binance/reference/get_futures_base_url.md).
+[`get_futures_base_url()`](https://dereckscompany.github.io/binance/reference/get_futures_base_url.md).
 
 ### Official Documentation
 
@@ -77,7 +77,7 @@ API](https://binance-docs.github.io/apidocs/futures/en/)
 
 ## Super class
 
-[`binance::BinanceBase`](https://dereckmezquita.github.io/binance/reference/BinanceBase.md)
+[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceFutures`
 
 ## Methods
@@ -147,12 +147,12 @@ futures-specific server time endpoint (`/fapi/v1/time`).
 - `keys`:
 
   List; API credentials from
-  [`get_api_keys()`](https://dereckmezquita.github.io/binance/reference/get_api_keys.md).
+  [`get_api_keys()`](https://dereckscompany.github.io/binance/reference/get_api_keys.md).
 
 - `base_url`:
 
   Character; API base URL. Defaults to
-  [`get_futures_base_url()`](https://dereckmezquita.github.io/binance/reference/get_futures_base_url.md).
+  [`get_futures_base_url()`](https://dereckscompany.github.io/binance/reference/get_futures_base_url.md).
 
 - `async`:
 

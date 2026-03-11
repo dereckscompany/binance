@@ -45,12 +45,14 @@ promises instead of data.tables:
 market <- BinanceMarketData$new(async = TRUE)
 
 get_ticker <- coro::async(function() {
-  ticker <- await(market$get_ticker("BTCUSDT"))
+  ticker <- await(market$get_ticker(symbol = "BTCUSDT"))
   return(ticker)
 })
 
 get_ticker()
-while (!later::loop_empty()) later::run_now()
+while (!later::loop_empty()) {
+  later::run_now()
+}
 ```
 
 > **Key pattern**: define an `async` function, `await` each API call,
@@ -69,13 +71,15 @@ market <- BinanceMarketData$new(async = TRUE)
 results <- NULL
 
 fetch_tickers <- coro::async(function() {
-  btc <- await(market$get_ticker("BTCUSDT"))
-  eth <- await(market$get_ticker("ETHUSDT"))
+  btc <- await(market$get_ticker(symbol = "BTCUSDT"))
+  eth <- await(market$get_ticker(symbol = "ETHUSDT"))
   results <<- list(btc = btc, eth = eth)
 })
 
 fetch_tickers()
-while (!later::loop_empty()) later::run_now()
+while (!later::loop_empty()) {
+  later::run_now()
+}
 results$btc
 results$eth
 ```
@@ -93,8 +97,8 @@ results <- NULL
 
 fetch_parallel <- coro::async(function() {
   # Launch both requests concurrently (no await yet)
-  btc_promise <- market$get_ticker("BTCUSDT")
-  eth_promise <- market$get_ticker("ETHUSDT")
+  btc_promise <- market$get_ticker(symbol = "BTCUSDT")
+  eth_promise <- market$get_ticker(symbol = "ETHUSDT")
 
   # Await them together
   res <- await(promises::promise_all(btc = btc_promise, eth = eth_promise))
@@ -102,7 +106,9 @@ fetch_parallel <- coro::async(function() {
 })
 
 fetch_parallel()
-while (!later::loop_empty()) later::run_now()
+while (!later::loop_empty()) {
+  later::run_now()
+}
 results$btc
 results$eth
 ```
@@ -117,7 +123,7 @@ If you prefer the promise-pipeline style, use `then` and `catch`:
 market <- BinanceMarketData$new(async = TRUE)
 chain_result <- NULL
 
-market$get_24hr_stats("BTCUSDT") |>
+market$get_24hr_stats(symbol = "BTCUSDT") |>
   promises::then(function(stats) {
     chain_result <<- stats
   }) |>
@@ -125,7 +131,9 @@ market$get_24hr_stats("BTCUSDT") |>
     message("Error: ", conditionMessage(err))
   })
 
-while (!later::loop_empty()) later::run_now()
+while (!later::loop_empty()) {
+  later::run_now()
+}
 chain_result
 ```
 
@@ -144,7 +152,7 @@ all_tickers <- NULL
 fetch_watchlist <- coro::async(function() {
   # Fire all requests concurrently
   ticker_promises <- lapply(symbols, function(sym) {
-    market$get_ticker(sym)
+    market$get_ticker(symbol = sym)
   })
   names(ticker_promises) <- symbols
 
@@ -154,7 +162,9 @@ fetch_watchlist <- coro::async(function() {
 })
 
 fetch_watchlist()
-while (!later::loop_empty()) later::run_now()
+while (!later::loop_empty()) {
+  later::run_now()
+}
 
 # Each element is a data.table with the ticker result
 all_tickers$BTCUSDT
@@ -172,7 +182,9 @@ must drive it manually.
 
 ``` r
 # Idiomatic event loop drain
-while (!later::loop_empty()) later::run_now()
+while (!later::loop_empty()) {
+  later::run_now()
+}
 ```
 
 Or with a timeout guard:
@@ -199,7 +211,7 @@ market <- BinanceMarketData$new(async = TRUE)
 
 safe_fetch <- coro::async(function() {
   result <- tryCatch(
-    await(market$get_ticker("INVALIDPAIR")),
+    await(market$get_ticker(symbol = "INVALIDPAIR")),
     error = function(e) {
       message("Caught error: ", conditionMessage(e))
       return(NULL)
@@ -209,7 +221,9 @@ safe_fetch <- coro::async(function() {
 })
 
 safe_fetch()
-while (!later::loop_empty()) later::run_now()
+while (!later::loop_empty()) {
+  later::run_now()
+}
 ```
 
 ------------------------------------------------------------------------

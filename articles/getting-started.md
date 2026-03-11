@@ -37,7 +37,7 @@ market <- BinanceMarketData$new()
 ### Exchange Info
 
 ``` r
-info <- market$get_exchange_info("BTCUSDT")
+info <- market$get_exchange_info(symbol = "BTCUSDT")
 info[, .(symbol, status, base_asset, quote_asset)]
 ```
 
@@ -49,7 +49,7 @@ info[, .(symbol, status, base_asset, quote_asset)]
 ### Ticker
 
 ``` r
-ticker <- market$get_ticker("BTCUSDT")
+ticker <- market$get_ticker(symbol = "BTCUSDT")
 ticker
 ```
 
@@ -74,7 +74,7 @@ tickers
 Best bid/ask prices and quantities:
 
 ``` r
-book <- market$get_book_ticker("BTCUSDT")
+book <- market$get_book_ticker(symbol = "BTCUSDT")
 book
 ```
 
@@ -85,7 +85,7 @@ book
 ### Average Price
 
 ``` r
-avg <- market$get_avg_price("BTCUSDT")
+avg <- market$get_avg_price(symbol = "BTCUSDT")
 avg
 ```
 
@@ -96,7 +96,7 @@ avg
 ### 24hr Statistics
 
 ``` r
-stats <- market$get_24hr_stats("BTCUSDT")
+stats <- market$get_24hr_stats(symbol = "BTCUSDT")
 stats[, .(symbol, last_price, price_change_percent, volume)]
 ```
 
@@ -107,7 +107,7 @@ stats[, .(symbol, last_price, price_change_percent, volume)]
 ### Order Book Depth
 
 ``` r
-depth <- market$get_depth("BTCUSDT", limit = 5)
+depth <- market$get_depth(symbol = "BTCUSDT", limit = 5)
 depth
 ```
 
@@ -123,7 +123,7 @@ depth
 ### Recent Trades
 
 ``` r
-trades <- market$get_trades("BTCUSDT")
+trades <- market$get_trades(symbol = "BTCUSDT")
 trades
 ```
 
@@ -141,7 +141,7 @@ trades
 ### Klines (Candlestick Data)
 
 ``` r
-klines <- market$get_klines("BTCUSDT", "1h", limit = 5)
+klines <- market$get_klines(symbol = "BTCUSDT", interval = "1h", limit = 5)
 klines[, .(open_time, open, high, low, close, volume)]
 ```
 
@@ -159,10 +159,13 @@ deduplicate boundaries, and return the combined result:
 
 ``` r
 # Fetch all 1h klines across a 5-month date range (multiple API calls)
-all_klines <- market$get_klines("BTCUSDT", "1h",
+all_klines <- market$get_klines(
+  symbol = "BTCUSDT",
+  interval = "1h",
   startTime = as.POSIXct("2024-01-01", tz = "UTC"),
   endTime = as.POSIXct("2024-06-01", tz = "UTC"),
-  fetch_all = TRUE, sleep = 0.5
+  fetch_all = TRUE,
+  sleep = 0.5
 )
 
 nrow(all_klines)
@@ -172,7 +175,7 @@ head(all_klines[, .(open_time, open, high, low, close, volume)])
 > **Note:** Large date ranges consume multiple API requests. Use the
 > `sleep` parameter to respect Binance rate limits. For bulk
 > multi-symbol downloads, see
-> [`?binance_backfill_klines`](https://dereckmezquita.github.io/binance/reference/binance_backfill_klines.md).
+> [`?binance_backfill_klines`](https://dereckscompany.github.io/binance/reference/binance_backfill_klines.md).
 
 ### Server Time
 
@@ -235,7 +238,7 @@ order
 ### Query an Order
 
 ``` r
-order <- trading$get_order("BTCUSDT", orderId = 12345)
+order <- trading$get_order(symbol = "BTCUSDT", orderId = 12345)
 order
 ```
 
@@ -255,7 +258,7 @@ order
 ### Get Open Orders
 
 ``` r
-open_orders <- trading$get_open_orders("BTCUSDT")
+open_orders <- trading$get_open_orders(symbol = "BTCUSDT")
 open_orders
 ```
 
@@ -275,7 +278,7 @@ open_orders
 ### Cancel an Order
 
 ``` r
-cancelled <- trading$cancel_order("BTCUSDT", orderId = 12345)
+cancelled <- trading$cancel_order(symbol = "BTCUSDT", orderId = 12345)
 cancelled
 ```
 
@@ -351,7 +354,7 @@ info[, .(maker_commission, taker_commission, can_trade, account_type)]
 ### Trade History
 
 ``` r
-trades <- account$get_trades("BTCUSDT")
+trades <- account$get_trades(symbol = "BTCUSDT")
 trades
 ```
 
@@ -630,12 +633,12 @@ binance_backfill_klines(
 ## Next Steps
 
 - See
-  [`vignette("async-usage")`](https://dereckmezquita.github.io/binance/articles/async-usage.md)
+  [`vignette("async-usage")`](https://dereckscompany.github.io/binance/articles/async-usage.md)
   for promise-based asynchronous operation.
 - See
-  [`vignette("margin-futures-trading")`](https://dereckmezquita.github.io/binance/articles/margin-futures-trading.md)
+  [`vignette("margin-futures-trading")`](https://dereckscompany.github.io/binance/articles/margin-futures-trading.md)
   for margin and USD-M futures trading.
-- Browse the [pkgdown site](https://dereckmezquita.github.io/binance/)
+- Browse the [pkgdown site](https://dereckscompany.github.io/binance/)
   for full method documentation.
 - For bulk historical data, see
-  [`?binance_backfill_klines`](https://dereckmezquita.github.io/binance/reference/binance_backfill_klines.md).
+  [`?binance_backfill_klines`](https://dereckscompany.github.io/binance/reference/binance_backfill_klines.md).

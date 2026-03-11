@@ -8,7 +8,7 @@ BinanceDeposit: Deposit Management
 
 Provides methods for retrieving deposit addresses and deposit history on
 Binance. Inherits from
-[BinanceBase](https://dereckmezquita.github.io/binance/reference/BinanceBase.md).
+[BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
 
 ### Purpose and Scope
 
@@ -50,7 +50,7 @@ Endpoints](https://developers.binance.com/docs/wallet/capital)
 
 ## Super class
 
-[`binance::BinanceBase`](https://dereckmezquita.github.io/binance/reference/BinanceBase.md)
+[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceDeposit`
 
 ## Methods
@@ -65,7 +65,7 @@ Endpoints](https://developers.binance.com/docs/wallet/capital)
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckmezquita.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 

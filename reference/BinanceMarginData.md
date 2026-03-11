@@ -11,7 +11,7 @@ Binance, including cross/isolated margin pairs, price indices, interest
 rate history, and margin data summaries.
 
 Inherits from
-[BinanceBase](https://dereckmezquita.github.io/binance/reference/BinanceBase.md).
+[BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
 All methods support both synchronous and asynchronous execution
 depending on the `async` parameter at construction.
 
@@ -52,7 +52,7 @@ Account/Trade](https://binance-docs.github.io/apidocs/spot/en/#margin-account-tr
 
 ## Super class
 
-[`binance::BinanceBase`](https://dereckmezquita.github.io/binance/reference/BinanceBase.md)
+[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceMarginData`
 
 ## Methods
@@ -75,7 +75,7 @@ Account/Trade](https://binance-docs.github.io/apidocs/spot/en/#margin-account-tr
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckmezquita.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 

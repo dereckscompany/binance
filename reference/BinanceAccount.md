@@ -8,7 +8,7 @@ BinanceAccount: Account and Funding Management
 
 Provides methods for querying account information, balances, and trade
 history on Binance. Inherits from
-[BinanceBase](https://dereckmezquita.github.io/binance/reference/BinanceBase.md).
+[BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
 
 ### Purpose and Scope
 
@@ -39,7 +39,7 @@ Endpoints](https://binance-docs.github.io/apidocs/spot/en/#account-endpoints)
 
 ## Super class
 
-[`binance::BinanceBase`](https://dereckmezquita.github.io/binance/reference/BinanceBase.md)
+[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceAccount`
 
 ## Methods
@@ -56,7 +56,7 @@ Endpoints](https://binance-docs.github.io/apidocs/spot/en/#account-endpoints)
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckmezquita.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 

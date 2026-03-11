@@ -3,7 +3,7 @@
 Historical candlestick (OHLCV) data for BTCUSDT on the Binance exchange
 at 4-hour intervals. Contains 500 candles of sample data for
 demonstration purposes. Produced by
-[`binance_backfill_klines()`](https://dereckmezquita.github.io/binance/reference/binance_backfill_klines.md).
+[`binance_backfill_klines()`](https://dereckscompany.github.io/binance/reference/binance_backfill_klines.md).
 
 ## Usage
 
@@ -49,7 +49,7 @@ with 500 rows and 14 columns:
 ## Source
 
 Binance API via
-[`binance_backfill_klines()`](https://dereckmezquita.github.io/binance/reference/binance_backfill_klines.md)
+[`binance_backfill_klines()`](https://dereckscompany.github.io/binance/reference/binance_backfill_klines.md)
 
 ## Examples
 
