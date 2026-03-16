@@ -198,7 +198,13 @@ BinanceMarketData <- R6::R6Class(
     #'   - `cancel_replace_allowed` (logical): Whether cancel-replace is allowed.
     #'   - `is_spot_trading_allowed` (logical): Whether spot trading is enabled.
     #'   - `is_margin_trading_allowed` (logical): Whether margin trading is enabled.
-    #'   - `filters` (list): List of filter objects (LOT_SIZE, PRICE_FILTER, etc.) — kept as list-column due to heterogeneous schemas.
+    #'   - `lot_min_qty` (numeric): Minimum order quantity from LOT_SIZE filter.
+    #'   - `lot_max_qty` (numeric): Maximum order quantity from LOT_SIZE filter.
+    #'   - `lot_step_size` (numeric): Quantity step size from LOT_SIZE filter.
+    #'   - `price_min` (numeric): Minimum price from PRICE_FILTER.
+    #'   - `price_max` (numeric): Maximum price from PRICE_FILTER.
+    #'   - `price_tick_size` (numeric): Price tick size from PRICE_FILTER.
+    #'   - `min_notional` (numeric): Minimum notional value from MIN_NOTIONAL filter.
     #'   - `permissions` (character): Comma-separated trading permissions (e.g., `"SPOT,MARGIN"`).
     #'   - `default_self_trade_prevention_mode` (character): Default STP mode.
     #'   - `allowed_self_trade_prevention_modes` (character): Comma-separated allowed STP modes.
@@ -226,13 +232,48 @@ BinanceMarketData <- R6::R6Class(
           if (is.null(syms) || length(syms) == 0) {
             return(data.table::data.table()[])
           }
-          # Comma-join simple string arrays before passing to as_dt_row
+
+          # Helper to extract a specific filter field from the raw filters list
+          .extract_filter <- function(filters, filter_type, field) {
+            if (is.null(filters) || length(filters) == 0) {
+              return(NA_real_)
+            }
+            for (f in filters) {
+              if (!is.null(f$filterType) && f$filterType == filter_type) {
+                val <- f[[field]]
+                if (!is.null(val)) {
+                  return(as.numeric(val))
+                }
+              }
+            }
+            return(NA_real_)
+          }
+
+          # Extract filter values into flat fields, comma-join string arrays,
+          # and remove the raw filters list before building the data.table
           syms <- lapply(syms, function(s) {
+            # Comma-join simple string arrays
             for (field in c("orderTypes", "permissions", "allowedSelfTradePreventionModes")) {
               if (!is.null(s[[field]]) && is.list(s[[field]])) {
                 s[[field]] <- paste(unlist(s[[field]]), collapse = ",")
               }
             }
+            # Extract filter values as flat numeric fields
+            raw_filters <- s$filters
+            s$lot_min_qty <- .extract_filter(raw_filters, "LOT_SIZE", "minQty")
+            s$lot_max_qty <- .extract_filter(raw_filters, "LOT_SIZE", "maxQty")
+            s$lot_step_size <- .extract_filter(raw_filters, "LOT_SIZE", "stepSize")
+            s$price_min <- .extract_filter(raw_filters, "PRICE_FILTER", "minPrice")
+            s$price_max <- .extract_filter(raw_filters, "PRICE_FILTER", "maxPrice")
+            s$price_tick_size <- .extract_filter(raw_filters, "PRICE_FILTER", "tickSize")
+            # Current API uses NOTIONAL; legacy symbols may use MIN_NOTIONAL
+            min_not <- .extract_filter(raw_filters, "NOTIONAL", "minNotional")
+            if (is.na(min_not)) {
+              min_not <- .extract_filter(raw_filters, "MIN_NOTIONAL", "minNotional")
+            }
+            s$min_notional <- min_not
+            # Remove the raw filters list — no list columns
+            s$filters <- NULL
             return(s)
           })
           dt <- data.table::rbindlist(
@@ -466,6 +507,45 @@ BinanceMarketData <- R6::R6Class(
         auth = FALSE,
         .parser = function(data) {
           dt <- as_dt_row(data)
+          if (nrow(dt) > 0) {
+            for (col in c("open_time", "close_time")) {
+              if (col %in% names(dt)) {
+                dt[, (col) := ms_to_datetime(get(col))]
+              }
+            }
+          }
+          return(dt[])
+        }
+      ))
+    },
+
+    #' @description
+    #' Get 24hr Ticker Statistics for All Symbols
+    #'
+    #' Retrieves rolling 24-hour price change statistics for all trading pairs
+    #' in a single request.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/api/v3/ticker/24hr` (no symbol parameter)
+    #'
+    #' ### Official Documentation
+    #' [Binance 24hr Ticker Price Change Statistics](https://binance-docs.github.io/apidocs/spot/en/#24hr-ticker-price-change-statistics)
+    #'
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with same
+    #'   columns as `get_24hr_stats()`, one row per symbol.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' market <- BinanceMarketData$new()
+    #' all_stats <- market$get_all_24hr_stats()
+    #' print(all_stats[1:5, .(symbol, last_price, price_change_percent, volume)])
+    #' }
+    get_all_24hr_stats = function() {
+      return(private$.request(
+        endpoint = "/api/v3/ticker/24hr",
+        auth = FALSE,
+        .parser = function(data) {
+          dt <- as_dt_list(data)
           if (nrow(dt) > 0) {
             for (col in c("open_time", "close_time")) {
               if (col %in% names(dt)) {

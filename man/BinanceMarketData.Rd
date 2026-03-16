@@ -133,6 +133,16 @@ print(stats[, .(symbol, last_price, price_change_percent, volume)])
 }
 
 ## ------------------------------------------------
+## Method `BinanceMarketData$get_all_24hr_stats`
+## ------------------------------------------------
+
+\dontrun{
+market <- BinanceMarketData$new()
+all_stats <- market$get_all_24hr_stats()
+print(all_stats[1:5, .(symbol, last_price, price_change_percent, volume)])
+}
+
+## ------------------------------------------------
 ## Method `BinanceMarketData$get_avg_price`
 ## ------------------------------------------------
 
@@ -191,6 +201,7 @@ all_klines <- market$get_klines(
 \item \href{#method-BinanceMarketData-get_all_tickers}{\code{BinanceMarketData$get_all_tickers()}}
 \item \href{#method-BinanceMarketData-get_book_ticker}{\code{BinanceMarketData$get_book_ticker()}}
 \item \href{#method-BinanceMarketData-get_24hr_stats}{\code{BinanceMarketData$get_24hr_stats()}}
+\item \href{#method-BinanceMarketData-get_all_24hr_stats}{\code{BinanceMarketData$get_all_24hr_stats()}}
 \item \href{#method-BinanceMarketData-get_avg_price}{\code{BinanceMarketData$get_avg_price()}}
 \item \href{#method-BinanceMarketData-get_depth}{\code{BinanceMarketData$get_depth()}}
 \item \href{#method-BinanceMarketData-get_trades}{\code{BinanceMarketData$get_trades()}}
@@ -369,7 +380,13 @@ fields returned by the API, converted to snake_case. Key columns include:
 \item \code{cancel_replace_allowed} (logical): Whether cancel-replace is allowed.
 \item \code{is_spot_trading_allowed} (logical): Whether spot trading is enabled.
 \item \code{is_margin_trading_allowed} (logical): Whether margin trading is enabled.
-\item \code{filters} (list): List of filter objects (LOT_SIZE, PRICE_FILTER, etc.) — kept as list-column due to heterogeneous schemas.
+\item \code{lot_min_qty} (numeric): Minimum order quantity from LOT_SIZE filter.
+\item \code{lot_max_qty} (numeric): Maximum order quantity from LOT_SIZE filter.
+\item \code{lot_step_size} (numeric): Quantity step size from LOT_SIZE filter.
+\item \code{price_min} (numeric): Minimum price from PRICE_FILTER.
+\item \code{price_max} (numeric): Maximum price from PRICE_FILTER.
+\item \code{price_tick_size} (numeric): Price tick size from PRICE_FILTER.
+\item \code{min_notional} (numeric): Minimum notional value from MIN_NOTIONAL filter.
 \item \code{permissions} (character): Comma-separated trading permissions (e.g., \code{"SPOT,MARGIN"}).
 \item \code{default_self_trade_prevention_mode} (character): Default STP mode.
 \item \code{allowed_self_trade_prevention_modes} (character): Comma-separated allowed STP modes.
@@ -668,6 +685,44 @@ Verified: 2026-03-10
 market <- BinanceMarketData$new()
 stats <- market$get_24hr_stats("BTCUSDT")
 print(stats[, .(symbol, last_price, price_change_percent, volume)])
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BinanceMarketData-get_all_24hr_stats"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceMarketData-get_all_24hr_stats}{}}}
+\subsection{Method \code{get_all_24hr_stats()}}{
+Get 24hr Ticker Statistics for All Symbols
+
+Retrieves rolling 24-hour price change statistics for all trading pairs
+in a single request.
+\subsection{API Endpoint}{
+
+\verb{GET https://api.binance.com/api/v3/ticker/24hr} (no symbol parameter)
+}
+
+\subsection{Official Documentation}{
+
+\href{https://binance-docs.github.io/apidocs/spot/en/#24hr-ticker-price-change-statistics}{Binance 24hr Ticker Price Change Statistics}
+}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_all_24hr_stats()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with same
+columns as \code{get_24hr_stats()}, one row per symbol.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
+all_stats <- market$get_all_24hr_stats()
+print(all_stats[1:5, .(symbol, last_price, price_change_percent, volume)])
 }
 }
 \if{html}{\out{</div>}}
