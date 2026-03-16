@@ -490,8 +490,11 @@ Verified: 2026-03-10
 \itemize{
 \item \code{total_count} (integer): Total number of sub-accounts.
 \item \code{master_account_total_asset} (character): Master account total asset value in BTC.
-\item \code{spot_sub_user_asset_btc_vo_list} (list): Nested list of per-sub-account spot asset summaries.
+\item \code{sub_user_email} (character): Sub-account email (one row per sub-account).
+\item \code{sub_user_total_asset} (character): Sub-account total asset value in BTC.
 }
+
+When there are multiple sub-accounts, summary fields are repeated on each row.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

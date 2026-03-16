@@ -202,7 +202,8 @@ test_that("get_cross_margin_data returns data.table with correct columns", {
 
   dt <- new_margin()$get_cross_margin_data()
   expect_s3_class(dt, "data.table")
-  expect_equal(nrow(dt), 1L)
+  # marginable_pairs expanded to long format: 2 pairs in mock => 2 rows
+  expect_equal(nrow(dt), 2L)
   expect_true("vip_level" %in% names(dt))
   expect_true("coin" %in% names(dt))
   expect_true("transfer_in" %in% names(dt))
@@ -210,8 +211,11 @@ test_that("get_cross_margin_data returns data.table with correct columns", {
   expect_true("borrowable" %in% names(dt))
   expect_true("daily_interest" %in% names(dt))
   expect_true("yearly_interest" %in% names(dt))
-  expect_true("marginable_pairs" %in% names(dt))
-  expect_equal(dt$coin, "BTC")
+  # marginable_pairs is now expanded to long format as marginable_pair (singular)
+  expect_false("marginable_pairs" %in% names(dt))
+  expect_true("marginable_pair" %in% names(dt))
+  expect_equal(dt$marginable_pair, c("BTCUSDT", "BTCBUSD"))
+  expect_equal(unique(dt$coin), "BTC")
 })
 
 test_that("get_cross_margin_data hits correct endpoint", {

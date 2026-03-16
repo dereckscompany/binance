@@ -252,7 +252,7 @@ Verified: 2026-03-10
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per child order (long format) and the following columns:
+\code{data.table} with one row per child order report (long format) and the following columns:
 \itemize{
 \item \code{order_list_id} (integer): OCO order list identifier (repeated per child order).
 \item \code{contingency_type} (character): Always \code{"OCO"}.
@@ -261,10 +261,17 @@ Verified: 2026-03-10
 \item \code{list_client_order_id} (character): Client-assigned list ID.
 \item \code{transact_time} (POSIXct): Transaction time.
 \item \code{symbol} (character): Trading pair from parent OCO.
-\item \code{order_symbol} (character): Trading pair from child order.
-\item \code{order_id} (integer): Child order ID.
-\item \code{client_order_id} (character): Child order client ID.
-\item \code{order_reports} (list): List of order report objects (kept as list-column).
+\item \code{order_report_symbol} (character): Trading pair from child order report.
+\item \code{order_report_order_id} (integer): Child order ID.
+\item \code{order_report_client_order_id} (character): Child order client ID.
+\item \code{order_report_transact_time} (numeric): Child order transaction time.
+\item \code{order_report_price} (character): Child order price.
+\item \code{order_report_orig_qty} (character): Child order original quantity.
+\item \code{order_report_executed_qty} (character): Child order executed quantity.
+\item \code{order_report_status} (character): Child order status (e.g., \code{"NEW"}).
+\item \code{order_report_type} (character): Child order type (e.g., \code{"STOP_LOSS_LIMIT"}, \code{"LIMIT_MAKER"}).
+\item \code{order_report_side} (character): Child order side.
+\item \code{order_report_stop_price} (character): Stop price (if applicable).
 }
 }
 \subsection{Examples}{

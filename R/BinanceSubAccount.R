@@ -295,7 +295,10 @@ BinanceSubAccount <- R6::R6Class(
     #' @return `data.table` with one row and the following columns:
     #' - `total_count` (integer): Total number of sub-accounts.
     #' - `master_account_total_asset` (character): Master account total asset value in BTC.
-    #' - `spot_sub_user_asset_btc_vo_list` (list): Nested list of per-sub-account spot asset summaries.
+    #' - `sub_user_email` (character): Sub-account email (one row per sub-account).
+    #' - `sub_user_total_asset` (character): Sub-account total asset value in BTC.
+    #'
+    #' When there are multiple sub-accounts, summary fields are repeated on each row.
     #'
     #' @examples
     #' \dontrun{
@@ -316,7 +319,18 @@ BinanceSubAccount <- R6::R6Class(
           if (is.null(data) || length(data) == 0) {
             return(data.table::data.table()[])
           }
-          return(as_dt_row(data)[])
+          sub_users <- data$spotSubUserAssetBtcVoList
+          data$spotSubUserAssetBtcVoList <- NULL
+          dt <- as_dt_row(data)
+          # Expand sub-user assets to long format: one row per sub-account
+          if (!is.null(sub_users) && length(sub_users) > 0) {
+            sub_dt <- as_dt_list(sub_users)
+            sub_names <- names(sub_dt)
+            data.table::setnames(sub_dt, sub_names, paste0("sub_user_", sub_names))
+            dt <- dt[rep(1L, nrow(sub_dt))]
+            dt <- cbind(dt, sub_dt)
+          }
+          return(dt[])
         }
       ))
     },

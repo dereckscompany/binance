@@ -402,7 +402,9 @@ BinanceMarginData <- R6::R6Class(
     #'   - `borrowable` (logical): Whether borrowing is allowed.
     #'   - `daily_interest` (character): Daily interest rate as string.
     #'   - `yearly_interest` (character): Yearly interest rate as string.
-    #'   - `marginable_pairs` (list): List of marginable trading pairs.
+    #'   - `marginable_pair` (character): Marginable trading pair (one row per coin-pair combination).
+    #'
+    #' When a coin has multiple marginable pairs, coin-level fields are repeated on each row.
     #'
     #' @examples
     #' \dontrun{
@@ -424,7 +426,19 @@ BinanceMarginData <- R6::R6Class(
           if (is.null(data) || length(data) == 0) {
             return(data.table::data.table()[])
           }
-          return(as_dt_list(data)[])
+          # Expand marginablePairs to long format before building rows
+          rows <- lapply(data, function(item) {
+            pairs <- item$marginablePairs
+            item$marginablePairs <- NULL
+            dt <- as_dt_row(item)
+            if (!is.null(pairs) && length(pairs) > 0) {
+              pair_vals <- unlist(pairs)
+              dt <- dt[rep(1L, length(pair_vals))]
+              dt[, marginable_pair := pair_vals]
+            }
+            return(dt)
+          })
+          return(data.table::rbindlist(rows, fill = TRUE)[])
         }
       ))
     },

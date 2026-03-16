@@ -556,8 +556,10 @@ Verified: 2026-03-10
 \item \code{borrowable} (logical): Whether borrowing is allowed.
 \item \code{daily_interest} (character): Daily interest rate as string.
 \item \code{yearly_interest} (character): Yearly interest rate as string.
-\item \code{marginable_pairs} (list): List of marginable trading pairs.
+\item \code{marginable_pair} (character): Marginable trading pair (one row per coin-pair combination).
 }
+
+When a coin has multiple marginable pairs, coin-level fields are repeated on each row.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

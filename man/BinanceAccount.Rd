@@ -173,7 +173,10 @@ Verified: 2026-03-10
 \item \code{taker_commission} (integer): Taker commission rate (basis points).
 \item \code{buyer_commission} (integer): Buyer commission rate (basis points).
 \item \code{seller_commission} (integer): Seller commission rate (basis points).
-\item \code{commission_rates} (list): Nested object with \code{maker}, \code{taker}, \code{buyer}, \code{seller} as decimal strings.
+\item \code{commission_rates_maker} (character): Maker commission rate as decimal string.
+\item \code{commission_rates_taker} (character): Taker commission rate as decimal string.
+\item \code{commission_rates_buyer} (character): Buyer commission rate as decimal string.
+\item \code{commission_rates_seller} (character): Seller commission rate as decimal string.
 \item \code{can_trade} (logical): Whether the account can place trades.
 \item \code{can_withdraw} (logical): Whether the account can withdraw.
 \item \code{can_deposit} (logical): Whether the account can deposit.

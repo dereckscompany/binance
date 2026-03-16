@@ -1226,8 +1226,10 @@ Verified: 2026-03-10
 \item \code{trade_enabled} (logical): Whether trading is enabled.
 \item \code{transfer_enabled} (logical): Whether transfers are enabled.
 \item \code{account_type} (character): Account type (\code{"MARGIN"}).
-\item \code{user_assets} (list): List of asset balance objects.
+\item \verb{user_asset_*}: Per-asset fields prefixed with \code{user_asset_} (one row per asset).
 }
+
+When the account has multiple assets, account-level fields are repeated on each row.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

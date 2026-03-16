@@ -929,7 +929,9 @@ BinanceMargin <- R6::R6Class(
     #' - `trade_enabled` (logical): Whether trading is enabled.
     #' - `transfer_enabled` (logical): Whether transfers are enabled.
     #' - `account_type` (character): Account type (`"MARGIN"`).
-    #' - `user_assets` (list): List of asset balance objects.
+    #' - `user_asset_*`: Per-asset fields prefixed with `user_asset_` (one row per asset).
+    #'
+    #' When the account has multiple assets, account-level fields are repeated on each row.
     #'
     #' @examples
     #' \dontrun{
@@ -942,7 +944,18 @@ BinanceMargin <- R6::R6Class(
         endpoint = "/sapi/v1/margin/account",
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
-          return(as_dt_row(data)[])
+          user_assets <- data$userAssets
+          data$userAssets <- NULL
+          dt <- as_dt_row(data)
+          # Expand userAssets to long format: one row per asset
+          if (!is.null(user_assets) && length(user_assets) > 0) {
+            assets_dt <- as_dt_list(user_assets)
+            asset_names <- names(assets_dt)
+            data.table::setnames(assets_dt, asset_names, paste0("user_asset_", asset_names))
+            dt <- dt[rep(1L, nrow(assets_dt))]
+            dt <- cbind(dt, assets_dt)
+          }
+          return(dt[])
         }
       ))
     },

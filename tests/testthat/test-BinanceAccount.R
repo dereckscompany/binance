@@ -38,8 +38,12 @@ test_that("get_account_info returns data.table with permissions expanded", {
   expect_equal(info$uid[1], 354937868L)
   expect_true(info$can_trade[1])
 
-  # commission_rates preserved, permissions expanded to scalar column
-  expect_true("commission_rates" %in% names(info))
+  # commission_rates flattened to wide columns, permissions expanded to scalar column
+  expect_true("commission_rates_maker" %in% names(info))
+  expect_true("commission_rates_taker" %in% names(info))
+  expect_true("commission_rates_buyer" %in% names(info))
+  expect_true("commission_rates_seller" %in% names(info))
+  expect_false("commission_rates" %in% names(info))
   expect_true("permission" %in% names(info))
   expect_equal(info$permission, "SPOT")
 

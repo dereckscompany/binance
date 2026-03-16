@@ -66,8 +66,15 @@ test_that("get_exchange_info returns data.table with string arrays comma-joined"
   expect_type(dt$allowed_self_trade_prevention_modes, "character")
   expect_equal(dt[symbol == "BTCUSDT"]$allowed_self_trade_prevention_modes, "EXPIRE_TAKER,EXPIRE_MAKER,EXPIRE_BOTH")
 
-  # filters still a list-column (heterogeneous)
-  expect_true("filters" %in% names(dt))
+  # filters are now extracted into flat numeric columns (no list-column)
+  expect_false("filters" %in% names(dt))
+  expect_true("lot_min_qty" %in% names(dt))
+  expect_true("lot_max_qty" %in% names(dt))
+  expect_true("lot_step_size" %in% names(dt))
+  expect_true("price_min" %in% names(dt))
+  expect_true("price_max" %in% names(dt))
+  expect_true("price_tick_size" %in% names(dt))
+  expect_true("min_notional" %in% names(dt))
 
   # Other fields still present
   expect_true("iceberg_allowed" %in% names(dt))

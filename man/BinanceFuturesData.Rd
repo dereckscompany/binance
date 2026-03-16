@@ -343,8 +343,17 @@ fields returned by the API, converted to snake_case. Key columns include:
 \item \code{margin_asset} (character): Margin asset code (e.g., \code{"USDT"}).
 \item \code{price_precision} (integer): Decimal precision for prices.
 \item \code{quantity_precision} (integer): Decimal precision for quantities.
-\item \code{order_types} (list): Allowed order types for this symbol.
-\item \code{filters} (list): List of filter objects.
+\item \code{order_types} (character): Comma-separated allowed order types.
+\item \code{time_in_force} (character): Comma-separated allowed time-in-force values.
+\item \code{underlying_sub_type} (character): Comma-separated underlying sub-types.
+\item \code{permission_sets} (character): Comma-separated permission sets.
+\item \code{lot_min_qty} (numeric): Minimum order quantity (from LOT_SIZE filter).
+\item \code{lot_max_qty} (numeric): Maximum order quantity (from LOT_SIZE filter).
+\item \code{lot_step_size} (numeric): Quantity step size (from LOT_SIZE filter).
+\item \code{price_min} (numeric): Minimum price (from PRICE_FILTER).
+\item \code{price_max} (numeric): Maximum price (from PRICE_FILTER).
+\item \code{price_tick_size} (numeric): Price tick size (from PRICE_FILTER).
+\item \code{min_notional} (numeric): Minimum notional value (from MIN_NOTIONAL filter).
 }
 }
 \subsection{Examples}{

@@ -164,8 +164,17 @@ BinanceFuturesData <- R6::R6Class(
     #'   - `margin_asset` (character): Margin asset code (e.g., `"USDT"`).
     #'   - `price_precision` (integer): Decimal precision for prices.
     #'   - `quantity_precision` (integer): Decimal precision for quantities.
-    #'   - `order_types` (list): Allowed order types for this symbol.
-    #'   - `filters` (list): List of filter objects.
+    #'   - `order_types` (character): Comma-separated allowed order types.
+    #'   - `time_in_force` (character): Comma-separated allowed time-in-force values.
+    #'   - `underlying_sub_type` (character): Comma-separated underlying sub-types.
+    #'   - `permission_sets` (character): Comma-separated permission sets.
+    #'   - `lot_min_qty` (numeric): Minimum order quantity (from LOT_SIZE filter).
+    #'   - `lot_max_qty` (numeric): Maximum order quantity (from LOT_SIZE filter).
+    #'   - `lot_step_size` (numeric): Quantity step size (from LOT_SIZE filter).
+    #'   - `price_min` (numeric): Minimum price (from PRICE_FILTER).
+    #'   - `price_max` (numeric): Maximum price (from PRICE_FILTER).
+    #'   - `price_tick_size` (numeric): Price tick size (from PRICE_FILTER).
+    #'   - `min_notional` (numeric): Minimum notional value (from MIN_NOTIONAL filter).
     #'
     #' @examples
     #' \dontrun{
@@ -182,6 +191,39 @@ BinanceFuturesData <- R6::R6Class(
           if (is.null(syms) || length(syms) == 0) {
             return(data.table::data.table()[])
           }
+
+          .extract_filter <- function(filters, filter_type, field) {
+            if (is.null(filters) || length(filters) == 0) {
+              return(NA_real_)
+            }
+            for (f in filters) {
+              if (!is.null(f$filterType) && f$filterType == filter_type) {
+                val <- f[[field]]
+                if (!is.null(val)) return(as.numeric(val))
+              }
+            }
+            return(NA_real_)
+          }
+
+          syms <- lapply(syms, function(s) {
+            # Comma-join string arrays
+            for (field in c("orderTypes", "timeInForce", "underlyingSubType", "permissionSets")) {
+              if (!is.null(s[[field]]) && is.list(s[[field]])) {
+                s[[field]] <- paste(unlist(s[[field]]), collapse = ",")
+              }
+            }
+            # Extract filter values as flat numeric fields
+            raw_filters <- s$filters
+            s$lot_min_qty <- .extract_filter(raw_filters, "LOT_SIZE", "minQty")
+            s$lot_max_qty <- .extract_filter(raw_filters, "LOT_SIZE", "maxQty")
+            s$lot_step_size <- .extract_filter(raw_filters, "LOT_SIZE", "stepSize")
+            s$price_min <- .extract_filter(raw_filters, "PRICE_FILTER", "minPrice")
+            s$price_max <- .extract_filter(raw_filters, "PRICE_FILTER", "maxPrice")
+            s$price_tick_size <- .extract_filter(raw_filters, "PRICE_FILTER", "tickSize")
+            s$min_notional <- .extract_filter(raw_filters, "MIN_NOTIONAL", "notional")
+            s$filters <- NULL
+            return(s)
+          })
           dt <- data.table::rbindlist(
             lapply(syms, as_dt_row),
             fill = TRUE

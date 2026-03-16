@@ -39,7 +39,17 @@ test_that("get_exchange_info returns data.table with futures symbol metadata", {
   expect_true("quote_asset" %in% names(dt))
   expect_true("margin_asset" %in% names(dt))
   expect_true("order_types" %in% names(dt))
-  expect_true("filters" %in% names(dt))
+  # filters are extracted into flat numeric columns
+  expect_false("filters" %in% names(dt))
+  expect_true("lot_min_qty" %in% names(dt))
+  expect_true("lot_max_qty" %in% names(dt))
+  expect_true("lot_step_size" %in% names(dt))
+  expect_true("price_min" %in% names(dt))
+  expect_true("price_max" %in% names(dt))
+  expect_true("price_tick_size" %in% names(dt))
+  expect_true("min_notional" %in% names(dt))
+  # String arrays are comma-joined
+  expect_type(dt$order_types, "character")
   expect_equal(dt$symbol, "BTCUSDT")
   expect_equal(dt$contract_type, "PERPETUAL")
   expect_equal(dt$base_asset, "BTC")

@@ -1004,9 +1004,9 @@ BinanceFutures <- R6::R6Class(
     #' - `asset_unrealized_profit` (character): Per-asset unrealised PnL.
     #' - `asset_margin_balance` (character): Per-asset margin balance.
     #' - `asset_available_balance` (character): Per-asset available balance.
-    #' - `positions` (list): Nested list of per-symbol position details (kept as list-column).
+    #' - `position_*`: Per-position fields prefixed with `position_` (one row per asset-position combination).
     #'
-    #' When the account has multiple assets, account-level fields are repeated on each row.
+    #' When the account has multiple assets and positions, account-level fields are repeated on each row.
     #'
     #' @examples
     #' \dontrun{
@@ -1020,16 +1020,25 @@ BinanceFutures <- R6::R6Class(
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
           assets <- data$assets
+          positions <- data$positions
           data$assets <- NULL
+          data$positions <- NULL
           dt <- as_dt_row(data)
           # Expand assets to long format: one row per asset
           if (!is.null(assets) && length(assets) > 0) {
             assets_dt <- as_dt_list(assets)
-            # Prefix asset columns to avoid collision with parent account columns
             asset_names <- names(assets_dt)
             data.table::setnames(assets_dt, asset_names, paste0("asset_", asset_names))
             dt <- dt[rep(1L, nrow(assets_dt))]
             dt <- cbind(dt, assets_dt)
+          }
+          # Expand positions to long format: one row per position
+          if (!is.null(positions) && length(positions) > 0) {
+            positions_dt <- as_dt_list(positions)
+            pos_names <- names(positions_dt)
+            data.table::setnames(positions_dt, pos_names, paste0("position_", pos_names))
+            dt <- dt[rep(1L, nrow(positions_dt))]
+            dt <- cbind(dt, positions_dt)
           }
           return(dt[])
         }

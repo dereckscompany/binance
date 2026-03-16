@@ -199,12 +199,17 @@ test_that("get_account returns data.table with margin account info", {
 
   dt <- new_margin()$get_account()
   expect_s3_class(dt, "data.table")
-  expect_equal(nrow(dt), 1L)
+  # user_assets expanded to long format: 2 assets in mock => 2 rows
+  expect_equal(nrow(dt), 2L)
   expect_true("borrow_enabled" %in% names(dt))
   expect_true("margin_level" %in% names(dt))
-  expect_true("user_assets" %in% names(dt))
-  expect_equal(dt$account_type, "MARGIN")
-  expect_true(dt$borrow_enabled)
+  # user_assets is no longer a list-column; expanded with user_asset_ prefix
+  expect_false("user_assets" %in% names(dt))
+  expect_true("user_asset_asset" %in% names(dt))
+  expect_true("user_asset_free" %in% names(dt))
+  expect_true("user_asset_borrowed" %in% names(dt))
+  expect_equal(dt$account_type, c("MARGIN", "MARGIN"))
+  expect_true(all(dt$borrow_enabled))
 })
 
 test_that("get_account sends GET to correct endpoint", {

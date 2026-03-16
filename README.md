@@ -298,12 +298,15 @@ account$get_account_info()
     #>    maker_commission taker_commission buyer_commission seller_commission
     #>               <int>            <int>            <int>             <int>
     #> 1:               15               15                0                 0
-    #>    commission_rates can_trade can_withdraw can_deposit brokered
-    #>              <list>    <lgcl>       <lgcl>      <lgcl>   <lgcl>
-    #> 1:        <list[4]>      TRUE         TRUE        TRUE    FALSE
-    #>    require_self_trade_prevention prevent_sor update_time account_type       uid
-    #>                           <lgcl>      <lgcl>       <int>       <char>     <int>
-    #> 1:                         FALSE       FALSE   123456789         SPOT 354937868
+    #>    can_trade can_withdraw can_deposit brokered require_self_trade_prevention
+    #>       <lgcl>       <lgcl>      <lgcl>   <lgcl>                        <lgcl>
+    #> 1:      TRUE         TRUE        TRUE    FALSE                         FALSE
+    #>    prevent_sor update_time account_type       uid commission_rates_maker
+    #>         <lgcl>       <int>       <char>     <int>                 <char>
+    #> 1:       FALSE   123456789         SPOT 354937868             0.00150000
+    #>    commission_rates_taker commission_rates_buyer commission_rates_seller
+    #>                    <char>                 <char>                  <char>
+    #> 1:             0.00150000             0.00000000              0.00000000
     #>    permission
     #>        <char>
     #> 1:       SPOT
@@ -345,12 +348,19 @@ margin$get_account()
     #>    borrow_enabled margin_level total_asset_of_btc total_liability_of_btc
     #>            <lgcl>       <char>             <char>                 <char>
     #> 1:           TRUE  11.64405625         6.82000000             0.58633215
+    #> 2:           TRUE  11.64405625         6.82000000             0.58633215
     #>    total_net_asset_of_btc trade_enabled transfer_enabled account_type
     #>                    <char>        <lgcl>           <lgcl>       <char>
     #> 1:             6.23366785          TRUE             TRUE       MARGIN
-    #>    user_assets
-    #>         <list>
-    #> 1:   <list[2]>
+    #> 2:             6.23366785          TRUE             TRUE       MARGIN
+    #>    user_asset_asset user_asset_borrowed user_asset_free user_asset_interest
+    #>              <char>              <char>          <char>              <char>
+    #> 1:              BTC          0.00000000      0.00499500          0.00000000
+    #> 2:             USDT        100.00000000    200.00000000          0.01000000
+    #>    user_asset_locked user_asset_net_asset
+    #>               <char>               <char>
+    #> 1:        0.00000000           0.00499500
+    #> 2:        0.00000000          99.99000000
 
 ### Max Borrowable
 

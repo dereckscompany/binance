@@ -93,7 +93,10 @@ BinanceAccount <- R6::R6Class(
     #' - `taker_commission` (integer): Taker commission rate (basis points).
     #' - `buyer_commission` (integer): Buyer commission rate (basis points).
     #' - `seller_commission` (integer): Seller commission rate (basis points).
-    #' - `commission_rates` (list): Nested object with `maker`, `taker`, `buyer`, `seller` as decimal strings.
+    #' - `commission_rates_maker` (character): Maker commission rate as decimal string.
+    #' - `commission_rates_taker` (character): Taker commission rate as decimal string.
+    #' - `commission_rates_buyer` (character): Buyer commission rate as decimal string.
+    #' - `commission_rates_seller` (character): Seller commission rate as decimal string.
     #' - `can_trade` (logical): Whether the account can place trades.
     #' - `can_withdraw` (logical): Whether the account can withdraw.
     #' - `can_deposit` (logical): Whether the account can deposit.
@@ -119,6 +122,14 @@ BinanceAccount <- R6::R6Class(
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
           data$balances <- NULL
+          # Flatten commissionRates nested object into wide columns
+          cr <- data$commissionRates
+          if (!is.null(cr)) {
+            for (nm in names(cr)) {
+              data[[paste0("commissionRates_", nm)]] <- cr[[nm]]
+            }
+            data$commissionRates <- NULL
+          }
           permissions <- data$permissions
           data$permissions <- NULL
           dt <- as_dt_row(data)
