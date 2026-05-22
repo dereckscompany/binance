@@ -158,13 +158,45 @@ test_that("get_spot_summary hits correct endpoint", {
   expect_true(grepl("sapi/v1/sub-account/spotSummary", captured_url))
 })
 
-test_that("get_spot_summary returns data.table", {
-  resp <- mock_binance_response(data = list(totalCount = 2L, masterAccountTotalAsset = "0.5"))
+test_that("get_spot_summary returns empty data.table when no sub-accounts (no stub row)", {
+  # Previously this returned a synthetic 1-row table of just master-level
+  # fields. Per the cross-package "no stub rows" convention, zero
+  # sub-accounts → zero rows.
+  resp <- mock_binance_response(data = list(totalCount = 0L, masterAccountTotalAsset = "0"))
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_sub()$get_spot_summary()
   expect_s3_class(dt, "data.table")
-  expect_equal(nrow(dt), 1L)
+  expect_equal(nrow(dt), 0L)
+})
+
+test_that("get_spot_summary expands spotSubUserAssetBtcVoList to one row per sub-account", {
+  resp <- mock_binance_response(
+    data = list(
+      totalCount = 2L,
+      masterAccountTotalAsset = "0.5",
+      spotSubUserAssetBtcVoList = list(
+        list(email = "sub1@example.com", totalAsset = "0.1"),
+        list(email = "sub2@example.com", totalAsset = "0.4")
+      )
+    )
+  )
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_sub()$get_spot_summary()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 2L)
+  # Master-level summary fields replicated on each row.
+  expect_equal(unique(dt$total_count), 2L)
+  expect_equal(unique(dt$master_account_total_asset), "0.5")
+  # Sub-account-level fields with sub_user_ prefix.
+  expect_true("sub_user_email" %in% names(dt))
+  expect_true("sub_user_total_asset" %in% names(dt))
+  expect_equal(dt$sub_user_email, c("sub1@example.com", "sub2@example.com"))
+  expect_equal(dt$sub_user_total_asset, c("0.1", "0.4"))
+  # No list columns.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
 })
 
 # -- add_transfer --

@@ -41,7 +41,7 @@ The transformations the parsers apply:
 
 3. **Shape normalisation** for nested arrays and objects, applied per endpoint:
     - **Arrays of plain strings** (e.g. `orderTypes`, `permissions`, `allowedSelfTradePreventionModes`) → collapsed into one `;`-separated character column. Recover via `strsplit(x, ";", fixed = TRUE)[[1]]`.
-    - **Arrays of objects with a fixed schema** (e.g. order `fills`, account `assets`, OCO `orderReports`, watchlist children) → exploded to long format with parent fields replicated and a `<child>_` prefix on the child columns. A 1-indexed position column is added where order matters.
+    - **Arrays of objects with a fixed schema** (e.g. order `fills`, account `assets`, OCO `orderReports`, sub-account `spotSubUserAssetBtcVoList`) → exploded to long format with parent fields replicated and a `<child>_` prefix on the child columns. A 1-indexed position column is added where order matters.
     - **Single nested objects with a fixed schema** (e.g. account `commissionRates`, locked-earn `detail` / `quota`) → flattened to wide `parent_child` columns.
     - **Nested objects with dynamic keys** (e.g. spot exchange-info `permissionSets`, flexible-earn `tierAnnualPercentageRate`) → serialised as a JSON string column so the inner structure is preserved; recover via `jsonlite::fromJSON(x)`.
 

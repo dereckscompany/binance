@@ -59,10 +59,10 @@ The transformations the parsers apply:
       `;`-separated character column. Recover via
       `strsplit(x, ";", fixed = TRUE)[[1]]`.
     - **Arrays of objects with a fixed schema** (e.g. order `fills`,
-      account `assets`, OCO `orderReports`, watchlist children) →
-      exploded to long format with parent fields replicated and a
-      `<child>_` prefix on the child columns. A 1-indexed position
-      column is added where order matters.
+      account `assets`, OCO `orderReports`, sub-account
+      `spotSubUserAssetBtcVoList`) → exploded to long format with parent
+      fields replicated and a `<child>_` prefix on the child columns. A
+      1-indexed position column is added where order matters.
     - **Single nested objects with a fixed schema** (e.g. account
       `commissionRates`, locked-earn `detail` / `quota`) → flattened to
       wide `parent_child` columns.
@@ -287,9 +287,9 @@ trading$add_order_test(
 )
 ```
 
-    #>     symbol   side   type    status
-    #>     <char> <char> <char>    <char>
-    #> 1: BTCUSDT    BUY  LIMIT validated
+    #>    validated
+    #>       <lgcl>
+    #> 1:      TRUE
 
 ### Query an Order
 
@@ -514,9 +514,9 @@ futures$add_order_test(
 )
 ```
 
-    #>     symbol   side   type    status
-    #>     <char> <char> <char>    <char>
-    #> 1: BTCUSDT    BUY  LIMIT validated
+    #>    validated
+    #>       <lgcl>
+    #> 1:      TRUE
 
 #### Set Leverage
 

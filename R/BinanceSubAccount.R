@@ -321,15 +321,21 @@ BinanceSubAccount <- R6::R6Class(
           }
           sub_users <- data$spotSubUserAssetBtcVoList
           data$spotSubUserAssetBtcVoList <- NULL
-          dt <- as_dt_row(data)
-          # Expand sub-user assets to long format: one row per sub-account
-          if (!is.null(sub_users) && length(sub_users) > 0) {
-            sub_dt <- as_dt_list(sub_users)
-            sub_names <- names(sub_dt)
-            data.table::setnames(sub_dt, sub_names, paste0("sub_user_", sub_names))
-            dt <- dt[rep(1L, nrow(sub_dt))]
-            dt <- cbind(dt, sub_dt)
+          # If there are no sub-accounts return an empty data.table. The
+          # `@return` says "one row per sub-account", so zero
+          # sub-accounts is zero rows — fabricating a 1-row table of
+          # just master-level fields would violate the cross-package
+          # "no stub rows" convention (the master-level scalars are
+          # also available without calling this method).
+          if (is.null(sub_users) || length(sub_users) == 0) {
+            return(data.table::data.table()[])
           }
+          dt <- as_dt_row(data)
+          sub_dt <- as_dt_list(sub_users)
+          sub_names <- names(sub_dt)
+          data.table::setnames(sub_dt, sub_names, paste0("sub_user_", sub_names))
+          dt <- dt[rep(1L, nrow(sub_dt))]
+          dt <- cbind(dt, sub_dt)
           return(dt[])
         }
       ))
