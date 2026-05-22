@@ -1476,7 +1476,11 @@ BinanceMargin <- R6::R6Class(
     #' `POST https://api.binance.com/sapi/v1/margin/isolated/transfer`
     #'
     #' ### Official Documentation
-    #' [Binance Isolated Margin Transfer](https://developers.binance.com/docs/margin_trading/transfer/Isolated-Margin-Account-Transfer)
+    #' [Binance Universal Transfer](https://developers.binance.com/docs/wallet/asset/user-universal-transfer)
+    #' (Binance retired the dedicated isolated-margin-transfer doc
+    #' page; the universal-transfer endpoint subsumes it. The
+    #' `sapi/v1/margin/isolated/transfer` REST endpoint this wrapper
+    #' calls still works at the time of writing.)
     #'
     #' Verified: 2026-03-10
     #'

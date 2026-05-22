@@ -1829,7 +1829,7 @@ BinanceFutures <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/positionSide/dual`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Get Current Position Mode](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Get-Current-Position-Mode)
+    #' [Binance Futures Get Current Position Mode](https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Get-Current-Position-Mode)
     #'
     #' Verified: 2026-03-10
     #'

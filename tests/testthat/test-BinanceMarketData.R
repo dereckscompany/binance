@@ -73,6 +73,16 @@ test_that("get_exchange_info returns data.table with string arrays semicolon-joi
     "EXPIRE_TAKER;EXPIRE_MAKER;EXPIRE_BOTH"
   )
 
+  # `permission_sets` is the newer array-of-arrays field; the helper
+  # flattens it to a `;`-joined character. ETH lacks it → NA.
+  expect_true("permission_sets" %in% names(dt))
+  expect_type(dt$permission_sets, "character")
+  expect_equal(
+    dt[symbol == "BTCUSDT"]$permission_sets,
+    "SPOT;MARGIN;TRD_GRP_004"
+  )
+  expect_true(is.na(dt[symbol == "ETHUSDT"]$permission_sets))
+
   # No list columns anywhere — regression for the cross-package policy.
   list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
   expect_equal(length(list_cols), 0L)

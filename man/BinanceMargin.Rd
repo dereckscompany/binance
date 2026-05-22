@@ -1837,7 +1837,11 @@ Transfers assets between spot and isolated margin accounts.
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/margin_trading/transfer/Isolated-Margin-Account-Transfer}{Binance Isolated Margin Transfer}
+\href{https://developers.binance.com/docs/wallet/asset/user-universal-transfer}{Binance Universal Transfer}
+(Binance retired the dedicated isolated-margin-transfer doc
+page; the universal-transfer endpoint subsumes it. The
+\code{sapi/v1/margin/isolated/transfer} REST endpoint this wrapper
+calls still works at the time of writing.)
 
 Verified: 2026-03-10
 }

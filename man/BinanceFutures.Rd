@@ -2125,7 +2125,7 @@ Retrieves the current position mode (one-way or hedge mode).
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Get-Current-Position-Mode}{Binance Futures Get Current Position Mode}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Get-Current-Position-Mode}{Binance Futures Get Current Position Mode}
 
 Verified: 2026-03-10
 }

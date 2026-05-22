@@ -68,6 +68,11 @@ mock_exchange_info_data <- function() {
           list(filterType = "LOT_SIZE", minQty = "0.00001000", maxQty = "9000.00000000", stepSize = "0.00001000")
         ),
         permissions = list("SPOT", "MARGIN"),
+        # New field Binance now returns alongside `permissions` — array
+        # of arrays. Live API often returns `permissions = []` on newer
+        # symbols and the meaningful data lives here. Our parser
+        # flattens this to a single `;`-joined character column.
+        permissionSets = list(list("SPOT", "MARGIN", "TRD_GRP_004")),
         defaultSelfTradePreventionMode = "EXPIRE_MAKER",
         allowedSelfTradePreventionModes = list("EXPIRE_TAKER", "EXPIRE_MAKER", "EXPIRE_BOTH")
       ),
@@ -92,6 +97,8 @@ mock_exchange_info_data <- function() {
           list(filterType = "PRICE_FILTER", minPrice = "0.01000000", maxPrice = "100000.00", tickSize = "0.01000000")
         ),
         permissions = list("SPOT"),
+        # ETH symbol intentionally omits `permissionSets` to exercise
+        # the missing-field branch (helper should set it to NA).
         defaultSelfTradePreventionMode = "NONE",
         allowedSelfTradePreventionModes = list("NONE")
       )

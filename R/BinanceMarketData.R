@@ -209,7 +209,13 @@ BinanceMarketData <- R6::R6Class(
     #'   - `min_notional` (numeric): Minimum notional value from MIN_NOTIONAL filter.
     #'   - `permissions` (character): Semicolon-separated trading permissions
     #'     (e.g., `"SPOT;MARGIN"`). Recover via
-    #'     `strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]`.
+    #'     `strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]`. **Note:**
+    #'     on newer symbols Binance often returns `permissions = []` and
+    #'     populates `permission_sets` instead. Prefer `permission_sets`
+    #'     for new code.
+    #'   - `permission_sets` (character): Semicolon-separated permission
+    #'     set entries, flattened from Binance's array-of-arrays form.
+    #'     `NA` when the symbol omits the field.
     #'   - `default_self_trade_prevention_mode` (character): Default STP mode.
     #'   - `allowed_self_trade_prevention_modes` (character): Semicolon-separated
     #'     allowed STP modes.
@@ -260,9 +266,15 @@ BinanceMarketData <- R6::R6Class(
           syms <- lapply(syms, function(s) {
             # Collapse string arrays with `;` (cross-package convention;
             # see `collapse_string_array_fields()` in helpers_parse.R).
+            # `permissionSets` is a newer field Binance added that
+            # arrives as an array-of-arrays; `unlist`ing inside the
+            # helper flattens to a single `;`-joined character, which
+            # matches the legacy `permissions` shape. Drop `permissions`
+            # itself if you only want the newer field — on newer symbols
+            # the legacy array often arrives as `[]`.
             s <- collapse_string_array_fields(
               s,
-              c("orderTypes", "permissions", "allowedSelfTradePreventionModes")
+              c("orderTypes", "permissions", "permissionSets", "allowedSelfTradePreventionModes")
             )
             # Extract filter values as flat numeric fields
             raw_filters <- s$filters

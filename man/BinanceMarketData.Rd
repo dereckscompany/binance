@@ -391,7 +391,13 @@ fields returned by the API, converted to snake_case. Key columns include:
 \item \code{min_notional} (numeric): Minimum notional value from MIN_NOTIONAL filter.
 \item \code{permissions} (character): Semicolon-separated trading permissions
 (e.g., \code{"SPOT;MARGIN"}). Recover via
-\code{strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]}.
+\code{strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]}. \strong{Note:}
+on newer symbols Binance often returns \verb{permissions = []} and
+populates \code{permission_sets} instead. Prefer \code{permission_sets}
+for new code.
+\item \code{permission_sets} (character): Semicolon-separated permission
+set entries, flattened from Binance's array-of-arrays form.
+\code{NA} when the symbol omits the field.
 \item \code{default_self_trade_prevention_mode} (character): Default STP mode.
 \item \code{allowed_self_trade_prevention_modes} (character): Semicolon-separated
 allowed STP modes.
