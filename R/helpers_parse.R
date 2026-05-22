@@ -189,6 +189,18 @@ ms_to_datetime <- function(ms) {
 #' @keywords internal
 #' @noRd
 parse_orderbook <- function(data) {
+  # Guard against `data = NULL` / empty list (which `parse_binance_response()`
+  # can return on an empty body or JSON-parse failure). Without this,
+  # `data$bids` and `data$lastUpdateId` below would error with
+  # "$ operator applied to NULL".
+  if (is.null(data) || length(data) == 0) {
+    return(data.table::data.table(
+      last_update_id = character(),
+      side = character(),
+      price = numeric(),
+      size = numeric()
+    )[])
+  }
   parse_side <- function(entries, side_label) {
     if (is.null(entries) || length(entries) == 0) {
       return(data.table::data.table(
@@ -226,6 +238,13 @@ parse_orderbook <- function(data) {
 #' @keywords internal
 #' @noRd
 parse_paginated <- function(data, time_cols = character(0)) {
+  # Guard against `data = NULL` (empty body / JSON-parse failure) before
+  # subscripting. `is.null(data$rows)` on a NULL `data` returns TRUE so
+  # this is partly defensive — but `data` itself being NULL is a real
+  # path through `parse_binance_response()`.
+  if (is.null(data) || length(data) == 0) {
+    return(data.table::data.table()[])
+  }
   rows <- data$rows
   if (is.null(rows) || length(rows) == 0) {
     return(data.table::data.table()[])

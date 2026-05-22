@@ -78,6 +78,24 @@ test_that("add_order expands fills to long format when present", {
   expect_equal(length(list_cols), 0L)
 })
 
+test_that("add_order parser returns empty data.table on NULL data (no crash)", {
+  # Regression: parser used to do `fills <- data$fills` without
+  # guarding NULL, crashing with "$ operator applied to NULL" if
+  # upstream returned NULL (empty body / JSON-parse failure).
+  resp <- mock_binance_response(data = NULL)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_trading()$add_order(
+    type = "LIMIT",
+    symbol = "BTCUSDT",
+    side = "BUY",
+    price = 50000,
+    quantity = 0.0001
+  )
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
+})
+
 test_that("add_order with no fills still emits NA-filled fill_* columns (schema-stable)", {
   # Default newOrderRespType for non-MARKET/LIMIT IOC/FOK is ACK or RESULT,
   # neither of which includes `fills`. The returned table should still

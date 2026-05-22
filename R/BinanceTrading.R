@@ -206,6 +206,12 @@ BinanceTrading <- R6::R6Class(
         method = "POST",
         body = body,
         .parser = function(data) {
+          # Guard against `data = NULL` (empty body / JSON-parse failure).
+          # Without this the `data$fills` access below would throw
+          # "$ operator applied to NULL".
+          if (is.null(data) || length(data) == 0) {
+            return(data.table::data.table()[])
+          }
           fills <- data$fills
           data$fills <- NULL
           dt <- as_dt_row(data)
