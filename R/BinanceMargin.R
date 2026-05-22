@@ -1047,6 +1047,8 @@ BinanceMargin <- R6::R6Class(
     #' @param recvWindow Integer or NULL; max 60000.
     #' @return `data.table` with one row and the following columns:
     #' - `amount` (character): Maximum transferable-out amount.
+    #' - `borrow_limit` (character): Remaining borrow limit for the
+    #'   account, in the same asset units as `amount`.
     #'
     #' @examples
     #' \dontrun{

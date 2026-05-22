@@ -227,6 +227,18 @@ test_that("cancel_all_orders returns data.table with datetime", {
   expect_s3_class(dt$transact_time, "POSIXct")
 })
 
+test_that("cancel_all_orders returns empty data.table when there are no open orders (no stub row)", {
+  # Per the cross-package "no stub rows" convention, the previously-
+  # synthetic `(symbol, status = "cancelled")` row is replaced by an
+  # empty data.table. The absence of an error is the success signal.
+  resp <- mock_binance_response(data = list())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_trading()$cancel_all_orders("BTCUSDT")
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
+})
+
 test_that("cancel_all_orders sends DELETE to openOrders endpoint", {
   captured_url <- NULL
   captured_method <- NULL

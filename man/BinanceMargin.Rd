@@ -1371,6 +1371,8 @@ Verified: 2026-05-22
 \code{data.table} with one row and the following columns:
 \itemize{
 \item \code{amount} (character): Maximum transferable-out amount.
+\item \code{borrow_limit} (character): Remaining borrow limit for the
+account, in the same asset units as \code{amount}.
 }
 }
 \subsection{Examples}{

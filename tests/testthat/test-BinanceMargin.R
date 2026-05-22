@@ -476,6 +476,18 @@ test_that("cancel_all_orders sends DELETE to /sapi/v1/margin/openOrders", {
   expect_true(grepl("/sapi/v1/margin/openOrders", captured$url))
 })
 
+test_that("cancel_all_orders returns empty data.table when there are no open margin orders", {
+  # Per the cross-package "no stub rows" convention, the previously-
+  # synthetic `(symbol, status = "cancelled")` row is replaced by an
+  # empty data.table.
+  resp <- mock_binance_response(data = list())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_margin()$cancel_all_orders("BTCUSDT")
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
+})
+
 # -- get_open_orders --
 
 test_that("get_open_orders returns one row per open order", {
