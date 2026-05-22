@@ -26,7 +26,7 @@ All methods require authentication (valid API key and secret).
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#spot-account-trade}{Binance Spot Trading}
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints}{Binance Spot Trading}
 }
 
 \subsection{Endpoints Covered}{\tabular{lll}{
@@ -152,8 +152,8 @@ a limit order and a stop-loss (or stop-loss-limit) order.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#new-oco-trade}{Binance New OCO}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#order-lists}{Binance New OCO}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -305,8 +305,8 @@ Cancels an entire OCO order list by order list ID or client order ID.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#cancel-oco-trade}{Binance Cancel OCO}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#order-lists}{Binance Cancel OCO}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -439,8 +439,8 @@ original client order ID.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#query-oco-user_data}{Binance Query OCO}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-order-list-user_data}{Binance Query OCO}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -536,8 +536,8 @@ Retrieves all currently open OCO order lists.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#query-open-oco-user_data}{Binance Query Open OCO}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-open-order-lists-user_data}{Binance Query Open OCO}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -630,8 +630,8 @@ recent OCOs.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#query-all-oco-user_data}{Binance Query All OCO}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-all-order-lists-user_data}{Binance Query All OCO}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{

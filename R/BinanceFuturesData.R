@@ -26,7 +26,7 @@
 #' The base URL defaults to `https://fapi.binance.com` via [get_futures_base_url()].
 #'
 #' ### Official Documentation
-#' [Binance USD-M Futures Market Data](https://binance-docs.github.io/apidocs/futures/en/#market-data-endpoints)
+#' [Binance USD-M Futures Market Data](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api)
 #'
 #' ### Endpoints Covered
 #' | Method | Endpoint | Auth |
@@ -110,8 +110,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/exchangeInfo`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Exchange Info](https://binance-docs.github.io/apidocs/futures/en/#exchange-information)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Exchange Info](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Exchange-Information)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -247,8 +247,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/klines`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Kline/Candlestick Data](https://binance-docs.github.io/apidocs/futures/en/#kline-candlestick-data)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Kline/Candlestick Data](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Kline-Candlestick-Data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -411,8 +411,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/premiumIndex`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Mark Price](https://binance-docs.github.io/apidocs/futures/en/#mark-price)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Mark Price](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Mark-Price)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -494,8 +494,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/fundingRate`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Funding Rate History](https://binance-docs.github.io/apidocs/futures/en/#get-funding-rate-history)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Funding Rate History](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Get-Funding-Rate-History)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -579,8 +579,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/ticker/24hr`
     #'
     #' ### Official Documentation
-    #' [Binance Futures 24hr Ticker](https://binance-docs.github.io/apidocs/futures/en/#24hr-ticker-price-change-statistics)
-    #' Verified: 2026-03-10
+    #' [Binance Futures 24hr Ticker](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/24hr-Ticker-Price-Change-Statistics)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -667,8 +667,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/ticker/price`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Symbol Price Ticker](https://binance-docs.github.io/apidocs/futures/en/#symbol-price-ticker)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Symbol Price Ticker](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Symbol-Price-Ticker)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -733,8 +733,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/ticker/bookTicker`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Symbol Order Book Ticker](https://binance-docs.github.io/apidocs/futures/en/#symbol-order-book-ticker)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Symbol Order Book Ticker](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Symbol-Order-Book-Ticker)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -804,8 +804,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/openInterest`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Open Interest](https://binance-docs.github.io/apidocs/futures/en/#open-interest)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Open Interest](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Open-Interest)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -859,8 +859,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/depth`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Order Book](https://binance-docs.github.io/apidocs/futures/en/#order-book)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Order Book](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Order-Book)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -921,8 +921,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/trades`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Recent Trades List](https://binance-docs.github.io/apidocs/futures/en/#recent-trades-list)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Recent Trades List](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Recent-Trades-List)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -996,8 +996,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/indexPriceKlines`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Index Price Kline/Candlestick Data](https://binance-docs.github.io/apidocs/futures/en/#index-price-kline-candlestick-data)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Index Price Kline/Candlestick Data](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Index-Price-Kline-Candlestick-Data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1112,8 +1112,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/markPriceKlines`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Mark Price Kline/Candlestick Data](https://binance-docs.github.io/apidocs/futures/en/#mark-price-kline-candlestick-data)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Mark Price Kline/Candlestick Data](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Mark-Price-Kline-Candlestick-Data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```

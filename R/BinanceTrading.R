@@ -16,7 +16,7 @@
 #' All methods require authentication (valid API key and secret).
 #'
 #' ### Official Documentation
-#' [Binance Spot Trading](https://binance-docs.github.io/apidocs/spot/en/#spot-account-trade)
+#' [Binance Spot Trading](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints)
 #'
 #' ### Endpoints Covered
 #' | Method | Endpoint | HTTP |
@@ -81,8 +81,8 @@ BinanceTrading <- R6::R6Class(
     #' `POST https://api.binance.com/api/v3/order`
     #'
     #' ### Official Documentation
-    #' [Binance New Order](https://binance-docs.github.io/apidocs/spot/en/#new-order-trade)
-    #' Verified: 2026-03-10
+    #' [Binance New Order](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#new-order-trade)
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Limit Orders**: Set specific entry/exit prices for strategy execution.
@@ -250,8 +250,8 @@ BinanceTrading <- R6::R6Class(
     #' `POST https://api.binance.com/api/v3/order/test`
     #'
     #' ### Official Documentation
-    #' [Binance Test New Order](https://binance-docs.github.io/apidocs/spot/en/#test-new-order-trade)
-    #' Verified: 2026-03-10
+    #' [Binance Test New Order](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#test-new-order-trade)
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Parameter Validation**: Verify order parameters are correct before live submission.
@@ -372,8 +372,8 @@ BinanceTrading <- R6::R6Class(
     #' `DELETE https://api.binance.com/api/v3/order`
     #'
     #' ### Official Documentation
-    #' [Binance Cancel Order](https://binance-docs.github.io/apidocs/spot/en/#cancel-order-trade)
-    #' Verified: 2026-03-10
+    #' [Binance Cancel Order](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#cancel-order-trade)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -462,8 +462,8 @@ BinanceTrading <- R6::R6Class(
     #' `DELETE https://api.binance.com/api/v3/openOrders`
     #'
     #' ### Official Documentation
-    #' [Binance Cancel All Open Orders](https://binance-docs.github.io/apidocs/spot/en/#cancel-all-open-orders-on-a-symbol-trade)
-    #' Verified: 2026-03-10
+    #' [Binance Cancel All Open Orders](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#cancel-all-open-orders-on-a-symbol-trade)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -570,8 +570,8 @@ BinanceTrading <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/order`
     #'
     #' ### Official Documentation
-    #' [Binance Query Order](https://binance-docs.github.io/apidocs/spot/en/#query-order-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance Query Order](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-order-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -672,8 +672,8 @@ BinanceTrading <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/openOrders`
     #'
     #' ### Official Documentation
-    #' [Binance Current Open Orders](https://binance-docs.github.io/apidocs/spot/en/#current-open-orders-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance Current Open Orders](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#current-open-orders-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -771,8 +771,8 @@ BinanceTrading <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/allOrders`
     #'
     #' ### Official Documentation
-    #' [Binance All Orders](https://binance-docs.github.io/apidocs/spot/en/#all-orders-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance All Orders](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#all-orders-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```

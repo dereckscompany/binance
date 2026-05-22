@@ -16,7 +16,7 @@
 #' The base URL defaults to `https://fapi.binance.com` via [get_futures_base_url()].
 #'
 #' ### Official Documentation
-#' [Binance Futures API](https://binance-docs.github.io/apidocs/futures/en/)
+#' [Binance Futures API](https://developers.binance.com/docs/derivatives/usds-margined-futures/general-info)
 #'
 #' ### Endpoints Covered
 #' | Method | Endpoint | HTTP |
@@ -122,7 +122,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures New Order](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/New-Order)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -306,7 +306,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures New Order Test](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/New-Order-Test)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -461,7 +461,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Cancel Order](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Cancel-Order)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -560,7 +560,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Cancel All Open Orders](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Cancel-All-Open-Orders)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -621,7 +621,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Query Order](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Query-Order)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -718,7 +718,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Current Open Orders](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Current-All-Open-Orders)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -807,7 +807,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures All Orders](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/All-Orders)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -917,7 +917,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Account Information V2](https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Account-Information-V2)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1056,7 +1056,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Account Balance V2](https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Futures-Account-Balance-V2)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1138,7 +1138,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Position Information V2](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Position-Information-V2)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1221,7 +1221,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Change Initial Leverage](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Initial-Leverage)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1289,7 +1289,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Change Margin Type](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Margin-Type)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1358,7 +1358,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Modify Isolated Position Margin](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Modify-Isolated-Position-Margin)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1438,7 +1438,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Get Position Margin Change History](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Get-Position-Margin-Change-History)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1526,7 +1526,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Account Trade List](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Account-Trade-List)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1631,7 +1631,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Get Income History](https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Get-Income-History)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1766,7 +1766,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Change Position Mode](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Position-Mode)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1831,7 +1831,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Get Current Position Mode](https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Get-Current-Position-Mode)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```

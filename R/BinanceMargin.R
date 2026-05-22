@@ -89,7 +89,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Borrow-Repay](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -158,7 +158,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Borrow-Repay](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -228,7 +228,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin New Order](https://developers.binance.com/docs/margin_trading/trade/Margin-Account-New-Order)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -385,7 +385,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Cancel Order](https://developers.binance.com/docs/margin_trading/trade/Margin-Account-Cancel-Order)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -476,7 +476,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Cancel All Orders](https://developers.binance.com/docs/margin_trading/trade/Margin-Account-Cancel-All-Open-Orders)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -570,7 +570,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Query Order](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Order)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -663,7 +663,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Open Orders](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Open-Orders)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -753,7 +753,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin All Orders](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-All-Orders)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -879,7 +879,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Account](https://developers.binance.com/docs/margin_trading/account/Query-Cross-Margin-Account-Details)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -971,7 +971,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Max Borrowable](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Query-Max-Borrow)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1025,7 +1025,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Max Transferable](https://developers.binance.com/docs/margin_trading/transfer/Query-Max-Transfer-Out-Amount)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1079,7 +1079,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Interest History](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Get-Interest-History)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1173,7 +1173,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Force Liquidation](https://developers.binance.com/docs/margin_trading/trade/Get-Force-Liquidation-Record)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1264,7 +1264,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Trades](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Trade-List)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1367,7 +1367,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Isolated Margin Account](https://developers.binance.com/docs/margin_trading/account/Query-Isolated-Margin-Account-Info)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1482,7 +1482,7 @@ BinanceMargin <- R6::R6Class(
     #' `sapi/v1/margin/isolated/transfer` REST endpoint this wrapper
     #' calls still works at the time of writing.)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```

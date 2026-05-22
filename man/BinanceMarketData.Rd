@@ -34,7 +34,7 @@ All methods are public endpoints requiring no authentication.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#market-data-endpoints}{Binance Spot Market Data}
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints}{Binance Spot Market Data}
 }
 
 \subsection{Endpoints Covered}{\tabular{lll}{
@@ -231,8 +231,8 @@ Useful for detecting clock drift and ensuring HMAC signatures are valid.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#check-server-time}{Binance Check Server Time}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints#check-server-time}{Binance Check Server Time}
+Verified: 2026-05-22
 }
 
 \subsection{Automated Trading Usage}{
@@ -293,8 +293,8 @@ precision, order types, filters, and trading status for each symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#exchange-information}{Binance Exchange Info}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints#exchange-information}{Binance Exchange Info}
+Verified: 2026-05-22
 }
 
 \subsection{Automated Trading Usage}{
@@ -430,8 +430,8 @@ Retrieves the latest price for a specific symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#symbol-price-ticker}{Binance Symbol Price Ticker}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#symbol-price-ticker}{Binance Symbol Price Ticker}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -490,8 +490,8 @@ Retrieves the latest price for all trading pairs in a single request.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#symbol-price-ticker}{Binance Symbol Price Ticker}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#symbol-price-ticker}{Binance Symbol Price Ticker}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -547,8 +547,8 @@ Retrieves the best bid and ask price and quantity for a symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#symbol-order-book-ticker}{Binance Symbol Order Book Ticker}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#symbol-order-book-ticker}{Binance Symbol Order Book Ticker}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -616,8 +616,8 @@ Retrieves rolling 24-hour price change statistics for a symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#24hr-ticker-price-change-statistics}{Binance 24hr Ticker Price Change Statistics}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#24hr-ticker-price-change-statistics}{Binance 24hr Ticker Price Change Statistics}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -718,7 +718,7 @@ in a single request.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#24hr-ticker-price-change-statistics}{Binance 24hr Ticker Price Change Statistics}
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#24hr-ticker-price-change-statistics}{Binance 24hr Ticker Price Change Statistics}
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_all_24hr_stats()}\if{html}{\out{</div>}}
@@ -755,8 +755,8 @@ Retrieves the current average price for a symbol (5-minute weighted average).
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#current-average-price}{Binance Current Average Price}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#current-average-price}{Binance Current Average Price}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -816,8 +816,8 @@ Retrieves the order book (bids and asks) for a symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#order-book}{Binance Order Book}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#order-book}{Binance Order Book}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -891,8 +891,8 @@ Retrieves the most recent trades for a symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#recent-trades-list}{Binance Recent Trades List}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#recent-trades-list}{Binance Recent Trades List}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -968,8 +968,8 @@ Retrieves historical kline/candlestick data for a symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#kline-candlestick-data}{Binance Kline/Candlestick Data}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#klinecandlestick-data}{Binance Kline/Candlestick Data}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{

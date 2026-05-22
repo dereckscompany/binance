@@ -77,7 +77,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Create Virtual Sub-Account](https://developers.binance.com/docs/sub_account/account-management/Create-a-Virtual-Sub-account)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -129,7 +129,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Query Sub-Account List](https://developers.binance.com/docs/sub_account/account-management/Query-Sub-account-List)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -204,7 +204,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Sub-Account Assets](https://developers.binance.com/docs/sub_account/asset-management/Query-Sub-account-Assets-V3)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -262,7 +262,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Sub-Account Spot Summary](https://developers.binance.com/docs/sub_account/asset-management/Query-Sub-account-Spot-Assets-Summary)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -348,7 +348,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Universal Transfer](https://developers.binance.com/docs/sub_account/asset-management/Universal-Transfer)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -459,7 +459,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Universal Transfer History](https://developers.binance.com/docs/sub_account/asset-management/Query-Universal-Transfer-History)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -561,7 +561,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Sub-Account Futures Account V2](https://developers.binance.com/docs/sub_account/asset-management/Get-Detail-on-Sub-accounts-Futures-Account-V2)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -669,7 +669,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Sub-Account Margin Account](https://developers.binance.com/docs/sub_account/asset-management/Get-Detail-on-Sub-accounts-Margin-Account)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -733,7 +733,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Sub-Account Status](https://developers.binance.com/docs/sub_account/account-management/Get-Sub-accounts-Status-on-Margin-Or-Futures)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```

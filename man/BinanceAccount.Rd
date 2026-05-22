@@ -26,7 +26,7 @@ environment variables or passed to the constructor).
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#account-endpoints}{Binance Account Endpoints}
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints}{Binance Account Endpoints}
 }
 
 \subsection{Endpoints Covered}{\tabular{lll}{
@@ -122,8 +122,8 @@ and account type. For balances, use \code{get_balances()}.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data}{Binance Account Information}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#account-information-user_data}{Binance Account Information}
+Verified: 2026-05-22
 }
 
 \subsection{Automated Trading Usage}{
@@ -218,8 +218,8 @@ Retrieves asset balances for the account.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data}{Binance Account Information}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#account-information-user_data}{Binance Account Information}
+Verified: 2026-05-22
 }
 
 \subsection{Automated Trading Usage}{
@@ -301,8 +301,8 @@ Retrieves trades for a specific symbol. Requires authentication.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#account-trade-list-user_data}{Binance Account Trade List}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#account-trade-list-user_data}{Binance Account Trade List}
+Verified: 2026-05-22
 }
 
 \subsection{Automated Trading Usage}{

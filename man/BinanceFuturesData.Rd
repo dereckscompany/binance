@@ -37,7 +37,7 @@ The base URL defaults to \verb{https://fapi.binance.com} via \code{\link[=get_fu
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#market-data-endpoints}{Binance USD-M Futures Market Data}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api}{Binance USD-M Futures Market Data}
 }
 
 \subsection{Endpoints Covered}{\tabular{lll}{
@@ -281,8 +281,8 @@ Includes precision, order types, filters, contract type, and trading status.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#exchange-information}{Binance Futures Exchange Info}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Exchange-Information}{Binance Futures Exchange Info}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -386,8 +386,8 @@ Retrieves historical kline/candlestick data for a futures symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#kline-candlestick-data}{Binance Futures Kline/Candlestick Data}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Kline-Candlestick-Data}{Binance Futures Kline/Candlestick Data}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -510,8 +510,8 @@ for a specific symbol or all symbols.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#mark-price}{Binance Futures Mark Price}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Mark-Price}{Binance Futures Mark Price}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -590,8 +590,8 @@ Retrieves historical funding rate data for a symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#get-funding-rate-history}{Binance Futures Funding Rate History}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Get-Funding-Rate-History}{Binance Futures Funding Rate History}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -677,8 +677,8 @@ or all symbols.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#24hr-ticker-price-change-statistics}{Binance Futures 24hr Ticker}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/24hr-Ticker-Price-Change-Statistics}{Binance Futures 24hr Ticker}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -762,8 +762,8 @@ Retrieves the latest price for a specific futures symbol or all symbols.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#symbol-price-ticker}{Binance Futures Symbol Price Ticker}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Symbol-Price-Ticker}{Binance Futures Symbol Price Ticker}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -829,8 +829,8 @@ or all symbols.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#symbol-order-book-ticker}{Binance Futures Symbol Order Book Ticker}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Symbol-Order-Book-Ticker}{Binance Futures Symbol Order Book Ticker}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -901,8 +901,8 @@ Retrieves the current open interest for a futures symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#open-interest}{Binance Futures Open Interest}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Open-Interest}{Binance Futures Open Interest}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -966,8 +966,8 @@ Retrieves the order book (bids and asks) for a futures symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#order-book}{Binance Futures Order Book}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Order-Book}{Binance Futures Order Book}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1045,8 +1045,8 @@ Retrieves the most recent trades for a futures symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#recent-trades-list}{Binance Futures Recent Trades List}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Recent-Trades-List}{Binance Futures Recent Trades List}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1128,8 +1128,8 @@ Retrieves historical index price kline/candlestick data for a pair.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#index-price-kline-candlestick-data}{Binance Futures Index Price Kline/Candlestick Data}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Index-Price-Kline-Candlestick-Data}{Binance Futures Index Price Kline/Candlestick Data}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1230,8 +1230,8 @@ Retrieves historical mark price kline/candlestick data for a symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#mark-price-kline-candlestick-data}{Binance Futures Mark Price Kline/Candlestick Data}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Mark-Price-Kline-Candlestick-Data}{Binance Futures Mark Price Kline/Candlestick Data}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{

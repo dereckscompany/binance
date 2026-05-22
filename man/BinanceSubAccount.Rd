@@ -212,7 +212,7 @@ Creates a new virtual sub-account under the master account.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/account-management/Create-a-Virtual-Sub-account}{Binance Create Virtual Sub-Account}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -278,7 +278,7 @@ filtered by email or freeze status.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/account-management/Query-Sub-account-List}{Binance Query Sub-Account List}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -366,7 +366,7 @@ Retrieves asset balances for a specific sub-account.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/asset-management/Query-Sub-account-Assets-V3}{Binance Sub-Account Assets}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -435,7 +435,7 @@ Retrieves spot account summary for sub-accounts.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/asset-management/Query-Sub-account-Spot-Assets-Summary}{Binance Sub-Account Spot Summary}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -525,7 +525,7 @@ across different account types (SPOT, futures, margin).
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/asset-management/Universal-Transfer}{Binance Universal Transfer}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -633,7 +633,7 @@ Retrieves universal transfer history between master and sub-accounts.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/asset-management/Query-Universal-Transfer-History}{Binance Universal Transfer History}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -740,7 +740,7 @@ Retrieves futures account details for a sub-account.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/asset-management/Get-Detail-on-Sub-accounts-Futures-Account-V2}{Binance Sub-Account Futures Account V2}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -850,7 +850,7 @@ Retrieves margin account details for a sub-account.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/asset-management/Get-Detail-on-Sub-accounts-Margin-Account}{Binance Sub-Account Margin Account}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -929,7 +929,7 @@ activity state.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/sub_account/account-management/Get-Sub-accounts-Status-on-Margin-Or-Futures}{Binance Sub-Account Status}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{

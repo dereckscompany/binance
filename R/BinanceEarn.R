@@ -75,7 +75,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible List](https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Simple-Earn-Flexible-Product-List)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -151,7 +151,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked List](https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Simple-Earn-Locked-Product-List)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -251,7 +251,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible Subscribe](https://developers.binance.com/docs/simple_earn/flexible-locked/earn)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -326,7 +326,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked Subscribe](https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Subscribe-Locked-Product)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -396,7 +396,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible Redeem](https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Redeem-Flexible-Product)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -471,7 +471,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked Redeem](https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Redeem-Locked-Product)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -533,7 +533,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible Position](https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Flexible-Product-Position)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -604,7 +604,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked Position](https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Locked-Product-Position)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -694,7 +694,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible Subscription Record](https://developers.binance.com/docs/simple_earn/flexible-locked/history)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -781,7 +781,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked Subscription Record](https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Locked-Subscription-Record)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -869,7 +869,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible Redemption Record](https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Flexible-Redemption-Record)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -956,7 +956,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked Redemption Record](https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Locked-Redemption-Record)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```

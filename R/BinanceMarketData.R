@@ -23,7 +23,7 @@
 #' All methods are public endpoints requiring no authentication.
 #'
 #' ### Official Documentation
-#' [Binance Spot Market Data](https://binance-docs.github.io/apidocs/spot/en/#market-data-endpoints)
+#' [Binance Spot Market Data](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints)
 #'
 #' ### Endpoints Covered
 #' | Method | Endpoint | Auth |
@@ -75,8 +75,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/time`
     #'
     #' ### Official Documentation
-    #' [Binance Check Server Time](https://binance-docs.github.io/apidocs/spot/en/#check-server-time)
-    #' Verified: 2026-03-10
+    #' [Binance Check Server Time](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints#check-server-time)
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Clock Drift Detection**: Compare server time against local clock to detect drift.
@@ -129,8 +129,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/exchangeInfo`
     #'
     #' ### Official Documentation
-    #' [Binance Exchange Info](https://binance-docs.github.io/apidocs/spot/en/#exchange-information)
-    #' Verified: 2026-03-10
+    #' [Binance Exchange Info](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints#exchange-information)
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Symbol Discovery**: Find available trading pairs and their status.
@@ -314,8 +314,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/ticker/price`
     #'
     #' ### Official Documentation
-    #' [Binance Symbol Price Ticker](https://binance-docs.github.io/apidocs/spot/en/#symbol-price-ticker)
-    #' Verified: 2026-03-10
+    #' [Binance Symbol Price Ticker](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#symbol-price-ticker)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -356,8 +356,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/ticker/price`
     #'
     #' ### Official Documentation
-    #' [Binance Symbol Price Ticker](https://binance-docs.github.io/apidocs/spot/en/#symbol-price-ticker)
-    #' Verified: 2026-03-10
+    #' [Binance Symbol Price Ticker](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#symbol-price-ticker)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -400,8 +400,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/ticker/bookTicker`
     #'
     #' ### Official Documentation
-    #' [Binance Symbol Order Book Ticker](https://binance-docs.github.io/apidocs/spot/en/#symbol-order-book-ticker)
-    #' Verified: 2026-03-10
+    #' [Binance Symbol Order Book Ticker](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#symbol-order-book-ticker)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -453,8 +453,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/ticker/24hr`
     #'
     #' ### Official Documentation
-    #' [Binance 24hr Ticker Price Change Statistics](https://binance-docs.github.io/apidocs/spot/en/#24hr-ticker-price-change-statistics)
-    #' Verified: 2026-03-10
+    #' [Binance 24hr Ticker Price Change Statistics](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#24hr-ticker-price-change-statistics)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -547,7 +547,7 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/ticker/24hr` (no symbol parameter)
     #'
     #' ### Official Documentation
-    #' [Binance 24hr Ticker Price Change Statistics](https://binance-docs.github.io/apidocs/spot/en/#24hr-ticker-price-change-statistics)
+    #' [Binance 24hr Ticker Price Change Statistics](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#24hr-ticker-price-change-statistics)
     #'
     #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with same
     #'   columns as `get_24hr_stats()`, one row per symbol.
@@ -587,8 +587,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/avgPrice`
     #'
     #' ### Official Documentation
-    #' [Binance Current Average Price](https://binance-docs.github.io/apidocs/spot/en/#current-average-price)
-    #' Verified: 2026-03-10
+    #' [Binance Current Average Price](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#current-average-price)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -638,8 +638,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/depth`
     #'
     #' ### Official Documentation
-    #' [Binance Order Book](https://binance-docs.github.io/apidocs/spot/en/#order-book)
-    #' Verified: 2026-03-10
+    #' [Binance Order Book](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#order-book)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -696,8 +696,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/trades`
     #'
     #' ### Official Documentation
-    #' [Binance Recent Trades List](https://binance-docs.github.io/apidocs/spot/en/#recent-trades-list)
-    #' Verified: 2026-03-10
+    #' [Binance Recent Trades List](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#recent-trades-list)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -762,8 +762,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/klines`
     #'
     #' ### Official Documentation
-    #' [Binance Kline/Candlestick Data](https://binance-docs.github.io/apidocs/spot/en/#kline-candlestick-data)
-    #' Verified: 2026-03-10
+    #' [Binance Kline/Candlestick Data](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#klinecandlestick-data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```

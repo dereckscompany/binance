@@ -15,7 +15,7 @@
 #' All methods require authentication (valid API key and secret).
 #'
 #' ### Official Documentation
-#' [Binance Spot Trading](https://binance-docs.github.io/apidocs/spot/en/#spot-account-trade)
+#' [Binance Spot Trading](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints)
 #'
 #' ### Endpoints Covered
 #' | Method | Endpoint | HTTP |
@@ -65,8 +65,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' `POST https://api.binance.com/api/v3/order/oco`
     #'
     #' ### Official Documentation
-    #' [Binance New OCO](https://binance-docs.github.io/apidocs/spot/en/#new-oco-trade)
-    #' Verified: 2026-03-10
+    #' [Binance New OCO](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#order-lists)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -225,8 +225,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' `DELETE https://api.binance.com/api/v3/orderList`
     #'
     #' ### Official Documentation
-    #' [Binance Cancel OCO](https://binance-docs.github.io/apidocs/spot/en/#cancel-oco-trade)
-    #' Verified: 2026-03-10
+    #' [Binance Cancel OCO](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#order-lists)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -362,8 +362,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/orderList`
     #'
     #' ### Official Documentation
-    #' [Binance Query OCO](https://binance-docs.github.io/apidocs/spot/en/#query-oco-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance Query OCO](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-order-list-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -458,8 +458,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/openOrderList`
     #'
     #' ### Official Documentation
-    #' [Binance Query Open OCO](https://binance-docs.github.io/apidocs/spot/en/#query-open-oco-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance Query Open OCO](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-open-order-lists-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -555,8 +555,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/allOrderList`
     #'
     #' ### Official Documentation
-    #' [Binance Query All OCO](https://binance-docs.github.io/apidocs/spot/en/#query-all-oco-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance Query All OCO](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-all-order-lists-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```

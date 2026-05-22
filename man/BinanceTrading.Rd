@@ -27,7 +27,7 @@ All methods require authentication (valid API key and secret).
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#spot-account-trade}{Binance Spot Trading}
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints}{Binance Spot Trading}
 }
 
 \subsection{Endpoints Covered}{\tabular{lll}{
@@ -204,8 +204,8 @@ Places a new spot order on Binance.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#new-order-trade}{Binance New Order}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#new-order-trade}{Binance New Order}
+Verified: 2026-05-22
 }
 
 \subsection{Automated Trading Usage}{
@@ -360,8 +360,8 @@ Returns \code{{}} on success.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#test-new-order-trade}{Binance Test New Order}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#test-new-order-trade}{Binance Test New Order}
+Verified: 2026-05-22
 }
 
 \subsection{Automated Trading Usage}{
@@ -488,8 +488,8 @@ Cancels an active order by order ID or client order ID.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#cancel-order-trade}{Binance Cancel Order}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#cancel-order-trade}{Binance Cancel Order}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -589,8 +589,8 @@ Cancels all active orders on a trading pair.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#cancel-all-open-orders-on-a-symbol-trade}{Binance Cancel All Open Orders}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#cancel-all-open-orders-on-a-symbol-trade}{Binance Cancel All Open Orders}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -707,8 +707,8 @@ Retrieves details for a specific order by order ID or client order ID.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#query-order-user_data}{Binance Query Order}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-order-user_data}{Binance Query Order}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -818,8 +818,8 @@ Retrieves all currently open orders, optionally filtered by symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#current-open-orders-user_data}{Binance Current Open Orders}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#current-open-orders-user_data}{Binance Current Open Orders}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -925,8 +925,8 @@ the most recent orders are returned.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#all-orders-user_data}{Binance All Orders}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#all-orders-user_data}{Binance All Orders}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{

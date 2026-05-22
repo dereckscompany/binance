@@ -15,7 +15,7 @@
 #' environment variables or passed to the constructor).
 #'
 #' ### Official Documentation
-#' [Binance Account Endpoints](https://binance-docs.github.io/apidocs/spot/en/#account-endpoints)
+#' [Binance Account Endpoints](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints)
 #'
 #' ### Endpoints Covered
 #' | Method | Endpoint | HTTP |
@@ -59,8 +59,8 @@ BinanceAccount <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/account`
     #'
     #' ### Official Documentation
-    #' [Binance Account Information](https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance Account Information](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#account-information-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Commission Rates**: Access maker/taker commission rates for cost analysis.
@@ -153,8 +153,8 @@ BinanceAccount <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/account`
     #'
     #' ### Official Documentation
-    #' [Binance Account Information](https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance Account Information](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#account-information-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Balance Check**: Verify available funds before placing orders.
@@ -224,8 +224,8 @@ BinanceAccount <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/myTrades`
     #'
     #' ### Official Documentation
-    #' [Binance Account Trade List](https://binance-docs.github.io/apidocs/spot/en/#account-trade-list-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance Account Trade List](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#account-trade-list-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Trade History**: Build trade logs for P&L calculations.

@@ -307,7 +307,7 @@ Uses the consolidated borrow-repay endpoint with \code{type = "BORROW"}.
 
 \href{https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay}{Binance Margin Borrow-Repay}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -396,7 +396,7 @@ Uses the consolidated borrow-repay endpoint with \code{type = "REPAY"}.
 
 \href{https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay}{Binance Margin Borrow-Repay}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -484,7 +484,7 @@ Places a new margin order on Binance.
 
 \href{https://developers.binance.com/docs/margin_trading/trade/Margin-Account-New-Order}{Binance Margin New Order}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -625,7 +625,7 @@ Cancels an active margin order by order ID or client order ID.
 
 \href{https://developers.binance.com/docs/margin_trading/trade/Margin-Account-Cancel-Order}{Binance Margin Cancel Order}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -729,7 +729,7 @@ Cancels all active margin orders on a trading pair.
 
 \href{https://developers.binance.com/docs/margin_trading/trade/Margin-Account-Cancel-All-Open-Orders}{Binance Margin Cancel All Orders}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -831,7 +831,7 @@ Retrieves details for a specific margin order by order ID or client order ID.
 
 \href{https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Order}{Binance Margin Query Order}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -934,7 +934,7 @@ Retrieves all currently open margin orders, optionally filtered by symbol.
 
 \href{https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Open-Orders}{Binance Margin Open Orders}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1033,7 +1033,7 @@ Retrieves all margin orders for a symbol (open, cancelled, filled).
 
 \href{https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-All-Orders}{Binance Margin All Orders}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1162,7 +1162,7 @@ Retrieves cross margin account details including balances and margin level.
 
 \href{https://developers.binance.com/docs/margin_trading/account/Query-Cross-Margin-Account-Details}{Binance Margin Account}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1260,7 +1260,7 @@ Queries the maximum borrowable amount for an asset on margin.
 
 \href{https://developers.binance.com/docs/margin_trading/borrow-and-repay/Query-Max-Borrow}{Binance Max Borrowable}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1333,7 +1333,7 @@ Queries the maximum transferable-out amount for an asset on margin.
 
 \href{https://developers.binance.com/docs/margin_trading/transfer/Query-Max-Transfer-Out-Amount}{Binance Max Transferable}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1404,7 +1404,7 @@ Retrieves margin interest accrual history with pagination.
 
 \href{https://developers.binance.com/docs/margin_trading/borrow-and-repay/Get-Interest-History}{Binance Interest History}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1513,7 +1513,7 @@ Retrieves margin force liquidation records with pagination.
 
 \href{https://developers.binance.com/docs/margin_trading/trade/Get-Force-Liquidation-Record}{Binance Force Liquidation}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1617,7 +1617,7 @@ Retrieves margin trade history for a symbol.
 
 \href{https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Trade-List}{Binance Margin Trades}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1726,7 +1726,7 @@ Retrieves isolated margin account details.
 
 \href{https://developers.binance.com/docs/margin_trading/account/Query-Isolated-Margin-Account-Info}{Binance Isolated Margin Account}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1843,7 +1843,7 @@ page; the universal-transfer endpoint subsumes it. The
 \code{sapi/v1/margin/isolated/transfer} REST endpoint this wrapper
 calls still works at the time of writing.)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
