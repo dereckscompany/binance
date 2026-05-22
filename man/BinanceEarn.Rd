@@ -387,11 +387,19 @@ Verified: 2026-03-10
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per product and the following columns:
+\code{data.table} with \strong{one row per product} and the following
+columns. Nested \code{detail} and \code{quota} objects are wide-prefixed
+(\verb{detail_*} and \verb{quota_*}) per the package's "no list columns"
+policy:
 \itemize{
 \item \code{project_id} (character): Unique project identifier.
-\item \code{detail} (list): Nested product details (asset, reward asset, duration, APY).
-\item \code{quota} (list): Nested quota details (total personal quota, minimum).
+\item \code{detail_asset} (character): Subscription asset (e.g. \code{"BTC"}).
+\item \code{detail_reward_asset} (character): Reward asset.
+\item \code{detail_duration} (integer): Lock-up duration in days.
+\item \code{detail_renewable} (logical): Whether the product auto-renews.
+\item \code{detail_apy} (character): Annual percentage yield.
+\item \code{quota_total_personal_quota} (character): Per-user maximum.
+\item \code{quota_minimum} (character): Per-user minimum.
 }
 }
 \subsection{Examples}{

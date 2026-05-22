@@ -103,9 +103,9 @@ BinanceFutures <- R6::R6Class(
         super$initialize(keys = keys, base_url = base_url, async = async, time_source = "local")
         url <- base_url
         private$.time_source <- "server"
-        private$.get_timestamp_ms <- function() fetch_server_time_ms(url, "/fapi/v1/time")
+        return(private$.get_timestamp_ms <- function() fetch_server_time_ms(url, "/fapi/v1/time"))
       } else {
-        super$initialize(keys = keys, base_url = base_url, async = async, time_source = time_source)
+        return(super$initialize(keys = keys, base_url = base_url, async = async, time_source = time_source))
       }
     },
 

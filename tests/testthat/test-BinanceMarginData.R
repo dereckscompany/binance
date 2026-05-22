@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://api.binance.com"
 
 new_margin <- function() {
-  BinanceMarginData$new(keys = KEYS, base_url = BASE)
+  return(BinanceMarginData$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -46,7 +46,7 @@ test_that("get_all_pairs hits correct endpoint", {
   resp <- mock_binance_response(data = mock_margin_all_pairs_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_all_pairs()
@@ -67,7 +67,7 @@ test_that("get_all_pairs passes recvWindow parameter", {
   resp <- mock_binance_response(data = mock_margin_all_pairs_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_all_pairs(recvWindow = 5000)
@@ -97,7 +97,7 @@ test_that("get_isolated_pairs hits correct endpoint", {
   resp <- mock_binance_response(data = mock_margin_isolated_pairs_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_isolated_pairs()
@@ -134,7 +134,7 @@ test_that("get_price_index hits correct endpoint with symbol", {
   resp <- mock_binance_response(data = mock_margin_price_index_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_price_index("BTCUSDT")
@@ -163,7 +163,7 @@ test_that("get_interest_rate_history hits correct endpoint", {
   resp <- mock_binance_response(data = mock_interest_rate_history_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_interest_rate_history("BTC")
@@ -176,7 +176,7 @@ test_that("get_interest_rate_history passes optional parameters", {
   resp <- mock_binance_response(data = mock_interest_rate_history_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_interest_rate_history("BTC", vipLevel = 1, startTime = 1000, endTime = 2000)
@@ -223,7 +223,7 @@ test_that("get_cross_margin_data hits correct endpoint", {
   resp <- mock_binance_response(data = mock_cross_margin_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_cross_margin_data()
@@ -235,7 +235,7 @@ test_that("get_cross_margin_data passes optional parameters", {
   resp <- mock_binance_response(data = mock_cross_margin_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_cross_margin_data(vipLevel = 0, coin = "BTC")
@@ -273,7 +273,7 @@ test_that("get_isolated_margin_data hits correct endpoint", {
   resp <- mock_binance_response(data = mock_isolated_margin_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_isolated_margin_data()
@@ -285,7 +285,7 @@ test_that("get_isolated_margin_data passes optional parameters", {
   resp <- mock_binance_response(data = mock_isolated_margin_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_isolated_margin_data(vipLevel = 0, symbol = "BTCUSDT")

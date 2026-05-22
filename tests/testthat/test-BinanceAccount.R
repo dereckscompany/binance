@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://api.binance.com"
 
 new_account <- function() {
-  BinanceAccount$new(keys = KEYS, base_url = BASE)
+  return(BinanceAccount$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -95,7 +95,7 @@ test_that("get_balances passes omitZeroBalances parameter", {
   resp <- mock_binance_response(data = mock_account_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_account()$get_balances(omitZeroBalances = TRUE)
@@ -139,7 +139,7 @@ test_that("get_trades passes query parameters", {
   resp <- mock_binance_response(data = mock_my_trades_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_account()$get_trades("BTCUSDT", limit = 50)

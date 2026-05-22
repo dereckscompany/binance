@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://api.binance.com"
 
 new_oco <- function() {
-  BinanceOcoOrders$new(keys = KEYS, base_url = BASE)
+  return(BinanceOcoOrders$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -61,7 +61,7 @@ test_that("add_oco_order sends POST to correct endpoint", {
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_oco()$add_oco_order(
@@ -126,7 +126,7 @@ test_that("cancel_oco_order sends DELETE method", {
   resp <- mock_binance_response(data = mock_oco_order_response())
   httr2::local_mocked_responses(function(req) {
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_oco()$cancel_oco_order("BTCUSDT", orderListId = 0)
@@ -138,7 +138,7 @@ test_that("cancel_oco_order sends to correct endpoint", {
   resp <- mock_binance_response(data = mock_oco_order_response())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_oco()$cancel_oco_order("BTCUSDT", orderListId = 0)
@@ -183,7 +183,7 @@ test_that("get_oco_order sends GET to correct endpoint", {
   resp <- mock_binance_response(data = mock_oco_query_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_oco()$get_oco_order(orderListId = 0)
@@ -219,7 +219,7 @@ test_that("get_open_oco_orders sends to correct endpoint", {
   resp <- mock_binance_response(data = list())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_oco()$get_open_oco_orders()
@@ -246,7 +246,7 @@ test_that("get_all_oco_orders passes query parameters", {
   resp <- mock_binance_response(data = list(mock_oco_query_data()))
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_oco()$get_all_oco_orders(limit = 50, fromId = 10)
@@ -268,7 +268,7 @@ test_that("get_all_oco_orders sends to correct endpoint", {
   resp <- mock_binance_response(data = list(mock_oco_query_data()))
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_oco()$get_all_oco_orders()

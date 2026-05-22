@@ -343,10 +343,13 @@ fields returned by the API, converted to snake_case. Key columns include:
 \item \code{margin_asset} (character): Margin asset code (e.g., \code{"USDT"}).
 \item \code{price_precision} (integer): Decimal precision for prices.
 \item \code{quantity_precision} (integer): Decimal precision for quantities.
-\item \code{order_types} (character): Comma-separated allowed order types.
-\item \code{time_in_force} (character): Comma-separated allowed time-in-force values.
-\item \code{underlying_sub_type} (character): Comma-separated underlying sub-types.
-\item \code{permission_sets} (character): Comma-separated permission sets.
+\item \code{order_types} (character): Semicolon-separated allowed order types.
+Recover via \code{strsplit(dt$order_types[1], ";", fixed = TRUE)[[1]]}.
+\item \code{time_in_force} (character): Semicolon-separated allowed
+time-in-force values.
+\item \code{underlying_sub_type} (character): Semicolon-separated underlying
+sub-types.
+\item \code{permission_sets} (character): Semicolon-separated permission sets.
 \item \code{lot_min_qty} (numeric): Minimum order quantity (from LOT_SIZE filter).
 \item \code{lot_max_qty} (numeric): Maximum order quantity (from LOT_SIZE filter).
 \item \code{lot_step_size} (numeric): Quantity step size (from LOT_SIZE filter).

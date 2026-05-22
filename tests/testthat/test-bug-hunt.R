@@ -91,31 +91,44 @@ test_that("backfill resume logic starts after last existing timestamp", {
 })
 
 # ---------------------------------------------------------------------------
-# Bug #8 (binance): as_dt_row wraps length>1 lists but NOT length-1 lists
-# A list field with exactly 1 element should also be wrapped in list()
-# so rbindlist produces consistent list-column types.
+# Policy: no list columns at the public API level
+# Parsers that consume nested arrays of plain strings must collapse them
+# to `;`-joined character columns via `collapse_string_array_fields()`
+# BEFORE calling `as_dt_row`. `as_dt_row` itself remains a flexible
+# primitive — but using it directly on records with un-collapsed array
+# fields is a policy violation. This test exercises the policy-correct
+# path: preprocessed records produce a plain character column on both
+# the length-1 and length-N branches, and `rbindlist` keeps it
+# character (no list-column fallback).
 # ---------------------------------------------------------------------------
-test_that("as_dt_row wraps length-1 list fields consistently", {
-  # A row with a single-element list field
+test_that("collapse_string_array_fields + as_dt_row produces a stable character column for length-1 and length-N arrays", {
   row1 <- list(name = "A", perms = list("SPOT"))
-  # A row with a multi-element list field
   row2 <- list(name = "B", perms = list("SPOT", "MARGIN"))
+
+  row1 <- binance:::collapse_string_array_fields(row1, "perms")
+  row2 <- binance:::collapse_string_array_fields(row2, "perms")
 
   dt1 <- binance:::as_dt_row(row1)
   dt2 <- binance:::as_dt_row(row2)
 
-  # Both should produce a list-column for 'perms'
-  expect_true(is.list(dt1$perms), info = "Single-element list field should remain a list column")
-  expect_true(is.list(dt2$perms), info = "Multi-element list field should remain a list column")
+  # Plain character on both rows.
+  expect_true(is.character(dt1$perms), info = "Length-1 array should collapse to a character scalar")
+  expect_true(is.character(dt2$perms), info = "Length-N array should collapse to a character scalar")
+  expect_equal(dt1$perms, "SPOT")
+  expect_equal(dt2$perms, "SPOT;MARGIN")
 
-  # They should be rbindlist-compatible
+  # rbindlist keeps it character — no list-column fallback.
   combined <- data.table::rbindlist(list(dt1, dt2), fill = TRUE)
   expect_equal(nrow(combined), 2L)
-  expect_true(is.list(combined$perms), info = "Combined data.table should have consistent list column")
+  expect_false(is.list(combined$perms), info = "Combined data.table must not have a list column for `perms`")
+  expect_equal(combined$perms, c("SPOT", "SPOT;MARGIN"))
+})
 
-  # Verify the actual values are preserved
-  expect_equal(combined$perms[[1]], list("SPOT"))
-  expect_equal(combined$perms[[2]], list("SPOT", "MARGIN"))
+test_that("empty array collapses to NA_character_ (not list())", {
+  row <- list(name = "C", perms = list())
+  row <- binance:::collapse_string_array_fields(row, "perms")
+  expect_true(is.na(row$perms))
+  expect_type(row$perms, "character")
 })
 
 # ---------------------------------------------------------------------------
@@ -159,7 +172,7 @@ test_that("add_transfer sends amount as character string", {
   resp <- mock_binance_response(data = list(tranId = 123456789))
   httr2::local_mocked_responses(function(req) {
     captured_req <<- req
-    resp
+    return(resp)
   })
 
   transfer$add_transfer(
@@ -257,7 +270,7 @@ test_that("get_klines warns or fetches all when range exceeds limit", {
   # Generate 1000 mock klines (the max Binance returns per call)
   mock_klines <- lapply(1:1000, function(i) {
     ts <- 1704067200000 + (i - 1) * 3600000
-    list(
+    return(list(
       ts,
       "42000.00",
       "42100.00",
@@ -270,7 +283,7 @@ test_that("get_klines warns or fetches all when range exceeds limit", {
       "50.25",
       "2100000.00",
       "0"
-    )
+    ))
   })
 
   resp <- mock_binance_response(data = mock_klines)

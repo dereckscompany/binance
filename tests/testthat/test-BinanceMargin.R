@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://api.binance.com"
 
 new_margin <- function() {
-  BinanceMargin$new(keys = KEYS, base_url = BASE)
+  return(BinanceMargin$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -36,7 +36,7 @@ test_that("add_borrow sends POST to correct endpoint", {
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_margin()$add_borrow(asset = "USDT", amount = 100)
@@ -49,7 +49,7 @@ test_that("add_borrow converts amount to character in query", {
   resp <- mock_binance_response(data = mock_margin_borrow_response())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$add_borrow(asset = "BTC", amount = 0.5)
@@ -85,7 +85,7 @@ test_that("add_order sends POST to correct endpoint", {
   resp <- mock_binance_response(data = mock_margin_order_response())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$add_order(
@@ -148,7 +148,7 @@ test_that("cancel_order sends DELETE method", {
   resp <- mock_binance_response(data = mock_margin_cancel_order_data())
   httr2::local_mocked_responses(function(req) {
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_margin()$cancel_order("BTCUSDT", orderId = 28)
@@ -184,7 +184,7 @@ test_that("get_order sends GET to correct endpoint", {
   resp <- mock_binance_response(data = mock_margin_query_order_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_order("BTCUSDT", orderId = 28)
@@ -217,7 +217,7 @@ test_that("get_account sends GET to correct endpoint", {
   resp <- mock_binance_response(data = mock_margin_account_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_account()
@@ -243,7 +243,7 @@ test_that("get_max_borrowable passes asset parameter", {
   resp <- mock_binance_response(data = mock_max_borrowable_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_max_borrowable(asset = "BTC")
@@ -280,7 +280,7 @@ test_that("get_interest_history sends GET to correct endpoint", {
   resp <- mock_binance_response(data = mock_margin_interest_history_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_interest_history(asset = "USDT")
@@ -317,7 +317,7 @@ test_that("get_trades sends GET to correct endpoint with symbol", {
   resp <- mock_binance_response(data = mock_margin_trades_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_trades("BTCUSDT")
@@ -350,7 +350,7 @@ test_that("get_isolated_account sends GET to correct endpoint", {
   resp <- mock_binance_response(data = mock_isolated_margin_account_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_isolated_account()
@@ -406,7 +406,7 @@ test_that("add_isolated_transfer sends POST to correct endpoint", {
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_margin()$add_isolated_transfer(

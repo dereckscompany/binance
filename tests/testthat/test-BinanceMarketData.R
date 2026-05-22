@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://api.binance.com"
 
 new_market <- function() {
-  BinanceMarketData$new(keys = KEYS, base_url = BASE)
+  return(BinanceMarketData$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -37,7 +37,7 @@ test_that("get_server_time returns data.table with datetime", {
 
 # -- get_exchange_info --
 
-test_that("get_exchange_info returns data.table with string arrays comma-joined", {
+test_that("get_exchange_info returns data.table with string arrays semicolon-joined", {
   resp <- mock_binance_response(data = mock_exchange_info_data())
   httr2::local_mocked_responses(function(req) resp)
 
@@ -51,20 +51,31 @@ test_that("get_exchange_info returns data.table with string arrays comma-joined"
   expect_equal(sort(dt$symbol), c("BTCUSDT", "ETHUSDT"))
   expect_equal(dt[symbol == "BTCUSDT"]$base_asset, "BTC")
 
-  # String array fields are now comma-separated strings
+  # String array fields are `;`-collapsed character columns (cross-package
+  # convention; see `collapse_string_array_fields()` in helpers_parse.R).
   expect_true("order_types" %in% names(dt))
   expect_type(dt$order_types, "character")
-  expect_equal(dt[symbol == "BTCUSDT"]$order_types, "LIMIT,LIMIT_MAKER,MARKET,STOP_LOSS_LIMIT,TAKE_PROFIT_LIMIT")
-  expect_equal(dt[symbol == "ETHUSDT"]$order_types, "LIMIT,MARKET")
+  expect_equal(
+    dt[symbol == "BTCUSDT"]$order_types,
+    "LIMIT;LIMIT_MAKER;MARKET;STOP_LOSS_LIMIT;TAKE_PROFIT_LIMIT"
+  )
+  expect_equal(dt[symbol == "ETHUSDT"]$order_types, "LIMIT;MARKET")
 
   expect_true("permissions" %in% names(dt))
   expect_type(dt$permissions, "character")
-  expect_equal(dt[symbol == "BTCUSDT"]$permissions, "SPOT,MARGIN")
+  expect_equal(dt[symbol == "BTCUSDT"]$permissions, "SPOT;MARGIN")
   expect_equal(dt[symbol == "ETHUSDT"]$permissions, "SPOT")
 
   expect_true("allowed_self_trade_prevention_modes" %in% names(dt))
   expect_type(dt$allowed_self_trade_prevention_modes, "character")
-  expect_equal(dt[symbol == "BTCUSDT"]$allowed_self_trade_prevention_modes, "EXPIRE_TAKER,EXPIRE_MAKER,EXPIRE_BOTH")
+  expect_equal(
+    dt[symbol == "BTCUSDT"]$allowed_self_trade_prevention_modes,
+    "EXPIRE_TAKER;EXPIRE_MAKER;EXPIRE_BOTH"
+  )
+
+  # No list columns anywhere — regression for the cross-package policy.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
 
   # filters are now extracted into flat numeric columns (no list-column)
   expect_false("filters" %in% names(dt))
@@ -93,7 +104,7 @@ test_that("get_exchange_info filters by symbol", {
   resp <- mock_binance_response(data = mock_exchange_info_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_market()$get_exchange_info(symbol = "BTCUSDT")
@@ -247,7 +258,7 @@ test_that("get_klines passes limit parameter", {
   resp <- mock_binance_response(data = mock_klines_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_market()$get_klines("BTCUSDT", "1h", limit = 100)

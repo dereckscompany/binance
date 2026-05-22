@@ -189,7 +189,9 @@ BinanceMarketData <- R6::R6Class(
     #'   - `quote_asset` (character): Quote asset code (e.g., `"USDT"`).
     #'   - `quote_asset_precision` (integer): Decimal precision for quote asset quantities.
     #'   - `quote_precision` (integer): Decimal precision for quote asset prices.
-    #'   - `order_types` (character): Comma-separated allowed order types (e.g., `"LIMIT,MARKET"`).
+    #'   - `order_types` (character): Semicolon-separated allowed order types
+    #'     (e.g., `"LIMIT;MARKET"`). Recover the vector via
+    #'     `strsplit(dt$order_types[1], ";", fixed = TRUE)[[1]]`.
     #'   - `iceberg_allowed` (logical): Whether iceberg orders are allowed.
     #'   - `oco_allowed` (logical): Whether OCO orders are allowed.
     #'   - `oto_allowed` (logical): Whether OTO orders are allowed.
@@ -205,9 +207,12 @@ BinanceMarketData <- R6::R6Class(
     #'   - `price_max` (numeric): Maximum price from PRICE_FILTER.
     #'   - `price_tick_size` (numeric): Price tick size from PRICE_FILTER.
     #'   - `min_notional` (numeric): Minimum notional value from MIN_NOTIONAL filter.
-    #'   - `permissions` (character): Comma-separated trading permissions (e.g., `"SPOT,MARGIN"`).
+    #'   - `permissions` (character): Semicolon-separated trading permissions
+    #'     (e.g., `"SPOT;MARGIN"`). Recover via
+    #'     `strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]`.
     #'   - `default_self_trade_prevention_mode` (character): Default STP mode.
-    #'   - `allowed_self_trade_prevention_modes` (character): Comma-separated allowed STP modes.
+    #'   - `allowed_self_trade_prevention_modes` (character): Semicolon-separated
+    #'     allowed STP modes.
     #'
     #' @examples
     #' \dontrun{
@@ -249,15 +254,16 @@ BinanceMarketData <- R6::R6Class(
             return(NA_real_)
           }
 
-          # Extract filter values into flat fields, comma-join string arrays,
-          # and remove the raw filters list before building the data.table
+          # Extract filter values into flat fields, semicolon-join string
+          # arrays, and remove the raw filters list before building the
+          # data.table.
           syms <- lapply(syms, function(s) {
-            # Comma-join simple string arrays
-            for (field in c("orderTypes", "permissions", "allowedSelfTradePreventionModes")) {
-              if (!is.null(s[[field]]) && is.list(s[[field]])) {
-                s[[field]] <- paste(unlist(s[[field]]), collapse = ",")
-              }
-            }
+            # Collapse string arrays with `;` (cross-package convention;
+            # see `collapse_string_array_fields()` in helpers_parse.R).
+            s <- collapse_string_array_fields(
+              s,
+              c("orderTypes", "permissions", "allowedSelfTradePreventionModes")
+            )
             # Extract filter values as flat numeric fields
             raw_filters <- s$filters
             s$lot_min_qty <- .extract_filter(raw_filters, "LOT_SIZE", "minQty")

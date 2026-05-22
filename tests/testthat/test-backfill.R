@@ -79,7 +79,7 @@ test_that("backfill skips completed combos on resume", {
   resp <- mock_response(mock_klines_data())
   httr2::local_mocked_responses(function(req) {
     captured_urls <<- c(captured_urls, req$url)
-    resp
+    return(resp)
   })
 
   binance_backfill_klines(
@@ -127,11 +127,11 @@ test_that("backfill attaches failures attribute on error", {
 
   # Mock HTTP to return an error
   httr2::local_mocked_responses(function(req) {
-    httr2::response(
+    return(httr2::response(
       status_code = 500L,
       headers = list(`Content-Type` = "application/json"),
       body = charToRaw("{\"code\": -1000, \"msg\": \"Internal error\"}")
-    )
+    ))
   })
 
   result <- suppressWarnings(binance_backfill_klines(

@@ -68,6 +68,86 @@ as_dt_list <- function(items) {
   return(dt[])
 }
 
+#' Collapse a Plain-String Array Field on a Single Record
+#'
+#' Walks the named list `x` and replaces any named field whose value is a
+#' length >= 1 list of plain character strings (or atomic character vector)
+#' with a single semicolon-separated character scalar. Used by the parsers
+#' that need a one-row-per-entity shape with no list columns.
+#'
+#' ### Separator choice
+#' We use `;` rather than `,` because semicolon is far less likely to
+#' appear inside any of the values themselves (the array elements are
+#' short codes / snake_case identifiers / tickers — none of which contain
+#' semicolons). Commas legitimately appear inside URL query strings, so
+#' a future URL-valued field would need either URL-encoding or a
+#' different separator entirely. Semicolon sidesteps that.
+#'
+#' The same convention is used across the sister packages (`alpaca`,
+#' `kucoin`) for cross-package consistency.
+#'
+#' If any individual value contains a literal `;`, we'd silently corrupt
+#' the data on a subsequent split. To make any future shape change loud,
+#' we emit a once-per-session warning when that happens.
+#'
+#' ### Recovering the original values
+#' Splitting on `;` gives back the original vector:
+#'
+#' ```r
+#' dt <- market$get_exchange_info()
+#' strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]
+#' #> [1] "SPOT" "MARGIN"
+#' ```
+#'
+#' Empty / missing arrays are written as `NA_character_` (not `list()`),
+#' so downstream `rbindlist(fill = TRUE)` builds a character column
+#' rather than falling back to a list column when some records have
+#' arrays and others don't.
+#'
+#' Only fields in `fields` are touched; nested objects elsewhere are left
+#' alone so they can be flattened by their own parser.
+#'
+#' @param x A named list representing a single API record.
+#' @param fields Character vector; names of fields to collapse.
+#' @return The same named list with the matching fields collapsed in place.
+#'
+#' @keywords internal
+#' @noRd
+collapse_string_array_fields <- function(x, fields) {
+  for (nm in fields) {
+    val <- x[[nm]]
+    if (is.null(val) || length(val) == 0L) {
+      x[[nm]] <- NA_character_
+      next
+    }
+    if (is.list(val)) {
+      val <- unlist(val, use.names = FALSE)
+    }
+    if (is.atomic(val) && length(val) >= 1L) {
+      val_chr <- as.character(val)
+      if (any(grepl(";", val_chr, fixed = TRUE))) {
+        rlang::warn(
+          paste0(
+            "Field `",
+            nm,
+            "` contains a literal `;` which collides with the ",
+            "collapse separator. Joining anyway; downstream code that ",
+            "splits on `;` will see corrupted values. Please report this ",
+            "so we can switch the separator for this field."
+          ),
+          # Fire once per session per field — once the user has seen the
+          # warning for a given field they know that field's shape is
+          # changing, and there's no value in repeating.
+          .frequency = "once",
+          .frequency_id = paste0("collapse_sep_collision_", nm)
+        )
+      }
+      x[[nm]] <- paste(val_chr, collapse = ";")
+    }
+  }
+  return(x)
+}
+
 #' Convert a Binance Millisecond Timestamp to POSIXct
 #'
 #' @param ms Numeric; millisecond Unix timestamp.

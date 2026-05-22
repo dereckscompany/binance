@@ -8,9 +8,9 @@
 # Helper: generate N mock kline rows starting from a given timestamp
 # ---------------------------------------------------------------------------
 make_mock_klines <- function(n, start_ms = 1704067200000, interval_ms = 3600000) {
-  lapply(seq_len(n), function(i) {
+  return(lapply(seq_len(n), function(i) {
     ts <- start_ms + (i - 1) * interval_ms
-    list(
+    return(list(
       ts,
       "42000.00",
       "42100.00",
@@ -23,8 +23,8 @@ make_mock_klines <- function(n, start_ms = 1704067200000, interval_ms = 3600000)
       "50.25",
       "2100000.00",
       "0"
-    )
-  })
+    ))
+  }))
 }
 
 # ---------------------------------------------------------------------------
@@ -46,7 +46,7 @@ test_that("get_klines with fetch_all = TRUE makes multiple API calls for large r
     interval_ms <- 3600000 # 1h in ms
     n <- min(1000L, floor((end_ms - start_ms) / interval_ms))
     n <- max(n, 1L)
-    mock_binance_response(data = make_mock_klines(n, start_ms = start_ms, interval_ms = interval_ms))
+    return(mock_binance_response(data = make_mock_klines(n, start_ms = start_ms, interval_ms = interval_ms)))
   })
 
   dt <- market$get_klines(
@@ -75,7 +75,7 @@ test_that("get_klines with fetch_all = TRUE deduplicates and sorts overlapping s
     call_count <<- call_count + 1L
     parsed <- httr2::url_parse(req$url)
     start_ms <- as.numeric(parsed$query$startTime)
-    mock_binance_response(data = make_mock_klines(1000, start_ms = start_ms, interval_ms = 3600000))
+    return(mock_binance_response(data = make_mock_klines(1000, start_ms = start_ms, interval_ms = 3600000)))
   })
 
   dt <- market$get_klines(
@@ -104,7 +104,7 @@ test_that("get_klines with fetch_all = FALSE does NOT segment (default single ca
   call_count <- 0L
   httr2::local_mocked_responses(function(req) {
     call_count <<- call_count + 1L
-    mock_binance_response(data = make_mock_klines(1000))
+    return(mock_binance_response(data = make_mock_klines(1000)))
   })
 
   # Default (fetch_all = FALSE): single API call, truncation warning
@@ -134,7 +134,7 @@ test_that("get_klines with fetch_all = TRUE suppresses truncation warning", {
     interval_ms <- 3600000
     n <- min(1000L, floor((end_ms - start_ms) / interval_ms))
     n <- max(n, 1L)
-    mock_binance_response(data = make_mock_klines(n, start_ms = start_ms, interval_ms = interval_ms))
+    return(mock_binance_response(data = make_mock_klines(n, start_ms = start_ms, interval_ms = interval_ms)))
   })
 
   # When fetch_all = TRUE, no truncation warning should be emitted
@@ -167,7 +167,7 @@ test_that("BinanceFuturesData$get_klines with fetch_all segments large ranges", 
     interval_ms <- 3600000
     n <- min(1500L, floor((end_ms - start_ms) / interval_ms))
     n <- max(n, 1L)
-    mock_binance_response(data = make_mock_klines(n, start_ms = start_ms, interval_ms = interval_ms))
+    return(mock_binance_response(data = make_mock_klines(n, start_ms = start_ms, interval_ms = interval_ms)))
   })
 
   dt <- futures$get_klines(
@@ -228,10 +228,10 @@ test_that("binance_fetch_klines works in async mode (spot)", {
   promises::then(
     result_promise,
     onFulfilled = function(val) {
-      resolved <<- val
+      return(resolved <<- val)
     },
     onRejected = function(err) {
-      error_msg <<- conditionMessage(err)
+      return(error_msg <<- conditionMessage(err))
     }
   )
   for (i in 1:20) {
@@ -282,10 +282,10 @@ test_that("binance_fetch_klines works in async mode (futures)", {
   promises::then(
     result_promise,
     onFulfilled = function(val) {
-      resolved <<- val
+      return(resolved <<- val)
     },
     onRejected = function(err) {
-      error_msg <<- conditionMessage(err)
+      return(error_msg <<- conditionMessage(err))
     }
   )
   for (i in 1:20) {

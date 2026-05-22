@@ -371,7 +371,9 @@ fields returned by the API, converted to snake_case. Key columns include:
 \item \code{quote_asset} (character): Quote asset code (e.g., \code{"USDT"}).
 \item \code{quote_asset_precision} (integer): Decimal precision for quote asset quantities.
 \item \code{quote_precision} (integer): Decimal precision for quote asset prices.
-\item \code{order_types} (character): Comma-separated allowed order types (e.g., \code{"LIMIT,MARKET"}).
+\item \code{order_types} (character): Semicolon-separated allowed order types
+(e.g., \code{"LIMIT;MARKET"}). Recover the vector via
+\code{strsplit(dt$order_types[1], ";", fixed = TRUE)[[1]]}.
 \item \code{iceberg_allowed} (logical): Whether iceberg orders are allowed.
 \item \code{oco_allowed} (logical): Whether OCO orders are allowed.
 \item \code{oto_allowed} (logical): Whether OTO orders are allowed.
@@ -387,9 +389,12 @@ fields returned by the API, converted to snake_case. Key columns include:
 \item \code{price_max} (numeric): Maximum price from PRICE_FILTER.
 \item \code{price_tick_size} (numeric): Price tick size from PRICE_FILTER.
 \item \code{min_notional} (numeric): Minimum notional value from MIN_NOTIONAL filter.
-\item \code{permissions} (character): Comma-separated trading permissions (e.g., \code{"SPOT,MARGIN"}).
+\item \code{permissions} (character): Semicolon-separated trading permissions
+(e.g., \code{"SPOT;MARGIN"}). Recover via
+\code{strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]}.
 \item \code{default_self_trade_prevention_mode} (character): Default STP mode.
-\item \code{allowed_self_trade_prevention_modes} (character): Comma-separated allowed STP modes.
+\item \code{allowed_self_trade_prevention_modes} (character): Semicolon-separated
+allowed STP modes.
 }
 }
 \subsection{Examples}{

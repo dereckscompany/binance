@@ -186,10 +186,18 @@ BinanceEarn <- R6::R6Class(
     #' @param current Integer or NULL; current page (default 1, starting from 1).
     #' @param size Integer or NULL; page size (default 10, max 100).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per product and the following columns:
+    #' @return `data.table` with **one row per product** and the following
+    #'   columns. Nested `detail` and `quota` objects are wide-prefixed
+    #'   (`detail_*` and `quota_*`) per the package's "no list columns"
+    #'   policy:
     #' - `project_id` (character): Unique project identifier.
-    #' - `detail` (list): Nested product details (asset, reward asset, duration, APY).
-    #' - `quota` (list): Nested quota details (total personal quota, minimum).
+    #' - `detail_asset` (character): Subscription asset (e.g. `"BTC"`).
+    #' - `detail_reward_asset` (character): Reward asset.
+    #' - `detail_duration` (integer): Lock-up duration in days.
+    #' - `detail_renewable` (logical): Whether the product auto-renews.
+    #' - `detail_apy` (character): Annual percentage yield.
+    #' - `quota_total_personal_quota` (character): Per-user maximum.
+    #' - `quota_minimum` (character): Per-user minimum.
     #'
     #' @examples
     #' \dontrun{
@@ -207,7 +215,26 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data)[])
+          rows <- data$rows
+          if (is.null(rows) || length(rows) == 0) {
+            return(data.table::data.table()[])
+          }
+          # Wide-prefix the nested `detail` and `quota` fixed-schema
+          # objects so the returned table has no list columns. Mirrors
+          # the alpaca `parse_snapshot` approach for nested objects.
+          rows <- lapply(rows, function(r) {
+            for (nested in c("detail", "quota")) {
+              sub <- r[[nested]]
+              if (!is.null(sub) && is.list(sub) && length(sub) > 0) {
+                for (nm in names(sub)) {
+                  r[[paste0(nested, "_", nm)]] <- sub[[nm]]
+                }
+              }
+              r[[nested]] <- NULL
+            }
+            return(r)
+          })
+          return(as_dt_list(rows)[])
         }
       ))
     },

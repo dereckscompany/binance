@@ -164,10 +164,13 @@ BinanceFuturesData <- R6::R6Class(
     #'   - `margin_asset` (character): Margin asset code (e.g., `"USDT"`).
     #'   - `price_precision` (integer): Decimal precision for prices.
     #'   - `quantity_precision` (integer): Decimal precision for quantities.
-    #'   - `order_types` (character): Comma-separated allowed order types.
-    #'   - `time_in_force` (character): Comma-separated allowed time-in-force values.
-    #'   - `underlying_sub_type` (character): Comma-separated underlying sub-types.
-    #'   - `permission_sets` (character): Comma-separated permission sets.
+    #'   - `order_types` (character): Semicolon-separated allowed order types.
+    #'     Recover via `strsplit(dt$order_types[1], ";", fixed = TRUE)[[1]]`.
+    #'   - `time_in_force` (character): Semicolon-separated allowed
+    #'     time-in-force values.
+    #'   - `underlying_sub_type` (character): Semicolon-separated underlying
+    #'     sub-types.
+    #'   - `permission_sets` (character): Semicolon-separated permission sets.
     #'   - `lot_min_qty` (numeric): Minimum order quantity (from LOT_SIZE filter).
     #'   - `lot_max_qty` (numeric): Maximum order quantity (from LOT_SIZE filter).
     #'   - `lot_step_size` (numeric): Quantity step size (from LOT_SIZE filter).
@@ -206,12 +209,12 @@ BinanceFuturesData <- R6::R6Class(
           }
 
           syms <- lapply(syms, function(s) {
-            # Comma-join string arrays
-            for (field in c("orderTypes", "timeInForce", "underlyingSubType", "permissionSets")) {
-              if (!is.null(s[[field]]) && is.list(s[[field]])) {
-                s[[field]] <- paste(unlist(s[[field]]), collapse = ",")
-              }
-            }
+            # Collapse string arrays with `;` (cross-package convention;
+            # see `collapse_string_array_fields()` in helpers_parse.R).
+            s <- collapse_string_array_fields(
+              s,
+              c("orderTypes", "timeInForce", "underlyingSubType", "permissionSets")
+            )
             # Extract filter values as flat numeric fields
             raw_filters <- s$filters
             s$lot_min_qty <- .extract_filter(raw_filters, "LOT_SIZE", "minQty")

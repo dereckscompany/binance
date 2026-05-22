@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://api.binance.com"
 
 new_withdrawal <- function() {
-  BinanceWithdrawal$new(keys = KEYS, base_url = BASE)
+  return(BinanceWithdrawal$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -40,7 +40,7 @@ test_that("add_withdrawal hits correct endpoint with POST", {
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_withdrawal()$add_withdrawal(
@@ -106,7 +106,7 @@ test_that("get_withdrawal_history hits correct endpoint", {
   resp <- mock_binance_response(data = mock_withdrawal_history_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_withdrawal()$get_withdrawal_history()
@@ -118,7 +118,7 @@ test_that("get_withdrawal_history passes query parameters", {
   resp <- mock_binance_response(data = mock_withdrawal_history_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_withdrawal()$get_withdrawal_history(coin = "USDT", status = 6, limit = 100)

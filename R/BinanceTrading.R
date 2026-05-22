@@ -145,13 +145,21 @@ BinanceTrading <- R6::R6Class(
     #' - `working_time` (numeric): Timestamp when the order started working.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
     #' - `transact_time` (POSIXct): Transaction time converted from `transactTime`.
-    #' - `fill_price` (character): Fill execution price (one row per fill when `newOrderRespType = "FULL"`).
-    #' - `fill_qty` (character): Fill quantity.
-    #' - `fill_commission` (character): Commission charged for this fill.
-    #' - `fill_commission_asset` (character): Asset used for commission (e.g., `"BNB"`).
+    #' - `fill_index` (integer): 1-indexed fill position (`NA` when the order
+    #'   had no fills).
+    #' - `fill_price` (character): Fill execution price (`NA` when no fills).
+    #' - `fill_qty` (character): Fill quantity (`NA` when no fills).
+    #' - `fill_commission` (character): Commission charged for this fill
+    #'   (`NA` when no fills).
+    #' - `fill_commission_asset` (character): Asset used for commission
+    #'   (e.g., `"BNB"`; `NA` when no fills).
+    #' - `fill_trade_id` (integer): Fill trade ID (`NA` when no fills).
     #'
-    #' When the order has multiple fills, parent order fields are repeated on each row.
-    #' When there are no fills, a single row is returned without fill columns.
+    #' When the order has N fills, the parent order fields are replicated on
+    #' each of the N rows and `fill_index` runs `1..N`. When the order has
+    #' no fills (e.g. a resting `LIMIT` order with `newOrderRespType = "ACK"`
+    #' / `"RESULT"`), a single row is returned with the `fill_*` columns
+    #' present as `NA` so the schema is stable across response types.
     #'
     #' @examples
     #' \dontrun{
@@ -204,14 +212,27 @@ BinanceTrading <- R6::R6Class(
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
             dt[, transact_time := ms_to_datetime(transact_time)]
           }
-          # Expand fills to long format: one row per fill with parent fields repeated
+          # Expand fills to long format: one row per fill with parent
+          # fields repeated, plus a 1-indexed `fill_index`. To keep the
+          # returned schema stable across orders with and without fills,
+          # always emit the `fill_*` columns — empty when the order had
+          # no fills, populated otherwise.
           if (!is.null(fills) && length(fills) > 0) {
             fills_dt <- as_dt_list(fills)
-            # Prefix fill columns to avoid collision with parent order columns
             fill_names <- names(fills_dt)
             data.table::setnames(fills_dt, fill_names, paste0("fill_", fill_names))
+            fills_dt[, fill_index := seq_len(.N)]
             dt <- dt[rep(1L, nrow(fills_dt))]
             dt <- cbind(dt, fills_dt)
+          } else {
+            # No fills: one parent row with NA fill_* columns so the
+            # schema matches the populated case.
+            dt[, fill_index := NA_integer_]
+            dt[, fill_price := NA_character_]
+            dt[, fill_qty := NA_character_]
+            dt[, fill_commission := NA_character_]
+            dt[, fill_commission_asset := NA_character_]
+            dt[, fill_trade_id := NA_integer_]
           }
           return(dt[])
         }

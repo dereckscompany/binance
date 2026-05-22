@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://fapi.binance.com"
 
 new_futures_data <- function() {
-  BinanceFuturesData$new(keys = KEYS, base_url = BASE)
+  return(BinanceFuturesData$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -48,11 +48,15 @@ test_that("get_exchange_info returns data.table with futures symbol metadata", {
   expect_true("price_max" %in% names(dt))
   expect_true("price_tick_size" %in% names(dt))
   expect_true("min_notional" %in% names(dt))
-  # String arrays are comma-joined
+  # String arrays are `;`-collapsed character (cross-package convention).
   expect_type(dt$order_types, "character")
+  expect_false(grepl(",", dt$order_types, fixed = TRUE), info = "should be `;`-joined, not `,`-joined")
   expect_equal(dt$symbol, "BTCUSDT")
   expect_equal(dt$contract_type, "PERPETUAL")
   expect_equal(dt$base_asset, "BTC")
+  # No list columns anywhere.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
 })
 
 test_that("get_exchange_info hits correct endpoint", {
@@ -60,7 +64,7 @@ test_that("get_exchange_info hits correct endpoint", {
   resp <- mock_binance_response(data = mock_futures_exchange_info_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_exchange_info()
@@ -101,7 +105,7 @@ test_that("get_klines passes limit and hits correct endpoint", {
   resp <- mock_binance_response(data = mock_klines_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_klines("BTCUSDT", "1h", limit = 100)
@@ -133,7 +137,7 @@ test_that("get_mark_price hits correct endpoint", {
   resp <- mock_binance_response(data = mock_futures_mark_price_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_mark_price("BTCUSDT")
@@ -162,7 +166,7 @@ test_that("get_funding_rate hits correct endpoint", {
   resp <- mock_binance_response(data = mock_futures_funding_rate_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_funding_rate("BTCUSDT")
@@ -192,7 +196,7 @@ test_that("get_24hr_stats hits correct endpoint", {
   resp <- mock_binance_response(data = mock_24hr_stats_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_24hr_stats("BTCUSDT")
@@ -219,7 +223,7 @@ test_that("get_ticker hits correct endpoint", {
   resp <- mock_binance_response(data = mock_futures_ticker_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_ticker("BTCUSDT")
@@ -247,7 +251,7 @@ test_that("get_book_ticker hits correct endpoint", {
   resp <- mock_binance_response(data = mock_book_ticker_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_book_ticker("BTCUSDT")
@@ -274,7 +278,7 @@ test_that("get_open_interest hits correct endpoint", {
   resp <- mock_binance_response(data = mock_futures_open_interest_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_open_interest("BTCUSDT")
@@ -302,7 +306,7 @@ test_that("get_depth hits correct endpoint", {
   resp <- mock_binance_response(data = mock_orderbook_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_depth("BTCUSDT", limit = 20)
@@ -331,7 +335,7 @@ test_that("get_trades hits correct endpoint", {
   resp <- mock_binance_response(data = mock_trades_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_trades("BTCUSDT", limit = 10)
@@ -358,7 +362,7 @@ test_that("get_index_price_klines hits correct endpoint with pair param", {
   resp <- mock_binance_response(data = mock_klines_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_index_price_klines("BTCUSDT", "1h", limit = 50)
@@ -386,7 +390,7 @@ test_that("get_mark_price_klines hits correct endpoint", {
   resp <- mock_binance_response(data = mock_klines_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_mark_price_klines("BTCUSDT", "4h")

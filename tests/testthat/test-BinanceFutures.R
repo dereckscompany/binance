@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://fapi.binance.com"
 
 new_futures <- function() {
-  BinanceFutures$new(keys = KEYS, base_url = BASE)
+  return(BinanceFutures$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -50,7 +50,7 @@ test_that("add_order hits correct endpoint", {
   resp <- mock_binance_response(data = mock_futures_order_response())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures()$add_order(symbol = "BTCUSDT", side = "BUY", type = "MARKET", quantity = 0.001)
@@ -93,7 +93,7 @@ test_that("add_order_test hits /fapi/v1/order/test", {
   resp <- mock_binance_response(data = list())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures()$add_order_test(symbol = "BTCUSDT", side = "SELL", type = "MARKET", quantity = 0.001)
@@ -132,7 +132,7 @@ test_that("cancel_all_orders hits correct endpoint", {
   resp <- mock_binance_response(data = mock_futures_cancel_all_response())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures()$cancel_all_orders("BTCUSDT")

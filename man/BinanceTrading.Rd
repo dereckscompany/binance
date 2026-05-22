@@ -311,14 +311,22 @@ Verified: 2026-03-10
 \item \code{working_time} (numeric): Timestamp when the order started working.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
 \item \code{transact_time} (POSIXct): Transaction time converted from \code{transactTime}.
-\item \code{fill_price} (character): Fill execution price (one row per fill when \code{newOrderRespType = "FULL"}).
-\item \code{fill_qty} (character): Fill quantity.
-\item \code{fill_commission} (character): Commission charged for this fill.
-\item \code{fill_commission_asset} (character): Asset used for commission (e.g., \code{"BNB"}).
+\item \code{fill_index} (integer): 1-indexed fill position (\code{NA} when the order
+had no fills).
+\item \code{fill_price} (character): Fill execution price (\code{NA} when no fills).
+\item \code{fill_qty} (character): Fill quantity (\code{NA} when no fills).
+\item \code{fill_commission} (character): Commission charged for this fill
+(\code{NA} when no fills).
+\item \code{fill_commission_asset} (character): Asset used for commission
+(e.g., \code{"BNB"}; \code{NA} when no fills).
+\item \code{fill_trade_id} (integer): Fill trade ID (\code{NA} when no fills).
 }
 
-When the order has multiple fills, parent order fields are repeated on each row.
-When there are no fills, a single row is returned without fill columns.
+When the order has N fills, the parent order fields are replicated on
+each of the N rows and \code{fill_index} runs \verb{1..N}. When the order has
+no fills (e.g. a resting \code{LIMIT} order with \code{newOrderRespType = "ACK"}
+/ \code{"RESULT"}), a single row is returned with the \verb{fill_*} columns
+present as \code{NA} so the schema is stable across response types.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

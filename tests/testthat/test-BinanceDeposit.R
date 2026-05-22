@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://api.binance.com"
 
 new_deposit <- function() {
-  BinanceDeposit$new(keys = KEYS, base_url = BASE)
+  return(BinanceDeposit$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -38,7 +38,7 @@ test_that("get_deposit_address hits correct endpoint", {
   resp <- mock_binance_response(data = mock_deposit_address_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_deposit()$get_deposit_address(coin = "BTC")
@@ -51,7 +51,7 @@ test_that("get_deposit_address passes network parameter", {
   resp <- mock_binance_response(data = mock_deposit_address_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_deposit()$get_deposit_address(coin = "USDT", network = "TRX")
@@ -111,7 +111,7 @@ test_that("get_deposit_history hits correct endpoint", {
   resp <- mock_binance_response(data = mock_deposit_history_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_deposit()$get_deposit_history()
@@ -123,7 +123,7 @@ test_that("get_deposit_history passes query parameters", {
   resp <- mock_binance_response(data = mock_deposit_history_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_deposit()$get_deposit_history(coin = "BTC", status = 1, limit = 50)
