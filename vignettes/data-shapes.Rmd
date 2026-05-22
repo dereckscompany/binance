@@ -1,0 +1,234 @@
+---
+title: "Data shapes and the one-row-per-entity convention"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Data shapes and the one-row-per-entity convention}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(eval = FALSE, collapse = TRUE, comment = "#>")
+```
+
+## The rule
+
+Every `binance` method that returns nested API data follows one rule:
+
+> **Identify the entity for the endpoint, and return one row per entity.**
+
+A trade gets a row. An order gets a row. An asset balance gets a row.
+An option contract gets a row. Anything nested under the entity becomes
+a flat column on the same row or an additional row on a different axis
+— **never a list column**.
+
+The same rule applies in the sister `alpaca` and `kucoin` packages, so
+that switching between exchanges doesn't mean switching mental models
+of how the data looks.
+
+## The five shape treatments
+
+There are five shapes a nested API field can take, and five treatments.
+A few endpoints use two treatments when their nesting has two layers.
+
+### Treatment A — `;` collapse for arrays of plain strings
+
+When a field is an array of short, plain string values (codes,
+permissions, order types) and the user mostly filters by them or
+displays the whole list, collapse with `;` into a single character
+column. Filter with `grepl`, recover the original vector with
+`strsplit(x, ";", fixed = TRUE)[[1]]`.
+
+```{r}
+market <- BinanceMarketData$new()
+info <- market$get_exchange_info("BTCUSDT")
+
+info$order_types
+#> "LIMIT;LIMIT_MAKER;MARKET;STOP_LOSS_LIMIT;TAKE_PROFIT_LIMIT"
+
+# Filter
+info[grepl("MARKET", order_types)]
+
+# Recover the vector
+strsplit(info$order_types[1], ";", fixed = TRUE)[[1]]
+#> "LIMIT" "LIMIT_MAKER" "MARKET" "STOP_LOSS_LIMIT" "TAKE_PROFIT_LIMIT"
+```
+
+Where this is used: `exchange_info` (spot + futures) for
+`order_types`, `permissions`, `allowed_self_trade_prevention_modes`,
+`time_in_force`, `underlying_sub_type`, and (futures only)
+`permission_sets`. `get_account_info` for `permissions`.
+
+The separator is `;` rather than `,` because semicolons are far less
+likely to appear inside any of the joined values themselves. If
+Binance ever ships a value that contains `;`, the parser emits a
+once-per-session warning so we catch it immediately rather than
+silently corrupting data.
+
+### Treatment B — Long format for arrays of objects
+
+When the array elements are themselves records (each has multiple
+fields), explode to one row per element with parent fields replicated.
+A 1-indexed position column is added where order matters.
+
+```{r}
+# `add_order` returns one row per fill, with the order-level fields
+# replicated. `fill_index` runs 1..N.
+trading <- BinanceTrading$new()
+order <- trading$add_order(
+  type = "MARKET", symbol = "BTCUSDT", side = "BUY",
+  quantity = 0.0001, newOrderRespType = "FULL"
+)
+order[, .(order_id, status, fill_index, fill_price, fill_qty)]
+#>    order_id  status  fill_index  fill_price  fill_qty
+#> 1: 28        FILLED  1           50000.00    0.00005000
+#> 2: 28        FILLED  2           50001.00    0.00005000
+
+# `get_depth` returns one row per (side, price level).
+depth <- market$get_depth("BTCUSDT", limit = 5)
+depth[, .(side, price, size)]
+```
+
+Where this is used: order `fills`, OCO `orderReports`, futures account
+`assets`, margin account `userAssets`, sub-account
+`spotSubUserAssetBtcVoList`, orderbook `bids` / `asks`, margin
+`marginablePairs`.
+
+**Schema stability**: when the array is empty, the `<child>_` columns
+are still present on the row, filled with `NA`. So
+`if (any(dt$fill_index == 1L, na.rm = TRUE)) { ... }` works whether
+the order had fills or not.
+
+### Treatment C — Wide prefix for fixed-schema nested objects
+
+When the field is a single nested object with a known fixed key set,
+flatten it to `parent_child` columns.
+
+```{r}
+account <- BinanceAccount$new()
+info <- account$get_account_info()
+
+# `commissionRates` was a nested object — now wide-prefixed.
+info[, .(commission_rates_maker, commission_rates_taker,
+         commission_rates_buyer, commission_rates_seller)]
+```
+
+Where this is used: `get_account_info`'s `commissionRates`, Earn
+`get_locked_products`' `detail_*` / `quota_*`, the extracted numeric
+filter columns on `exchange_info` (`lot_min_qty`, `lot_max_qty`,
+`lot_step_size`, `price_min`, `price_max`, `price_tick_size`,
+`min_notional`).
+
+### Treatment D — Drop and document
+
+When a response includes a nested collection that doesn't fit the
+one-row-per-entity shape — typically because the entity in question
+already has its own dedicated endpoint — drop it and point at the
+proper method.
+
+```{r}
+# `BinanceFutures::get_account` returns one row per asset balance.
+# Binance also returns a `positions` array alongside `assets`, but
+# they're heterogeneous — combining them would require a Cartesian
+# join no user expects. So `positions` is dropped here; use the
+# dedicated method:
+futures <- BinanceFutures$new()
+acct <- futures$get_account()       # one row per asset
+positions <- futures$get_positions() # one row per open position
+```
+
+Other examples:
+
+- `get_account_info()` drops `balances` (use `get_balances()`).
+- spot / futures `exchange_info` drop top-level `rateLimits`,
+  `exchangeFilters`, and (spot) `sors`. Those describe the exchange,
+  not the per-symbol entity each row represents.
+
+All deliberate drops are listed in the README's Design Philosophy
+section.
+
+### Treatment E — JSON string for dynamic-key or array-of-array objects
+
+When a nested object has dynamic keys (different products have
+different key sets) or is an array of arrays where the inner grouping
+carries semantic meaning, neither `;`-collapse nor wide-prefix
+preserves the structure. Serialise the whole field as a JSON string;
+recover with `jsonlite::fromJSON`.
+
+```{r}
+# spot exchangeInfo `permissionSets` is an array of arrays — each
+# inner array is an alternative permission set the user can satisfy.
+# `;`-joining would collapse `[["A","B"]]` and `[["A"],["B"]]` to
+# the same `"A;B"`, losing the grouping.
+info <- market$get_exchange_info("BTCUSDT")
+info$permission_sets
+#> '[["SPOT","MARGIN","TRD_GRP_004", ...]]'
+
+# Recover the structure
+jsonlite::fromJSON(info$permission_sets[1], simplifyVector = FALSE)
+#> [[1]]
+#> [[1]][[1]] "SPOT"
+#> [[1]][[2]] "MARGIN"
+#> [[1]][[3]] "TRD_GRP_004"
+```
+
+```{r}
+# Earn `tierAnnualPercentageRate` has dynamic keys per product
+# (different size tiers).
+earn <- BinanceEarn$new()
+products <- earn$get_flexible_products(asset = "USDT")
+products$tier_annual_percentage_rate
+#> '{"0-5BTC":0.05,"5-10BTC":0.03}'
+
+tiers <- jsonlite::fromJSON(products$tier_annual_percentage_rate[1])
+tiers$`0-5BTC`
+#> 0.05
+```
+
+Where this is used: spot `exchangeInfo` `permission_sets`, Earn
+`get_flexible_products` / `get_flexible_position`'s
+`tier_annual_percentage_rate`.
+
+## Two cross-cutting rules
+
+These apply to every shape treatment:
+
+1. **Empty / null array → `NA_character_`** (no list cells). An
+   asset with no `attributes` returns `attributes = NA`, not
+   `attributes = list()`.
+2. **Empty response → empty `data.table`** (no synthetic stub rows).
+   `cancel_all_orders()` with no open orders returns a zero-row
+   table, not a 1-row `(symbol, status = "cancelled")` fabrication.
+   The absence of an error is the success signal.
+
+## Why this shape works for `data.table`
+
+`data.table` is fast and ergonomic on rectangular long-format data.
+List columns make filtering, grouping, joining, and writing to disk
+awkward. The convention above is what lets you write:
+
+```{r}
+# Top 5 highest-priced asks in the book
+depth[side == "ask"][order(-price)][1:5]
+
+# All BTCUSDT orders that filled at >50,000
+orders <- trading$get_all_orders("BTCUSDT")
+orders[as.numeric(fill_price) > 50000]
+
+# Total cumulative rewards across all flexible Earn positions
+earn$get_flexible_position()[, sum(as.numeric(cumulative_total_rewards),
+                                   na.rm = TRUE)]
+```
+
+…without escape hatches into `lapply` over hidden lists.
+
+## See also
+
+- `vignette("getting-started", package = "binance")` — the package
+  tour.
+- `vignette("async-usage", package = "binance")` — using the same
+  methods with `async = TRUE`.
+- The README "Design Philosophy" section — short summary of the same
+  convention plus the explicit per-endpoint drop list.
+- The sister `alpaca` package — same convention applied to a
+  different exchange.
