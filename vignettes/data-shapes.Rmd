@@ -1,35 +1,403 @@
 ---
-title: "Data shapes and the one-row-per-entity convention"
+title: "Package Tour and Data-Shape Conventions"
+author: "Dereck Mezquita"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Data shapes and the one-row-per-entity convention}
+  %\VignetteIndexEntry{Package Tour and Data-Shape Conventions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(eval = FALSE, collapse = TRUE, comment = "#>")
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
 ```
 
-## The rule
+This vignette is the **one-stop tour** of the `binance` package. It
+catalogues every public method by topic, explains the shape of what
+each one returns, and then documents the underlying data-shape policy
+in detail.
 
-Every `binance` method that returns nested API data follows one rule:
+If you've never used the package, read top to bottom. If you've used
+it and just want to know how a specific endpoint comes back, jump to
+the catalogue table for its class and then to the relevant treatment
+section.
 
-> **Identify the entity for the endpoint, and return one row per entity.**
+The same conventions are shared with the sister `alpaca` and
+(in-progress) `kucoin` packages, so that switching between exchanges
+does not mean switching mental models of how the data looks.
+
+---
+
+## What's in the package
+
+Thirteen R6 classes cover the spot, futures, margin, Earn,
+sub-account, and funding surfaces of the Binance REST API. Every
+class supports both **synchronous** and **asynchronous
+(promise-based)** operation via `httr2`.
+
+| Class | What it covers |
+|---|---|
+| `BinanceMarketData` | Spot public market data — server time, exchange info, tickers, 24hr stats, average price, orderbook depth, recent trades, klines |
+| `BinanceFuturesData` | USDⓈ-M futures public market data — exchange info, klines, mark price, funding rate, open interest, tickers, orderbook, trades, index/mark-price klines |
+| `BinanceMarginData` | Cross- and isolated-margin pair info, price index, interest-rate history, cross/isolated margin data |
+| `BinanceTrading` | Spot order management — place, cancel, query (test endpoint included) |
+| `BinanceOcoOrders` | Spot OCO (one-cancels-the-other) order placement, cancellation, queries |
+| `BinanceFutures` | USDⓈ-M futures trading — orders, account, balances, positions, leverage, margin type / margin movement, income history, position mode |
+| `BinanceMargin` | Cross- and isolated-margin trading — borrow / repay, margin orders, account, max borrowable / transferable, interest history, force liquidations, isolated transfers |
+| `BinanceAccount` | Spot account info, balances, user trades |
+| `BinanceDeposit` | Deposit address and deposit history |
+| `BinanceWithdrawal` | Withdrawal submission and withdrawal history |
+| `BinanceTransfer` | Universal asset transfers between wallets (spot, margin, futures, funding) and history |
+| `BinanceEarn` | Simple Earn — flexible and locked products, subscriptions, redemptions, positions, history |
+| `BinanceSubAccount` | Sub-account list, balances, spot summary, universal transfers, futures / margin account summaries, status |
+
+Standalone (not on a class):
+
+| Helper | What it does |
+|---|---|
+| `get_api_keys()`, `get_base_url()`, `get_futures_base_url()` | Read API credentials and base URLs from environment variables |
+| `binance_build_request()` | Low-level HTTP / signing primitive — every method goes through this |
+| `binance_backfill_klines()` | Bulk historical klines download for many symbols × intervals with CSV resume |
+| `verify_symbol()` | Sanity-check a symbol against `exchangeInfo` before placing an order |
+| `time_convert_to_binance()`, `time_convert_from_binance()` | Millisecond timestamps ↔ `POSIXct` |
+
+---
+
+## Setup
+
+Set credentials in `.Renviron`:
+
+```bash
+BINANCE_API_KEY=your-api-key
+BINANCE_API_SECRET=your-api-secret
+BINANCE_API_ENDPOINT=https://api.binance.com           # spot / margin / Earn / sub-account
+BINANCE_FUTURES_API_ENDPOINT=https://fapi.binance.com  # USDⓈ-M futures
+```
+
+Then in R:
+
+```r
+library(binance)
+keys     <- get_api_keys()
+market   <- BinanceMarketData$new()                 # public, no keys needed
+acct     <- BinanceAccount$new(keys = keys)
+trading  <- BinanceTrading$new(keys = keys)
+futures  <- BinanceFutures$new(keys = keys)
+margin   <- BinanceMargin$new(keys = keys)
+earn     <- BinanceEarn$new(keys = keys)
+```
+
+---
+
+## `BinanceMarketData` — spot public market data
+
+### Reference data and clock
+
+| Method | Endpoint | Shape |
+|---|---|---|
+| `get_server_time()` | `/api/v3/time` | single row |
+| `get_exchange_info(symbol)` | `/api/v3/exchangeInfo` | one row per symbol, `;`-collapsed string arrays (`order_types`, `permissions`, `allowed_self_trade_prevention_modes`, …); flattened numeric filters (`lot_min_qty`, `lot_max_qty`, `lot_step_size`, `price_min`, `price_max`, `price_tick_size`, `min_notional`); `permission_sets` JSON-encoded |
+
+### Tickers and 24hr stats
+
+| Method | Endpoint | Shape |
+|---|---|---|
+| `get_ticker(symbol)` | `/api/v3/ticker/price` | single row |
+| `get_all_tickers()` | `/api/v3/ticker/price` | one row per symbol |
+| `get_book_ticker(symbol)` | `/api/v3/ticker/bookTicker` | single row |
+| `get_24hr_stats(symbol)` | `/api/v3/ticker/24hr` | single row |
+| `get_all_24hr_stats()` | `/api/v3/ticker/24hr` | one row per symbol |
+| `get_avg_price(symbol)` | `/api/v3/avgPrice` | single row |
+
+### Orderbook, recent trades, klines
+
+| Method | Endpoint | Shape |
+|---|---|---|
+| `get_depth(symbol, limit)` | `/api/v3/depth` | one row per `(side, price level)` — `side ∈ {"bid","ask"}`, `level` 1-indexed |
+| `get_trades(symbol, limit)` | `/api/v3/trades` | one row per trade |
+| `get_klines(symbol, interval, ...)` | `/api/v3/klines` | one row per kline |
+
+```r
+# Top 5 highest-priced asks
+depth <- market$get_depth("BTCUSDT", limit = 5)
+depth[side == "ask"][order(-price)][1:5]
+```
+
+---
+
+## `BinanceFuturesData` — USDⓈ-M futures public market data
+
+| Method | Endpoint | Shape |
+|---|---|---|
+| `get_exchange_info()` | `/fapi/v1/exchangeInfo` | one row per symbol; same string-array + filter treatment as spot |
+| `get_klines(symbol, interval, ...)` | `/fapi/v1/klines` | one row per kline |
+| `get_mark_price(symbol)` | `/fapi/v1/premiumIndex` | single row (or one row per symbol if `symbol = NULL`) |
+| `get_funding_rate(symbol, ...)` | `/fapi/v1/fundingRate` | one row per funding interval |
+| `get_24hr_stats(symbol)` | `/fapi/v1/ticker/24hr` | single row (or one row per symbol if `symbol = NULL`) |
+| `get_ticker(symbol)` | `/fapi/v1/ticker/price` | single row (or one row per symbol if `symbol = NULL`) |
+| `get_book_ticker(symbol)` | `/fapi/v1/ticker/bookTicker` | single row (or one row per symbol if `symbol = NULL`) |
+| `get_open_interest(symbol)` | `/fapi/v1/openInterest` | single row |
+| `get_depth(symbol, limit)` | `/fapi/v1/depth` | one row per `(side, price level)` |
+| `get_trades(symbol, limit)` | `/fapi/v1/trades` | one row per trade |
+| `get_index_price_klines(pair, interval, ...)` | `/fapi/v1/indexPriceKlines` | one row per kline |
+| `get_mark_price_klines(symbol, interval, ...)` | `/fapi/v1/markPriceKlines` | one row per kline |
+
+---
+
+## `BinanceMarginData` — margin reference data
+
+| Method | Endpoint | Shape |
+|---|---|---|
+| `get_all_pairs()` | `/sapi/v1/margin/allPairs` | one row per cross-margin pair |
+| `get_isolated_pairs()` | `/sapi/v1/margin/isolated/allPairs` | one row per isolated-margin pair |
+| `get_price_index(symbol)` | `/sapi/v1/margin/priceIndex` | single row |
+| `get_interest_rate_history(asset, ...)` | `/sapi/v1/margin/interestRateHistory` | one row per record |
+| `get_cross_margin_data()` | `/sapi/v1/margin/crossMarginData` | one row per asset |
+| `get_isolated_margin_data()` | `/sapi/v1/margin/isolatedMarginData` | one row per pair |
+
+---
+
+## `BinanceTrading` — spot order management
+
+| Method | Endpoint | Shape |
+|---|---|---|
+| `add_order(type, symbol, side, ...)` | `POST /api/v3/order` | one row per fill if `newOrderRespType = "FULL"` and the order filled; otherwise a single row with `fill_*` columns `NA` (schema-stable) |
+| `add_order_test(...)` | `POST /api/v3/order/test` | single row `data.table(validated = TRUE)` on success |
+| `cancel_order(symbol, ...)` | `DELETE /api/v3/order` | single row |
+| `cancel_all_orders(symbol)` | `DELETE /api/v3/openOrders` | one row per cancelled order; **empty `data.table` if no open orders** |
+| `get_order(symbol, ...)` | `GET /api/v3/order` | single row |
+| `get_open_orders(symbol)` | `GET /api/v3/openOrders` | one row per open order |
+| `get_all_orders(symbol, ...)` | `GET /api/v3/allOrders` | one row per order |
+
+```r
+# Long format: one row per fill, parent order fields replicated.
+order <- trading$add_order(
+  type = "MARKET", symbol = "BTCUSDT", side = "BUY",
+  quantity = 0.0001, newOrderRespType = "FULL"
+)
+order[, .(order_id, status, fill_index, fill_price, fill_qty)]
+```
+
+---
+
+## `BinanceOcoOrders` — spot OCO orders
+
+OCO lists are inherently nested (one list contains multiple legs). The
+package expands the `orderReports` array to one row per leg with the
+list-level fields replicated; columns are prefixed `order_report_*`.
+
+| Method | Endpoint | Shape |
+|---|---|---|
+| `add_oco_order(symbol, side, ...)` | `POST /api/v3/order/oco` | one row per leg (`order_report_*` columns) |
+| `cancel_oco_order(symbol, ...)` | `DELETE /api/v3/orderList` | one row per cancelled leg (`order_report_*` columns) — **not** the cut-down `orders` array Binance also returns |
+| `get_oco_order(...)` | `GET /api/v3/orderList` | single row (the list itself) |
+| `get_open_oco_orders()` | `GET /api/v3/openOrderList` | one row per open list |
+| `get_all_oco_orders(...)` | `GET /api/v3/allOrderList` | one row per list |
+
+---
+
+## `BinanceFutures` — USDⓈ-M futures trading
+
+| Method | Endpoint | Shape |
+|---|---|---|
+| `add_order(type, symbol, side, ...)` | `POST /fapi/v1/order` | single row |
+| `add_order_test(...)` | `POST /fapi/v1/order/test` | single row `data.table(validated = TRUE)` on success |
+| `cancel_order(symbol, ...)` | `DELETE /fapi/v1/order` | single row |
+| `cancel_all_orders(symbol)` | `DELETE /fapi/v1/allOpenOrders` | single row |
+| `get_order(symbol, ...)` | `GET /fapi/v1/order` | single row |
+| `get_open_orders(symbol)` | `GET /fapi/v1/openOrders` | one row per open order |
+| `get_all_orders(symbol, ...)` | `GET /fapi/v1/allOrders` | one row per order |
+| `get_account()` | `GET /fapi/v2/account` | **one row per asset balance** — the `positions` array is dropped; use `get_positions()` |
+| `get_balances()` | `GET /fapi/v2/balance` | one row per asset |
+| `get_positions(symbol)` | `GET /fapi/v2/positionRisk` | one row per open position |
+| `set_leverage(symbol, leverage)` | `POST /fapi/v1/leverage` | single row |
+| `set_margin_type(symbol, marginType)` | `POST /fapi/v1/marginType` | single row |
+| `modify_position_margin(symbol, ...)` | `POST /fapi/v1/positionMargin` | single row |
+| `get_position_margin_history(symbol, ...)` | `GET /fapi/v1/positionMargin/history` | one row per record |
+| `get_trades(symbol, ...)` | `GET /fapi/v1/userTrades` | one row per trade |
+| `get_income_history(symbol, ...)` | `GET /fapi/v1/income` | one row per income record |
+| `set_position_mode(dualSidePosition)` | `POST /fapi/v1/positionSide/dual` | single row |
+| `get_position_mode()` | `GET /fapi/v1/positionSide/dual` | single row |
+
+---
+
+## `BinanceMargin` — cross- and isolated-margin trading
+
+| Method | Endpoint | Shape |
+|---|---|---|
+| `add_borrow(asset, amount, ...)` | `POST /sapi/v1/margin/borrow-repay` | single row |
+| `add_repay(asset, amount, ...)` | `POST /sapi/v1/margin/borrow-repay` | single row |
+| `add_order(type, symbol, side, ...)` | `POST /sapi/v1/margin/order` | single row (or one row per fill, like spot) |
+| `cancel_order(symbol, ...)` | `DELETE /sapi/v1/margin/order` | single row |
+| `cancel_all_orders(symbol)` | `DELETE /sapi/v1/margin/openOrders` | one row per cancelled order; **empty `data.table` if no open orders** |
+| `get_order(symbol, ...)` | `GET /sapi/v1/margin/order` | single row |
+| `get_open_orders(symbol)` | `GET /sapi/v1/margin/openOrders` | one row per open order |
+| `get_all_orders(symbol, ...)` | `GET /sapi/v1/margin/allOrders` | one row per order |
+| `get_account()` | `GET /sapi/v1/margin/account` | one row per `userAsset` (account-level summary fields replicated on each row) |
+| `get_max_borrowable(asset, ...)` | `GET /sapi/v1/margin/maxBorrowable` | single row (`amount`, `borrow_limit`) |
+| `get_max_transferable(asset, ...)` | `GET /sapi/v1/margin/maxTransferable` | single row (`amount`, `borrow_limit`) |
+| `get_interest_history(asset, ...)` | `GET /sapi/v1/margin/interestHistory` | one row per record |
+| `get_force_liquidation_history(...)` | `GET /sapi/v1/margin/forceLiquidationRec` | one row per record |
+| `get_trades(symbol, ...)` | `GET /sapi/v1/margin/myTrades` | one row per trade |
+| `get_isolated_account(symbols)` | `GET /sapi/v1/margin/isolated/account` | one row per isolated-margin pair (account-level summary fields replicated); wide-prefixed `base_asset_*` / `quote_asset_*` |
+| `add_isolated_transfer(asset, ...)` | `POST /sapi/v1/margin/isolated/transfer` | single row |
+
+---
+
+## `BinanceAccount` — spot account
+
+| Method | Endpoint | Shape |
+|---|---|---|
+| `get_account_info()` | `GET /api/v3/account` | single row; `permissions` `;`-joined; `commissionRates` wide-prefixed (`commission_rates_*`); `balances` dropped — use `get_balances()` |
+| `get_balances()` | `GET /api/v3/account` | one row per asset |
+| `get_trades(symbol, ...)` | `GET /api/v3/myTrades` | one row per trade |
+
+---
+
+## `BinanceDeposit`
+
+| Method | Endpoint | Shape |
+|---|---|---|
+| `get_deposit_address(coin, network)` | `GET /sapi/v1/capital/deposit/address` | single row |
+| `get_deposit_history(coin, ...)` | `GET /sapi/v1/capital/deposit/hisrec` | one row per deposit |
+
+## `BinanceWithdrawal`
+
+| Method | Endpoint | Shape |
+|---|---|---|
+| `add_withdrawal(coin, address, amount, ...)` | `POST /sapi/v1/capital/withdraw/apply` | single row |
+| `get_withdrawal_history(coin, ...)` | `GET /sapi/v1/capital/withdraw/history` | one row per withdrawal |
+
+## `BinanceTransfer`
+
+Universal asset transfers across spot, margin, futures, and funding
+wallets.
+
+| Method | Endpoint | Shape |
+|---|---|---|
+| `add_transfer(type, asset, amount, ...)` | `POST /sapi/v1/asset/transfer` | single row |
+| `get_transfer_history(type, ...)` | `GET /sapi/v1/asset/transfer` | one row per record |
+
+---
+
+## `BinanceEarn` — Simple Earn
+
+Flexible products and locked products have different field sets;
+locked products carry extra nested objects (`detail`, `quota`) that
+are flattened with a wide prefix.
+
+### Catalogue
+
+| Method | Endpoint | Shape |
+|---|---|---|
+| `get_flexible_products(asset, ...)` | `/sapi/v1/simple-earn/flexible/list` | one row per product; `tier_annual_percentage_rate` JSON-encoded (dynamic keys) |
+| `get_locked_products(asset, ...)` | `/sapi/v1/simple-earn/locked/list` | one row per product; `detail_*` and `quota_*` wide-prefixed |
+| `get_flexible_position(productId, asset, ...)` | `/sapi/v1/simple-earn/flexible/position` | one row per position; `tier_annual_percentage_rate` JSON-encoded |
+| `get_locked_position(positionId, ...)` | `/sapi/v1/simple-earn/locked/position` | one row per position |
+| `add_flexible_subscription(productId, amount, ...)` | `POST /sapi/v1/simple-earn/flexible/subscribe` | single row |
+| `add_locked_subscription(projectId, amount, ...)` | `POST /sapi/v1/simple-earn/locked/subscribe` | single row |
+| `add_flexible_redemption(productId, ...)` | `POST /sapi/v1/simple-earn/flexible/redeem` | single row |
+| `add_locked_redemption(positionId)` | `POST /sapi/v1/simple-earn/locked/redeem` | single row |
+| `get_flexible_subscription_history(...)` | `/sapi/v1/simple-earn/flexible/history/subscriptionRecord` | one row per record |
+| `get_locked_subscription_history(...)` | `/sapi/v1/simple-earn/locked/history/subscriptionRecord` | one row per record |
+| `get_flexible_redemption_history(...)` | `/sapi/v1/simple-earn/flexible/history/redemptionRecord` | one row per record |
+| `get_locked_redemption_history(...)` | `/sapi/v1/simple-earn/locked/history/redemptionRecord` | one row per record |
+
+```r
+# Total cumulative rewards across all flexible Earn positions
+earn$get_flexible_position()[
+  , sum(as.numeric(cumulative_total_rewards), na.rm = TRUE)
+]
+```
+
+---
+
+## `BinanceSubAccount`
+
+| Method | Endpoint | Shape |
+|---|---|---|
+| `add_sub_account(subAccountString)` | `POST /sapi/v1/sub-account/virtualSubAccount` | single row |
+| `get_sub_accounts(...)` | `GET /sapi/v1/sub-account/list` | one row per sub-account |
+| `get_balances(email)` | `GET /sapi/v3/sub-account/assets` | one row per asset for that sub-account |
+| `get_spot_summary(email, ...)` | `GET /sapi/v1/sub-account/spotSummary` | one row per sub-account; **empty `data.table` if none** |
+| `add_transfer(...)` | `POST /sapi/v1/sub-account/universalTransfer` | single row |
+| `get_transfer_history(...)` | `GET /sapi/v1/sub-account/universalTransfer` | one row per record |
+| `get_futures_account(email)` | `GET /sapi/v2/sub-account/futures/account` | one row per asset balance |
+| `get_margin_account(email)` | `GET /sapi/v1/sub-account/margin/account` | single row (margin level + total fields); per-asset detail comes back through `BinanceMargin$get_account()` for the sub-account |
+| `get_status(email)` | `GET /sapi/v1/sub-account/status` | single row |
+
+---
+
+## Standalone helpers
+
+### Credentials and base URLs
+
+```r
+keys     <- get_api_keys()                      # reads .Renviron
+spot_url <- get_base_url()                      # api.binance.com
+fut_url  <- get_futures_base_url()              # fapi.binance.com
+```
+
+### Low-level HTTP
+
+`binance_build_request()` constructs and signs every request. You
+should rarely call it directly — every method goes through it — but
+it's exported so you can wrap any not-yet-bound endpoint without
+re-implementing HMAC-SHA256 signing.
+
+### Bulk klines download
+
+```r
+# Backfill 5m bars for many symbols, with CSV resume so an aborted run
+# doesn't restart from scratch.
+binance_backfill_klines(
+  symbols  = c("BTCUSDT", "ETHUSDT"),
+  interval = "5m",
+  start    = "2024-01-01",
+  end      = "2024-02-01",
+  output_dir = "data/klines"
+)
+```
+
+### Time conversions
+
+```r
+time_convert_to_binance(as.POSIXct("2024-01-01", tz = "UTC"))
+#> [1] 1704067200000
+time_convert_from_binance(1704067200000)
+#> [1] "2024-01-01 UTC"
+```
+
+### Symbol verification
+
+```r
+verify_symbol("BTCUSDT")   # TRUE
+verify_symbol("BTCUSDC")   # TRUE
+verify_symbol("FOOBAR")    # FALSE, with informative message
+```
+
+---
+
+## Data-shape conventions
+
+The shape policy below is shared with `alpaca` and `kucoin`. The
+guiding rule is:
+
+> **Identify the entity for the endpoint, and return one row per
+> entity.**
 
 A trade gets a row. An order gets a row. An asset balance gets a row.
-An option contract gets a row. Anything nested under the entity becomes
-a flat column on the same row or an additional row on a different axis
-— **never a list column**.
+A funding-rate snapshot gets a row. Anything nested under the entity
+becomes a flat column on the same row or an additional row on a
+different axis — **never a list column**.
 
-The same rule applies in the sister `alpaca` and `kucoin` packages, so
-that switching between exchanges doesn't mean switching mental models
-of how the data looks.
-
-## The five shape treatments
-
-There are five shapes a nested API field can take, and five treatments.
-A few endpoints use two treatments when their nesting has two layers.
+There are five shapes a nested API field can take, and five
+treatments. A handful of endpoints use two treatments together when
+their nesting has two layers.
 
 ### Treatment A — `;` collapse for arrays of plain strings
 
@@ -56,8 +424,8 @@ strsplit(info$order_types[1], ";", fixed = TRUE)[[1]]
 
 Where this is used: `exchange_info` (spot + futures) for
 `order_types`, `permissions`, `allowed_self_trade_prevention_modes`,
-`time_in_force`, `underlying_sub_type`, and (futures only)
-`permission_sets`. `get_account_info` for `permissions`.
+`time_in_force`, `underlying_sub_type`. `get_account_info` for
+`permissions`.
 
 The separator is `;` rather than `,` because semicolons are far less
 likely to appear inside any of the joined values themselves. If
@@ -117,7 +485,7 @@ Where this is used: `get_account_info`'s `commissionRates`, Earn
 `get_locked_products`' `detail_*` / `quota_*`, the extracted numeric
 filter columns on `exchange_info` (`lot_min_qty`, `lot_max_qty`,
 `lot_step_size`, `price_min`, `price_max`, `price_tick_size`,
-`min_notional`).
+`min_notional`), isolated-margin `base_asset_*` / `quote_asset_*`.
 
 ### Treatment D — Drop and document
 
@@ -201,31 +569,50 @@ These apply to every shape treatment:
    table, not a 1-row `(symbol, status = "cancelled")` fabrication.
    The absence of an error is the success signal.
 
-## Why this shape works for `data.table`
+## What was *not* done
 
-`data.table` is fast and ergonomic on rectangular long-format data.
-List columns make filtering, grouping, joining, and writing to disk
-awkward. The convention above is what lets you write:
+A few intentional non-goals, mirroring the alpaca package:
 
-```{r}
-# Top 5 highest-priced asks in the book
-depth[side == "ask"][order(-price)][1:5]
+- **No automatic numeric coercion of "string-numeric" fields.**
+  Binance returns prices, quantities, and commissions as
+  fixed-precision strings; the package preserves them as character
+  so the user controls precision. Cast with `as.numeric()` at the
+  point of use.
+- **No automatic local-time conversion.** Timestamps come back as
+  UTC `POSIXct`. Convert with `format(x, tz = "America/New_York")`
+  or similar at display time.
+- **No client-side rate-limiting.** The package surfaces Binance's
+  `X-MBX-USED-WEIGHT` headers in errors but does not back off on its
+  own — that is the caller's job.
+- **No reconnect / retry on transient network errors.** The single
+  call is what you asked for; wrap with `httr2::req_retry()` (passed
+  through `binance_build_request()`) if you want retries.
 
-# All BTCUSDT orders that filled at >50,000
-orders <- trading$get_all_orders("BTCUSDT")
-orders[as.numeric(fill_price) > 50000]
+## Why this matters across exchanges
 
-# Total cumulative rewards across all flexible Earn positions
-earn$get_flexible_position()[, sum(as.numeric(cumulative_total_rewards),
-                                   na.rm = TRUE)]
+The `alpaca`, `binance`, and (in-progress) `kucoin` packages all
+follow the same shape rule. That means once you've learned
+`data.table` idioms for one of them, the same idioms work on the
+others — pivot a portfolio's mark-prices across both exchanges with
+a straight `rbind` plus an `exchange` column, no per-source shape
+massage.
+
+```r
+# Combine spot + futures + margin balances into one ledger
+ledger <- rbind(
+  acct$get_balances()[,         wallet := "spot"],
+  futures$get_balances()[,      wallet := "usdtm"],
+  margin$get_account()[,        wallet := "margin"],
+  fill = TRUE
+)
+ledger[as.numeric(free) > 0]
 ```
-
-…without escape hatches into `lapply` over hidden lists.
 
 ## See also
 
-- `vignette("getting-started", package = "binance")` — the package
-  tour.
+- `vignette("getting-started", package = "binance")` — guided walk
+  through placing a paper order, querying balances, and downloading
+  history.
 - `vignette("async-usage", package = "binance")` — using the same
   methods with `async = TRUE`.
 - The README "Design Philosophy" section — short summary of the same
