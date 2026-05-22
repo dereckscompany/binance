@@ -114,6 +114,29 @@ test_that("get_exchange_info returns data.table with string arrays semicolon-joi
   expect_false(dt[symbol == "ETHUSDT"]$iceberg_allowed)
 })
 
+test_that("get_exchange_info JSON-encodes multi-set permissionSets without flattening the grouping", {
+  # The cross-package convention is that `permissionSets` array-of-arrays
+  # is JSON-encoded so the inner groupings survive a round-trip. The
+  # default fixture only has ONE outer-array element; this test pushes a
+  # response with TWO alternative permission sets to confirm the
+  # encoding preserves the boundary between them.
+  data <- mock_exchange_info_data()
+  data$symbols[[1]]$permissionSets <- list(
+    list("SPOT", "MARGIN"),
+    list("TRD_GRP_004", "TRD_GRP_005")
+  )
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_market()$get_exchange_info()
+  ps_btc <- dt[symbol == "BTCUSDT"]$permission_sets
+  expect_type(ps_btc, "character")
+  recovered <- jsonlite::fromJSON(ps_btc, simplifyVector = FALSE)
+  expect_length(recovered, 2L)
+  expect_equal(recovered[[1]], list("SPOT", "MARGIN"))
+  expect_equal(recovered[[2]], list("TRD_GRP_004", "TRD_GRP_005"))
+})
+
 test_that("get_exchange_info filters by symbol", {
   captured_url <- NULL
   resp <- mock_binance_response(data = mock_exchange_info_data())

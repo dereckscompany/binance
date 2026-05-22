@@ -79,6 +79,26 @@ test_that("get_flexible_products returns empty data.table when no products", {
   expect_equal(nrow(dt), 0L)
 })
 
+test_that("get_flexible_products emits NA tier_annual_percentage_rate when upstream omits it", {
+  # Regression: the JSON-encode branch in the parser sets the field to
+  # NA_character_ when `tierAnnualPercentageRate` is missing/empty.
+  # Without a fixture variant that omits the field, this empty branch
+  # is dead code in tests.
+  data <- mock_flexible_products_data()
+  data$rows[[1]]$tierAnnualPercentageRate <- NULL
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_earn()$get_flexible_products()
+  expect_equal(nrow(dt), 1L)
+  expect_true("tier_annual_percentage_rate" %in% names(dt))
+  expect_true(is.na(dt$tier_annual_percentage_rate))
+  expect_type(dt$tier_annual_percentage_rate, "character")
+  # Still no list columns.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
+})
+
 # -- get_locked_products --
 
 test_that("get_locked_products returns data.table with expected columns", {
@@ -330,6 +350,37 @@ test_that("get_flexible_position returns data.table with expected columns", {
   expect_true("auto_subscribe" %in% names(dt))
   expect_equal(dt$asset, "USDT")
   expect_equal(dt$product_id, "USDT001")
+  # Reward / collateral / airdrop fields surfaced.
+  expect_true("yesterday_airdrop_percentage_rate" %in% names(dt))
+  expect_true("air_drop_asset" %in% names(dt))
+  expect_true("collateral_amount" %in% names(dt))
+  expect_true("cumulative_total_rewards" %in% names(dt))
+  # tier_annual_percentage_rate: mock has it as `list()` (empty) — the
+  # JSON-encode branch converts that to NA_character_ for schema
+  # stability. Without this assertion the empty-branch is dead code.
+  expect_true("tier_annual_percentage_rate" %in% names(dt))
+  expect_true(is.na(dt$tier_annual_percentage_rate))
+  expect_type(dt$tier_annual_percentage_rate, "character")
+  # No list columns.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
+})
+
+test_that("get_flexible_position JSON-encodes populated tierAnnualPercentageRate", {
+  data <- mock_flexible_position_data()
+  data$rows[[1]]$tierAnnualPercentageRate <- list(
+    "0-5BTC" = 0.05,
+    "5-10BTC" = 0.03
+  )
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_earn()$get_flexible_position()
+  expect_equal(nrow(dt), 1L)
+  expect_type(dt$tier_annual_percentage_rate, "character")
+  recovered <- jsonlite::fromJSON(dt$tier_annual_percentage_rate)
+  expect_equal(recovered$`0-5BTC`, 0.05)
+  expect_equal(recovered$`5-10BTC`, 0.03)
 })
 
 test_that("get_flexible_position hits correct endpoint", {

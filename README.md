@@ -169,7 +169,7 @@ BINANCE_API_SECRET = your-api-secret
 ```
 
 If you don’t have a key, visit the [Binance API
-documentation](https://binance-docs.github.io/apidocs/).
+documentation](https://developers.binance.com/docs/binance-spot-api-docs).
 
 ## Quick Start – Market Data
 
