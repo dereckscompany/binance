@@ -69,9 +69,13 @@ mock_exchange_info_data <- function() {
         ),
         permissions = list("SPOT", "MARGIN"),
         # New field Binance now returns alongside `permissions` — array
-        # of arrays. Live API often returns `permissions = []` on newer
-        # symbols and the meaningful data lives here. Our parser
-        # flattens this to a single `;`-joined character column.
+        # of arrays where each inner array is an alternative permission
+        # set the user can satisfy. Live API often returns
+        # `permissions = []` on newer symbols and the meaningful data
+        # lives here. Inner groupings carry semantic meaning, so the
+        # parser serialises the whole field as a JSON string column
+        # (recover with `jsonlite::fromJSON`) rather than `;`-joining
+        # which would erase the boundaries.
         permissionSets = list(list("SPOT", "MARGIN", "TRD_GRP_004")),
         defaultSelfTradePreventionMode = "EXPIRE_MAKER",
         allowedSelfTradePreventionModes = list("EXPIRE_TAKER", "EXPIRE_MAKER", "EXPIRE_BOTH")

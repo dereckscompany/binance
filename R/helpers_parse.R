@@ -125,7 +125,20 @@ collapse_string_array_fields <- function(x, fields) {
     }
     if (is.atomic(val) && length(val) >= 1L) {
       val_chr <- as.character(val)
-      if (any(grepl(";", val_chr, fixed = TRUE))) {
+      # Drop NA elements BEFORE joining. `paste(c("real", NA),
+      # collapse = ";")` would produce the literal string `"real;NA"`,
+      # indistinguishable from a real "NA" value — same trap we hit on
+      # alpaca's news image_sizes. If every element is NA, fall back to
+      # `NA_character_` so empty / all-missing arrays round-trip to NA.
+      val_chr <- val_chr[!is.na(val_chr)]
+      if (length(val_chr) == 0L) {
+        x[[nm]] <- NA_character_
+        next
+      }
+      # `na.rm = TRUE` on the collision check is defensive — by here
+      # `val_chr` has no NAs, but it's cheap insurance against future
+      # refactors that might add an `NA` element back upstream.
+      if (any(grepl(";", val_chr, fixed = TRUE), na.rm = TRUE)) {
         rlang::warn(
           paste0(
             "Field `",

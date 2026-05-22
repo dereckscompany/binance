@@ -131,6 +131,29 @@ test_that("empty array collapses to NA_character_ (not list())", {
   expect_type(row$perms, "character")
 })
 
+test_that("collapse_string_array_fields is NA-safe (scalar NA, all-NA vector, partial NA)", {
+  # Scalar NA — `grepl(";", NA)` returns NA, `any(NA)` is NA, and
+  # `if (NA)` historically errored. NA-safe path falls back to
+  # NA_character_.
+  row_scalar_na <- list(name = "A", perms = NA_character_)
+  row_scalar_na <- binance:::collapse_string_array_fields(row_scalar_na, "perms")
+  expect_true(is.na(row_scalar_na$perms))
+  expect_type(row_scalar_na$perms, "character")
+
+  # All-NA vector → NA_character_.
+  row_all_na <- list(name = "B", perms = c(NA_character_, NA_character_))
+  row_all_na <- binance:::collapse_string_array_fields(row_all_na, "perms")
+  expect_true(is.na(row_all_na$perms))
+
+  # Partial NA — `paste(c("SPOT", NA), collapse = ";")` historically
+  # produced the literal string `"SPOT;NA"`. NA-safe path drops NA
+  # elements so the resulting string is just `"SPOT;MARGIN"`.
+  row_partial <- list(name = "C", perms = c("SPOT", NA_character_, "MARGIN"))
+  row_partial <- binance:::collapse_string_array_fields(row_partial, "perms")
+  expect_equal(row_partial$perms, "SPOT;MARGIN")
+  expect_false(grepl("NA", row_partial$perms, fixed = TRUE))
+})
+
 # ---------------------------------------------------------------------------
 # Bug #13: parse_klines() uses vapply(..., integer(1)) for trades field
 # JSON numbers parse as doubles in R; vapply with integer(1) can error.
