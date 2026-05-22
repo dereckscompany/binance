@@ -213,9 +213,13 @@ BinanceMarketData <- R6::R6Class(
     #'     on newer symbols Binance often returns `permissions = []` and
     #'     populates `permission_sets` instead. Prefer `permission_sets`
     #'     for new code.
-    #'   - `permission_sets` (character): Semicolon-separated permission
-    #'     set entries, flattened from Binance's array-of-arrays form.
-    #'     `NA` when the symbol omits the field.
+    #'   - `permission_sets` (character): JSON string preserving
+    #'     Binance's array-of-arrays structure (e.g.
+    #'     `'[["SPOT","MARGIN"],["TRD_GRP_004"]]'`). Inner groupings
+    #'     carry semantic meaning — each inner array is an alternative
+    #'     permission set — so we don't flatten with `;`. Recover with
+    #'     `jsonlite::fromJSON(dt$permission_sets[1])`. `NA` when the
+    #'     symbol omits the field.
     #'   - `default_self_trade_prevention_mode` (character): Default STP mode.
     #'   - `allowed_self_trade_prevention_modes` (character): Semicolon-separated
     #'     allowed STP modes.
@@ -264,18 +268,31 @@ BinanceMarketData <- R6::R6Class(
           # arrays, and remove the raw filters list before building the
           # data.table.
           syms <- lapply(syms, function(s) {
-            # Collapse string arrays with `;` (cross-package convention;
-            # see `collapse_string_array_fields()` in helpers_parse.R).
-            # `permissionSets` is a newer field Binance added that
-            # arrives as an array-of-arrays; `unlist`ing inside the
-            # helper flattens to a single `;`-joined character, which
-            # matches the legacy `permissions` shape. Drop `permissions`
-            # itself if you only want the newer field — on newer symbols
-            # the legacy array often arrives as `[]`.
+            # Flat string arrays → `;`-collapse via the shared helper.
             s <- collapse_string_array_fields(
               s,
-              c("orderTypes", "permissions", "permissionSets", "allowedSelfTradePreventionModes")
+              c("orderTypes", "permissions", "allowedSelfTradePreventionModes")
             )
+            # `permissionSets` is an ARRAY OF ARRAYS on Binance spot
+            # (e.g. `[["SPOT","MARGIN"], ["TRD_GRP_004"]]`), and the
+            # inner groupings carry semantic meaning — each inner array
+            # is an alternative permission set the user can satisfy.
+            # `;`-joining would flatten that information away, so we
+            # serialise the whole field as a JSON string. Recover the
+            # structure via `jsonlite::fromJSON(dt$permission_sets[1])`,
+            # which gives back a list-of-character-vectors. `NA` when
+            # the upstream field is absent.
+            ps <- s[["permissionSets"]]
+            if (is.null(ps) || length(ps) == 0L) {
+              s[["permissionSets"]] <- NA_character_
+            } else {
+              # auto_unbox = TRUE so each scalar string stays a scalar
+              # rather than being boxed into a length-1 array. The
+              # list-of-list outer structure is preserved.
+              s[["permissionSets"]] <- as.character(
+                jsonlite::toJSON(ps, auto_unbox = TRUE)
+              )
+            }
             # Extract filter values as flat numeric fields
             raw_filters <- s$filters
             s$lot_min_qty <- .extract_filter(raw_filters, "LOT_SIZE", "minQty")

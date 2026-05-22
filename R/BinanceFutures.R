@@ -999,20 +999,31 @@ BinanceFutures <- R6::R6Class(
     #' - `total_cross_wallet_balance` (character): Total cross-wallet balance.
     #' - `available_balance` (character): Available balance for new positions.
     #' - `max_withdraw_amount` (character): Maximum withdrawable amount.
-    #' - `asset_name` (character): Per-asset name (one row per asset, expanded from `assets`).
+    #' - `asset_asset` (character): Per-asset symbol — one row per asset
+    #'   (Binance returns the symbol under the `asset` field within the
+    #'   `assets` array, hence the doubled name after `asset_` prefixing).
     #' - `asset_wallet_balance` (character): Per-asset wallet balance.
     #' - `asset_unrealized_profit` (character): Per-asset unrealised PnL.
     #' - `asset_margin_balance` (character): Per-asset margin balance.
     #' - `asset_available_balance` (character): Per-asset available balance.
-    #' - `position_*`: Per-position fields prefixed with `position_` (one row per asset-position combination).
     #'
-    #' When the account has multiple assets and positions, account-level fields are repeated on each row.
+    #' Account-level fields are replicated on each asset row. For
+    #' per-position data (entry price, leverage, side, unrealised PnL on
+    #' open contracts) use `get_positions()` — Binance returns positions
+    #' alongside assets in this response, but they are a heterogeneous
+    #' shape (one entity is an asset balance, the other is a derivative
+    #' position) and combining them would require a Cartesian join no
+    #' user expects. We therefore intentionally drop the `positions`
+    #' array here; `get_positions()` hits `/fapi/v2/positionRisk` and
+    #' returns one row per open position.
     #'
     #' @examples
     #' \dontrun{
     #' futures <- BinanceFutures$new()
     #' account <- futures$get_account()
     #' print(account)
+    #' positions <- futures$get_positions()
+    #' print(positions)
     #' }
     get_account = function(recvWindow = NULL) {
       return(private$.request(
@@ -1020,25 +1031,18 @@ BinanceFutures <- R6::R6Class(
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
           assets <- data$assets
-          positions <- data$positions
+          # `positions` is intentionally dropped here — see @return note
+          # above. Callers wanting positions should use `get_positions()`.
           data$assets <- NULL
           data$positions <- NULL
           dt <- as_dt_row(data)
-          # Expand assets to long format: one row per asset
+          # Expand assets to long format: one row per asset.
           if (!is.null(assets) && length(assets) > 0) {
             assets_dt <- as_dt_list(assets)
             asset_names <- names(assets_dt)
             data.table::setnames(assets_dt, asset_names, paste0("asset_", asset_names))
             dt <- dt[rep(1L, nrow(assets_dt))]
             dt <- cbind(dt, assets_dt)
-          }
-          # Expand positions to long format: one row per position
-          if (!is.null(positions) && length(positions) > 0) {
-            positions_dt <- as_dt_list(positions)
-            pos_names <- names(positions_dt)
-            data.table::setnames(positions_dt, pos_names, paste0("position_", pos_names))
-            dt <- dt[rep(1L, nrow(positions_dt))]
-            dt <- cbind(dt, positions_dt)
           }
           return(dt[])
         }

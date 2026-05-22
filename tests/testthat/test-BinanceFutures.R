@@ -207,11 +207,78 @@ test_that("get_account returns data.table with assets expanded to long format", 
   expect_true("total_wallet_balance" %in% names(dt))
   # No list-column 'assets' - expanded with prefix
   expect_false("assets" %in% names(dt))
+  # `positions` is intentionally dropped — see get_account @return note.
+  expect_false("positions" %in% names(dt))
+  expect_false(any(grepl("^position_", names(dt))))
   # Asset columns present with prefix
   expect_true("asset_asset" %in% names(dt))
   expect_true("asset_wallet_balance" %in% names(dt))
   expect_equal(dt$asset_asset, "USDT")
   expect_equal(dt$asset_wallet_balance, "1000.00000000")
+})
+
+test_that("get_account preserves all assets when account has multiple assets + positions", {
+  # Regression: a prior bug `dt[rep(1L, nrow(positions_dt))]` was
+  # collapsing the assets dt back to one row before cross-joining with
+  # positions, so 2 assets + 3 positions returned 3 rows ALL for asset 1.
+  # Fix: positions are dropped from this method (use get_positions()
+  # for those). Verify that 2 assets returns 2 rows with both assets
+  # preserved.
+  data <- mock_futures_account_data()
+  data$assets <- list(
+    list(
+      asset = "USDT",
+      walletBalance = "1000.00",
+      unrealizedProfit = "0",
+      marginBalance = "1000.00",
+      maintMargin = "0",
+      initialMargin = "0",
+      positionInitialMargin = "0",
+      openOrderInitialMargin = "0",
+      crossWalletBalance = "1000.00",
+      crossUnPnl = "0",
+      availableBalance = "1000.00",
+      maxWithdrawAmount = "1000.00",
+      marginAvailable = TRUE,
+      updateTime = 0L
+    ),
+    list(
+      asset = "BNB",
+      walletBalance = "10.00",
+      unrealizedProfit = "0",
+      marginBalance = "10.00",
+      maintMargin = "0",
+      initialMargin = "0",
+      positionInitialMargin = "0",
+      openOrderInitialMargin = "0",
+      crossWalletBalance = "10.00",
+      crossUnPnl = "0",
+      availableBalance = "10.00",
+      maxWithdrawAmount = "10.00",
+      marginAvailable = TRUE,
+      updateTime = 0L
+    )
+  )
+  # Three open positions on different symbols — should NOT contaminate
+  # the asset rows.
+  data$positions <- list(
+    list(symbol = "BTCUSDT", positionAmt = "0.1"),
+    list(symbol = "ETHUSDT", positionAmt = "1.0"),
+    list(symbol = "BNBUSDT", positionAmt = "5.0")
+  )
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures()$get_account()
+  expect_equal(nrow(dt), 2L)
+  expect_setequal(dt$asset_asset, c("USDT", "BNB"))
+  # No position_* columns leak through.
+  expect_false(any(grepl("^position_", names(dt))))
+  # Account-level fields replicated on both rows.
+  expect_equal(unique(dt$total_wallet_balance), "1000.00000000")
+  # No list columns anywhere.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
 })
 
 # -- get_balances --

@@ -73,14 +73,19 @@ test_that("get_exchange_info returns data.table with string arrays semicolon-joi
     "EXPIRE_TAKER;EXPIRE_MAKER;EXPIRE_BOTH"
   )
 
-  # `permission_sets` is the newer array-of-arrays field; the helper
-  # flattens it to a `;`-joined character. ETH lacks it → NA.
+  # `permission_sets` is Binance's array-of-arrays field. We serialise
+  # it as a JSON string so the inner groupings are preserved (a `;`-join
+  # would erase the semantic boundaries between alternative permission
+  # sets). Round-trip via jsonlite::fromJSON. ETH lacks it → NA.
   expect_true("permission_sets" %in% names(dt))
   expect_type(dt$permission_sets, "character")
   expect_equal(
     dt[symbol == "BTCUSDT"]$permission_sets,
-    "SPOT;MARGIN;TRD_GRP_004"
+    '[["SPOT","MARGIN","TRD_GRP_004"]]'
   )
+  # Round-trip recovers the nested structure.
+  recovered <- jsonlite::fromJSON(dt[symbol == "BTCUSDT"]$permission_sets, simplifyVector = FALSE)
+  expect_equal(recovered, list(list("SPOT", "MARGIN", "TRD_GRP_004")))
   expect_true(is.na(dt[symbol == "ETHUSDT"]$permission_sets))
 
   # No list columns anywhere — regression for the cross-package policy.
@@ -180,6 +185,48 @@ test_that("get_24hr_stats returns stats with datetime columns", {
   expect_true("close_time" %in% names(dt))
   expect_s3_class(dt$open_time, "POSIXct")
   expect_s3_class(dt$close_time, "POSIXct")
+})
+
+# -- get_all_24hr_stats --
+
+test_that("get_all_24hr_stats returns one row per symbol with POSIXct times", {
+  resp <- mock_binance_response(data = mock_all_24hr_stats_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_market()$get_all_24hr_stats()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 2L)
+  expect_setequal(dt$symbol, c("BTCUSDT", "ETHUSDT"))
+  expect_true("open_time" %in% names(dt))
+  expect_true("close_time" %in% names(dt))
+  expect_s3_class(dt$open_time, "POSIXct")
+  expect_s3_class(dt$close_time, "POSIXct")
+  # No list columns.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
+})
+
+test_that("get_all_24hr_stats hits /api/v3/ticker/24hr with no `symbol` param", {
+  captured_url <- NULL
+  resp <- mock_binance_response(data = mock_all_24hr_stats_data())
+  httr2::local_mocked_responses(function(req) {
+    captured_url <<- req$url
+    return(resp)
+  })
+
+  new_market()$get_all_24hr_stats()
+  expect_true(grepl("/api/v3/ticker/24hr", captured_url))
+  # No symbol query param — that's what the "all" endpoint variant means.
+  expect_false(grepl("symbol=", captured_url))
+})
+
+test_that("get_all_24hr_stats returns empty data.table when no symbols", {
+  resp <- mock_binance_response(data = list())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_market()$get_all_24hr_stats()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
 })
 
 # -- get_avg_price --

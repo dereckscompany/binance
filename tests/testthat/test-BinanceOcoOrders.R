@@ -90,28 +90,35 @@ test_that("add_oco_order validates side parameter", {
 
 # -- cancel_oco_order --
 
-test_that("cancel_oco_order returns data.table with orders expanded", {
+test_that("cancel_oco_order expands the richer orderReports payload (matching add_oco_order)", {
   resp <- mock_binance_response(data = mock_oco_order_response())
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_oco()$cancel_oco_order("BTCUSDT", orderListId = 0)
   expect_s3_class(dt, "data.table")
-  # 2 child orders expanded to 2 rows
+  # 2 child order reports expanded to 2 rows.
   expect_equal(nrow(dt), 2L)
   expect_equal(unique(dt$order_list_id), 0L)
   expect_equal(unique(dt$symbol), "BTCUSDT")
 
-  # transact_time should be converted to POSIXct in-place
+  # transact_time converted to POSIXct in place.
   expect_true("transact_time" %in% names(dt))
   expect_s3_class(dt$transact_time, "POSIXct")
 
-  # Child order columns present with prefix
-  expect_true("order_order_id" %in% names(dt))
-  expect_equal(dt$order_order_id, c(12L, 13L))
+  # Child order *report* columns present with `order_report_` prefix —
+  # the rich payload (price, qty, status, type, stop price) — NOT the
+  # thin `order_*` shape we used to emit.
+  expect_true("order_report_order_id" %in% names(dt))
+  expect_equal(dt$order_report_order_id, c(12L, 13L))
+  expect_true("order_report_status" %in% names(dt))
+  expect_true("order_report_price" %in% names(dt))
 
-  # No list-columns for orders or orderReports
+  # No list columns, and neither `orders` nor `orderReports` leaks.
   expect_false("orders" %in% names(dt))
   expect_false("order_reports" %in% names(dt))
+  expect_false("orderReports" %in% names(dt))
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
 })
 
 test_that("cancel_oco_order requires orderListId or listClientOrderId", {

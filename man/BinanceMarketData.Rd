@@ -395,9 +395,13 @@ fields returned by the API, converted to snake_case. Key columns include:
 on newer symbols Binance often returns \verb{permissions = []} and
 populates \code{permission_sets} instead. Prefer \code{permission_sets}
 for new code.
-\item \code{permission_sets} (character): Semicolon-separated permission
-set entries, flattened from Binance's array-of-arrays form.
-\code{NA} when the symbol omits the field.
+\item \code{permission_sets} (character): JSON string preserving
+Binance's array-of-arrays structure (e.g.
+\code{'[["SPOT","MARGIN"],["TRD_GRP_004"]]'}). Inner groupings
+carry semantic meaning — each inner array is an alternative
+permission set — so we don't flatten with \verb{;}. Recover with
+\code{jsonlite::fromJSON(dt$permission_sets[1])}. \code{NA} when the
+symbol omits the field.
 \item \code{default_self_trade_prevention_mode} (character): Default STP mode.
 \item \code{allowed_self_trade_prevention_modes} (character): Semicolon-separated
 allowed STP modes.

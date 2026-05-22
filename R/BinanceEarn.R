@@ -136,7 +136,29 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data)[])
+          rows <- data$rows
+          if (is.null(rows) || length(rows) == 0) {
+            return(data.table::data.table()[])
+          }
+          # `tierAnnualPercentageRate` is a nested object with DYNAMIC
+          # keys (e.g. `"0-5BTC": 0.05, "5-10BTC": 0.03`) — different
+          # products use different tier breakpoints. Wide-prefixing
+          # would produce a sparse soup of columns; instead serialise
+          # the whole field as a JSON string so the structure is
+          # preserved and recoverable via
+          # `jsonlite::fromJSON(dt$tier_annual_percentage_rate[1])`.
+          rows <- lapply(rows, function(r) {
+            tier <- r[["tierAnnualPercentageRate"]]
+            if (is.null(tier) || length(tier) == 0L) {
+              r[["tierAnnualPercentageRate"]] <- NA_character_
+            } else {
+              r[["tierAnnualPercentageRate"]] <- as.character(
+                jsonlite::toJSON(tier, auto_unbox = TRUE)
+              )
+            }
+            return(r)
+          })
+          return(as_dt_list(rows)[])
         }
       ))
     },
@@ -189,13 +211,28 @@ BinanceEarn <- R6::R6Class(
     #' @return `data.table` with **one row per product** and the following
     #'   columns. Nested `detail` and `quota` objects are wide-prefixed
     #'   (`detail_*` and `quota_*`) per the package's "no list columns"
-    #'   policy:
+    #'   policy. Field names mirror the current Binance API
+    #'   (verified 2026-05-22):
     #' - `project_id` (character): Unique project identifier.
     #' - `detail_asset` (character): Subscription asset (e.g. `"BTC"`).
     #' - `detail_reward_asset` (character): Reward asset.
     #' - `detail_duration` (integer): Lock-up duration in days.
     #' - `detail_renewable` (logical): Whether the product auto-renews.
-    #' - `detail_apy` (character): Annual percentage yield.
+    #' - `detail_is_sold_out` (logical): Whether the offering is currently
+    #'   sold out (no new subscriptions accepted).
+    #' - `detail_apr` (character): Annual percentage rate. NOTE: Binance
+    #'   renamed this from `apy` → `apr` on the live API; older docs
+    #'   that show `apy` are stale.
+    #' - `detail_status` (character): Product lifecycle state (e.g.
+    #'   `"CREATED"`, `"PURCHASING"`).
+    #' - `detail_subscription_start_time` (numeric): Subscription open
+    #'   timestamp in milliseconds.
+    #' - `detail_extra_reward_asset` (character): Additional reward
+    #'   asset, if the product carries a boost.
+    #' - `detail_extra_reward_apr` (character): Extra reward APR.
+    #' - `detail_boost_reward_asset` (character): Boost reward asset.
+    #' - `detail_boost_apr` (character): Boost APR.
+    #' - `detail_boost_end_time` (numeric): Boost end timestamp in ms.
     #' - `quota_total_personal_quota` (character): Per-user maximum.
     #' - `quota_minimum` (character): Per-user minimum.
     #'
@@ -588,7 +625,25 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data)[])
+          rows <- data$rows
+          if (is.null(rows) || length(rows) == 0) {
+            return(data.table::data.table()[])
+          }
+          # `tierAnnualPercentageRate` can appear on position rows too;
+          # same treatment as `get_flexible_products` — JSON-encode so
+          # dynamic tier keys are preserved.
+          rows <- lapply(rows, function(r) {
+            tier <- r[["tierAnnualPercentageRate"]]
+            if (!is.null(tier) && length(tier) > 0L) {
+              r[["tierAnnualPercentageRate"]] <- as.character(
+                jsonlite::toJSON(tier, auto_unbox = TRUE)
+              )
+            } else if (!is.null(tier)) {
+              r[["tierAnnualPercentageRate"]] <- NA_character_
+            }
+            return(r)
+          })
+          return(as_dt_list(rows)[])
         }
       ))
     },

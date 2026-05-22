@@ -30,6 +30,18 @@ test_that("get_flexible_products returns data.table with expected columns", {
   expect_true("status" %in% names(dt))
   expect_equal(dt$asset, "USDT")
   expect_equal(dt$product_id, "USDT001")
+
+  # tierAnnualPercentageRate has dynamic keys — preserved as JSON string,
+  # not list-column. Recover via jsonlite::fromJSON.
+  expect_true("tier_annual_percentage_rate" %in% names(dt))
+  expect_type(dt$tier_annual_percentage_rate, "character")
+  recovered <- jsonlite::fromJSON(dt$tier_annual_percentage_rate)
+  expect_equal(recovered$`0-5BTC`, 0.05)
+  expect_equal(recovered$`5-10BTC`, 0.03)
+
+  # No list columns anywhere.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
 })
 
 test_that("get_flexible_products hits correct endpoint", {
@@ -90,14 +102,24 @@ test_that("get_locked_products wide-prefixes nested detail/quota (no list column
   list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
   expect_equal(length(list_cols), 0L)
 
-  # Detail object wide-prefixed.
+  # Detail object wide-prefixed. Field set tracks current Binance API
+  # (verified 2026-05-22): `apr` not `apy`, plus extra-reward / boost
+  # fields.
   expect_true(all(
     c(
       "detail_asset",
       "detail_reward_asset",
       "detail_duration",
       "detail_renewable",
-      "detail_apy"
+      "detail_is_sold_out",
+      "detail_apr",
+      "detail_status",
+      "detail_subscription_start_time",
+      "detail_extra_reward_asset",
+      "detail_extra_reward_apr",
+      "detail_boost_reward_asset",
+      "detail_boost_apr",
+      "detail_boost_end_time"
     ) %in%
       names(dt)
   ))
@@ -105,7 +127,11 @@ test_that("get_locked_products wide-prefixes nested detail/quota (no list column
   expect_equal(dt$detail_reward_asset, "BTC")
   expect_equal(dt$detail_duration, 30L)
   expect_true(dt$detail_renewable)
-  expect_equal(dt$detail_apy, "0.05000000")
+  expect_false(dt$detail_is_sold_out)
+  expect_equal(dt$detail_apr, "0.05000000")
+  expect_equal(dt$detail_status, "CREATED")
+  expect_equal(dt$detail_extra_reward_asset, "BNB")
+  expect_equal(dt$detail_boost_apr, "0.00100000")
 
   # Quota object wide-prefixed.
   expect_true(all(

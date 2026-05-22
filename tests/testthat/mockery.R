@@ -161,6 +161,39 @@ mock_24hr_stats_data <- function() {
   ))
 }
 
+#' All-symbol 24hr stats — array form returned by /api/v3/ticker/24hr
+#' when no `symbol` query param is supplied. Two-symbol fixture is
+#' enough to exercise the row-binding and timestamp-conversion paths.
+#' @export
+mock_all_24hr_stats_data <- function() {
+  return(list(
+    mock_24hr_stats_data(),
+    list(
+      symbol = "ETHUSDT",
+      priceChange = "-25.10",
+      priceChangePercent = "-0.800",
+      weightedAvgPrice = "3120.50",
+      prevClosePrice = "3155.00",
+      lastPrice = "3130.40",
+      lastQty = "0.01000000",
+      bidPrice = "3130.30",
+      bidQty = "0.50000000",
+      askPrice = "3130.40",
+      askQty = "0.75000000",
+      openPrice = "3155.50",
+      highPrice = "3160.00",
+      lowPrice = "3100.00",
+      volume = "12345.67",
+      quoteVolume = "38567890.12",
+      openTime = 1729073059033,
+      closeTime = 1729159459033,
+      firstId = 5000L,
+      lastId = 6000L,
+      count = 1001L
+    )
+  ))
+}
+
 #' Average price — BTCUSDT
 #' @export
 mock_avg_price_data <- function() {
@@ -857,12 +890,20 @@ mock_sub_account_status_data <- function() {
 #' Flexible products
 #' @export
 mock_flexible_products_data <- function() {
+  # Shape verified 2026-05-22 against the live docs; includes
+  # `tierAnnualPercentageRate` — a nested object with DYNAMIC keys
+  # (per-product size tiers). Parser serialises it as a JSON string
+  # so the structure is preserved.
   return(list(
     total = 1L,
     rows = list(
       list(
         asset = "USDT",
         latestAnnualPercentageRate = "0.03250000",
+        tierAnnualPercentageRate = list(
+          "0-5BTC" = 0.05,
+          "5-10BTC" = 0.03
+        ),
         canPurchase = TRUE,
         canRedeem = TRUE,
         isSoldOut = FALSE,
@@ -877,6 +918,10 @@ mock_flexible_products_data <- function() {
 }
 
 #' Locked products
+#' Shape captured 2026-05-22 from
+#' https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Simple-Earn-Locked-Product-List
+#' — `detail.apr` (not `apy`), plus `isSoldOut`, `status`,
+#' `subscriptionStartTime`, and the extra-reward / boost fields.
 #' @export
 mock_locked_products_data <- function() {
   return(list(
@@ -884,7 +929,21 @@ mock_locked_products_data <- function() {
     rows = list(
       list(
         projectId = "BTC30d001",
-        detail = list(asset = "BTC", rewardAsset = "BTC", duration = 30L, renewable = TRUE, apy = "0.05000000"),
+        detail = list(
+          asset = "BTC",
+          rewardAsset = "BTC",
+          duration = 30L,
+          renewable = TRUE,
+          isSoldOut = FALSE,
+          apr = "0.05000000",
+          status = "CREATED",
+          subscriptionStartTime = 1646182276000,
+          extraRewardAsset = "BNB",
+          extraRewardAPR = "0.01000000",
+          boostRewardAsset = "BTC",
+          boostApr = "0.00100000",
+          boostEndTime = 1646182276000
+        ),
         quota = list(totalPersonalQuota = "10.00000000", minimum = "0.001")
       )
     )

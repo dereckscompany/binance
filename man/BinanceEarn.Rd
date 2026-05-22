@@ -390,14 +390,29 @@ Verified: 2026-05-22
 \code{data.table} with \strong{one row per product} and the following
 columns. Nested \code{detail} and \code{quota} objects are wide-prefixed
 (\verb{detail_*} and \verb{quota_*}) per the package's "no list columns"
-policy:
+policy. Field names mirror the current Binance API
+(verified 2026-05-22):
 \itemize{
 \item \code{project_id} (character): Unique project identifier.
 \item \code{detail_asset} (character): Subscription asset (e.g. \code{"BTC"}).
 \item \code{detail_reward_asset} (character): Reward asset.
 \item \code{detail_duration} (integer): Lock-up duration in days.
 \item \code{detail_renewable} (logical): Whether the product auto-renews.
-\item \code{detail_apy} (character): Annual percentage yield.
+\item \code{detail_is_sold_out} (logical): Whether the offering is currently
+sold out (no new subscriptions accepted).
+\item \code{detail_apr} (character): Annual percentage rate. NOTE: Binance
+renamed this from \code{apy} → \code{apr} on the live API; older docs
+that show \code{apy} are stale.
+\item \code{detail_status} (character): Product lifecycle state (e.g.
+\code{"CREATED"}, \code{"PURCHASING"}).
+\item \code{detail_subscription_start_time} (numeric): Subscription open
+timestamp in milliseconds.
+\item \code{detail_extra_reward_asset} (character): Additional reward
+asset, if the product carries a boost.
+\item \code{detail_extra_reward_apr} (character): Extra reward APR.
+\item \code{detail_boost_reward_asset} (character): Boost reward asset.
+\item \code{detail_boost_apr} (character): Boost APR.
+\item \code{detail_boost_end_time} (numeric): Boost end timestamp in ms.
 \item \code{quota_total_personal_quota} (character): Per-user maximum.
 \item \code{quota_minimum} (character): Per-user minimum.
 }

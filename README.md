@@ -31,24 +31,70 @@ a bug or wish to make an improvement.
 
 ## Design Philosophy
 
-All API responses are returned as `data.table` objects with two
-transformations applied:
+All API responses are returned as `data.table` objects. The package
+targets a consistent “one entity = one row, no list columns” shape, but
+the exact transformation is endpoint-specific. See each method’s
+`@return` block for the precise list of columns and any per-endpoint
+behaviour.
+
+The transformations the parsers apply:
 
 1.  **snake_case column names** - camelCase keys from the JSON response
     (e.g. `insertTime`, `quoteQty`) are converted to snake_case
-    (`insert_time`, `quote_qty`). No columns are renamed beyond.
-2.  **type coercion** - known columns are type coerced in `data.table`
-    before return.
+    (`insert_time`, `quote_qty`). A handful of endpoints additionally
+    rename for clarity (e.g. nested objects are wide-prefixed to
+    `parent_child` columns; collapsed array fields land under the plural
+    form like `permissions`).
 
-That’s it. **No fields are dropped and no columns are renamed** beyond
-snake case conversion. If a column exists in the Binance API response,
-it will exist in the returned `data.table`. If you don’t need a column,
-drop it yourself.
+2.  **Type coercion** for well-known columns - millisecond timestamps
+    become `POSIXct`; selected nested numeric `filters` are extracted
+    into flat `lot_min_qty` / `price_tick_size` / `min_notional`
+    columns.
 
-- The only exception is klines (candlestick data), where Binance returns
-  positional arrays instead of named objects. These are assigned
-  descriptive column names (`open_time`, `open`, `high`, `low`, `close`,
-  `volume`, `close_time`, etc.) matching the Binance documentation.
+3.  **Shape normalisation** for nested arrays and objects, applied per
+    endpoint:
+
+    - **Arrays of plain strings** (e.g. `orderTypes`, `permissions`,
+      `allowedSelfTradePreventionModes`) → collapsed into one
+      `;`-separated character column. Recover via
+      `strsplit(x, ";", fixed = TRUE)[[1]]`.
+    - **Arrays of objects with a fixed schema** (e.g. order `fills`,
+      account `assets`, OCO `orderReports`, watchlist children) →
+      exploded to long format with parent fields replicated and a
+      `<child>_` prefix on the child columns. A 1-indexed position
+      column is added where order matters.
+    - **Single nested objects with a fixed schema** (e.g. account
+      `commissionRates`, locked-earn `detail` / `quota`) → flattened to
+      wide `parent_child` columns.
+    - **Nested objects with dynamic keys** (e.g. spot exchange-info
+      `permissionSets`, flexible-earn `tierAnnualPercentageRate`) →
+      serialised as a JSON string column so the inner structure is
+      preserved; recover via `jsonlite::fromJSON(x)`.
+
+**Endpoints that deliberately drop fields:**
+
+- `get_account_info()` (spot) - the `balances` array is replaced by a
+  separate `get_balances()` call; account-level fields are returned as a
+  single row.
+- `get_account()` (futures) - returns one row per asset balance only.
+  The companion `positions` array Binance returns alongside is
+  intentionally dropped; use `get_positions()` for per-position data (it
+  hits `/fapi/v2/positionRisk`).
+- `get_exchange_info()` (spot and futures) - the raw `filters` array is
+  dropped after extracting the canonical `lot_*`, `price_*`, and
+  `min_notional` numeric fields. The top-level `rateLimits`,
+  `exchangeFilters`, and (spot) `sors` blocks are also dropped from the
+  one-row-per-symbol return; the per-symbol scalars and arrays remain.
+- The OCO endpoints (`add_oco_order()`, `cancel_oco_order()`) expand the
+  richer `orderReports` payload and drop the thinner `orders` duplicate.
+
+**Klines** are a special case: Binance returns positional arrays instead
+of named objects, so we assign descriptive column names (`open_time`,
+`open`, `high`, `low`, `close`, `volume`, `close_time`, etc.) matching
+the Binance documentation.
+
+If a column you expect is missing, check the method’s `@return`; if it
+still looks wrong, please file an issue.
 
 ## Available Classes
 

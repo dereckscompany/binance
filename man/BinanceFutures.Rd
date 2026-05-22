@@ -181,6 +181,8 @@ print(all)
 futures <- BinanceFutures$new()
 account <- futures$get_account()
 print(account)
+positions <- futures$get_positions()
+print(positions)
 }
 
 ## ------------------------------------------------
@@ -1246,15 +1248,24 @@ Verified: 2026-05-22
 \item \code{total_cross_wallet_balance} (character): Total cross-wallet balance.
 \item \code{available_balance} (character): Available balance for new positions.
 \item \code{max_withdraw_amount} (character): Maximum withdrawable amount.
-\item \code{asset_name} (character): Per-asset name (one row per asset, expanded from \code{assets}).
+\item \code{asset_asset} (character): Per-asset symbol — one row per asset
+(Binance returns the symbol under the \code{asset} field within the
+\code{assets} array, hence the doubled name after \code{asset_} prefixing).
 \item \code{asset_wallet_balance} (character): Per-asset wallet balance.
 \item \code{asset_unrealized_profit} (character): Per-asset unrealised PnL.
 \item \code{asset_margin_balance} (character): Per-asset margin balance.
 \item \code{asset_available_balance} (character): Per-asset available balance.
-\item \verb{position_*}: Per-position fields prefixed with \code{position_} (one row per asset-position combination).
 }
 
-When the account has multiple assets and positions, account-level fields are repeated on each row.
+Account-level fields are replicated on each asset row. For
+per-position data (entry price, leverage, side, unrealised PnL on
+open contracts) use \code{get_positions()} — Binance returns positions
+alongside assets in this response, but they are a heterogeneous
+shape (one entity is an asset balance, the other is a derivative
+position) and combining them would require a Cartesian join no
+user expects. We therefore intentionally drop the \code{positions}
+array here; \code{get_positions()} hits \verb{/fapi/v2/positionRisk} and
+returns one row per open position.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -1262,6 +1273,8 @@ When the account has multiple assets and positions, account-level fields are rep
 futures <- BinanceFutures$new()
 account <- futures$get_account()
 print(account)
+positions <- futures$get_positions()
+print(positions)
 }
 }
 \if{html}{\out{</div>}}
