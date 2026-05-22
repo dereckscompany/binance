@@ -143,17 +143,39 @@ Verified: 2026-05-22
 
 \subsection{JSON Response}{
 
+Shape captured 2026-05-22 from the live docs.
+
 \if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
   "makerCommission": 15,
   "takerCommission": 15,
+  "buyerCommission": 0,
+  "sellerCommission": 0,
+  "commissionRates": \{
+    "maker": "0.00150000",
+    "taker": "0.00150000",
+    "buyer": "0.00000000",
+    "seller": "0.00000000"
+  \},
   "canTrade": true,
   "canWithdraw": true,
   "canDeposit": true,
+  "brokered": false,
+  "requireSelfTradePrevention": false,
+  "preventSor": false,
+  "updateTime": 123456789,
   "accountType": "SPOT",
-  "balances": [...],
+  "balances": [
+    \{ "asset": "BTC", "free": "4723846.89208129", "locked": "0.00000000" \}
+  ],
+  "permissions": ["SPOT", "MARGIN"],
   "uid": 354937868
 \}
 }\if{html}{\out{</div>}}
+
+Note: this parser drops the \code{balances} array — call \code{get_balances()}
+for the per-asset shape. \code{commissionRates} is flattened to wide
+\verb{commission_rates_*} columns and \code{permissions} is \verb{;}-collapsed
+so the return is always one row per account.
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceAccount$get_account_info(recvWindow = NULL)}\if{html}{\out{</div>}}

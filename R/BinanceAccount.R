@@ -74,18 +74,39 @@ BinanceAccount <- R6::R6Class(
     #' ```
     #'
     #' ### JSON Response
+    #' Shape captured 2026-05-22 from the live docs.
     #' ```json
     #' {
     #'   "makerCommission": 15,
     #'   "takerCommission": 15,
+    #'   "buyerCommission": 0,
+    #'   "sellerCommission": 0,
+    #'   "commissionRates": {
+    #'     "maker": "0.00150000",
+    #'     "taker": "0.00150000",
+    #'     "buyer": "0.00000000",
+    #'     "seller": "0.00000000"
+    #'   },
     #'   "canTrade": true,
     #'   "canWithdraw": true,
     #'   "canDeposit": true,
+    #'   "brokered": false,
+    #'   "requireSelfTradePrevention": false,
+    #'   "preventSor": false,
+    #'   "updateTime": 123456789,
     #'   "accountType": "SPOT",
-    #'   "balances": [...],
+    #'   "balances": [
+    #'     { "asset": "BTC", "free": "4723846.89208129", "locked": "0.00000000" }
+    #'   ],
+    #'   "permissions": ["SPOT", "MARGIN"],
     #'   "uid": 354937868
     #' }
     #' ```
+    #'
+    #' Note: this parser drops the `balances` array — call `get_balances()`
+    #' for the per-asset shape. `commissionRates` is flattened to wide
+    #' `commission_rates_*` columns and `permissions` is `;`-collapsed
+    #' so the return is always one row per account.
     #'
     #' @param recvWindow Integer or NULL; max 60000.
     #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
