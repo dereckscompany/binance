@@ -796,11 +796,9 @@ When orders are cancelled, one row per order with columns:
 \item \code{is_isolated} (logical): Whether this is an isolated margin order.
 }
 
-When no open orders exist, a single confirmation row with columns:
-\itemize{
-\item \code{symbol} (character): The requested trading pair.
-\item \code{status} (character): \code{"cancelled"}.
-}
+When there were no open orders to cancel, the return is an
+empty \code{data.table} (per the cross-package "no stub rows"
+convention — the absence of an error is the success signal).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

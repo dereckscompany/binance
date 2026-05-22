@@ -303,11 +303,12 @@ BinanceTrading <- R6::R6Class(
     #' @param newOrderRespType Character or NULL; `"ACK"`, `"RESULT"`, or `"FULL"`.
     #' @param selfTradePreventionMode Character or NULL.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`), single row with columns:
-    #'   - `symbol` (character): The validated trading pair.
-    #'   - `side` (character): `"BUY"` or `"SELL"`.
-    #'   - `type` (character): Order type.
-    #'   - `status` (character): `"validated"`.
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
+    #'   with a single row and a single `validated` (logical) column,
+    #'   set to `TRUE` on success. Binance returns `{}` on a successful
+    #'   test order — the absence of an error is the validation
+    #'   signal, so we don't fabricate a stub row echoing the request
+    #'   parameters (per the cross-package "no stub rows" convention).
     #'
     #' @examples
     #' \dontrun{
@@ -316,7 +317,7 @@ BinanceTrading <- R6::R6Class(
     #'   type = "LIMIT", symbol = "BTCUSDT", side = "BUY",
     #'   price = 50000, quantity = 0.0001
     #' )
-    #' print(test)
+    #' stopifnot(test$validated)
     #' }
     add_order_test = function(
       type,
@@ -354,13 +355,14 @@ BinanceTrading <- R6::R6Class(
         method = "POST",
         body = body,
         .parser = function(data) {
+          # `{}` on success — Binance's "request would have validated"
+          # signal. Per the cross-package convention we don't fabricate
+          # a stub row with the request parameters; the absence of an
+          # error is the success signal. Return a single-row table with
+          # one logical column so callers can write
+          # `dt$validated` without checking nrow().
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table(
-              symbol = symbol,
-              side = side,
-              type = type,
-              status = "validated"
-            )[])
+            return(data.table::data.table(validated = TRUE)[])
           }
           return(as_dt_row(data)[])
         }
@@ -537,9 +539,9 @@ BinanceTrading <- R6::R6Class(
     #'   - `self_trade_prevention_mode` (character): STP mode applied.
     #'   - `transact_time` (POSIXct): Cancellation time.
     #'
-    #'   When no open orders exist, a single confirmation row with columns:
-    #'   - `symbol` (character): The requested trading pair.
-    #'   - `status` (character): `"cancelled"`.
+    #'   When there were no open orders to cancel, the return is an
+    #'   empty `data.table` (per the cross-package "no stub rows"
+    #'   convention — the absence of an error is the success signal).
     #'
     #' @examples
     #' \dontrun{
@@ -553,8 +555,14 @@ BinanceTrading <- R6::R6Class(
         method = "DELETE",
         query = list(symbol = symbol, recvWindow = recvWindow),
         .parser = function(data) {
+          # Per the cross-package "empty response → empty data.table,
+          # no stub rows" convention: when there were no orders to
+          # cancel, return an empty table rather than fabricate a
+          # synthetic `(symbol, status = "cancelled")` row that pretends
+          # to be a cancelled order. The absence of an error is the
+          # success signal.
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table(symbol = symbol, status = "cancelled")[])
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {

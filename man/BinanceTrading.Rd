@@ -114,7 +114,7 @@ test <- trading$add_order_test(
   type = "LIMIT", symbol = "BTCUSDT", side = "BUY",
   price = 50000, quantity = 0.0001
 )
-print(test)
+stopifnot(test$validated)
 }
 
 ## ------------------------------------------------
@@ -450,13 +450,12 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}), single row with columns:
-\itemize{
-\item \code{symbol} (character): The validated trading pair.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{type} (character): Order type.
-\item \code{status} (character): \code{"validated"}.
-}
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
+with a single row and a single \code{validated} (logical) column,
+set to \code{TRUE} on success. Binance returns \code{{}} on a successful
+test order — the absence of an error is the validation
+signal, so we don't fabricate a stub row echoing the request
+parameters (per the cross-package "no stub rows" convention).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -466,7 +465,7 @@ test <- trading$add_order_test(
   type = "LIMIT", symbol = "BTCUSDT", side = "BUY",
   price = 50000, quantity = 0.0001
 )
-print(test)
+stopifnot(test$validated)
 }
 }
 \if{html}{\out{</div>}}
@@ -674,11 +673,9 @@ When orders are cancelled, one row per order with columns:
 \item \code{transact_time} (POSIXct): Cancellation time.
 }
 
-When no open orders exist, a single confirmation row with columns:
-\itemize{
-\item \code{symbol} (character): The requested trading pair.
-\item \code{status} (character): \code{"cancelled"}.
-}
+When there were no open orders to cancel, the return is an
+empty \code{data.table} (per the cross-package "no stub rows"
+convention — the absence of an error is the success signal).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

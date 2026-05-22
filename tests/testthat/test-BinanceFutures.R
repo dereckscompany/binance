@@ -81,11 +81,12 @@ test_that("add_order_test returns confirmation dt on success", {
     timeInForce = "GTC"
   )
   expect_s3_class(dt, "data.table")
+  # `{}` on success → `validated = TRUE`, no echoed request fields.
   expect_equal(nrow(dt), 1L)
-  expect_equal(dt$symbol, "BTCUSDT")
-  expect_equal(dt$side, "BUY")
-  expect_equal(dt$type, "LIMIT")
-  expect_equal(dt$status, "validated")
+  expect_true("validated" %in% names(dt))
+  expect_true(dt$validated)
+  expect_false("symbol" %in% names(dt))
+  expect_false("status" %in% names(dt))
 })
 
 test_that("add_order_test hits /fapi/v1/order/test", {
@@ -405,4 +406,69 @@ test_that("Binance API error is raised correctly for futures trading", {
     new_futures()$get_account(),
     "Binance API error -1013"
   )
+})
+
+# -- modify_position_margin --
+
+test_that("modify_position_margin returns single-row data.table with code/msg/amount/type", {
+  resp <- mock_binance_response(data = mock_futures_modify_position_margin_response())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures()$modify_position_margin("BTCUSDT", amount = 100, type = 1L)
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 1L)
+  expect_equal(dt$code, 200L)
+  expect_equal(dt$msg, "Successfully modify position margin.")
+  expect_equal(dt$amount, 100)
+  expect_equal(dt$type, 1L)
+})
+
+test_that("modify_position_margin sends POST to /fapi/v1/positionMargin with amount coerced to character", {
+  captured <- NULL
+  resp <- mock_binance_response(data = mock_futures_modify_position_margin_response())
+  httr2::local_mocked_responses(function(req) {
+    captured <<- req
+    return(resp)
+  })
+
+  new_futures()$modify_position_margin("BTCUSDT", amount = 0.5, type = 2L)
+  expect_equal(captured$method, "POST")
+  expect_true(grepl("/fapi/v1/positionMargin", captured$url))
+})
+
+# -- get_position_margin_history --
+
+test_that("get_position_margin_history returns one row per change with POSIXct time", {
+  resp <- mock_binance_response(data = mock_futures_position_margin_history_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures()$get_position_margin_history("BTCUSDT")
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 1L)
+  expect_equal(dt$symbol, "BTCUSDT")
+  expect_equal(dt$delta_type, "INCREASE_MARGIN")
+  expect_equal(dt$asset, "USDT")
+  expect_s3_class(dt$time, "POSIXct")
+})
+
+test_that("get_position_margin_history returns empty data.table on empty response", {
+  resp <- mock_binance_response(data = list())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures()$get_position_margin_history("BTCUSDT")
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
+})
+
+test_that("get_position_margin_history hits /fapi/v1/positionMargin/history", {
+  captured_url <- NULL
+  resp <- mock_binance_response(data = mock_futures_position_margin_history_data())
+  httr2::local_mocked_responses(function(req) {
+    captured_url <<- req$url
+    return(resp)
+  })
+
+  new_futures()$get_position_margin_history("BTCUSDT", type = 1L)
+  expect_true(grepl("/fapi/v1/positionMargin/history", captured_url))
+  expect_true(grepl("symbol=BTCUSDT", captured_url))
 })

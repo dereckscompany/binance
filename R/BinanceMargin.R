@@ -525,9 +525,9 @@ BinanceMargin <- R6::R6Class(
     #'   - `transact_time` (POSIXct): Cancellation time.
     #'   - `is_isolated` (logical): Whether this is an isolated margin order.
     #'
-    #'   When no open orders exist, a single confirmation row with columns:
-    #'   - `symbol` (character): The requested trading pair.
-    #'   - `status` (character): `"cancelled"`.
+    #'   When there were no open orders to cancel, the return is an
+    #'   empty `data.table` (per the cross-package "no stub rows"
+    #'   convention — the absence of an error is the success signal).
     #'
     #' @examples
     #' \dontrun{
@@ -545,8 +545,10 @@ BinanceMargin <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
+          # Per the cross-package "empty response → empty data.table,
+          # no stub rows" convention: no orders to cancel ⇒ empty table.
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table(symbol = symbol, status = "cancelled")[])
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {

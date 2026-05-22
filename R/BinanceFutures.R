@@ -349,11 +349,10 @@ BinanceFutures <- R6::R6Class(
     #' @param workingType Character or NULL; `"MARK_PRICE"` or `"CONTRACT_PRICE"`.
     #' @param newOrderRespType Character or NULL; `"ACK"`, `"RESULT"`.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`), single row with columns:
-    #'   - `symbol` (character): The validated trading pair.
-    #'   - `side` (character): `"BUY"` or `"SELL"`.
-    #'   - `type` (character): Order type.
-    #'   - `status` (character): `"validated"`.
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
+    #'   with a single row and a single `validated` (logical) column,
+    #'   set to `TRUE` on success. Binance returns `{}` on a successful
+    #'   test order; the absence of an error is the validation signal.
     #'
     #' @examples
     #' \dontrun{
@@ -362,7 +361,7 @@ BinanceFutures <- R6::R6Class(
     #'   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
     #'   quantity = 0.001, price = 50000, timeInForce = "GTC"
     #' )
-    #' print(test)
+    #' stopifnot(test$validated)
     #' }
     add_order_test = function(
       symbol,
@@ -436,13 +435,12 @@ BinanceFutures <- R6::R6Class(
         method = "POST",
         body = body,
         .parser = function(data) {
+          # `{}` on success — Binance's "request would have validated"
+          # signal. Per the cross-package convention we don't fabricate
+          # a stub row with the request parameters; the absence of an
+          # error is the success signal.
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table(
-              symbol = symbol,
-              side = side,
-              type = type,
-              status = "validated"
-            )[])
+            return(data.table::data.table(validated = TRUE)[])
           }
           return(as_dt_row(data)[])
         }

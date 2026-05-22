@@ -161,11 +161,17 @@ test_that("add_order_test hits test endpoint and returns confirmation dt", {
   )
   expect_true(grepl("order/test", captured_url))
   expect_s3_class(dt, "data.table")
+  # `{}` on success is now reported as `validated = TRUE` — a single
+  # logical column rather than a synthetic stub row echoing the
+  # request (symbol/side/type). The absence of an error is the
+  # validation signal.
   expect_equal(nrow(dt), 1L)
-  expect_equal(dt$symbol, "BTCUSDT")
-  expect_equal(dt$side, "BUY")
-  expect_equal(dt$type, "LIMIT")
-  expect_equal(dt$status, "validated")
+  expect_true("validated" %in% names(dt))
+  expect_true(dt$validated)
+  # No echoed request fields in the success row — those weren't
+  # returned by Binance.
+  expect_false("symbol" %in% names(dt))
+  expect_false("status" %in% names(dt))
 })
 
 # -- cancel_order --

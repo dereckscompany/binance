@@ -1547,3 +1547,41 @@ mock_futures_income_data <- function() {
 mock_futures_position_mode_data <- function() {
   return(list(dualSidePosition = FALSE))
 }
+
+# ---- Mocks added to close 8 untested-method gaps in TRADE-20 ----
+
+#' Margin max transferable response
+#' Shape from https://developers.binance.com/docs/margin_trading/transfer/Query-Max-Transfer-Out-Amount
+#' @export
+mock_margin_max_transferable_data <- function() {
+  return(list(amount = "3.59498107", borrowLimit = "10000"))
+}
+
+#' Futures position-margin modify response
+#' Shape from https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Modify-Isolated-Position-Margin
+#' @export
+mock_futures_modify_position_margin_response <- function() {
+  return(list(
+    amount = 100.0,
+    code = 200L,
+    msg = "Successfully modify position margin.",
+    type = 1L
+  ))
+}
+
+#' Futures position-margin history response
+#' Shape from https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Get-Position-Margin-Change-History
+#' @export
+mock_futures_position_margin_history_data <- function() {
+  return(list(
+    list(
+      symbol = "BTCUSDT",
+      type = 1L,
+      deltaType = "INCREASE_MARGIN",
+      amount = "100.00000000",
+      asset = "USDT",
+      time = 1710000000000,
+      positionSide = "BOTH"
+    )
+  ))
+}

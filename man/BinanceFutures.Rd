@@ -120,7 +120,7 @@ test <- futures$add_order_test(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
   quantity = 0.001, price = 50000, timeInForce = "GTC"
 )
-print(test)
+stopifnot(test$validated)
 }
 
 ## ------------------------------------------------
@@ -608,13 +608,10 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}), single row with columns:
-\itemize{
-\item \code{symbol} (character): The validated trading pair.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{type} (character): Order type.
-\item \code{status} (character): \code{"validated"}.
-}
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
+with a single row and a single \code{validated} (logical) column,
+set to \code{TRUE} on success. Binance returns \code{{}} on a successful
+test order; the absence of an error is the validation signal.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -624,7 +621,7 @@ test <- futures$add_order_test(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
   quantity = 0.001, price = 50000, timeInForce = "GTC"
 )
-print(test)
+stopifnot(test$validated)
 }
 }
 \if{html}{\out{</div>}}
