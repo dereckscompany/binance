@@ -185,11 +185,14 @@ Verified: 2026-05-22
 \item \code{prevent_sor} (logical): Whether smart order routing is prevented.
 \item \code{update_time} (numeric): Last account update timestamp in milliseconds.
 \item \code{account_type} (character): Account type (e.g., \code{"SPOT"}).
-\item \code{permission} (character): Account permission (one row per permission, e.g., \code{"SPOT"}, \code{"MARGIN"}).
+\item \code{permissions} (character): \verb{;}-separated account permissions
+(e.g., \code{"SPOT;MARGIN"}). Recover the vector with
+\code{strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]}. Single
+row per account — collapsed via the shared
+\code{collapse_string_array_fields()} helper for cross-package
+consistency.
 \item \code{uid} (integer): Unique account identifier.
 }
-
-When the account has multiple permissions, account fields are repeated on each row.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

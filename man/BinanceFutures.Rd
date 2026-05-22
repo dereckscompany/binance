@@ -1234,7 +1234,10 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+\code{data.table} with \strong{one row per asset balance} in the
+account; account-level fields are replicated on each row. The
+companion \code{positions} array Binance returns is intentionally
+dropped — see the long note below. Columns:
 \itemize{
 \item \code{fee_tier} (integer): Commission fee tier.
 \item \code{can_trade} (logical): Whether trading is permitted.

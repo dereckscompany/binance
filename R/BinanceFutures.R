@@ -103,10 +103,11 @@ BinanceFutures <- R6::R6Class(
         super$initialize(keys = keys, base_url = base_url, async = async, time_source = "local")
         url <- base_url
         private$.time_source <- "server"
-        return(private$.get_timestamp_ms <- function() fetch_server_time_ms(url, "/fapi/v1/time"))
+        private$.get_timestamp_ms <- function() fetch_server_time_ms(url, "/fapi/v1/time")
       } else {
-        return(super$initialize(keys = keys, base_url = base_url, async = async, time_source = time_source))
+        super$initialize(keys = keys, base_url = base_url, async = async, time_source = time_source)
       }
+      return(invisible(self))
     },
 
     # ---- Order Placement ----
@@ -986,7 +987,10 @@ BinanceFutures <- R6::R6Class(
     #' ```
     #'
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
+    #' @return `data.table` with **one row per asset balance** in the
+    #'   account; account-level fields are replicated on each row. The
+    #'   companion `positions` array Binance returns is intentionally
+    #'   dropped — see the long note below. Columns:
     #' - `fee_tier` (integer): Commission fee tier.
     #' - `can_trade` (logical): Whether trading is permitted.
     #' - `can_deposit` (logical): Whether deposits are permitted.

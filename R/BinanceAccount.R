@@ -105,10 +105,13 @@ BinanceAccount <- R6::R6Class(
     #' - `prevent_sor` (logical): Whether smart order routing is prevented.
     #' - `update_time` (numeric): Last account update timestamp in milliseconds.
     #' - `account_type` (character): Account type (e.g., `"SPOT"`).
-    #' - `permission` (character): Account permission (one row per permission, e.g., `"SPOT"`, `"MARGIN"`).
+    #' - `permissions` (character): `;`-separated account permissions
+    #'   (e.g., `"SPOT;MARGIN"`). Recover the vector with
+    #'   `strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]`. Single
+    #'   row per account — collapsed via the shared
+    #'   `collapse_string_array_fields()` helper for cross-package
+    #'   consistency.
     #' - `uid` (integer): Unique account identifier.
-    #'
-    #' When the account has multiple permissions, account fields are repeated on each row.
     #'
     #' @examples
     #' \dontrun{
@@ -122,7 +125,8 @@ BinanceAccount <- R6::R6Class(
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
           data$balances <- NULL
-          # Flatten commissionRates nested object into wide columns
+          # Flatten `commissionRates` nested object into wide columns
+          # (Treatment B — fixed-schema object).
           cr <- data$commissionRates
           if (!is.null(cr)) {
             for (nm in names(cr)) {
@@ -130,16 +134,12 @@ BinanceAccount <- R6::R6Class(
             }
             data$commissionRates <- NULL
           }
-          permissions <- data$permissions
-          data$permissions <- NULL
-          dt <- as_dt_row(data)
-          # Expand permissions to long format: one row per permission
-          if (!is.null(permissions) && length(permissions) > 0) {
-            perms <- unlist(permissions)
-            dt <- dt[rep(1L, length(perms))]
-            dt[, permission := perms]
-          }
-          return(dt[])
+          # `permissions` is an array of plain strings — collapse to a
+          # `;`-joined character column via the shared helper. This
+          # matches the cross-package convention and keeps the account
+          # info shape stable at exactly one row (the README's contract).
+          data <- collapse_string_array_fields(data, "permissions")
+          return(as_dt_row(data)[])
         }
       ))
     },

@@ -486,15 +486,15 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+\code{data.table} with \strong{one row per sub-account}; the
+master-level summary fields are replicated on each row. Columns:
 \itemize{
-\item \code{total_count} (integer): Total number of sub-accounts.
-\item \code{master_account_total_asset} (character): Master account total asset value in BTC.
-\item \code{sub_user_email} (character): Sub-account email (one row per sub-account).
+\item \code{total_count} (integer): Total number of sub-accounts (repeated per row).
+\item \code{master_account_total_asset} (character): Master account total
+asset value in BTC (repeated per row).
+\item \code{sub_user_email} (character): Sub-account email.
 \item \code{sub_user_total_asset} (character): Sub-account total asset value in BTC.
 }
-
-When there are multiple sub-accounts, summary fields are repeated on each row.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

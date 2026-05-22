@@ -347,15 +347,15 @@ account$get_account_info()
     #>    can_trade can_withdraw can_deposit brokered require_self_trade_prevention
     #>       <lgcl>       <lgcl>      <lgcl>   <lgcl>                        <lgcl>
     #> 1:      TRUE         TRUE        TRUE    FALSE                         FALSE
-    #>    prevent_sor update_time account_type       uid commission_rates_maker
-    #>         <lgcl>       <int>       <char>     <int>                 <char>
-    #> 1:       FALSE   123456789         SPOT 354937868             0.00150000
-    #>    commission_rates_taker commission_rates_buyer commission_rates_seller
-    #>                    <char>                 <char>                  <char>
-    #> 1:             0.00150000             0.00000000              0.00000000
-    #>    permission
-    #>        <char>
-    #> 1:       SPOT
+    #>    prevent_sor update_time account_type permissions       uid
+    #>         <lgcl>       <int>       <char>      <char>     <int>
+    #> 1:       FALSE   123456789         SPOT        SPOT 354937868
+    #>    commission_rates_maker commission_rates_taker commission_rates_buyer
+    #>                    <char>                 <char>                 <char>
+    #> 1:             0.00150000             0.00150000             0.00000000
+    #>    commission_rates_seller
+    #>                     <char>
+    #> 1:              0.00000000
 
 ### Trade History
 

@@ -253,6 +253,11 @@ Verified: 2026-05-22
     \{
       "asset": "USDT",
       "latestAnnualPercentageRate": "0.03250000",
+      "tierAnnualPercentageRate": \{
+        "0-5BTC": 0.05,
+        "5-10BTC": 0.03
+      \},
+      "airDropPercentageRate": "0.05000000",
       "canPurchase": true,
       "canRedeem": true,
       "isSoldOut": false,
@@ -293,6 +298,12 @@ Verified: 2026-05-22
 \itemize{
 \item \code{asset} (character): Asset symbol (e.g., \code{"USDT"}).
 \item \code{latest_annual_percentage_rate} (character): Current annual yield rate.
+\item \code{tier_annual_percentage_rate} (character): JSON-encoded
+per-tier APR map (dynamic keys like \code{"0-5BTC"}, \code{"5-10BTC"}).
+Recover via \code{jsonlite::fromJSON(dt$tier_annual_percentage_rate[1])}.
+\code{NA} when the field is absent.
+\item \code{air_drop_percentage_rate} (character): Air-drop APR if the
+product currently carries one.
 \item \code{can_purchase} (logical): Whether new subscriptions are accepted.
 \item \code{can_redeem} (logical): Whether redemptions are allowed.
 \item \code{is_sold_out} (logical): Whether the product is sold out.
@@ -343,6 +354,10 @@ Verified: 2026-05-22
 
 \subsection{JSON Response}{
 
+Shape captured 2026-05-22 from the live docs. Binance renamed
+\code{detail.apy} → \code{detail.apr} and added the extra-reward / boost
+fields; older internal examples that still show \code{apy} are stale.
+
 \if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
   "total": 1,
   "rows": [
@@ -353,7 +368,15 @@ Verified: 2026-05-22
         "rewardAsset": "BTC",
         "duration": 30,
         "renewable": true,
-        "apy": "0.05000000"
+        "isSoldOut": false,
+        "apr": "0.05000000",
+        "status": "CREATED",
+        "subscriptionStartTime": 1646182276000,
+        "extraRewardAsset": "BNB",
+        "extraRewardAPR": "0.01000000",
+        "boostRewardAsset": "BTC",
+        "boostApr": "0.00100000",
+        "boostEndTime": 1646182276000
       \},
       "quota": \{
         "totalPersonalQuota": "10.00000000",
@@ -845,6 +868,10 @@ Verified: 2026-05-22
 \itemize{
 \item \code{total_amount} (character): Total amount in the position.
 \item \code{latest_annual_percentage_rate} (character): Current annual yield rate.
+\item \code{tier_annual_percentage_rate} (character, optional):
+JSON-encoded per-tier APR map when the position carries
+tier-based rates (dynamic keys like \code{"0-5BTC"}). Recover via
+\code{jsonlite::fromJSON(dt$tier_annual_percentage_rate[1])}.
 \item \code{asset} (character): Asset symbol (e.g., \code{"USDT"}).
 \item \code{can_redeem} (logical): Whether redemption is allowed.
 \item \code{product_id} (character): Product identifier.

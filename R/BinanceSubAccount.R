@@ -292,13 +292,13 @@ BinanceSubAccount <- R6::R6Class(
     #' @param page Integer or NULL; page number (default 1).
     #' @param size Integer or NULL; results per page (default 10, max 20).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `total_count` (integer): Total number of sub-accounts.
-    #' - `master_account_total_asset` (character): Master account total asset value in BTC.
-    #' - `sub_user_email` (character): Sub-account email (one row per sub-account).
+    #' @return `data.table` with **one row per sub-account**; the
+    #'   master-level summary fields are replicated on each row. Columns:
+    #' - `total_count` (integer): Total number of sub-accounts (repeated per row).
+    #' - `master_account_total_asset` (character): Master account total
+    #'   asset value in BTC (repeated per row).
+    #' - `sub_user_email` (character): Sub-account email.
     #' - `sub_user_total_asset` (character): Sub-account total asset value in BTC.
-    #'
-    #' When there are multiple sub-accounts, summary fields are repeated on each row.
     #'
     #' @examples
     #' \dontrun{

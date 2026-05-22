@@ -91,6 +91,11 @@ BinanceEarn <- R6::R6Class(
     #'     {
     #'       "asset": "USDT",
     #'       "latestAnnualPercentageRate": "0.03250000",
+    #'       "tierAnnualPercentageRate": {
+    #'         "0-5BTC": 0.05,
+    #'         "5-10BTC": 0.03
+    #'       },
+    #'       "airDropPercentageRate": "0.05000000",
     #'       "canPurchase": true,
     #'       "canRedeem": true,
     #'       "isSoldOut": false,
@@ -111,6 +116,12 @@ BinanceEarn <- R6::R6Class(
     #' @return `data.table` with one row per product and the following columns:
     #' - `asset` (character): Asset symbol (e.g., `"USDT"`).
     #' - `latest_annual_percentage_rate` (character): Current annual yield rate.
+    #' - `tier_annual_percentage_rate` (character): JSON-encoded
+    #'   per-tier APR map (dynamic keys like `"0-5BTC"`, `"5-10BTC"`).
+    #'   Recover via `jsonlite::fromJSON(dt$tier_annual_percentage_rate[1])`.
+    #'   `NA` when the field is absent.
+    #' - `air_drop_percentage_rate` (character): Air-drop APR if the
+    #'   product currently carries one.
     #' - `can_purchase` (logical): Whether new subscriptions are accepted.
     #' - `can_redeem` (logical): Whether redemptions are allowed.
     #' - `is_sold_out` (logical): Whether the product is sold out.
@@ -182,6 +193,9 @@ BinanceEarn <- R6::R6Class(
     #' ```
     #'
     #' ### JSON Response
+    #' Shape captured 2026-05-22 from the live docs. Binance renamed
+    #' `detail.apy` → `detail.apr` and added the extra-reward / boost
+    #' fields; older internal examples that still show `apy` are stale.
     #' ```json
     #' {
     #'   "total": 1,
@@ -193,7 +207,15 @@ BinanceEarn <- R6::R6Class(
     #'         "rewardAsset": "BTC",
     #'         "duration": 30,
     #'         "renewable": true,
-    #'         "apy": "0.05000000"
+    #'         "isSoldOut": false,
+    #'         "apr": "0.05000000",
+    #'         "status": "CREATED",
+    #'         "subscriptionStartTime": 1646182276000,
+    #'         "extraRewardAsset": "BNB",
+    #'         "extraRewardAPR": "0.01000000",
+    #'         "boostRewardAsset": "BTC",
+    #'         "boostApr": "0.00100000",
+    #'         "boostEndTime": 1646182276000
     #'       },
     #'       "quota": {
     #'         "totalPersonalQuota": "10.00000000",
@@ -603,6 +625,10 @@ BinanceEarn <- R6::R6Class(
     #' @return `data.table` with one row per position and the following columns:
     #' - `total_amount` (character): Total amount in the position.
     #' - `latest_annual_percentage_rate` (character): Current annual yield rate.
+    #' - `tier_annual_percentage_rate` (character, optional):
+    #'   JSON-encoded per-tier APR map when the position carries
+    #'   tier-based rates (dynamic keys like `"0-5BTC"`). Recover via
+    #'   `jsonlite::fromJSON(dt$tier_annual_percentage_rate[1])`.
     #' - `asset` (character): Asset symbol (e.g., `"USDT"`).
     #' - `can_redeem` (logical): Whether redemption is allowed.
     #' - `product_id` (character): Product identifier.
