@@ -163,6 +163,11 @@ test_that("get_locked_products wide-prefixes nested detail/quota (no list column
   # Raw nested fields are gone.
   expect_false("detail" %in% names(dt))
   expect_false("quota" %in% names(dt))
+
+  # ms timestamps inside `detail` are now POSIXct (regression — were
+  # numeric ms in 0.1.0).
+  expect_s3_class(dt$detail_subscription_start_time, "POSIXct")
+  expect_s3_class(dt$detail_boost_end_time, "POSIXct")
 })
 
 test_that("get_locked_products hits correct endpoint", {
@@ -406,7 +411,50 @@ test_that("get_flexible_position returns empty data.table when no positions", {
   expect_equal(nrow(dt), 0L)
 })
 
+test_that("get_flexible_position converts subscription_start_time to POSIXct (regression)", {
+  # Was numeric ms in 0.1.0. Patch the default fixture to include the
+  # field so the conversion is exercised.
+  data <- mock_flexible_position_data()
+  data$rows[[1]]$subscriptionStartTime <- 1646182276000
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_earn()$get_flexible_position()
+  expect_true("subscription_start_time" %in% names(dt))
+  expect_s3_class(dt$subscription_start_time, "POSIXct")
+})
+
 # -- get_locked_position --
+
+test_that("get_locked_position converts purchase_time / next_pay_date / rewards_end_date / deliver_date / partial_amt_deliver_date to POSIXct (regression)", {
+  # All five were numeric ms in 0.1.0.
+  resp <- mock_binance_response(
+    data = list(
+      total = 1L,
+      rows = list(
+        list(
+          positionId = 12345L,
+          projectId = "BTC30d001",
+          asset = "BTC",
+          amount = "0.10000000",
+          purchaseTime = 1646182276000,
+          duration = 30L,
+          nextPayDate = 1646697600000,
+          rewardsEndDate = 1648824276000,
+          deliverDate = 1649084276000,
+          partialAmtDeliverDate = 1648824276000
+        )
+      )
+    )
+  )
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_earn()$get_locked_position(asset = "BTC")
+  for (col in c("purchase_time", "next_pay_date", "rewards_end_date", "deliver_date", "partial_amt_deliver_date")) {
+    expect_true(col %in% names(dt), info = paste("missing column:", col))
+    expect_s3_class(dt[[col]], "POSIXct")
+  }
+})
 
 test_that("get_locked_position hits correct endpoint", {
   captured_url <- NULL
@@ -518,4 +566,31 @@ test_that("get_locked_redemption_history hits correct endpoint", {
   expect_true(grepl("sapi/v1/simple-earn/locked/history/redemptionRecord", captured_url))
   expect_true(grepl("positionId=12345", captured_url))
   expect_true(grepl("asset=BTC", captured_url))
+})
+
+test_that("get_locked_redemption_history converts deliver_date to POSIXct (regression)", {
+  # Was documented as character "Expected delivery date" in 0.1.0 but
+  # Binance actually returns a numeric ms timestamp. Now parsed as POSIXct.
+  resp <- mock_binance_response(
+    data = list(
+      total = 1L,
+      rows = list(
+        list(
+          amount = "0.01000000",
+          asset = "BTC",
+          time = 1661493146000,
+          positionId = "12345",
+          redeemId = 40610L,
+          deliverDate = 1664085146000,
+          status = "PAID"
+        )
+      )
+    )
+  )
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_earn()$get_locked_redemption_history()
+  expect_true("deliver_date" %in% names(dt))
+  expect_s3_class(dt$deliver_date, "POSIXct")
+  expect_s3_class(dt$time, "POSIXct")
 })
