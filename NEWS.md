@@ -1,18 +1,5 @@
 # binance 0.2.1
 
-## Bug fixes
-
-* **`ms_to_datetime()` was returning a length-1 `NA_POSIXct_` on
-  all-NA input.** When that result flowed back through
-  `coerce_cols()` -> `data.table::set()`, the length-1 POSIXct got
-  coerced into the existing column's type (numeric / logical /
-  character) rather than replacing the column with a POSIXct one.
-  Endpoints whose `@return` blocks documented `(POSIXct)` could
-  therefore quietly return numeric columns when every upstream row
-  had a missing timestamp. Dropped the `all(is.na(ms))` short-circuit
-  — `lubridate::as_datetime()` already returns a full-length POSIXct
-  vector on all-NA input. Caught by PR review (#6).
-
 ## Refactor
 
 * **New internal `coerce_cols(dt, cols, fn)` helper** in `R/helpers_parse.R`.
