@@ -351,7 +351,7 @@ left the exchange.
 \item \code{status} (integer): Withdrawal status code (0-6).
 \item \code{address} (character): Destination address.
 \item \code{tx_id} (character): On-chain transaction hash.
-\item \code{apply_time} (character): Time the withdrawal was submitted (UTC string).
+\item \code{apply_time} (POSIXct): Time the withdrawal was submitted (parsed from the UTC string Binance returns).
 \item \code{network} (character): Blockchain network used.
 \item \code{transfer_type} (integer): 0=external, 1=internal.
 \item \code{withdraw_order_id} (character): Client-side withdrawal ID.
@@ -359,7 +359,7 @@ left the exchange.
 \item \code{confirm_no} (integer): Number of on-chain confirmations.
 \item \code{wallet_type} (integer): 0=spot, 1=funding.
 \item \code{tx_key} (character): Transaction key.
-\item \code{complete_time} (character): Completion time (UTC string).
+\item \code{complete_time} (POSIXct): Completion time (parsed from the UTC string Binance returns).
 }
 }
 \subsection{Examples}{
