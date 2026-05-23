@@ -20,11 +20,6 @@ utils::globalVariables(c(
   "create_time_stamp",
   "timestamp",
   "updated_time",
-  "working_time",
-  "order_report_transact_time",
-  "transaction_time",
-  "subscription_start_time",
-  "apply_time",
   # Orderbook / trade columns
   "last_update_id",
   "side",

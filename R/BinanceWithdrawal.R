@@ -249,7 +249,7 @@ BinanceWithdrawal <- R6::R6Class(
     #' - `status` (integer): Withdrawal status code (0-6).
     #' - `address` (character): Destination address.
     #' - `tx_id` (character): On-chain transaction hash.
-    #' - `apply_time` (POSIXct): Time the withdrawal was submitted (parsed from the UTC string Binance returns).
+    #' - `apply_time` (character): Time the withdrawal was submitted (UTC string).
     #' - `network` (character): Blockchain network used.
     #' - `transfer_type` (integer): 0=external, 1=internal.
     #' - `withdraw_order_id` (character): Client-side withdrawal ID.
@@ -257,7 +257,7 @@ BinanceWithdrawal <- R6::R6Class(
     #' - `confirm_no` (integer): Number of on-chain confirmations.
     #' - `wallet_type` (integer): 0=spot, 1=funding.
     #' - `tx_key` (character): Transaction key.
-    #' - `complete_time` (POSIXct): Completion time (parsed from the UTC string Binance returns).
+    #' - `complete_time` (character): Completion time (UTC string).
     #'
     #' @examples
     #' \dontrun{
@@ -301,19 +301,6 @@ BinanceWithdrawal <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
-          # `apply_time` and `complete_time` come back as UTC datetime
-          # strings (e.g. "2019-10-12 11:12:02") rather than ms — parse
-          # via `lubridate::ymd_hms()` so the column type matches the
-          # POSIXct convention everywhere else in the package. Binance
-          # returns `""` for pending withdrawals, which ymd_hms would
-          # warn on; replace those with `NA` first.
-          for (col in c("apply_time", "complete_time")) {
-            if (col %in% names(dt)) {
-              vals <- dt[[col]]
-              vals[!nzchar(vals)] <- NA_character_
-              dt[, (col) := lubridate::ymd_hms(vals, tz = "UTC")]
-            }
-          }
           return(dt[])
         }
       ))

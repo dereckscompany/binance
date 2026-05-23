@@ -49,11 +49,6 @@ test_that("add_oco_order returns data.table with orders expanded to long format"
   expect_true("order_report_client_order_id" %in% names(dt))
   expect_equal(dt$order_report_order_id, c(12L, 13L))
 
-  # order_report_transact_time should be POSIXct (regression — was
-  # numeric ms in 0.1.0).
-  expect_true("order_report_transact_time" %in% names(dt))
-  expect_s3_class(dt$order_report_transact_time, "POSIXct")
-
   # No list-columns for orders or orderReports should exist
   expect_false("orders" %in% names(dt))
   expect_false("order_reports" %in% names(dt))

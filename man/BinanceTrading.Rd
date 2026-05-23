@@ -308,7 +308,7 @@ Verified: 2026-05-22
 \item \code{time_in_force} (character): Time-in-force policy (\code{"GTC"}, \code{"IOC"}, \code{"FOK"}).
 \item \code{type} (character): Order type (\code{"LIMIT"}, \code{"MARKET"}, etc.).
 \item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{working_time} (POSIXct): Time when the order started working.
+\item \code{working_time} (numeric): Timestamp when the order started working.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
 \item \code{transact_time} (POSIXct): Transaction time converted from \code{transactTime}.
 \item \code{fill_index} (integer): 1-indexed fill position (\code{NA} when the order
@@ -782,7 +782,7 @@ Verified: 2026-05-22
 \item \code{iceberg_qty} (character): Iceberg quantity.
 \item \code{is_working} (logical): Whether the order is on the order book.
 \item \code{orig_quote_order_qty} (character): Original quote order quantity.
-\item \code{working_time} (POSIXct): Time when the order started working.
+\item \code{working_time} (numeric): Timestamp when the order started working.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
 \item \code{time} (POSIXct): Order creation time converted from \code{time}.
 \item \code{update_time} (POSIXct): Last update time converted from \code{updateTime}.
@@ -887,7 +887,7 @@ If NULL, returns open orders for all symbols (weight 80).}
 \item \code{iceberg_qty} (character): Iceberg quantity.
 \item \code{is_working} (logical): Whether the order is on the order book.
 \item \code{orig_quote_order_qty} (character): Original quote order quantity.
-\item \code{working_time} (POSIXct): Time when the order started working.
+\item \code{working_time} (numeric): Timestamp when the order started working.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
 \item \code{time} (POSIXct): Order creation time converted from \code{time}.
 \item \code{update_time} (POSIXct): Last update time converted from \code{updateTime}.
@@ -1030,7 +1030,7 @@ Verified: 2026-05-22
 \item \code{iceberg_qty} (character): Iceberg quantity.
 \item \code{is_working} (logical): Whether the order is on the order book.
 \item \code{orig_quote_order_qty} (character): Original quote order quantity.
-\item \code{working_time} (POSIXct): Time when the order started working.
+\item \code{working_time} (numeric): Timestamp when the order started working.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
 \item \code{time} (POSIXct): Order creation time converted from \code{time}.
 \item \code{update_time} (POSIXct): Last update time converted from \code{updateTime}.
