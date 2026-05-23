@@ -584,6 +584,11 @@ test_that("get_force_liquidation_history returns one row per liquidation with ti
   expect_equal(dt$symbol, "BTCUSDT")
   expect_equal(dt$side, "SELL")
   expect_s3_class(dt$time, "POSIXct")
+  # updated_time is also POSIXct (regression — `@return` doc claimed
+  # POSIXct in 0.1.0 but the parser only converted `time`, leaving
+  # `updated_time` as numeric ms).
+  expect_true("updated_time" %in% names(dt))
+  expect_s3_class(dt$updated_time, "POSIXct")
 })
 
 test_that("get_force_liquidation_history hits /sapi/v1/margin/forceLiquidationRec", {

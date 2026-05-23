@@ -1250,7 +1250,7 @@ BinanceMargin <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data, time_cols = "time")[])
+          return(parse_paginated(data, time_cols = c("time", "updated_time"))[])
         }
       ))
     },
