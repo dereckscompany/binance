@@ -131,6 +131,17 @@ rows).
     `TRAILING_DELTA`) used to be discarded with the raw list. Recover
     with `jsonlite::fromJSON(dt$filters_raw[1])`.
 
+* **`binance_backfill_klines()` no longer hides failures on a return
+  attribute.** Previously, per-combo errors were captured during the
+  loop and bolted onto the return value as `attr(file, "failures")`
+  — easy to miss. The function now emits the existing
+  per-`(symbol, timeframe)` `rlang::warn()` *and* a final summary
+  warning at the end (`"N of M (symbol, timeframe) combinations
+  failed: ..."`). Return value is now just the file path; no hidden
+  state. Code that previously read `attr(result, "failures")` should
+  capture warnings via `withCallingHandlers()` or `tryCatch()`
+  instead.
+
 * **NULL-input crashes in three parsers.** `parse_orderbook`,
   `parse_paginated`, and the `add_order` parser used to dereference
   `data$foo` without guarding `data = NULL`, throwing
