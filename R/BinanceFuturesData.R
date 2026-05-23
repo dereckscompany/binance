@@ -178,12 +178,36 @@ BinanceFuturesData <- R6::R6Class(
     #'   - `price_max` (numeric): Maximum price (from PRICE_FILTER).
     #'   - `price_tick_size` (numeric): Price tick size (from PRICE_FILTER).
     #'   - `min_notional` (numeric): Minimum notional value (from MIN_NOTIONAL filter).
+    #'   - `filters_raw` (character): JSON-encoded copy of the full per-symbol
+    #'     `filters` array. Preserves filter types not pulled into curated
+    #'     columns (`PERCENT_PRICE`, `MARKET_LOT_SIZE`, `MAX_NUM_ORDERS`,
+    #'     `MAX_NUM_ALGO_ORDERS`, `MIN_NOTIONAL`'s extra fields, ...).
+    #'     Recover with `jsonlite::fromJSON(dt$filters_raw[1])`. `NA` if
+    #'     Binance returned no filters for the symbol.
+    #'
+    #' The returned `data.table` also carries exchange-wide metadata as
+    #' attributes (none of these fit on a per-symbol row, so they are
+    #' attached rather than discarded). Access with `attr(dt, "...")`:
+    #'   - `timezone` (character): Exchange timezone, e.g. `"UTC"`.
+    #'   - `server_time` (POSIXct): Server clock at response time.
+    #'   - `futures_type` (character): `"U_M"` (USDⓈ-M) for this endpoint.
+    #'   - `rate_limits` (`data.table`): One row per rate-limit rule.
+    #'   - `exchange_filters` (`data.table`): Exchange-wide filter rules.
+    #'   - `assets` (`data.table`): Margin-asset metadata returned at the
+    #'     top level (one row per asset).
     #'
     #' @examples
     #' \dontrun{
     #' futures <- BinanceFuturesData$new()
     #' info <- futures$get_exchange_info()
     #' print(info[, .(symbol, contract_type, status, base_asset)])
+    #'
+    #' # Recover filter types not in curated columns
+    #' jsonlite::fromJSON(info$filters_raw[1])
+    #'
+    #' # Exchange-wide metadata
+    #' attr(info, "rate_limits")
+    #' attr(info, "assets")
     #' }
     get_exchange_info = function() {
       return(private$.request(
@@ -193,6 +217,39 @@ BinanceFuturesData <- R6::R6Class(
           syms <- data$symbols
           if (is.null(syms) || length(syms) == 0) {
             return(data.table::data.table()[])
+          }
+
+          # Capture exchange-wide metadata. None of these fit on a
+          # per-symbol row, so they ride along as attributes on the
+          # returned data.table rather than being silently discarded.
+          # Access via `attr(dt, "rate_limits")` etc.
+          meta_timezone <- data$timezone
+          meta_server_time <- if (!is.null(data$serverTime)) {
+            ms_to_datetime(data$serverTime)
+          } else {
+            lubridate::NA_POSIXct_
+          }
+          meta_futures_type <- data$futuresType
+          meta_rate_limits <- if (
+            !is.null(data$rateLimits) &&
+              length(data$rateLimits) > 0
+          ) {
+            as_dt_list(data$rateLimits)
+          } else {
+            data.table::data.table()
+          }
+          meta_exchange_filters <- if (
+            !is.null(data$exchangeFilters) &&
+              length(data$exchangeFilters) > 0
+          ) {
+            as_dt_list(data$exchangeFilters)
+          } else {
+            data.table::data.table()
+          }
+          meta_assets <- if (!is.null(data$assets) && length(data$assets) > 0) {
+            as_dt_list(data$assets)
+          } else {
+            data.table::data.table()
           }
 
           .extract_filter <- function(filters, filter_type, field) {
@@ -224,6 +281,18 @@ BinanceFuturesData <- R6::R6Class(
             s$price_max <- .extract_filter(raw_filters, "PRICE_FILTER", "maxPrice")
             s$price_tick_size <- .extract_filter(raw_filters, "PRICE_FILTER", "tickSize")
             s$min_notional <- .extract_filter(raw_filters, "MIN_NOTIONAL", "notional")
+            # Preserve the full filters array as a JSON string so filter
+            # types we don't pull into curated columns (PERCENT_PRICE,
+            # MARKET_LOT_SIZE, MAX_NUM_ORDERS, MAX_NUM_ALGO_ORDERS, etc.)
+            # are still reachable. Recover with
+            # `jsonlite::fromJSON(dt$filters_raw[1])`.
+            if (is.null(raw_filters) || length(raw_filters) == 0L) {
+              s$filters_raw <- NA_character_
+            } else {
+              s$filters_raw <- as.character(
+                jsonlite::toJSON(raw_filters, auto_unbox = TRUE)
+              )
+            }
             s$filters <- NULL
             return(s)
           })
@@ -231,6 +300,14 @@ BinanceFuturesData <- R6::R6Class(
             lapply(syms, as_dt_row),
             fill = TRUE
           )
+          # Attach exchange-wide metadata as attributes. setattr modifies
+          # in place (no copy).
+          data.table::setattr(dt, "timezone", meta_timezone)
+          data.table::setattr(dt, "server_time", meta_server_time)
+          data.table::setattr(dt, "futures_type", meta_futures_type)
+          data.table::setattr(dt, "rate_limits", meta_rate_limits)
+          data.table::setattr(dt, "exchange_filters", meta_exchange_filters)
+          data.table::setattr(dt, "assets", meta_assets)
           return(dt[])
         }
       ))

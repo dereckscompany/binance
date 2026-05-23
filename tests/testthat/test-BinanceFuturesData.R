@@ -71,6 +71,79 @@ test_that("get_exchange_info hits correct endpoint", {
   expect_true(grepl("/fapi/v1/exchangeInfo", captured_url))
 })
 
+test_that("get_exchange_info preserves the full filters array in `filters_raw` (round-trips through JSON)", {
+  # Same regression as spot: parser used to pull curated filter columns
+  # and discard the rest. Futures-specific filter types include
+  # PERCENT_PRICE, MARKET_LOT_SIZE, MAX_NUM_ORDERS, MAX_NUM_ALGO_ORDERS,
+  # and the MIN_NOTIONAL field used to be silently dropped because
+  # futures uses field name "notional" not "minNotional".
+  data <- mock_futures_exchange_info_data()
+  data$symbols[[1]]$filters <- c(
+    data$symbols[[1]]$filters,
+    list(
+      list(filterType = "PERCENT_PRICE", multiplierUp = "1.05", multiplierDown = "0.95", multiplierDecimal = 4L),
+      list(filterType = "MARKET_LOT_SIZE", minQty = "0.001", maxQty = "1000", stepSize = "0.001"),
+      list(filterType = "MAX_NUM_ORDERS", limit = 200L),
+      list(filterType = "MAX_NUM_ALGO_ORDERS", limit = 10L)
+    )
+  )
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures_data()$get_exchange_info()
+  expect_true("filters_raw" %in% names(dt))
+  expect_type(dt$filters_raw, "character")
+
+  recovered <- jsonlite::fromJSON(dt$filters_raw[1], simplifyVector = FALSE)
+  types <- vapply(recovered, function(f) f$filterType, character(1))
+  expect_setequal(
+    types,
+    c("PRICE_FILTER", "PERCENT_PRICE", "MARKET_LOT_SIZE", "MAX_NUM_ORDERS", "MAX_NUM_ALGO_ORDERS")
+  )
+  mls <- recovered[[which(types == "MARKET_LOT_SIZE")]]
+  expect_equal(mls$minQty, "0.001")
+  expect_equal(mls$stepSize, "0.001")
+})
+
+test_that("get_exchange_info attaches exchange-wide metadata as attributes", {
+  # Futures-specific top-level fields: timezone, serverTime,
+  # futuresType, rateLimits, exchangeFilters, assets. None fit on the
+  # per-symbol row; the parser used to silently discard them all.
+  data <- mock_futures_exchange_info_data()
+  data$futuresType <- "U_M"
+  data$rateLimits <- list(
+    list(rateLimitType = "REQUEST_WEIGHT", interval = "MINUTE", intervalNum = 1L, limit = 2400L),
+    list(rateLimitType = "ORDERS", interval = "MINUTE", intervalNum = 1L, limit = 1200L)
+  )
+  data$exchangeFilters <- list()
+  data$assets <- list(
+    list(asset = "USDT", marginAvailable = TRUE, autoAssetExchange = "-1000"),
+    list(asset = "BNFCR", marginAvailable = TRUE, autoAssetExchange = "0")
+  )
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures_data()$get_exchange_info()
+
+  expect_equal(attr(dt, "timezone"), "UTC")
+  expect_s3_class(attr(dt, "server_time"), "POSIXct")
+  expect_equal(attr(dt, "futures_type"), "U_M")
+
+  rl <- attr(dt, "rate_limits")
+  expect_s3_class(rl, "data.table")
+  expect_equal(nrow(rl), 2L)
+  expect_setequal(rl$rate_limit_type, c("REQUEST_WEIGHT", "ORDERS"))
+
+  ef <- attr(dt, "exchange_filters")
+  expect_s3_class(ef, "data.table")
+  expect_equal(nrow(ef), 0L)
+
+  assets <- attr(dt, "assets")
+  expect_s3_class(assets, "data.table")
+  expect_equal(nrow(assets), 2L)
+  expect_setequal(assets$asset, c("USDT", "BNFCR"))
+})
+
 # -- get_klines --
 
 test_that("get_klines returns OHLCV data.table", {

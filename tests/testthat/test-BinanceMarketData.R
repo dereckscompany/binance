@@ -137,6 +137,113 @@ test_that("get_exchange_info JSON-encodes multi-set permissionSets without flatt
   expect_equal(recovered[[2]], list("TRD_GRP_004", "TRD_GRP_005"))
 })
 
+test_that("get_exchange_info preserves the full filters array in `filters_raw` (round-trips through JSON)", {
+  # Regression for the silent-drop bug: the parser used to pull out
+  # LOT_SIZE / PRICE_FILTER / NOTIONAL into curated columns and then
+  # discard the entire `filters` list. Any filter type we don't
+  # extract (PERCENT_PRICE, MARKET_LOT_SIZE, MAX_NUM_ORDERS,
+  # ICEBERG_PARTS, TRAILING_DELTA, etc.) was lost. Now the whole
+  # filters array survives as a JSON string column.
+  data <- mock_exchange_info_data()
+  data$symbols[[1]]$filters <- c(
+    data$symbols[[1]]$filters,
+    list(
+      list(filterType = "PERCENT_PRICE", multiplierUp = "5", multiplierDown = "0.2", avgPriceMins = 5L),
+      list(filterType = "MAX_NUM_ORDERS", maxNumOrders = 200L),
+      list(filterType = "TRAILING_DELTA", minTrailingAboveDelta = 10L, maxTrailingAboveDelta = 2000L)
+    )
+  )
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_market()$get_exchange_info()
+  expect_true("filters_raw" %in% names(dt))
+  expect_type(dt$filters_raw, "character")
+
+  # Round-trip the BTCUSDT row and check all filter types survived.
+  recovered <- jsonlite::fromJSON(
+    dt[symbol == "BTCUSDT"]$filters_raw,
+    simplifyVector = FALSE
+  )
+  types <- vapply(recovered, function(f) f$filterType, character(1))
+  expect_setequal(
+    types,
+    c("PRICE_FILTER", "LOT_SIZE", "PERCENT_PRICE", "MAX_NUM_ORDERS", "TRAILING_DELTA")
+  )
+  # Fields from the non-curated filter types survive round-trip.
+  pp <- recovered[[which(types == "PERCENT_PRICE")]]
+  expect_equal(pp$multiplierUp, "5")
+  expect_equal(pp$avgPriceMins, 5L)
+  td <- recovered[[which(types == "TRAILING_DELTA")]]
+  expect_equal(td$maxTrailingAboveDelta, 2000L)
+
+  # ETH symbol still has its single PRICE_FILTER.
+  recovered_eth <- jsonlite::fromJSON(
+    dt[symbol == "ETHUSDT"]$filters_raw,
+    simplifyVector = FALSE
+  )
+  expect_length(recovered_eth, 1L)
+  expect_equal(recovered_eth[[1]]$filterType, "PRICE_FILTER")
+})
+
+test_that("get_exchange_info attaches exchange-wide metadata as attributes", {
+  # Regression: top-level fields `timezone`, `serverTime`, `rateLimits`,
+  # `exchangeFilters`, `sors` are exchange-wide and don't fit on a
+  # per-symbol row, but the parser used to silently discard them. They
+  # are now attached as attributes so the data is reachable.
+  data <- mock_exchange_info_data()
+  data$rateLimits <- list(
+    list(rateLimitType = "REQUEST_WEIGHT", interval = "MINUTE", intervalNum = 1L, limit = 6000L),
+    list(rateLimitType = "ORDERS", interval = "SECOND", intervalNum = 10L, limit = 100L)
+  )
+  data$exchangeFilters <- list(
+    list(filterType = "EXCHANGE_MAX_NUM_ORDERS", maxNumOrders = 1000L)
+  )
+  data$sors <- list(
+    list(baseAsset = "BTC", symbols = list("BTCUSDT", "BTCUSDC"))
+  )
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_market()$get_exchange_info()
+
+  expect_equal(attr(dt, "timezone"), "UTC")
+  expect_s3_class(attr(dt, "server_time"), "POSIXct")
+
+  rl <- attr(dt, "rate_limits")
+  expect_s3_class(rl, "data.table")
+  expect_equal(nrow(rl), 2L)
+  expect_true("rate_limit_type" %in% names(rl))
+  expect_setequal(rl$rate_limit_type, c("REQUEST_WEIGHT", "ORDERS"))
+
+  ef <- attr(dt, "exchange_filters")
+  expect_s3_class(ef, "data.table")
+  expect_equal(nrow(ef), 1L)
+  expect_equal(ef$filter_type, "EXCHANGE_MAX_NUM_ORDERS")
+
+  sors <- attr(dt, "sors")
+  expect_s3_class(sors, "data.table")
+  expect_equal(nrow(sors), 1L)
+  expect_equal(sors$base_asset, "BTC")
+})
+
+test_that("get_exchange_info metadata attributes default to empty data.tables when fields are absent", {
+  # Default mock has only timezone + serverTime. Other top-level fields
+  # are absent — the attributes should still exist (empty data.tables),
+  # so downstream code that always reads `attr(dt, "rate_limits")`
+  # doesn't break.
+  resp <- mock_binance_response(data = mock_exchange_info_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_market()$get_exchange_info()
+  expect_s3_class(attr(dt, "rate_limits"), "data.table")
+  expect_equal(nrow(attr(dt, "rate_limits")), 0L)
+  expect_s3_class(attr(dt, "exchange_filters"), "data.table")
+  expect_equal(nrow(attr(dt, "exchange_filters")), 0L)
+  expect_s3_class(attr(dt, "sors"), "data.table")
+  expect_equal(nrow(attr(dt, "sors")), 0L)
+})
+
 test_that("get_exchange_info filters by symbol", {
   captured_url <- NULL
   resp <- mock_binance_response(data = mock_exchange_info_data())

@@ -10,7 +10,7 @@ several endpoints; the new shape is fully documented in
 
 Every method now follows one rule: identify the entity for the
 endpoint, and return one row per entity. Nested data becomes one of
-five shape treatments:
+the following shape treatments — no data is dropped, only reshaped:
 
 - **A — `;` collapse** for arrays of plain strings (`order_types`,
   `permissions`, condition codes). Recover via
@@ -21,11 +21,16 @@ five shape treatments:
 - **C — Wide prefix** for fixed-schema nested objects
   (`commissionRates_*`, Earn `detail_*` / `quota_*`, flattened
   `filters` from `exchangeInfo`).
-- **D — Drop and document** for heterogeneous collections that would
-  otherwise force a Cartesian join — `BinanceFutures::get_account`
-  drops `positions` (use `get_positions()`); `get_account_info` drops
-  `balances` (use `get_balances()`); spot/futures `exchangeInfo` drop
-  top-level `rateLimits` / `exchangeFilters` / `sors`.
+- **D — Re-route to a sibling method** for heterogeneous collections
+  that would otherwise force a Cartesian join —
+  `BinanceFutures::get_account` re-routes `positions` to
+  `get_positions()`; `get_account_info` re-routes `balances` to
+  `get_balances()`. Same data, right shape.
+- **D′ — Ride along as an attribute** for exchange-wide metadata that
+  doesn't fit a per-entity row — `get_exchange_info()` (spot +
+  futures) attaches `timezone`, `server_time`, `rate_limits`,
+  `exchange_filters`, and the variant-specific extras (`sors` for
+  spot, `futures_type` + `assets` for futures) via `attr(dt, ...)`.
 - **E — JSON string** for dynamic-key or array-of-array objects where
   `;`-collapse would erase semantic grouping — spot `exchangeInfo`
   `permission_sets`, Earn `tier_annual_percentage_rate`. Recover via
@@ -95,6 +100,24 @@ rows).
   get_max_transferable, get_force_liquidation_history}`.
 
 ## Bug fixes
+
+* **`get_exchange_info()` (spot + futures) no longer silently drops
+  exchange-wide metadata or rarely-used filter types.** Two leaks
+  fixed in one go:
+  - Top-level `timezone`, `serverTime`, `rateLimits`,
+    `exchangeFilters`, and (spot only) `sors` / (futures only)
+    `futuresType` + `assets` are now attached as attributes on the
+    returned `data.table` — access with `attr(dt, "rate_limits")`,
+    `attr(dt, "server_time")`, etc. The parser used to read only
+    `data$symbols` and silently discard the rest.
+  - The full per-symbol `filters` array is now preserved as a
+    JSON-encoded `filters_raw` column. The curated `lot_*` / `price_*`
+    / `min_notional` columns are unchanged, but filter types we don't
+    pull into curated columns (`PERCENT_PRICE`, `PERCENT_PRICE_BY_SIDE`,
+    `MARKET_LOT_SIZE`, `MAX_NUM_ORDERS`, `MAX_NUM_ALGO_ORDERS`,
+    `MAX_NUM_ICEBERG_ORDERS`, `ICEBERG_PARTS`, `MAX_POSITION`,
+    `TRAILING_DELTA`) used to be discarded with the raw list. Recover
+    with `jsonlite::fromJSON(dt$filters_raw[1])`.
 
 * **NULL-input crashes in three parsers.** `parse_orderbook`,
   `parse_paginated`, and the `add_order` parser used to dereference

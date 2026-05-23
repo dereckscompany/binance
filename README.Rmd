@@ -45,12 +45,14 @@ The transformations the parsers apply:
     - **Single nested objects with a fixed schema** (e.g. account `commissionRates`, locked-earn `detail` / `quota`) → flattened to wide `parent_child` columns.
     - **Nested objects with dynamic keys** (e.g. spot exchange-info `permissionSets`, flexible-earn `tierAnnualPercentageRate`) → serialised as a JSON string column so the inner structure is preserved; recover via `jsonlite::fromJSON(x)`.
 
-**Endpoints that deliberately drop fields:**
+**Endpoints that reshape rather than drop:**
 
-- `get_account_info()` (spot) - the `balances` array is replaced by a separate `get_balances()` call; account-level fields are returned as a single row.
-- `get_account()` (futures) - returns one row per asset balance only. The companion `positions` array Binance returns alongside is intentionally dropped; use `get_positions()` for per-position data (it hits `/fapi/v2/positionRisk`).
-- `get_exchange_info()` (spot and futures) - the raw `filters` array is dropped after extracting the canonical `lot_*`, `price_*`, and `min_notional` numeric fields. The top-level `rateLimits`, `exchangeFilters`, and (spot) `sors` blocks are also dropped from the one-row-per-symbol return; the per-symbol scalars and arrays remain.
-- The OCO endpoints (`add_oco_order()`, `cancel_oco_order()`) expand the richer `orderReports` payload and drop the thinner `orders` duplicate.
+The parsers never discard API data — every field is either on the row, on a sibling row, on a sibling method's return, or attached as an attribute on the returned `data.table`.
+
+- `get_account_info()` (spot) - account-level fields are returned as a single row; the companion `balances` array is parsed by the sibling `get_balances()` (both methods hit `/api/v3/account` and parse different halves).
+- `get_account()` (futures) - one row per asset balance; the companion `positions` array is parsed by the sibling `get_positions()` (which hits `/fapi/v2/positionRisk`).
+- `get_exchange_info()` (spot and futures) - one row per symbol. The full per-symbol `filters` array is preserved as a JSON-encoded `filters_raw` column alongside the curated `lot_*` / `price_*` / `min_notional` columns (recover with `jsonlite::fromJSON(dt$filters_raw[1])`). Exchange-wide metadata (`timezone`, `server_time`, `rate_limits`, `exchange_filters`, and the variant-specific extras — `sors` for spot, `futures_type` + `assets` for futures) is attached as attributes: `attr(dt, "rate_limits")` etc.
+- The OCO endpoints (`add_oco_order()`, `cancel_oco_order()`) expand the richer `orderReports` payload; the thinner `orders` duplicate is a strict subset of the same data and so is omitted.
 
 **Klines** are a special case: Binance returns positional arrays instead of named objects, so we assign descriptive column names (`open_time`, `open`, `high`, `low`, `close`, `volume`, `close_time`, etc.) matching the Binance documentation.
 

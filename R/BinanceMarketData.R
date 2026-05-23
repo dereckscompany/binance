@@ -207,6 +207,13 @@ BinanceMarketData <- R6::R6Class(
     #'   - `price_max` (numeric): Maximum price from PRICE_FILTER.
     #'   - `price_tick_size` (numeric): Price tick size from PRICE_FILTER.
     #'   - `min_notional` (numeric): Minimum notional value from MIN_NOTIONAL filter.
+    #'   - `filters_raw` (character): JSON-encoded copy of the full per-symbol
+    #'     `filters` array. Preserves filter types not pulled into curated
+    #'     columns (`PERCENT_PRICE`, `PERCENT_PRICE_BY_SIDE`, `MARKET_LOT_SIZE`,
+    #'     `MAX_NUM_ORDERS`, `MAX_NUM_ALGO_ORDERS`, `MAX_NUM_ICEBERG_ORDERS`,
+    #'     `ICEBERG_PARTS`, `MAX_POSITION`, `TRAILING_DELTA`, ...). Recover
+    #'     with `jsonlite::fromJSON(dt$filters_raw[1])`. `NA` if Binance
+    #'     returned no filters for the symbol.
     #'   - `permissions` (character): Semicolon-separated trading permissions
     #'     (e.g., `"SPOT;MARGIN"`). Recover via
     #'     `strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]`. **Note:**
@@ -224,11 +231,30 @@ BinanceMarketData <- R6::R6Class(
     #'   - `allowed_self_trade_prevention_modes` (character): Semicolon-separated
     #'     allowed STP modes.
     #'
+    #' The returned `data.table` also carries exchange-wide metadata as
+    #' attributes (none of these fit on a per-symbol row, so they are
+    #' attached rather than discarded). Access with `attr(dt, "...")`:
+    #'   - `timezone` (character): Exchange timezone, e.g. `"UTC"`.
+    #'   - `server_time` (POSIXct): Server clock at response time.
+    #'   - `rate_limits` (`data.table`): One row per rate-limit rule
+    #'     (`rateLimitType`, `interval`, `intervalNum`, `limit`).
+    #'   - `exchange_filters` (`data.table`): Exchange-wide filter rules
+    #'     (usually empty for spot).
+    #'   - `sors` (`data.table`): Smart Order Routing configuration (one
+    #'     row per SOR-enabled base asset; usually empty if SOR is off).
+    #'
     #' @examples
     #' \dontrun{
     #' market <- BinanceMarketData$new()
     #' info <- market$get_exchange_info("BTCUSDT")
     #' print(info[, .(symbol, status, base_asset, quote_asset)])
+    #'
+    #' # Recover filter types not in curated columns
+    #' jsonlite::fromJSON(info$filters_raw[1])
+    #'
+    #' # Exchange-wide metadata
+    #' attr(info, "rate_limits")
+    #' attr(info, "server_time")
     #' }
     get_exchange_info = function(symbol = NULL, symbols = NULL) {
       query <- list()
@@ -248,6 +274,38 @@ BinanceMarketData <- R6::R6Class(
             return(data.table::data.table()[])
           }
 
+          # Capture exchange-wide metadata. None of these fit on a
+          # per-symbol row, so they ride along as attributes on the
+          # returned data.table rather than being silently discarded.
+          # Access via `attr(dt, "rate_limits")` etc.
+          meta_timezone <- data$timezone
+          meta_server_time <- if (!is.null(data$serverTime)) {
+            ms_to_datetime(data$serverTime)
+          } else {
+            lubridate::NA_POSIXct_
+          }
+          meta_rate_limits <- if (
+            !is.null(data$rateLimits) &&
+              length(data$rateLimits) > 0
+          ) {
+            as_dt_list(data$rateLimits)
+          } else {
+            data.table::data.table()
+          }
+          meta_exchange_filters <- if (
+            !is.null(data$exchangeFilters) &&
+              length(data$exchangeFilters) > 0
+          ) {
+            as_dt_list(data$exchangeFilters)
+          } else {
+            data.table::data.table()
+          }
+          meta_sors <- if (!is.null(data$sors) && length(data$sors) > 0) {
+            as_dt_list(data$sors)
+          } else {
+            data.table::data.table()
+          }
+
           # Helper to extract a specific filter field from the raw filters list
           .extract_filter <- function(filters, filter_type, field) {
             if (is.null(filters) || length(filters) == 0) {
@@ -265,8 +323,10 @@ BinanceMarketData <- R6::R6Class(
           }
 
           # Extract filter values into flat fields, semicolon-join string
-          # arrays, and remove the raw filters list before building the
-          # data.table.
+          # arrays, and JSON-encode the raw filters list (so filter
+          # types we don't pull out into curated columns — PERCENT_PRICE,
+          # MARKET_LOT_SIZE, MAX_NUM_ORDERS, ICEBERG_PARTS,
+          # TRAILING_DELTA, etc. — are still reachable).
           syms <- lapply(syms, function(s) {
             # Flat string arrays → `;`-collapse via the shared helper.
             s <- collapse_string_array_fields(
@@ -307,7 +367,16 @@ BinanceMarketData <- R6::R6Class(
               min_not <- .extract_filter(raw_filters, "MIN_NOTIONAL", "minNotional")
             }
             s$min_notional <- min_not
-            # Remove the raw filters list — no list columns
+            # Preserve the full filters array as a JSON string so filter
+            # types we don't pull into curated columns are still
+            # reachable. Recover with `jsonlite::fromJSON(dt$filters_raw[1])`.
+            if (is.null(raw_filters) || length(raw_filters) == 0L) {
+              s$filters_raw <- NA_character_
+            } else {
+              s$filters_raw <- as.character(
+                jsonlite::toJSON(raw_filters, auto_unbox = TRUE)
+              )
+            }
             s$filters <- NULL
             return(s)
           })
@@ -315,6 +384,13 @@ BinanceMarketData <- R6::R6Class(
             lapply(syms, as_dt_row),
             fill = TRUE
           )
+          # Attach exchange-wide metadata as attributes. setattr modifies
+          # in place (no copy).
+          data.table::setattr(dt, "timezone", meta_timezone)
+          data.table::setattr(dt, "server_time", meta_server_time)
+          data.table::setattr(dt, "rate_limits", meta_rate_limits)
+          data.table::setattr(dt, "exchange_filters", meta_exchange_filters)
+          data.table::setattr(dt, "sors", meta_sors)
           return(dt[])
         }
       ))

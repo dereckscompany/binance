@@ -84,6 +84,13 @@ while (!later::loop_empty()) later::run_now()
 futures <- BinanceFuturesData$new()
 info <- futures$get_exchange_info()
 print(info[, .(symbol, contract_type, status, base_asset)])
+
+# Recover filter types not in curated columns
+jsonlite::fromJSON(info$filters_raw[1])
+
+# Exchange-wide metadata
+attr(info, "rate_limits")
+attr(info, "assets")
 }
 
 ## ------------------------------------------------
@@ -357,6 +364,25 @@ sub-types.
 \item \code{price_max} (numeric): Maximum price (from PRICE_FILTER).
 \item \code{price_tick_size} (numeric): Price tick size (from PRICE_FILTER).
 \item \code{min_notional} (numeric): Minimum notional value (from MIN_NOTIONAL filter).
+\item \code{filters_raw} (character): JSON-encoded copy of the full per-symbol
+\code{filters} array. Preserves filter types not pulled into curated
+columns (\code{PERCENT_PRICE}, \code{MARKET_LOT_SIZE}, \code{MAX_NUM_ORDERS},
+\code{MAX_NUM_ALGO_ORDERS}, \code{MIN_NOTIONAL}'s extra fields, ...).
+Recover with \code{jsonlite::fromJSON(dt$filters_raw[1])}. \code{NA} if
+Binance returned no filters for the symbol.
+}
+
+The returned \code{data.table} also carries exchange-wide metadata as
+attributes (none of these fit on a per-symbol row, so they are
+attached rather than discarded). Access with \code{attr(dt, "...")}:
+\itemize{
+\item \code{timezone} (character): Exchange timezone, e.g. \code{"UTC"}.
+\item \code{server_time} (POSIXct): Server clock at response time.
+\item \code{futures_type} (character): \code{"U_M"} (USDⓈ-M) for this endpoint.
+\item \code{rate_limits} (\code{data.table}): One row per rate-limit rule.
+\item \code{exchange_filters} (\code{data.table}): Exchange-wide filter rules.
+\item \code{assets} (\code{data.table}): Margin-asset metadata returned at the
+top level (one row per asset).
 }
 }
 \subsection{Examples}{
@@ -365,6 +391,13 @@ sub-types.
 futures <- BinanceFuturesData$new()
 info <- futures$get_exchange_info()
 print(info[, .(symbol, contract_type, status, base_asset)])
+
+# Recover filter types not in curated columns
+jsonlite::fromJSON(info$filters_raw[1])
+
+# Exchange-wide metadata
+attr(info, "rate_limits")
+attr(info, "assets")
 }
 }
 \if{html}{\out{</div>}}

@@ -100,7 +100,7 @@ earn     <- BinanceEarn$new(keys = keys)
 | Method | Endpoint | Shape |
 |---|---|---|
 | `get_server_time()` | `/api/v3/time` | single row |
-| `get_exchange_info(symbol)` | `/api/v3/exchangeInfo` | one row per symbol, `;`-collapsed string arrays (`order_types`, `permissions`, `allowed_self_trade_prevention_modes`, …); flattened numeric filters (`lot_min_qty`, `lot_max_qty`, `lot_step_size`, `price_min`, `price_max`, `price_tick_size`, `min_notional`); `permission_sets` JSON-encoded |
+| `get_exchange_info(symbol)` | `/api/v3/exchangeInfo` | one row per symbol, `;`-collapsed string arrays (`order_types`, `permissions`, `allowed_self_trade_prevention_modes`, …); flattened numeric filters (`lot_min_qty`, `lot_max_qty`, `lot_step_size`, `price_min`, `price_max`, `price_tick_size`, `min_notional`); full filters array preserved as JSON in `filters_raw`; `permission_sets` JSON-encoded. Exchange-wide metadata (`timezone`, `server_time`, `rate_limits`, `exchange_filters`, `sors`) attached as `attr(dt, ...)` |
 
 ### Tickers and 24hr stats
 
@@ -133,7 +133,7 @@ depth[side == "ask"][order(-price)][1:5]
 
 | Method | Endpoint | Shape |
 |---|---|---|
-| `get_exchange_info()` | `/fapi/v1/exchangeInfo` | one row per symbol; same string-array + filter treatment as spot |
+| `get_exchange_info()` | `/fapi/v1/exchangeInfo` | one row per symbol; same string-array + filter treatment as spot (including `filters_raw`). Exchange-wide metadata (`timezone`, `server_time`, `futures_type`, `rate_limits`, `exchange_filters`, `assets`) attached as `attr(dt, ...)` |
 | `get_klines(symbol, interval, ...)` | `/fapi/v1/klines` | one row per kline |
 | `get_mark_price(symbol)` | `/fapi/v1/premiumIndex` | single row (or one row per symbol if `symbol = NULL`) |
 | `get_funding_rate(symbol, ...)` | `/fapi/v1/fundingRate` | one row per funding interval |
@@ -393,11 +393,12 @@ guiding rule is:
 A trade gets a row. An order gets a row. An asset balance gets a row.
 A funding-rate snapshot gets a row. Anything nested under the entity
 becomes a flat column on the same row or an additional row on a
-different axis — **never a list column**.
+different axis — **never a list column** — and **no data is dropped**;
+fields that don't fit a per-entity row are surfaced via a sibling
+method or as an attribute on the returned `data.table`.
 
-There are five shapes a nested API field can take, and five
-treatments. A handful of endpoints use two treatments together when
-their nesting has two layers.
+There are six shape treatments. A handful of endpoints use two
+treatments together when their nesting has two layers.
 
 ### Treatment A — `;` collapse for arrays of plain strings
 
@@ -487,33 +488,65 @@ filter columns on `exchange_info` (`lot_min_qty`, `lot_max_qty`,
 `lot_step_size`, `price_min`, `price_max`, `price_tick_size`,
 `min_notional`), isolated-margin `base_asset_*` / `quote_asset_*`.
 
-### Treatment D — Drop and document
+### Treatment D — Re-route to a sibling method
 
-When a response includes a nested collection that doesn't fit the
-one-row-per-entity shape — typically because the entity in question
-already has its own dedicated endpoint — drop it and point at the
-proper method.
+When a response bundles two heterogeneous collections (e.g.
+account-level fields **and** a list of balances, or asset balances
+**and** open positions), they can't share rows without either a
+Cartesian join (replicated nonsense) or list columns. The same data
+is always reachable via a sibling method that returns it in the right
+shape.
 
 ```{r}
 # `BinanceFutures::get_account` returns one row per asset balance.
-# Binance also returns a `positions` array alongside `assets`, but
-# they're heterogeneous — combining them would require a Cartesian
-# join no user expects. So `positions` is dropped here; use the
-# dedicated method:
+# Binance also returns a `positions` array alongside `assets`; rather
+# than Cartesian-joining them, `positions` is parsed by the dedicated
+# method that hits `/fapi/v2/positionRisk`:
 futures <- BinanceFutures$new()
-acct <- futures$get_account()       # one row per asset
-positions <- futures$get_positions() # one row per open position
+acct      <- futures$get_account()    # one row per asset
+positions <- futures$get_positions()  # one row per open position
 ```
 
-Other examples:
+The cases:
 
-- `get_account_info()` drops `balances` (use `get_balances()`).
-- spot / futures `exchange_info` drop top-level `rateLimits`,
-  `exchangeFilters`, and (spot) `sors`. Those describe the exchange,
-  not the per-symbol entity each row represents.
+- `BinanceFutures::get_account()` re-routes `positions` to
+  `get_positions()`.
+- `BinanceAccount::get_account_info()` re-routes `balances` to
+  `get_balances()` (both methods hit `/api/v3/account`; they just
+  parse different halves of the response).
 
-All deliberate drops are listed in the README's Design Philosophy
-section.
+No data is lost — the same field is one method call away, in the
+right shape for the entity it describes.
+
+### Treatment D′ — Ride along as an attribute
+
+When the API response contains exchange-wide metadata that doesn't
+fit the per-entity row (and isn't already covered by a sibling
+method), attach it as an attribute on the returned `data.table`.
+Power users reach it via `attr()`; typical users see a clean
+rectangular table.
+
+```{r}
+market <- BinanceMarketData$new()
+info <- market$get_exchange_info()
+
+# Per-symbol rows look the same as any other data.table.
+info[symbol == "BTCUSDT", .(symbol, status, lot_min_qty, price_tick_size)]
+
+# Exchange-wide metadata rides along as attributes.
+attr(info, "server_time")     # POSIXct
+attr(info, "rate_limits")     # data.table — one row per rate-limit rule
+attr(info, "exchange_filters")
+attr(info, "sors")            # spot only
+```
+
+Where this is used:
+
+- `BinanceMarketData::get_exchange_info()` — `timezone`,
+  `server_time`, `rate_limits`, `exchange_filters`, `sors`.
+- `BinanceFuturesData::get_exchange_info()` — `timezone`,
+  `server_time`, `futures_type`, `rate_limits`, `exchange_filters`,
+  `assets`.
 
 ### Treatment E — JSON string for dynamic-key or array-of-array objects
 

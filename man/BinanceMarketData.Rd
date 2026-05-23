@@ -90,6 +90,13 @@ cat("Clock drift:", round(drift * 1000), "ms\n")
 market <- BinanceMarketData$new()
 info <- market$get_exchange_info("BTCUSDT")
 print(info[, .(symbol, status, base_asset, quote_asset)])
+
+# Recover filter types not in curated columns
+jsonlite::fromJSON(info$filters_raw[1])
+
+# Exchange-wide metadata
+attr(info, "rate_limits")
+attr(info, "server_time")
 }
 
 ## ------------------------------------------------
@@ -389,6 +396,13 @@ fields returned by the API, converted to snake_case. Key columns include:
 \item \code{price_max} (numeric): Maximum price from PRICE_FILTER.
 \item \code{price_tick_size} (numeric): Price tick size from PRICE_FILTER.
 \item \code{min_notional} (numeric): Minimum notional value from MIN_NOTIONAL filter.
+\item \code{filters_raw} (character): JSON-encoded copy of the full per-symbol
+\code{filters} array. Preserves filter types not pulled into curated
+columns (\code{PERCENT_PRICE}, \code{PERCENT_PRICE_BY_SIDE}, \code{MARKET_LOT_SIZE},
+\code{MAX_NUM_ORDERS}, \code{MAX_NUM_ALGO_ORDERS}, \code{MAX_NUM_ICEBERG_ORDERS},
+\code{ICEBERG_PARTS}, \code{MAX_POSITION}, \code{TRAILING_DELTA}, ...). Recover
+with \code{jsonlite::fromJSON(dt$filters_raw[1])}. \code{NA} if Binance
+returned no filters for the symbol.
 \item \code{permissions} (character): Semicolon-separated trading permissions
 (e.g., \code{"SPOT;MARGIN"}). Recover via
 \code{strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]}. \strong{Note:}
@@ -406,6 +420,20 @@ symbol omits the field.
 \item \code{allowed_self_trade_prevention_modes} (character): Semicolon-separated
 allowed STP modes.
 }
+
+The returned \code{data.table} also carries exchange-wide metadata as
+attributes (none of these fit on a per-symbol row, so they are
+attached rather than discarded). Access with \code{attr(dt, "...")}:
+\itemize{
+\item \code{timezone} (character): Exchange timezone, e.g. \code{"UTC"}.
+\item \code{server_time} (POSIXct): Server clock at response time.
+\item \code{rate_limits} (\code{data.table}): One row per rate-limit rule
+(\code{rateLimitType}, \code{interval}, \code{intervalNum}, \code{limit}).
+\item \code{exchange_filters} (\code{data.table}): Exchange-wide filter rules
+(usually empty for spot).
+\item \code{sors} (\code{data.table}): Smart Order Routing configuration (one
+row per SOR-enabled base asset; usually empty if SOR is off).
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -413,6 +441,13 @@ allowed STP modes.
 market <- BinanceMarketData$new()
 info <- market$get_exchange_info("BTCUSDT")
 print(info[, .(symbol, status, base_asset, quote_asset)])
+
+# Recover filter types not in curated columns
+jsonlite::fromJSON(info$filters_raw[1])
+
+# Exchange-wide metadata
+attr(info, "rate_limits")
+attr(info, "server_time")
 }
 }
 \if{html}{\out{</div>}}
