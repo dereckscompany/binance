@@ -128,7 +128,7 @@ BinanceEarn <- R6::R6Class(
     #' - `hot` (logical): Whether the product is marked as popular.
     #' - `min_purchase_amount` (character): Minimum subscription amount.
     #' - `product_id` (character): Unique product identifier.
-    #' - `subscription_start_time` (numeric): Subscription start timestamp in ms.
+    #' - `subscription_start_time` (POSIXct): Subscription start time.
     #' - `status` (character): Product status (e.g., `"PURCHASING"`).
     #'
     #' @examples
@@ -169,7 +169,9 @@ BinanceEarn <- R6::R6Class(
             }
             return(r)
           })
-          return(as_dt_list(rows)[])
+          dt <- as_dt_list(rows)
+          coerce_cols(dt, "subscription_start_time", ms_to_datetime)
+          return(dt[])
         }
       ))
     },
@@ -247,14 +249,14 @@ BinanceEarn <- R6::R6Class(
     #'   that show `apy` are stale.
     #' - `detail_status` (character): Product lifecycle state (e.g.
     #'   `"CREATED"`, `"PURCHASING"`).
-    #' - `detail_subscription_start_time` (numeric): Subscription open
+    #' - `detail_subscription_start_time` (POSIXct): Subscription open
     #'   timestamp in milliseconds.
     #' - `detail_extra_reward_asset` (character): Additional reward
     #'   asset, if the product carries a boost.
     #' - `detail_extra_reward_apr` (character): Extra reward APR.
     #' - `detail_boost_reward_asset` (character): Boost reward asset.
     #' - `detail_boost_apr` (character): Boost APR.
-    #' - `detail_boost_end_time` (numeric): Boost end timestamp in ms.
+    #' - `detail_boost_end_time` (POSIXct): Boost end time.
     #' - `quota_total_personal_quota` (character): Per-user maximum.
     #' - `quota_minimum` (character): Per-user minimum.
     #'
@@ -293,7 +295,9 @@ BinanceEarn <- R6::R6Class(
             }
             return(r)
           })
-          return(as_dt_list(rows)[])
+          dt <- as_dt_list(rows)
+          coerce_cols(dt, c("detail_subscription_start_time", "detail_boost_end_time"), ms_to_datetime)
+          return(dt[])
         }
       ))
     },
@@ -695,7 +699,9 @@ BinanceEarn <- R6::R6Class(
             }
             return(r)
           })
-          return(as_dt_list(rows)[])
+          dt <- as_dt_list(rows)
+          coerce_cols(dt, "subscription_start_time", ms_to_datetime)
+          return(dt[])
         }
       ))
     },
@@ -780,7 +786,7 @@ BinanceEarn <- R6::R6Class(
     #' - `project_id` (character): Locked project identifier.
     #' - `asset` (character): Locked asset symbol.
     #' - `amount` (character): Locked amount.
-    #' - `purchase_time` (numeric): Subscription timestamp in ms.
+    #' - `purchase_time` (POSIXct): Subscription time.
     #' - `duration` (character): Lock duration in days.
     #' - `accrual_days` (character): Days interest has accrued.
     #' - `reward_asset` (character): Earned asset symbol.
@@ -795,17 +801,17 @@ BinanceEarn <- R6::R6Class(
     #' - `boost_apr` (character): Boost APR.
     #' - `total_boost_reward_amt` (character): Total boost reward earned.
     #' - `next_pay` (character): Next estimated reward payment.
-    #' - `next_pay_date` (numeric): Next reward payment timestamp (ms).
+    #' - `next_pay_date` (POSIXct): Next reward payment time.
     #' - `pay_period` (character): Payment cycle in days.
     #' - `redeem_amount_early` (character): Amount available for early
     #'   redemption.
-    #' - `rewards_end_date` (numeric): Rewards accrual end timestamp (ms).
-    #' - `deliver_date` (numeric): Redemption arrival timestamp (ms).
+    #' - `rewards_end_date` (POSIXct): Rewards accrual end time.
+    #' - `deliver_date` (POSIXct): Redemption arrival time.
     #' - `redeem_period` (character): Redemption interval in days.
     #' - `redeeming_amt` (character): Amount currently being redeemed.
     #' - `redeem_to` (character): Destination on redemption
     #'   (`"FLEXIBLE"` or `"SPOT"`).
-    #' - `partial_amt_deliver_date` (numeric): Arrival time of partial
+    #' - `partial_amt_deliver_date` (POSIXct): Arrival time of partial
     #'   redemption.
     #' - `can_redeem_early` (logical): Whether early redemption is allowed.
     #' - `can_fast_redemption` (logical): Whether fast redemption is allowed.
@@ -839,7 +845,16 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data)[])
+          return(parse_paginated(
+            data,
+            time_cols = c(
+              "purchase_time",
+              "next_pay_date",
+              "rewards_end_date",
+              "deliver_date",
+              "partial_amt_deliver_date"
+            )
+          )[])
         }
       ))
     },
@@ -1137,7 +1152,7 @@ BinanceEarn <- R6::R6Class(
     #'       "time": 1661493146000,
     #'       "positionId": "12345",
     #'       "redeemId": 40610,
-    #'       "deliverDate": "1664085146000",
+    #'       "deliverDate": 1664085146000,
     #'       "status": "PAID"
     #'     }
     #'   ]
@@ -1158,7 +1173,7 @@ BinanceEarn <- R6::R6Class(
     #' - `time` (POSIXct): Redemption time.
     #' - `position_id` (character): Position identifier.
     #' - `redeem_id` (integer): Redemption identifier.
-    #' - `deliver_date` (character): Expected delivery date.
+    #' - `deliver_date` (POSIXct): Expected delivery time.
     #' - `status` (character): Redemption status.
     #'
     #' @examples
@@ -1190,7 +1205,7 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data, time_cols = "time")[])
+          return(parse_paginated(data, time_cols = c("time", "deliver_date"))[])
         }
       ))
     }

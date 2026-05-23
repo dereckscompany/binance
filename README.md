@@ -317,9 +317,12 @@ trading$get_order(symbol = "BTCUSDT", orderId = 12345)
     #>      side stop_price iceberg_qty                time         update_time
     #>    <char>     <char>      <char>              <POSc>              <POSc>
     #> 1:    BUY 0.00000000  0.00000000 2017-10-11 12:32:56 2017-10-11 12:32:56
-    #>    is_working orig_quote_order_qty working_time self_trade_prevention_mode
-    #>        <lgcl>               <char>        <num>                     <char>
-    #> 1:       TRUE           0.00000000 1.507725e+12                       NONE
+    #>    is_working orig_quote_order_qty        working_time
+    #>        <lgcl>               <char>              <POSc>
+    #> 1:       TRUE           0.00000000 2017-10-11 12:32:56
+    #>    self_trade_prevention_mode
+    #>                        <char>
+    #> 1:                       NONE
 
 ### Get Open Orders
 
@@ -336,9 +339,9 @@ trading$get_open_orders(symbol = "BTCUSDT")
     #>      side stop_price iceberg_qty                time is_working
     #>    <char>     <char>      <char>              <POSc>     <lgcl>
     #> 1:    BUY 0.00000000  0.00000000 2017-10-11 12:32:56       TRUE
-    #>    orig_quote_order_qty working_time self_trade_prevention_mode
-    #>                  <char>        <num>                     <char>
-    #> 1:           0.00000000 1.507725e+12                       NONE
+    #>    orig_quote_order_qty        working_time self_trade_prevention_mode
+    #>                  <char>              <POSc>                     <char>
+    #> 1:           0.00000000 2017-10-11 12:32:56                       NONE
 
 ## Account
 
@@ -358,9 +361,9 @@ account$get_account_info()
     #>    can_trade can_withdraw can_deposit brokered require_self_trade_prevention
     #>       <lgcl>       <lgcl>      <lgcl>   <lgcl>                        <lgcl>
     #> 1:      TRUE         TRUE        TRUE    FALSE                         FALSE
-    #>    prevent_sor update_time account_type permissions       uid
-    #>         <lgcl>       <int>       <char>      <char>     <int>
-    #> 1:       FALSE   123456789         SPOT        SPOT 354937868
+    #>    prevent_sor         update_time account_type permissions       uid
+    #>         <lgcl>              <POSc>       <char>      <char>     <int>
+    #> 1:       FALSE 1970-01-02 10:17:36         SPOT        SPOT 354937868
     #>    commission_rates_maker commission_rates_taker commission_rates_buyer
     #>                    <char>                 <char>                 <char>
     #> 1:             0.00150000             0.00150000             0.00000000
@@ -614,5 +617,4 @@ citation("binance")
 
 MIT © [Dereck Mezquita](https://github.com/dereckmezquita)
 [![ORCID](https://img.shields.io/badge/ORCID-0000--0002--9307--6762-green)](https://orcid.org/0000-0002-9307-6762).
-See [LICENSE.md](LICENSE.md) for the full text, including the citation
-clause.
+See [LICENSE](LICENSE) for the full text.

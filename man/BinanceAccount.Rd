@@ -205,7 +205,7 @@ so the return is always one row per account.
 \item \code{brokered} (logical): Whether this is a brokered account.
 \item \code{require_self_trade_prevention} (logical): Whether STP is required.
 \item \code{prevent_sor} (logical): Whether smart order routing is prevented.
-\item \code{update_time} (numeric): Last account update timestamp in milliseconds.
+\item \code{update_time} (POSIXct): Last account update time.
 \item \code{account_type} (character): Account type (e.g., \code{"SPOT"}).
 \item \code{permissions} (character): \verb{;}-separated account permissions
 (e.g., \code{"SPOT;MARGIN"}). Recover the vector with

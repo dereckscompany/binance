@@ -132,7 +132,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' - `order_report_symbol` (character): Trading pair from child order report.
     #' - `order_report_order_id` (integer): Child order ID.
     #' - `order_report_client_order_id` (character): Child order client ID.
-    #' - `order_report_transact_time` (numeric): Child order transaction time.
+    #' - `order_report_transact_time` (POSIXct): Child order transaction time.
     #' - `order_report_price` (character): Child order price.
     #' - `order_report_orig_qty` (character): Child order original quantity.
     #' - `order_report_executed_qty` (character): Child order executed quantity.
@@ -197,9 +197,7 @@ BinanceOcoOrders <- R6::R6Class(
           data$orderReports <- NULL
           data$orders <- NULL
           dt <- as_dt_row(data)
-          if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
-            dt[, transact_time := ms_to_datetime(transact_time)]
-          }
+          coerce_cols(dt, "transact_time", ms_to_datetime)
           # Expand orderReports to long format: one row per child order
           # orderReports is a superset of orders (includes price, qty, status, etc.)
           if (!is.null(order_reports) && length(order_reports) > 0) {
@@ -208,6 +206,7 @@ BinanceOcoOrders <- R6::R6Class(
             data.table::setnames(reports_dt, report_names, paste0("order_report_", report_names))
             dt <- dt[rep(1L, nrow(reports_dt))]
             dt <- cbind(dt, reports_dt)
+            coerce_cols(dt, "order_report_transact_time", ms_to_datetime)
           }
           return(dt[])
         }
@@ -349,15 +348,14 @@ BinanceOcoOrders <- R6::R6Class(
           data$orderReports <- NULL
           data$orders <- NULL
           dt <- as_dt_row(data)
-          if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
-            dt[, transact_time := ms_to_datetime(transact_time)]
-          }
+          coerce_cols(dt, "transact_time", ms_to_datetime)
           if (!is.null(order_reports) && length(order_reports) > 0) {
             reports_dt <- as_dt_list(order_reports)
             report_names <- names(reports_dt)
             data.table::setnames(reports_dt, report_names, paste0("order_report_", report_names))
             dt <- dt[rep(1L, nrow(reports_dt))]
             dt <- cbind(dt, reports_dt)
+            coerce_cols(dt, "order_report_transact_time", ms_to_datetime)
           }
           return(dt[])
         }
@@ -447,9 +445,7 @@ BinanceOcoOrders <- R6::R6Class(
           orders <- data$orders
           data$orders <- NULL
           dt <- as_dt_row(data)
-          if (nrow(dt) > 0 && "transaction_time" %in% names(dt)) {
-            dt[, transaction_time := ms_to_datetime(transaction_time)]
-          }
+          coerce_cols(dt, "transaction_time", ms_to_datetime)
           # Expand orders to long format: one row per child order
           if (!is.null(orders) && length(orders) > 0) {
             orders_dt <- as_dt_list(orders)
@@ -541,9 +537,7 @@ BinanceOcoOrders <- R6::R6Class(
             orders <- oco$orders
             oco$orders <- NULL
             parent_dt <- as_dt_row(oco)
-            if (nrow(parent_dt) > 0 && "transaction_time" %in% names(parent_dt)) {
-              parent_dt[, transaction_time := ms_to_datetime(transaction_time)]
-            }
+            coerce_cols(parent_dt, "transaction_time", ms_to_datetime)
             if (!is.null(orders) && length(orders) > 0) {
               orders_dt <- as_dt_list(orders)
               order_names <- names(orders_dt)
@@ -675,9 +669,7 @@ BinanceOcoOrders <- R6::R6Class(
             orders <- oco$orders
             oco$orders <- NULL
             parent_dt <- as_dt_row(oco)
-            if (nrow(parent_dt) > 0 && "transaction_time" %in% names(parent_dt)) {
-              parent_dt[, transaction_time := ms_to_datetime(transaction_time)]
-            }
+            coerce_cols(parent_dt, "transaction_time", ms_to_datetime)
             if (!is.null(orders) && length(orders) > 0) {
               orders_dt <- as_dt_list(orders)
               order_names <- names(orders_dt)

@@ -142,7 +142,7 @@ BinanceTrading <- R6::R6Class(
     #' - `time_in_force` (character): Time-in-force policy (`"GTC"`, `"IOC"`, `"FOK"`).
     #' - `type` (character): Order type (`"LIMIT"`, `"MARKET"`, etc.).
     #' - `side` (character): `"BUY"` or `"SELL"`.
-    #' - `working_time` (numeric): Timestamp when the order started working.
+    #' - `working_time` (POSIXct): Time when the order started working.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
     #' - `transact_time` (POSIXct): Transaction time converted from `transactTime`.
     #' - `fill_index` (integer): 1-indexed fill position (`NA` when the order
@@ -215,9 +215,7 @@ BinanceTrading <- R6::R6Class(
           fills <- data$fills
           data$fills <- NULL
           dt <- as_dt_row(data)
-          if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
-            dt[, transact_time := ms_to_datetime(transact_time)]
-          }
+          coerce_cols(dt, c("transact_time", "working_time"), ms_to_datetime)
           # Expand fills to long format: one row per fill with parent
           # fields repeated, plus a 1-indexed `fill_index`. To keep the
           # returned schema stable across orders with and without fills,
@@ -453,9 +451,7 @@ BinanceTrading <- R6::R6Class(
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
-          if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
-            dt[, transact_time := ms_to_datetime(transact_time)]
-          }
+          coerce_cols(dt, "transact_time", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -565,9 +561,7 @@ BinanceTrading <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
-            dt[, transact_time := ms_to_datetime(transact_time)]
-          }
+          coerce_cols(dt, "transact_time", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -640,7 +634,7 @@ BinanceTrading <- R6::R6Class(
     #' - `iceberg_qty` (character): Iceberg quantity.
     #' - `is_working` (logical): Whether the order is on the order book.
     #' - `orig_quote_order_qty` (character): Original quote order quantity.
-    #' - `working_time` (numeric): Timestamp when the order started working.
+    #' - `working_time` (POSIXct): Time when the order started working.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
     #' - `time` (POSIXct): Order creation time converted from `time`.
     #' - `update_time` (POSIXct): Last update time converted from `updateTime`.
@@ -666,12 +660,7 @@ BinanceTrading <- R6::R6Class(
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
-          if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, time := ms_to_datetime(time)]
-          }
-          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, update_time := ms_to_datetime(update_time)]
-          }
+          coerce_cols(dt, c("time", "update_time", "working_time"), ms_to_datetime)
           return(dt[])
         }
       ))
@@ -743,7 +732,7 @@ BinanceTrading <- R6::R6Class(
     #' - `iceberg_qty` (character): Iceberg quantity.
     #' - `is_working` (logical): Whether the order is on the order book.
     #' - `orig_quote_order_qty` (character): Original quote order quantity.
-    #' - `working_time` (numeric): Timestamp when the order started working.
+    #' - `working_time` (POSIXct): Time when the order started working.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
     #' - `time` (POSIXct): Order creation time converted from `time`.
     #' - `update_time` (POSIXct): Last update time converted from `updateTime`.
@@ -763,12 +752,7 @@ BinanceTrading <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, time := ms_to_datetime(time)]
-          }
-          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, update_time := ms_to_datetime(update_time)]
-          }
+          coerce_cols(dt, c("time", "update_time", "working_time"), ms_to_datetime)
           return(dt[])
         }
       ))
@@ -867,7 +851,7 @@ BinanceTrading <- R6::R6Class(
     #' - `iceberg_qty` (character): Iceberg quantity.
     #' - `is_working` (logical): Whether the order is on the order book.
     #' - `orig_quote_order_qty` (character): Original quote order quantity.
-    #' - `working_time` (numeric): Timestamp when the order started working.
+    #' - `working_time` (POSIXct): Time when the order started working.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
     #' - `time` (POSIXct): Order creation time converted from `time`.
     #' - `update_time` (POSIXct): Last update time converted from `updateTime`.
@@ -901,12 +885,7 @@ BinanceTrading <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, time := ms_to_datetime(time)]
-          }
-          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, update_time := ms_to_datetime(update_time)]
-          }
+          coerce_cols(dt, c("time", "update_time", "working_time"), ms_to_datetime)
           return(dt[])
         }
       ))

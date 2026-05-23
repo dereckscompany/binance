@@ -1,7 +1,7 @@
 Package: binance
 Type: Package
 Title: API Wrapper to Binance Cryptocurrency Exchange
-Version: 0.1.0
+Version: 0.2.1
 URL: https://dereckscompany.github.io/binance/
 BugReports: https://github.com/dereckscompany/binance/issues
 Authors@R:
@@ -17,7 +17,7 @@ Description: R API wrapper to the Binance cryptocurrency exchange supporting
     margin data, sub-accounts, Simple Earn, and USD-M futures (market data and
     trading). Includes bulk kline backfill with CSV resume support and timestamp
     conversion utilities.
-License: MIT + file LICENSE
+License: MIT
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr

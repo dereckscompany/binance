@@ -40,6 +40,10 @@ test_that("add_order returns order data.table with correct columns", {
   # transact_time should be converted to POSIXct in-place
   expect_true("transact_time" %in% names(dt))
   expect_s3_class(dt$transact_time, "POSIXct")
+
+  # working_time should also be POSIXct (regression — was numeric ms in 0.1.0).
+  expect_true("working_time" %in% names(dt))
+  expect_s3_class(dt$working_time, "POSIXct")
 })
 
 test_that("add_order expands fills to long format when present", {
@@ -273,6 +277,10 @@ test_that("get_order returns order with datetime columns", {
   # update_time should be converted to POSIXct in-place
   expect_true("update_time" %in% names(dt))
   expect_s3_class(dt$update_time, "POSIXct")
+
+  # working_time should be POSIXct (regression — was numeric ms in 0.1.0).
+  expect_true("working_time" %in% names(dt))
+  expect_s3_class(dt$working_time, "POSIXct")
 })
 
 test_that("get_order requires orderId or origClientOrderId", {
@@ -293,6 +301,9 @@ test_that("get_open_orders returns data.table with time", {
   expect_equal(nrow(dt), 1L)
   expect_equal(dt$status, "NEW")
   expect_true("time" %in% names(dt))
+  # working_time should be POSIXct (regression — was numeric ms in 0.1.0).
+  expect_true("working_time" %in% names(dt))
+  expect_s3_class(dt$working_time, "POSIXct")
 })
 
 test_that("get_open_orders returns empty data.table when no orders", {
@@ -314,6 +325,9 @@ test_that("get_all_orders returns data.table with datetime columns", {
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   expect_true("time" %in% names(dt))
+  # working_time should be POSIXct (regression — was numeric ms in 0.1.0).
+  expect_true("working_time" %in% names(dt))
+  expect_s3_class(dt$working_time, "POSIXct")
 })
 
 test_that("get_all_orders passes query parameters", {

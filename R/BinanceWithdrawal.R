@@ -249,7 +249,7 @@ BinanceWithdrawal <- R6::R6Class(
     #' - `status` (integer): Withdrawal status code (0-6).
     #' - `address` (character): Destination address.
     #' - `tx_id` (character): On-chain transaction hash.
-    #' - `apply_time` (character): Time the withdrawal was submitted (UTC string).
+    #' - `apply_time` (POSIXct): Time the withdrawal was submitted (parsed from the UTC string Binance returns).
     #' - `network` (character): Blockchain network used.
     #' - `transfer_type` (integer): 0=external, 1=internal.
     #' - `withdraw_order_id` (character): Client-side withdrawal ID.
@@ -257,7 +257,7 @@ BinanceWithdrawal <- R6::R6Class(
     #' - `confirm_no` (integer): Number of on-chain confirmations.
     #' - `wallet_type` (integer): 0=spot, 1=funding.
     #' - `tx_key` (character): Transaction key.
-    #' - `complete_time` (character): Completion time (UTC string).
+    #' - `complete_time` (POSIXct): Completion time (parsed from the UTC string Binance returns).
     #'
     #' @examples
     #' \dontrun{
@@ -301,6 +301,11 @@ BinanceWithdrawal <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
+          # `apply_time` and `complete_time` come back as UTC datetime
+          # strings rather than ms — `utc_string_to_datetime()` parses
+          # via `lubridate::ymd_hms()` and normalises Binance's "" (used
+          # for in-progress withdrawals) to NA so the parse doesn't warn.
+          coerce_cols(dt, c("apply_time", "complete_time"), utc_string_to_datetime)
           return(dt[])
         }
       ))

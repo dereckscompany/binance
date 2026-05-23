@@ -812,7 +812,7 @@ Verified: 2026-05-22
 \item \code{total_margin_balance} (character): Total margin balance.
 \item \code{total_wallet_balance} (character): Total wallet balance.
 \item \code{total_unrealized_profit} (character): Total unrealised PnL.
-\item \code{update_time} (numeric): Last update timestamp in ms.
+\item \code{update_time} (POSIXct): Last update time.
 \item \code{asset_asset} (character): Per-asset name.
 \item \code{asset_wallet_balance} (character): Per-asset wallet balance.
 \item \code{asset_margin_balance} (character): Per-asset margin balance.
@@ -973,7 +973,7 @@ Verified: 2026-05-22
 \item \code{email} (character): Sub-account email.
 \item \code{is_sub_user_enabled} (logical): Whether the sub-user is enabled.
 \item \code{is_user_active} (logical): Whether the user is active.
-\item \code{insert_time} (integer): Account insert timestamp.
+\item \code{insert_time} (POSIXct): Time the sub-account was inserted.
 \item \code{is_margin_enabled} (logical): Whether margin trading is enabled.
 \item \code{is_future_enabled} (logical): Whether futures trading is enabled.
 \item \code{mobile} (integer): Mobile verification status.

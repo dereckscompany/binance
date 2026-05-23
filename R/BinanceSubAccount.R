@@ -186,9 +186,7 @@ BinanceSubAccount <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(items)
-          if (nrow(dt) > 0 && "create_time" %in% names(dt)) {
-            dt[, create_time := ms_to_datetime(create_time)]
-          }
+          coerce_cols(dt, "create_time", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -547,9 +545,7 @@ BinanceSubAccount <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(items)
-          if (nrow(dt) > 0 && "create_time_stamp" %in% names(dt)) {
-            dt[, create_time_stamp := ms_to_datetime(create_time_stamp)]
-          }
+          coerce_cols(dt, "create_time_stamp", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -623,7 +619,7 @@ BinanceSubAccount <- R6::R6Class(
     #' - `total_margin_balance` (character): Total margin balance.
     #' - `total_wallet_balance` (character): Total wallet balance.
     #' - `total_unrealized_profit` (character): Total unrealised PnL.
-    #' - `update_time` (numeric): Last update timestamp in ms.
+    #' - `update_time` (POSIXct): Last update time.
     #' - `asset_asset` (character): Per-asset name.
     #' - `asset_wallet_balance` (character): Per-asset wallet balance.
     #' - `asset_margin_balance` (character): Per-asset margin balance.
@@ -663,6 +659,7 @@ BinanceSubAccount <- R6::R6Class(
             dt <- dt[rep(1L, nrow(assets_dt))]
             dt <- cbind(dt, assets_dt)
           }
+          coerce_cols(dt, "update_time", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -771,7 +768,7 @@ BinanceSubAccount <- R6::R6Class(
     #' - `email` (character): Sub-account email.
     #' - `is_sub_user_enabled` (logical): Whether the sub-user is enabled.
     #' - `is_user_active` (logical): Whether the user is active.
-    #' - `insert_time` (integer): Account insert timestamp.
+    #' - `insert_time` (POSIXct): Time the sub-account was inserted.
     #' - `is_margin_enabled` (logical): Whether margin trading is enabled.
     #' - `is_future_enabled` (logical): Whether futures trading is enabled.
     #' - `mobile` (integer): Mobile verification status.
@@ -793,7 +790,9 @@ BinanceSubAccount <- R6::R6Class(
           if (is.null(data) || length(data) == 0) {
             return(data.table::data.table()[])
           }
-          return(as_dt_list(data)[])
+          dt <- as_dt_list(data)
+          coerce_cols(dt, "insert_time", ms_to_datetime)
+          return(dt[])
         }
       ))
     }
