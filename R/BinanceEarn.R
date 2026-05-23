@@ -504,16 +504,12 @@ BinanceEarn <- R6::R6Class(
       destAccount = NULL,
       recvWindow = NULL
     ) {
-      amount_str <- NULL
-      if (!is.null(amount)) {
-        amount_str <- as.character(amount)
-      }
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/redeem",
         method = "POST",
         query = list(
           productId = productId,
-          amount = amount_str,
+          amount = if (!is.null(amount)) as.character(amount) else NULL,
           redeemAll = redeemAll,
           destAccount = destAccount,
           recvWindow = recvWindow
