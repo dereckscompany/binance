@@ -287,9 +287,7 @@ BinanceFutures <- R6::R6Class(
         body = body,
         .parser = function(data) {
           dt <- as_dt_row(data)
-          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, update_time := ms_to_datetime(update_time)]
-          }
+          coerce_cols(dt, "update_time", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -540,9 +538,7 @@ BinanceFutures <- R6::R6Class(
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
-          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, update_time := ms_to_datetime(update_time)]
-          }
+          coerce_cols(dt, "update_time", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -695,12 +691,7 @@ BinanceFutures <- R6::R6Class(
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
-          if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, time := ms_to_datetime(time)]
-          }
-          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, update_time := ms_to_datetime(update_time)]
-          }
+          coerce_cols(dt, c("time", "update_time"), ms_to_datetime)
           return(dt[])
         }
       ))
@@ -784,12 +775,7 @@ BinanceFutures <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, time := ms_to_datetime(time)]
-          }
-          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, update_time := ms_to_datetime(update_time)]
-          }
+          coerce_cols(dt, c("time", "update_time"), ms_to_datetime)
           return(dt[])
         }
       ))
@@ -891,12 +877,7 @@ BinanceFutures <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, time := ms_to_datetime(time)]
-          }
-          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, update_time := ms_to_datetime(update_time)]
-          }
+          coerce_cols(dt, c("time", "update_time"), ms_to_datetime)
           return(dt[])
         }
       ))
@@ -1125,9 +1106,7 @@ BinanceFutures <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, update_time := ms_to_datetime(update_time)]
-          }
+          coerce_cols(dt, "update_time", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -1206,9 +1185,7 @@ BinanceFutures <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, update_time := ms_to_datetime(update_time)]
-          }
+          coerce_cols(dt, "update_time", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -1511,9 +1488,7 @@ BinanceFutures <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, time := ms_to_datetime(time)]
-          }
+          coerce_cols(dt, "time", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -1617,9 +1592,7 @@ BinanceFutures <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, time := ms_to_datetime(time)]
-          }
+          coerce_cols(dt, "time", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -1751,9 +1724,7 @@ BinanceFutures <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, time := ms_to_datetime(time)]
-          }
+          coerce_cols(dt, "time", ms_to_datetime)
           return(dt[])
         }
       ))

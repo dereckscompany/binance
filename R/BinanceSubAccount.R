@@ -186,9 +186,7 @@ BinanceSubAccount <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(items)
-          if (nrow(dt) > 0 && "create_time" %in% names(dt)) {
-            dt[, create_time := ms_to_datetime(create_time)]
-          }
+          coerce_cols(dt, "create_time", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -547,9 +545,7 @@ BinanceSubAccount <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(items)
-          if (nrow(dt) > 0 && "create_time_stamp" %in% names(dt)) {
-            dt[, create_time_stamp := ms_to_datetime(create_time_stamp)]
-          }
+          coerce_cols(dt, "create_time_stamp", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -663,9 +659,7 @@ BinanceSubAccount <- R6::R6Class(
             dt <- dt[rep(1L, nrow(assets_dt))]
             dt <- cbind(dt, assets_dt)
           }
-          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, update_time := ms_to_datetime(update_time)]
-          }
+          coerce_cols(dt, "update_time", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -797,9 +791,7 @@ BinanceSubAccount <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "insert_time" %in% names(dt)) {
-            dt[, insert_time := ms_to_datetime(insert_time)]
-          }
+          coerce_cols(dt, "insert_time", ms_to_datetime)
           return(dt[])
         }
       ))

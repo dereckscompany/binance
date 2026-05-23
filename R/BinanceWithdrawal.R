@@ -302,18 +302,10 @@ BinanceWithdrawal <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           # `apply_time` and `complete_time` come back as UTC datetime
-          # strings (e.g. "2019-10-12 11:12:02") rather than ms — parse
-          # via `lubridate::ymd_hms()` so the column type matches the
-          # POSIXct convention everywhere else in the package. Binance
-          # returns `""` for pending withdrawals, which ymd_hms would
-          # warn on; replace those with `NA` first.
-          for (col in c("apply_time", "complete_time")) {
-            if (col %in% names(dt)) {
-              vals <- dt[[col]]
-              vals[!nzchar(vals)] <- NA_character_
-              dt[, (col) := lubridate::ymd_hms(vals, tz = "UTC")]
-            }
-          }
+          # strings rather than ms — `utc_string_to_datetime()` parses
+          # via `lubridate::ymd_hms()` and normalises Binance's "" (used
+          # for in-progress withdrawals) to NA so the parse doesn't warn.
+          coerce_cols(dt, c("apply_time", "complete_time"), utc_string_to_datetime)
           return(dt[])
         }
       ))

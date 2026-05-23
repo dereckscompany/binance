@@ -294,11 +294,7 @@ BinanceEarn <- R6::R6Class(
             return(r)
           })
           dt <- as_dt_list(rows)
-          for (col in c("detail_subscription_start_time", "detail_boost_end_time")) {
-            if (nrow(dt) > 0 && col %in% names(dt)) {
-              data.table::set(dt, j = col, value = ms_to_datetime(dt[[col]]))
-            }
-          }
+          coerce_cols(dt, c("detail_subscription_start_time", "detail_boost_end_time"), ms_to_datetime)
           return(dt[])
         }
       ))
@@ -702,9 +698,7 @@ BinanceEarn <- R6::R6Class(
             return(r)
           })
           dt <- as_dt_list(rows)
-          if (nrow(dt) > 0 && "subscription_start_time" %in% names(dt)) {
-            dt[, subscription_start_time := ms_to_datetime(subscription_start_time)]
-          }
+          coerce_cols(dt, "subscription_start_time", ms_to_datetime)
           return(dt[])
         }
       ))

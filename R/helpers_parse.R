@@ -176,6 +176,77 @@ ms_to_datetime <- function(ms) {
   return(lubridate::as_datetime(as.numeric(ms) / 1000))
 }
 
+#' Parse a Binance UTC Datetime String to POSIXct
+#'
+#' Handles fields the API returns as `"YYYY-MM-DD HH:MM:SS"` strings (so far
+#' just `apply_time` / `complete_time` on withdrawal history). Empty strings
+#' — used by Binance to signal "not set yet" on in-progress records — are
+#' normalised to `NA` before `lubridate::ymd_hms()` runs so we don't trip
+#' the upstream "All formats failed to parse" warning.
+#'
+#' @param x Character vector of UTC datetime strings.
+#' @return POSIXct vector in UTC.
+#'
+#' @importFrom lubridate ymd_hms
+#' @keywords internal
+#' @noRd
+utc_string_to_datetime <- function(x) {
+  if (is.null(x) || length(x) == 0L) {
+    return(lubridate::NA_POSIXct_)
+  }
+  x[!nzchar(x)] <- NA_character_
+  return(lubridate::ymd_hms(x, tz = "UTC"))
+}
+
+#' Apply a Function to Selected Columns of a data.table by Reference
+#'
+#' Walks `cols`; for each that exists in `dt`, replaces it in place with the
+#' result of `fn(dt[[col]])`. Columns that are not in `dt` are silently
+#' skipped — useful for endpoints whose payload sometimes omits optional
+#' fields (e.g. `working_time` on legacy orders). A zero-row `dt` short-
+#' circuits, so the caller can pipe through this without a separate
+#' `nrow(dt) > 0` guard.
+#'
+#' Replaces the repeated boilerplate of:
+#'
+#' ```r
+#' if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
+#'   dt[, transact_time := ms_to_datetime(transact_time)]
+#' }
+#' if (nrow(dt) > 0 && "working_time" %in% names(dt)) {
+#'   dt[, working_time := ms_to_datetime(working_time)]
+#' }
+#' ```
+#'
+#' with:
+#'
+#' ```r
+#' coerce_cols(dt, c("transact_time", "working_time"), ms_to_datetime)
+#' ```
+#'
+#' Modifies `dt` by reference via `data.table::set()`; returns `dt`
+#' invisibly so the call can be the last line of a parser.
+#'
+#' @param dt A [data.table::data.table].
+#' @param cols Character; candidate column names to convert.
+#' @param fn Function; takes a column vector, returns the coerced vector.
+#'
+#' @return `dt`, modified by reference and returned invisibly.
+#'
+#' @keywords internal
+#' @noRd
+coerce_cols <- function(dt, cols, fn) {
+  if (nrow(dt) == 0L) {
+    return(invisible(dt))
+  }
+  for (col in cols) {
+    if (col %in% names(dt)) {
+      data.table::set(dt, j = col, value = fn(dt[[col]]))
+    }
+  }
+  return(invisible(dt))
+}
+
 #' Process Orderbook Data into a data.table
 #'
 #' Transforms the bids/asks arrays from a Binance orderbook response into a
@@ -250,11 +321,7 @@ parse_paginated <- function(data, time_cols = character(0)) {
     return(data.table::data.table()[])
   }
   dt <- as_dt_list(rows)
-  for (col in time_cols) {
-    if (nrow(dt) > 0 && col %in% names(dt)) {
-      data.table::set(dt, j = col, value = ms_to_datetime(dt[[col]]))
-    }
-  }
+  coerce_cols(dt, time_cols, ms_to_datetime)
   return(dt[])
 }
 
