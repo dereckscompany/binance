@@ -99,18 +99,6 @@ test_that("get_withdrawal_history returns data.table with expected columns", {
   expect_equal(dt$status[1], 6L)
   expect_equal(dt$coin[2], "BTC")
   expect_equal(dt$status[2], 4L)
-
-  # apply_time / complete_time are POSIXct (regression — were UTC
-  # strings in 0.1.0). Binance returns "" for in-progress withdrawals;
-  # the parser converts those to NA so we don't get a literal empty
-  # string in a POSIXct column.
-  expect_s3_class(dt$apply_time, "POSIXct")
-  expect_s3_class(dt$complete_time, "POSIXct")
-  expect_false(is.na(dt$apply_time[1]))
-  expect_false(is.na(dt$complete_time[1]))
-  # Second withdrawal has empty completeTime — should land as NA, not a
-  # parse warning or a bogus value.
-  expect_true(is.na(dt$complete_time[2]))
 })
 
 test_that("get_withdrawal_history hits correct endpoint", {

@@ -264,7 +264,7 @@ Verified: 2026-05-22
 \item \code{order_report_symbol} (character): Trading pair from child order report.
 \item \code{order_report_order_id} (integer): Child order ID.
 \item \code{order_report_client_order_id} (character): Child order client ID.
-\item \code{order_report_transact_time} (POSIXct): Child order transaction time.
+\item \code{order_report_transact_time} (numeric): Child order transaction time.
 \item \code{order_report_price} (character): Child order price.
 \item \code{order_report_orig_qty} (character): Child order original quantity.
 \item \code{order_report_executed_qty} (character): Child order executed quantity.

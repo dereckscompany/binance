@@ -124,7 +124,7 @@ BinanceAccount <- R6::R6Class(
     #' - `brokered` (logical): Whether this is a brokered account.
     #' - `require_self_trade_prevention` (logical): Whether STP is required.
     #' - `prevent_sor` (logical): Whether smart order routing is prevented.
-    #' - `update_time` (POSIXct): Last account update time.
+    #' - `update_time` (numeric): Last account update timestamp in milliseconds.
     #' - `account_type` (character): Account type (e.g., `"SPOT"`).
     #' - `permissions` (character): `;`-separated account permissions
     #'   (e.g., `"SPOT;MARGIN"`). Recover the vector with
@@ -160,11 +160,7 @@ BinanceAccount <- R6::R6Class(
           # matches the cross-package convention and keeps the account
           # info shape stable at exactly one row (the README's contract).
           data <- collapse_string_array_fields(data, "permissions")
-          dt <- as_dt_row(data)
-          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, update_time := ms_to_datetime(update_time)]
-          }
-          return(dt[])
+          return(as_dt_row(data)[])
         }
       ))
     },

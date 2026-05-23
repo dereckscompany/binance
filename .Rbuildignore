@@ -14,6 +14,7 @@ research/
 ^BUILD\.sh$
 ^CONTRIBUTING\.md$
 ^DEV\.md$
+^LICENSE\.md$
 ^pkgdown/
 ^run-tests\.R$
 ^scripts/

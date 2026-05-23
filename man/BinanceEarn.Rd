@@ -310,7 +310,7 @@ product currently carries one.
 \item \code{hot} (logical): Whether the product is marked as popular.
 \item \code{min_purchase_amount} (character): Minimum subscription amount.
 \item \code{product_id} (character): Unique product identifier.
-\item \code{subscription_start_time} (POSIXct): Subscription start time.
+\item \code{subscription_start_time} (numeric): Subscription start timestamp in ms.
 \item \code{status} (character): Product status (e.g., \code{"PURCHASING"}).
 }
 }
@@ -428,14 +428,14 @@ renamed this from \code{apy} → \code{apr} on the live API; older docs
 that show \code{apy} are stale.
 \item \code{detail_status} (character): Product lifecycle state (e.g.
 \code{"CREATED"}, \code{"PURCHASING"}).
-\item \code{detail_subscription_start_time} (POSIXct): Subscription open
+\item \code{detail_subscription_start_time} (numeric): Subscription open
 timestamp in milliseconds.
 \item \code{detail_extra_reward_asset} (character): Additional reward
 asset, if the product carries a boost.
 \item \code{detail_extra_reward_apr} (character): Extra reward APR.
 \item \code{detail_boost_reward_asset} (character): Boost reward asset.
 \item \code{detail_boost_apr} (character): Boost APR.
-\item \code{detail_boost_end_time} (POSIXct): Boost end time.
+\item \code{detail_boost_end_time} (numeric): Boost end timestamp in ms.
 \item \code{quota_total_personal_quota} (character): Per-user maximum.
 \item \code{quota_minimum} (character): Per-user minimum.
 }
@@ -1030,7 +1030,7 @@ converter lowers it to \code{apy} in the data.table.
 \item \code{project_id} (character): Locked project identifier.
 \item \code{asset} (character): Locked asset symbol.
 \item \code{amount} (character): Locked amount.
-\item \code{purchase_time} (POSIXct): Subscription time.
+\item \code{purchase_time} (numeric): Subscription timestamp in ms.
 \item \code{duration} (character): Lock duration in days.
 \item \code{accrual_days} (character): Days interest has accrued.
 \item \code{reward_asset} (character): Earned asset symbol.
@@ -1045,17 +1045,17 @@ distributed at maturity.
 \item \code{boost_apr} (character): Boost APR.
 \item \code{total_boost_reward_amt} (character): Total boost reward earned.
 \item \code{next_pay} (character): Next estimated reward payment.
-\item \code{next_pay_date} (POSIXct): Next reward payment time.
+\item \code{next_pay_date} (numeric): Next reward payment timestamp (ms).
 \item \code{pay_period} (character): Payment cycle in days.
 \item \code{redeem_amount_early} (character): Amount available for early
 redemption.
-\item \code{rewards_end_date} (POSIXct): Rewards accrual end time.
-\item \code{deliver_date} (POSIXct): Redemption arrival time.
+\item \code{rewards_end_date} (numeric): Rewards accrual end timestamp (ms).
+\item \code{deliver_date} (numeric): Redemption arrival timestamp (ms).
 \item \code{redeem_period} (character): Redemption interval in days.
 \item \code{redeeming_amt} (character): Amount currently being redeemed.
 \item \code{redeem_to} (character): Destination on redemption
 (\code{"FLEXIBLE"} or \code{"SPOT"}).
-\item \code{partial_amt_deliver_date} (POSIXct): Arrival time of partial
+\item \code{partial_amt_deliver_date} (numeric): Arrival time of partial
 redemption.
 \item \code{can_redeem_early} (logical): Whether early redemption is allowed.
 \item \code{can_fast_redemption} (logical): Whether fast redemption is allowed.
@@ -1421,7 +1421,7 @@ Verified: 2026-05-22
       "time": 1661493146000,
       "positionId": "12345",
       "redeemId": 40610,
-      "deliverDate": 1664085146000,
+      "deliverDate": "1664085146000",
       "status": "PAID"
     \}
   ]
@@ -1470,7 +1470,7 @@ Verified: 2026-05-22
 \item \code{time} (POSIXct): Redemption time.
 \item \code{position_id} (character): Position identifier.
 \item \code{redeem_id} (integer): Redemption identifier.
-\item \code{deliver_date} (POSIXct): Expected delivery time.
+\item \code{deliver_date} (character): Expected delivery date.
 \item \code{status} (character): Redemption status.
 }
 }

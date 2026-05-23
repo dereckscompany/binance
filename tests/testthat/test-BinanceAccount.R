@@ -83,16 +83,6 @@ test_that("get_account_info does not include balances", {
   expect_false("asset" %in% names(info))
 })
 
-test_that("get_account_info converts update_time to POSIXct (regression)", {
-  # Was numeric ms in 0.1.0 despite the cross-package POSIXct convention.
-  resp <- mock_binance_response(data = mock_account_data())
-  httr2::local_mocked_responses(function(req) resp)
-
-  info <- new_account()$get_account_info()
-  expect_true("update_time" %in% names(info))
-  expect_s3_class(info$update_time, "POSIXct")
-})
-
 # -- get_balances --
 
 test_that("get_balances returns data.table with expected columns", {

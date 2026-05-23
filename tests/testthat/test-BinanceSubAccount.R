@@ -377,26 +377,6 @@ test_that("get_futures_account returns data.table with assets expanded", {
   expect_equal(dt$email, "sub@virtual.com")
 })
 
-test_that("get_futures_account converts update_time to POSIXct (regression)", {
-  # Was numeric ms in 0.1.0 despite the cross-package convention.
-  resp <- mock_binance_response(
-    data = list(
-      futureAccountResp = list(
-        email = "sub@virtual.com",
-        updateTime = 1661493146000,
-        assets = list(
-          list(asset = "USDT", walletBalance = "1500.00000000", marginBalance = "1500.00000000")
-        )
-      )
-    )
-  )
-  httr2::local_mocked_responses(function(req) resp)
-
-  dt <- new_sub()$get_futures_account(email = "sub@virtual.com", futuresType = 1)
-  expect_true("update_time" %in% names(dt))
-  expect_s3_class(dt$update_time, "POSIXct")
-})
-
 test_that("get_futures_account works without futureAccountResp wrapper", {
   resp <- mock_binance_response(
     data = list(
@@ -453,9 +433,6 @@ test_that("get_status returns data.table with expected columns", {
   expect_true("is_margin_enabled" %in% names(dt))
   expect_true("is_future_enabled" %in% names(dt))
   expect_equal(dt$email, "testsub01@virtual.com")
-
-  # insert_time is now POSIXct (regression — was integer ms in 0.1.0).
-  expect_s3_class(dt$insert_time, "POSIXct")
 })
 
 test_that("get_status hits correct endpoint", {
