@@ -111,9 +111,7 @@ BinanceMarketData <- R6::R6Class(
         auth = FALSE,
         .parser = function(data) {
           dt <- as_dt_row(data)
-          if (nrow(dt) > 0 && "server_time" %in% names(dt)) {
-            dt[, server_time := ms_to_datetime(server_time)]
-          }
+          coerce_cols(dt, "server_time", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -663,13 +661,7 @@ BinanceMarketData <- R6::R6Class(
         auth = FALSE,
         .parser = function(data) {
           dt <- as_dt_row(data)
-          if (nrow(dt) > 0) {
-            for (col in c("open_time", "close_time")) {
-              if (col %in% names(dt)) {
-                dt[, (col) := ms_to_datetime(get(col))]
-              }
-            }
-          }
+          coerce_cols(dt, c("open_time", "close_time"), ms_to_datetime)
           return(dt[])
         }
       ))
@@ -702,13 +694,7 @@ BinanceMarketData <- R6::R6Class(
         auth = FALSE,
         .parser = function(data) {
           dt <- as_dt_list(data)
-          if (nrow(dt) > 0) {
-            for (col in c("open_time", "close_time")) {
-              if (col %in% names(dt)) {
-                dt[, (col) := ms_to_datetime(get(col))]
-              }
-            }
-          }
+          coerce_cols(dt, c("open_time", "close_time"), ms_to_datetime)
           return(dt[])
         }
       ))
@@ -757,9 +743,7 @@ BinanceMarketData <- R6::R6Class(
         auth = FALSE,
         .parser = function(data) {
           dt <- as_dt_row(data)
-          if (nrow(dt) > 0 && "close_time" %in% names(dt)) {
-            dt[, close_time := ms_to_datetime(close_time)]
-          }
+          coerce_cols(dt, "close_time", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -881,9 +865,7 @@ BinanceMarketData <- R6::R6Class(
         auth = FALSE,
         .parser = function(data) {
           dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, time := ms_to_datetime(time)]
-          }
+          coerce_cols(dt, "time", ms_to_datetime)
           return(dt[])
         }
       ))

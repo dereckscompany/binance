@@ -161,9 +161,7 @@ BinanceAccount <- R6::R6Class(
           # info shape stable at exactly one row (the README's contract).
           data <- collapse_string_array_fields(data, "permissions")
           dt <- as_dt_row(data)
-          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, update_time := ms_to_datetime(update_time)]
-          }
+          coerce_cols(dt, "update_time", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -337,9 +335,7 @@ BinanceAccount <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, time := ms_to_datetime(time)]
-          }
+          coerce_cols(dt, "time", ms_to_datetime)
           return(dt[])
         }
       ))

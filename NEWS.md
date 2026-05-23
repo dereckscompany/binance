@@ -1,3 +1,28 @@
+# binance 0.2.1
+
+## Refactor
+
+* **New internal `coerce_cols(dt, cols, fn)` helper** in `R/helpers_parse.R`.
+  Replaces the repeated
+  `if (nrow(dt) > 0 && "X" %in% names(dt)) { dt[, X := fn(X)] }`
+  boilerplate that appeared 67 times across 13 R6 method files. Per-
+  column conversion now reads as
+  `coerce_cols(dt, c("transact_time", "working_time"), ms_to_datetime)`.
+  Modifies `dt` by reference via `data.table::set()`; columns not in
+  `dt` are silently skipped; empty `dt` short-circuits. Converter-
+  agnostic — passes any `fn(vec) → vec` function.
+
+* **New internal `utc_string_to_datetime(x)`** alongside `ms_to_datetime`.
+  Parses Binance's UTC datetime strings (`"YYYY-MM-DD HH:MM:SS"`) via
+  `lubridate::ymd_hms()` and normalises empty strings — Binance's
+  "not set yet" signal on in-progress withdrawals — to `NA` so the
+  parse doesn't warn. Used by `BinanceWithdrawal::get_withdrawal_history`.
+
+* **`parse_paginated()` now delegates** its `time_cols` loop to
+  `coerce_cols()` — one place to maintain the conversion contract.
+
+No behaviour change. Refactor only.
+
 # binance 0.2.0
 
 ## Timestamp fields are now POSIXct (breaking)

@@ -215,12 +215,7 @@ BinanceTrading <- R6::R6Class(
           fills <- data$fills
           data$fills <- NULL
           dt <- as_dt_row(data)
-          if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
-            dt[, transact_time := ms_to_datetime(transact_time)]
-          }
-          if (nrow(dt) > 0 && "working_time" %in% names(dt)) {
-            dt[, working_time := ms_to_datetime(working_time)]
-          }
+          coerce_cols(dt, c("transact_time", "working_time"), ms_to_datetime)
           # Expand fills to long format: one row per fill with parent
           # fields repeated, plus a 1-indexed `fill_index`. To keep the
           # returned schema stable across orders with and without fills,
@@ -456,9 +451,7 @@ BinanceTrading <- R6::R6Class(
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
-          if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
-            dt[, transact_time := ms_to_datetime(transact_time)]
-          }
+          coerce_cols(dt, "transact_time", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -568,9 +561,7 @@ BinanceTrading <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
-            dt[, transact_time := ms_to_datetime(transact_time)]
-          }
+          coerce_cols(dt, "transact_time", ms_to_datetime)
           return(dt[])
         }
       ))
@@ -669,15 +660,7 @@ BinanceTrading <- R6::R6Class(
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
-          if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, time := ms_to_datetime(time)]
-          }
-          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, update_time := ms_to_datetime(update_time)]
-          }
-          if (nrow(dt) > 0 && "working_time" %in% names(dt)) {
-            dt[, working_time := ms_to_datetime(working_time)]
-          }
+          coerce_cols(dt, c("time", "update_time", "working_time"), ms_to_datetime)
           return(dt[])
         }
       ))
@@ -769,15 +752,7 @@ BinanceTrading <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, time := ms_to_datetime(time)]
-          }
-          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, update_time := ms_to_datetime(update_time)]
-          }
-          if (nrow(dt) > 0 && "working_time" %in% names(dt)) {
-            dt[, working_time := ms_to_datetime(working_time)]
-          }
+          coerce_cols(dt, c("time", "update_time", "working_time"), ms_to_datetime)
           return(dt[])
         }
       ))
@@ -910,15 +885,7 @@ BinanceTrading <- R6::R6Class(
             return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
-          if (nrow(dt) > 0 && "time" %in% names(dt)) {
-            dt[, time := ms_to_datetime(time)]
-          }
-          if (nrow(dt) > 0 && "update_time" %in% names(dt)) {
-            dt[, update_time := ms_to_datetime(update_time)]
-          }
-          if (nrow(dt) > 0 && "working_time" %in% names(dt)) {
-            dt[, working_time := ms_to_datetime(working_time)]
-          }
+          coerce_cols(dt, c("time", "update_time", "working_time"), ms_to_datetime)
           return(dt[])
         }
       ))
