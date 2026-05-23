@@ -21,16 +21,14 @@ the following shape treatments — no data is dropped, only reshaped:
 - **C — Wide prefix** for fixed-schema nested objects
   (`commissionRates_*`, Earn `detail_*` / `quota_*`, flattened
   `filters` from `exchangeInfo`).
-- **D — Re-route to a sibling method** for heterogeneous collections
-  that would otherwise force a Cartesian join —
-  `BinanceFutures::get_account` re-routes `positions` to
-  `get_positions()`; `get_account_info` re-routes `balances` to
-  `get_balances()`. Same data, right shape.
-- **D′ — Ride along as an attribute** for exchange-wide metadata that
-  doesn't fit a per-entity row — `get_exchange_info()` (spot +
-  futures) attaches `timezone`, `server_time`, `rate_limits`,
-  `exchange_filters`, and the variant-specific extras (`sors` for
-  spot, `futures_type` + `assets` for futures) via `attr(dt, ...)`.
+- **D — Re-route to a sibling method** for collections that don't fit
+  the per-entity row of the calling endpoint. `BinanceFutures::get_account`
+  re-routes `positions` to `get_positions()`; `get_account_info`
+  re-routes `balances` to `get_balances()`; `get_exchange_info()`
+  (spot + futures) re-routes the exchange-wide `rateLimits`,
+  `exchangeFilters`, and (futures only) `assets` blocks to dedicated
+  sibling methods. Same data, right shape — every method returns one
+  `data.table`.
 - **E — JSON string** for dynamic-key or array-of-array objects where
   `;`-collapse would erase semantic grouping — spot `exchangeInfo`
   `permission_sets`, Earn `tier_annual_percentage_rate`. Recover via
@@ -85,6 +83,13 @@ rows).
 
 ## New features
 
+* **`BinanceMarketData::get_rate_limits()` and
+  `get_exchange_filters()`; `BinanceFuturesData::get_rate_limits()`,
+  `get_exchange_filters()`, and `get_futures_assets()`** — sibling
+  methods that surface the exchange-wide blocks returned alongside
+  the per-symbol rows in `/exchangeInfo`. Previously these blocks
+  were silently dropped by the per-symbol parser.
+
 * **`BinanceMarketData::get_all_24hr_stats()`** — fetches 24hr stats
   for every symbol on the exchange in one call.
 
@@ -104,12 +109,19 @@ rows).
 * **`get_exchange_info()` (spot + futures) no longer silently drops
   exchange-wide metadata or rarely-used filter types.** Two leaks
   fixed in one go:
-  - Top-level `timezone`, `serverTime`, `rateLimits`,
-    `exchangeFilters`, and (spot only) `sors` / (futures only)
-    `futuresType` + `assets` are now attached as attributes on the
-    returned `data.table` — access with `attr(dt, "rate_limits")`,
-    `attr(dt, "server_time")`, etc. The parser used to read only
-    `data$symbols` and silently discard the rest.
+  - Top-level `rateLimits`, `exchangeFilters`, and (futures only)
+    `assets` are now exposed as sibling methods —
+    `BinanceMarketData$get_rate_limits()`,
+    `BinanceMarketData$get_exchange_filters()`,
+    `BinanceFuturesData$get_rate_limits()`,
+    `BinanceFuturesData$get_exchange_filters()`,
+    `BinanceFuturesData$get_futures_assets()`. Each returns one
+    `data.table`, same shape policy as `get_balances()` /
+    `get_account_info()`. (Spot `sors` and the constant scalars
+    `timezone` / `serverTime` / `futuresType` were not exposed
+    separately: `serverTime` already has the long-standing
+    `get_server_time()` method; `timezone` is always `"UTC"`;
+    `futuresType` is always `"U_M"` for that endpoint.)
   - The full per-symbol `filters` array is now preserved as a
     JSON-encoded `filters_raw` column. The curated `lot_*` / `price_*`
     / `min_notional` columns are unchanged, but filter types we don't

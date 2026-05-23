@@ -88,10 +88,13 @@ attribute on the returned `data.table`.
   full per-symbol `filters` array is preserved as a JSON-encoded
   `filters_raw` column alongside the curated `lot_*` / `price_*` /
   `min_notional` columns (recover with
-  `jsonlite::fromJSON(dt$filters_raw[1])`). Exchange-wide metadata
-  (`timezone`, `server_time`, `rate_limits`, `exchange_filters`, and the
-  variant-specific extras — `sors` for spot, `futures_type` + `assets`
-  for futures) is attached as attributes: `attr(dt, "rate_limits")` etc.
+  `jsonlite::fromJSON(dt$filters_raw[1])`). Exchange-wide blocks (rate
+  limits, exchange-wide filter rules, and on futures the margin-asset
+  config) are exposed via sibling methods on the same class:
+  `get_rate_limits()`, `get_exchange_filters()`, and (futures only)
+  `get_futures_assets()`. `serverTime` is the long-standing
+  `get_server_time()`. The constants (`timezone = "UTC"`,
+  `futuresType = "U_M"`) are not re-exposed.
 - The OCO endpoints (`add_oco_order()`, `cancel_oco_order()`) expand the
   richer `orderReports` payload; the thinner `orders` duplicate is a
   strict subset of the same data and so is omitted.

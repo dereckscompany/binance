@@ -30,6 +30,8 @@
 #' |--------|----------|------|
 #' | get_server_time | GET /api/v3/time | No |
 #' | get_exchange_info | GET /api/v3/exchangeInfo | No |
+#' | get_rate_limits | GET /api/v3/exchangeInfo | No |
+#' | get_exchange_filters | GET /api/v3/exchangeInfo | No |
 #' | get_ticker | GET /api/v3/ticker/price | No |
 #' | get_all_tickers | GET /api/v3/ticker/price | No |
 #' | get_book_ticker | GET /api/v3/ticker/bookTicker | No |
@@ -231,17 +233,12 @@ BinanceMarketData <- R6::R6Class(
     #'   - `allowed_self_trade_prevention_modes` (character): Semicolon-separated
     #'     allowed STP modes.
     #'
-    #' The returned `data.table` also carries exchange-wide metadata as
-    #' attributes (none of these fit on a per-symbol row, so they are
-    #' attached rather than discarded). Access with `attr(dt, "...")`:
-    #'   - `timezone` (character): Exchange timezone, e.g. `"UTC"`.
-    #'   - `server_time` (POSIXct): Server clock at response time.
-    #'   - `rate_limits` (`data.table`): One row per rate-limit rule
-    #'     (`rateLimitType`, `interval`, `intervalNum`, `limit`).
-    #'   - `exchange_filters` (`data.table`): Exchange-wide filter rules
-    #'     (usually empty for spot).
-    #'   - `sors` (`data.table`): Smart Order Routing configuration (one
-    #'     row per SOR-enabled base asset; usually empty if SOR is off).
+    #' Exchange-wide metadata returned by the same endpoint
+    #' (`rateLimits`, `exchangeFilters`, `sors`) is exposed via sibling
+    #' methods — see [`get_rate_limits()`][BinanceMarketData] and
+    #' [`get_exchange_filters()`][BinanceMarketData]. The scalar
+    #' `serverTime` is available via the existing
+    #' [`get_server_time()`][BinanceMarketData].
     #'
     #' @examples
     #' \dontrun{
@@ -252,9 +249,9 @@ BinanceMarketData <- R6::R6Class(
     #' # Recover filter types not in curated columns
     #' jsonlite::fromJSON(info$filters_raw[1])
     #'
-    #' # Exchange-wide metadata
-    #' attr(info, "rate_limits")
-    #' attr(info, "server_time")
+    #' # Exchange-wide metadata via sibling methods
+    #' market$get_rate_limits()
+    #' market$get_exchange_filters()
     #' }
     get_exchange_info = function(symbol = NULL, symbols = NULL) {
       query <- list()
@@ -272,28 +269,6 @@ BinanceMarketData <- R6::R6Class(
           syms <- data$symbols
           if (is.null(syms) || length(syms) == 0) {
             return(data.table::data.table()[])
-          }
-
-          # Capture exchange-wide metadata. None of these fit on a
-          # per-symbol row, so they ride along as attributes on the
-          # returned data.table rather than being silently discarded.
-          # Access via `attr(dt, "rate_limits")` etc.
-          meta_timezone <- data$timezone
-          meta_server_time <- lubridate::NA_POSIXct_
-          if (!is.null(data$serverTime)) {
-            meta_server_time <- ms_to_datetime(data$serverTime)
-          }
-          meta_rate_limits <- data.table::data.table()
-          if (!is.null(data$rateLimits) && length(data$rateLimits) > 0) {
-            meta_rate_limits <- as_dt_list(data$rateLimits)
-          }
-          meta_exchange_filters <- data.table::data.table()
-          if (!is.null(data$exchangeFilters) && length(data$exchangeFilters) > 0) {
-            meta_exchange_filters <- as_dt_list(data$exchangeFilters)
-          }
-          meta_sors <- data.table::data.table()
-          if (!is.null(data$sors) && length(data$sors) > 0) {
-            meta_sors <- as_dt_list(data$sors)
           }
 
           # Helper to extract a specific filter field from the raw filters list
@@ -374,14 +349,94 @@ BinanceMarketData <- R6::R6Class(
             lapply(syms, as_dt_row),
             fill = TRUE
           )
-          # Attach exchange-wide metadata as attributes. setattr modifies
-          # in place (no copy).
-          data.table::setattr(dt, "timezone", meta_timezone)
-          data.table::setattr(dt, "server_time", meta_server_time)
-          data.table::setattr(dt, "rate_limits", meta_rate_limits)
-          data.table::setattr(dt, "exchange_filters", meta_exchange_filters)
-          data.table::setattr(dt, "sors", meta_sors)
           return(dt[])
+        }
+      ))
+    },
+
+    #' @description
+    #' Get Exchange Rate Limits
+    #'
+    #' Retrieves the exchange-wide API rate-limit rules (request weight
+    #' per minute, orders per second / per day, etc.). These rules apply
+    #' to every method that hits the API, not to any single symbol —
+    #' so they live on a dedicated sibling method rather than being
+    #' replicated on each row of `get_exchange_info()`.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/api/v3/exchangeInfo`
+    #' (returns the same payload as [`get_exchange_info()`][BinanceMarketData];
+    #' this method extracts the `rateLimits` slice.)
+    #'
+    #' ### Official Documentation
+    #' [Binance Exchange Info](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints#exchange-information)
+    #' Verified: 2026-05-22
+    #'
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
+    #'   with one row per rate-limit rule. Columns:
+    #'   - `rate_limit_type` (character): `"REQUEST_WEIGHT"`, `"ORDERS"`,
+    #'     `"RAW_REQUESTS"`.
+    #'   - `interval` (character): `"SECOND"`, `"MINUTE"`, `"DAY"`.
+    #'   - `interval_num` (integer): Multiplier for `interval`.
+    #'   - `limit` (integer): Maximum requests / orders permitted in the
+    #'     interval.
+    #'
+    #'   Empty `data.table` if Binance returned no `rateLimits` block.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' market <- BinanceMarketData$new()
+    #' market$get_rate_limits()
+    #' }
+    get_rate_limits = function() {
+      return(private$.request(
+        endpoint = "/api/v3/exchangeInfo",
+        auth = FALSE,
+        .parser = function(data) {
+          rl <- data$rateLimits
+          if (is.null(rl) || length(rl) == 0L) {
+            return(data.table::data.table()[])
+          }
+          return(as_dt_list(rl)[])
+        }
+      ))
+    },
+
+    #' @description
+    #' Get Exchange-Wide Filters
+    #'
+    #' Retrieves the exchange-wide filter rules (e.g. `EXCHANGE_MAX_NUM_ORDERS`,
+    #' `EXCHANGE_MAX_NUM_ALGO_ORDERS`). These constrain the user across all
+    #' symbols rather than per-symbol, so they're a sibling method to
+    #' `get_exchange_info()`.
+    #'
+    #' Almost always empty in practice — Binance reserves the field
+    #' for future use but currently leaves it as `[]` on most accounts.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/api/v3/exchangeInfo`
+    #' (returns the same payload as [`get_exchange_info()`][BinanceMarketData];
+    #' this method extracts the `exchangeFilters` slice.)
+    #'
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
+    #'   with one row per exchange-wide filter rule. Empty when Binance
+    #'   returns no `exchangeFilters` (the common case).
+    #'
+    #' @examples
+    #' \dontrun{
+    #' market <- BinanceMarketData$new()
+    #' market$get_exchange_filters()
+    #' }
+    get_exchange_filters = function() {
+      return(private$.request(
+        endpoint = "/api/v3/exchangeInfo",
+        auth = FALSE,
+        .parser = function(data) {
+          ef <- data$exchangeFilters
+          if (is.null(ef) || length(ef) == 0L) {
+            return(data.table::data.table()[])
+          }
+          return(as_dt_list(ef)[])
         }
       ))
     },

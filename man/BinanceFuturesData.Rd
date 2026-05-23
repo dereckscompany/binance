@@ -43,6 +43,9 @@ The base URL defaults to \verb{https://fapi.binance.com} via \code{\link[=get_fu
 \subsection{Endpoints Covered}{\tabular{lll}{
    Method \tab Endpoint \tab Auth \cr
    get_exchange_info \tab GET /fapi/v1/exchangeInfo \tab No \cr
+   get_rate_limits \tab GET /fapi/v1/exchangeInfo \tab No \cr
+   get_exchange_filters \tab GET /fapi/v1/exchangeInfo \tab No \cr
+   get_futures_assets \tab GET /fapi/v1/exchangeInfo \tab No \cr
    get_klines \tab GET /fapi/v1/klines \tab No \cr
    get_mark_price \tab GET /fapi/v1/premiumIndex \tab No \cr
    get_funding_rate \tab GET /fapi/v1/fundingRate \tab No \cr
@@ -88,9 +91,36 @@ print(info[, .(symbol, contract_type, status, base_asset)])
 # Recover filter types not in curated columns
 jsonlite::fromJSON(info$filters_raw[1])
 
-# Exchange-wide metadata
-attr(info, "rate_limits")
-attr(info, "assets")
+# Exchange-wide metadata via sibling methods
+futures$get_rate_limits()
+futures$get_futures_assets()
+}
+
+## ------------------------------------------------
+## Method `BinanceFuturesData$get_rate_limits`
+## ------------------------------------------------
+
+\dontrun{
+futures <- BinanceFuturesData$new()
+futures$get_rate_limits()
+}
+
+## ------------------------------------------------
+## Method `BinanceFuturesData$get_exchange_filters`
+## ------------------------------------------------
+
+\dontrun{
+futures <- BinanceFuturesData$new()
+futures$get_exchange_filters()
+}
+
+## ------------------------------------------------
+## Method `BinanceFuturesData$get_futures_assets`
+## ------------------------------------------------
+
+\dontrun{
+futures <- BinanceFuturesData$new()
+futures$get_futures_assets()
 }
 
 ## ------------------------------------------------
@@ -222,6 +252,9 @@ print(klines)
 \itemize{
 \item \href{#method-BinanceFuturesData-new}{\code{BinanceFuturesData$new()}}
 \item \href{#method-BinanceFuturesData-get_exchange_info}{\code{BinanceFuturesData$get_exchange_info()}}
+\item \href{#method-BinanceFuturesData-get_rate_limits}{\code{BinanceFuturesData$get_rate_limits()}}
+\item \href{#method-BinanceFuturesData-get_exchange_filters}{\code{BinanceFuturesData$get_exchange_filters()}}
+\item \href{#method-BinanceFuturesData-get_futures_assets}{\code{BinanceFuturesData$get_futures_assets()}}
 \item \href{#method-BinanceFuturesData-get_klines}{\code{BinanceFuturesData$get_klines()}}
 \item \href{#method-BinanceFuturesData-get_mark_price}{\code{BinanceFuturesData$get_mark_price()}}
 \item \href{#method-BinanceFuturesData-get_funding_rate}{\code{BinanceFuturesData$get_funding_rate()}}
@@ -372,18 +405,10 @@ Recover with \code{jsonlite::fromJSON(dt$filters_raw[1])}. \code{NA} if
 Binance returned no filters for the symbol.
 }
 
-The returned \code{data.table} also carries exchange-wide metadata as
-attributes (none of these fit on a per-symbol row, so they are
-attached rather than discarded). Access with \code{attr(dt, "...")}:
-\itemize{
-\item \code{timezone} (character): Exchange timezone, e.g. \code{"UTC"}.
-\item \code{server_time} (POSIXct): Server clock at response time.
-\item \code{futures_type} (character): \code{"U_M"} (USDⓈ-M) for this endpoint.
-\item \code{rate_limits} (\code{data.table}): One row per rate-limit rule.
-\item \code{exchange_filters} (\code{data.table}): Exchange-wide filter rules.
-\item \code{assets} (\code{data.table}): Margin-asset metadata returned at the
-top level (one row per asset).
-}
+Exchange-wide metadata returned by the same endpoint is exposed
+via sibling methods: \code{get_rate_limits()}, \code{get_exchange_filters()},
+\code{get_futures_assets()}. Server time is available via
+\code{BinanceMarketData$get_server_time()}.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -395,9 +420,115 @@ print(info[, .(symbol, contract_type, status, base_asset)])
 # Recover filter types not in curated columns
 jsonlite::fromJSON(info$filters_raw[1])
 
-# Exchange-wide metadata
-attr(info, "rate_limits")
-attr(info, "assets")
+# Exchange-wide metadata via sibling methods
+futures$get_rate_limits()
+futures$get_futures_assets()
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BinanceFuturesData-get_rate_limits"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceFuturesData-get_rate_limits}{}}}
+\subsection{Method \code{get_rate_limits()}}{
+Get Futures Exchange Rate Limits
+
+Retrieves the USDⓈ-M futures API rate-limit rules. Same sibling
+pattern as \code{BinanceMarketData$get_rate_limits()}.
+\subsection{API Endpoint}{
+
+\verb{GET https://fapi.binance.com/fapi/v1/exchangeInfo}
+}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceFuturesData$get_rate_limits()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
+with one row per rate-limit rule. Columns: \code{rate_limit_type},
+\code{interval}, \code{interval_num}, \code{limit}. Empty \code{data.table} if
+Binance returned no \code{rateLimits} block.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+futures <- BinanceFuturesData$new()
+futures$get_rate_limits()
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BinanceFuturesData-get_exchange_filters"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceFuturesData-get_exchange_filters}{}}}
+\subsection{Method \code{get_exchange_filters()}}{
+Get Futures Exchange-Wide Filters
+
+Retrieves the exchange-wide filter rules. Almost always empty.
+Sibling to \code{get_exchange_info()}.
+\subsection{API Endpoint}{
+
+\verb{GET https://fapi.binance.com/fapi/v1/exchangeInfo}
+}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceFuturesData$get_exchange_filters()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
+with one row per exchange-wide filter rule. Empty when none.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+futures <- BinanceFuturesData$new()
+futures$get_exchange_filters()
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BinanceFuturesData-get_futures_assets"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceFuturesData-get_futures_assets}{}}}
+\subsection{Method \code{get_futures_assets()}}{
+Get Futures Margin Assets
+
+Retrieves the margin-asset configuration returned at the top
+level of futures \verb{/fapi/v1/exchangeInfo} (one row per asset
+usable as margin — USDT, BNFCR, etc.).
+\subsection{API Endpoint}{
+
+\verb{GET https://fapi.binance.com/fapi/v1/exchangeInfo}
+}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceFuturesData$get_futures_assets()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
+with one row per margin asset. Typical columns:
+\itemize{
+\item \code{asset} (character): Asset symbol (e.g., \code{"USDT"}).
+\item \code{margin_available} (logical): Whether the asset can be used as margin.
+\item \code{auto_asset_exchange} (character): Auto-exchange threshold.
+}
+
+Empty \code{data.table} if Binance returned no \code{assets} block.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+futures <- BinanceFuturesData$new()
+futures$get_futures_assets()
 }
 }
 \if{html}{\out{</div>}}

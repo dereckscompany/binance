@@ -41,6 +41,8 @@ All methods are public endpoints requiring no authentication.
    Method \tab Endpoint \tab Auth \cr
    get_server_time \tab GET /api/v3/time \tab No \cr
    get_exchange_info \tab GET /api/v3/exchangeInfo \tab No \cr
+   get_rate_limits \tab GET /api/v3/exchangeInfo \tab No \cr
+   get_exchange_filters \tab GET /api/v3/exchangeInfo \tab No \cr
    get_ticker \tab GET /api/v3/ticker/price \tab No \cr
    get_all_tickers \tab GET /api/v3/ticker/price \tab No \cr
    get_book_ticker \tab GET /api/v3/ticker/bookTicker \tab No \cr
@@ -94,9 +96,27 @@ print(info[, .(symbol, status, base_asset, quote_asset)])
 # Recover filter types not in curated columns
 jsonlite::fromJSON(info$filters_raw[1])
 
-# Exchange-wide metadata
-attr(info, "rate_limits")
-attr(info, "server_time")
+# Exchange-wide metadata via sibling methods
+market$get_rate_limits()
+market$get_exchange_filters()
+}
+
+## ------------------------------------------------
+## Method `BinanceMarketData$get_rate_limits`
+## ------------------------------------------------
+
+\dontrun{
+market <- BinanceMarketData$new()
+market$get_rate_limits()
+}
+
+## ------------------------------------------------
+## Method `BinanceMarketData$get_exchange_filters`
+## ------------------------------------------------
+
+\dontrun{
+market <- BinanceMarketData$new()
+market$get_exchange_filters()
 }
 
 ## ------------------------------------------------
@@ -204,6 +224,8 @@ all_klines <- market$get_klines(
 \itemize{
 \item \href{#method-BinanceMarketData-get_server_time}{\code{BinanceMarketData$get_server_time()}}
 \item \href{#method-BinanceMarketData-get_exchange_info}{\code{BinanceMarketData$get_exchange_info()}}
+\item \href{#method-BinanceMarketData-get_rate_limits}{\code{BinanceMarketData$get_rate_limits()}}
+\item \href{#method-BinanceMarketData-get_exchange_filters}{\code{BinanceMarketData$get_exchange_filters()}}
 \item \href{#method-BinanceMarketData-get_ticker}{\code{BinanceMarketData$get_ticker()}}
 \item \href{#method-BinanceMarketData-get_all_tickers}{\code{BinanceMarketData$get_all_tickers()}}
 \item \href{#method-BinanceMarketData-get_book_ticker}{\code{BinanceMarketData$get_book_ticker()}}
@@ -421,19 +443,12 @@ symbol omits the field.
 allowed STP modes.
 }
 
-The returned \code{data.table} also carries exchange-wide metadata as
-attributes (none of these fit on a per-symbol row, so they are
-attached rather than discarded). Access with \code{attr(dt, "...")}:
-\itemize{
-\item \code{timezone} (character): Exchange timezone, e.g. \code{"UTC"}.
-\item \code{server_time} (POSIXct): Server clock at response time.
-\item \code{rate_limits} (\code{data.table}): One row per rate-limit rule
-(\code{rateLimitType}, \code{interval}, \code{intervalNum}, \code{limit}).
-\item \code{exchange_filters} (\code{data.table}): Exchange-wide filter rules
-(usually empty for spot).
-\item \code{sors} (\code{data.table}): Smart Order Routing configuration (one
-row per SOR-enabled base asset; usually empty if SOR is off).
-}
+Exchange-wide metadata returned by the same endpoint
+(\code{rateLimits}, \code{exchangeFilters}, \code{sors}) is exposed via sibling
+methods — see \code{\link[=BinanceMarketData]{get_rate_limits()}} and
+\code{\link[=BinanceMarketData]{get_exchange_filters()}}. The scalar
+\code{serverTime} is available via the existing
+\code{\link[=BinanceMarketData]{get_server_time()}}.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -445,9 +460,102 @@ print(info[, .(symbol, status, base_asset, quote_asset)])
 # Recover filter types not in curated columns
 jsonlite::fromJSON(info$filters_raw[1])
 
-# Exchange-wide metadata
-attr(info, "rate_limits")
-attr(info, "server_time")
+# Exchange-wide metadata via sibling methods
+market$get_rate_limits()
+market$get_exchange_filters()
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BinanceMarketData-get_rate_limits"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceMarketData-get_rate_limits}{}}}
+\subsection{Method \code{get_rate_limits()}}{
+Get Exchange Rate Limits
+
+Retrieves the exchange-wide API rate-limit rules (request weight
+per minute, orders per second / per day, etc.). These rules apply
+to every method that hits the API, not to any single symbol —
+so they live on a dedicated sibling method rather than being
+replicated on each row of \code{get_exchange_info()}.
+\subsection{API Endpoint}{
+
+\verb{GET https://api.binance.com/api/v3/exchangeInfo}
+(returns the same payload as \code{\link[=BinanceMarketData]{get_exchange_info()}};
+this method extracts the \code{rateLimits} slice.)
+}
+
+\subsection{Official Documentation}{
+
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints#exchange-information}{Binance Exchange Info}
+Verified: 2026-05-22
+}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_rate_limits()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
+with one row per rate-limit rule. Columns:
+\itemize{
+\item \code{rate_limit_type} (character): \code{"REQUEST_WEIGHT"}, \code{"ORDERS"},
+\code{"RAW_REQUESTS"}.
+\item \code{interval} (character): \code{"SECOND"}, \code{"MINUTE"}, \code{"DAY"}.
+\item \code{interval_num} (integer): Multiplier for \code{interval}.
+\item \code{limit} (integer): Maximum requests / orders permitted in the
+interval.
+}
+
+Empty \code{data.table} if Binance returned no \code{rateLimits} block.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
+market$get_rate_limits()
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BinanceMarketData-get_exchange_filters"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceMarketData-get_exchange_filters}{}}}
+\subsection{Method \code{get_exchange_filters()}}{
+Get Exchange-Wide Filters
+
+Retrieves the exchange-wide filter rules (e.g. \code{EXCHANGE_MAX_NUM_ORDERS},
+\code{EXCHANGE_MAX_NUM_ALGO_ORDERS}). These constrain the user across all
+symbols rather than per-symbol, so they're a sibling method to
+\code{get_exchange_info()}.
+
+Almost always empty in practice — Binance reserves the field
+for future use but currently leaves it as \verb{[]} on most accounts.
+\subsection{API Endpoint}{
+
+\verb{GET https://api.binance.com/api/v3/exchangeInfo}
+(returns the same payload as \code{\link[=BinanceMarketData]{get_exchange_info()}};
+this method extracts the \code{exchangeFilters} slice.)
+}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_exchange_filters()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
+with one row per exchange-wide filter rule. Empty when Binance
+returns no \code{exchangeFilters} (the common case).
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
+market$get_exchange_filters()
 }
 }
 \if{html}{\out{</div>}}

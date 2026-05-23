@@ -32,6 +32,9 @@
 #' | Method | Endpoint | Auth |
 #' |--------|----------|------|
 #' | get_exchange_info | GET /fapi/v1/exchangeInfo | No |
+#' | get_rate_limits | GET /fapi/v1/exchangeInfo | No |
+#' | get_exchange_filters | GET /fapi/v1/exchangeInfo | No |
+#' | get_futures_assets | GET /fapi/v1/exchangeInfo | No |
 #' | get_klines | GET /fapi/v1/klines | No |
 #' | get_mark_price | GET /fapi/v1/premiumIndex | No |
 #' | get_funding_rate | GET /fapi/v1/fundingRate | No |
@@ -185,16 +188,10 @@ BinanceFuturesData <- R6::R6Class(
     #'     Recover with `jsonlite::fromJSON(dt$filters_raw[1])`. `NA` if
     #'     Binance returned no filters for the symbol.
     #'
-    #' The returned `data.table` also carries exchange-wide metadata as
-    #' attributes (none of these fit on a per-symbol row, so they are
-    #' attached rather than discarded). Access with `attr(dt, "...")`:
-    #'   - `timezone` (character): Exchange timezone, e.g. `"UTC"`.
-    #'   - `server_time` (POSIXct): Server clock at response time.
-    #'   - `futures_type` (character): `"U_M"` (USDⓈ-M) for this endpoint.
-    #'   - `rate_limits` (`data.table`): One row per rate-limit rule.
-    #'   - `exchange_filters` (`data.table`): Exchange-wide filter rules.
-    #'   - `assets` (`data.table`): Margin-asset metadata returned at the
-    #'     top level (one row per asset).
+    #' Exchange-wide metadata returned by the same endpoint is exposed
+    #' via sibling methods: `get_rate_limits()`, `get_exchange_filters()`,
+    #' `get_futures_assets()`. Server time is available via
+    #' `BinanceMarketData$get_server_time()`.
     #'
     #' @examples
     #' \dontrun{
@@ -205,9 +202,9 @@ BinanceFuturesData <- R6::R6Class(
     #' # Recover filter types not in curated columns
     #' jsonlite::fromJSON(info$filters_raw[1])
     #'
-    #' # Exchange-wide metadata
-    #' attr(info, "rate_limits")
-    #' attr(info, "assets")
+    #' # Exchange-wide metadata via sibling methods
+    #' futures$get_rate_limits()
+    #' futures$get_futures_assets()
     #' }
     get_exchange_info = function() {
       return(private$.request(
@@ -217,29 +214,6 @@ BinanceFuturesData <- R6::R6Class(
           syms <- data$symbols
           if (is.null(syms) || length(syms) == 0) {
             return(data.table::data.table()[])
-          }
-
-          # Capture exchange-wide metadata. None of these fit on a
-          # per-symbol row, so they ride along as attributes on the
-          # returned data.table rather than being silently discarded.
-          # Access via `attr(dt, "rate_limits")` etc.
-          meta_timezone <- data$timezone
-          meta_server_time <- lubridate::NA_POSIXct_
-          if (!is.null(data$serverTime)) {
-            meta_server_time <- ms_to_datetime(data$serverTime)
-          }
-          meta_futures_type <- data$futuresType
-          meta_rate_limits <- data.table::data.table()
-          if (!is.null(data$rateLimits) && length(data$rateLimits) > 0) {
-            meta_rate_limits <- as_dt_list(data$rateLimits)
-          }
-          meta_exchange_filters <- data.table::data.table()
-          if (!is.null(data$exchangeFilters) && length(data$exchangeFilters) > 0) {
-            meta_exchange_filters <- as_dt_list(data$exchangeFilters)
-          }
-          meta_assets <- data.table::data.table()
-          if (!is.null(data$assets) && length(data$assets) > 0) {
-            meta_assets <- as_dt_list(data$assets)
           }
 
           .extract_filter <- function(filters, filter_type, field) {
@@ -290,15 +264,108 @@ BinanceFuturesData <- R6::R6Class(
             lapply(syms, as_dt_row),
             fill = TRUE
           )
-          # Attach exchange-wide metadata as attributes. setattr modifies
-          # in place (no copy).
-          data.table::setattr(dt, "timezone", meta_timezone)
-          data.table::setattr(dt, "server_time", meta_server_time)
-          data.table::setattr(dt, "futures_type", meta_futures_type)
-          data.table::setattr(dt, "rate_limits", meta_rate_limits)
-          data.table::setattr(dt, "exchange_filters", meta_exchange_filters)
-          data.table::setattr(dt, "assets", meta_assets)
           return(dt[])
+        }
+      ))
+    },
+
+    #' @description
+    #' Get Futures Exchange Rate Limits
+    #'
+    #' Retrieves the USDⓈ-M futures API rate-limit rules. Same sibling
+    #' pattern as `BinanceMarketData$get_rate_limits()`.
+    #'
+    #' ### API Endpoint
+    #' `GET https://fapi.binance.com/fapi/v1/exchangeInfo`
+    #'
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
+    #'   with one row per rate-limit rule. Columns: `rate_limit_type`,
+    #'   `interval`, `interval_num`, `limit`. Empty `data.table` if
+    #'   Binance returned no `rateLimits` block.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' futures <- BinanceFuturesData$new()
+    #' futures$get_rate_limits()
+    #' }
+    get_rate_limits = function() {
+      return(private$.request(
+        endpoint = "/fapi/v1/exchangeInfo",
+        auth = FALSE,
+        .parser = function(data) {
+          rl <- data$rateLimits
+          if (is.null(rl) || length(rl) == 0L) {
+            return(data.table::data.table()[])
+          }
+          return(as_dt_list(rl)[])
+        }
+      ))
+    },
+
+    #' @description
+    #' Get Futures Exchange-Wide Filters
+    #'
+    #' Retrieves the exchange-wide filter rules. Almost always empty.
+    #' Sibling to `get_exchange_info()`.
+    #'
+    #' ### API Endpoint
+    #' `GET https://fapi.binance.com/fapi/v1/exchangeInfo`
+    #'
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
+    #'   with one row per exchange-wide filter rule. Empty when none.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' futures <- BinanceFuturesData$new()
+    #' futures$get_exchange_filters()
+    #' }
+    get_exchange_filters = function() {
+      return(private$.request(
+        endpoint = "/fapi/v1/exchangeInfo",
+        auth = FALSE,
+        .parser = function(data) {
+          ef <- data$exchangeFilters
+          if (is.null(ef) || length(ef) == 0L) {
+            return(data.table::data.table()[])
+          }
+          return(as_dt_list(ef)[])
+        }
+      ))
+    },
+
+    #' @description
+    #' Get Futures Margin Assets
+    #'
+    #' Retrieves the margin-asset configuration returned at the top
+    #' level of futures `/fapi/v1/exchangeInfo` (one row per asset
+    #' usable as margin — USDT, BNFCR, etc.).
+    #'
+    #' ### API Endpoint
+    #' `GET https://fapi.binance.com/fapi/v1/exchangeInfo`
+    #'
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
+    #'   with one row per margin asset. Typical columns:
+    #'   - `asset` (character): Asset symbol (e.g., `"USDT"`).
+    #'   - `margin_available` (logical): Whether the asset can be used as margin.
+    #'   - `auto_asset_exchange` (character): Auto-exchange threshold.
+    #'
+    #'   Empty `data.table` if Binance returned no `assets` block.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' futures <- BinanceFuturesData$new()
+    #' futures$get_futures_assets()
+    #' }
+    get_futures_assets = function() {
+      return(private$.request(
+        endpoint = "/fapi/v1/exchangeInfo",
+        auth = FALSE,
+        .parser = function(data) {
+          assets <- data$assets
+          if (is.null(assets) || length(assets) == 0L) {
+            return(data.table::data.table()[])
+          }
+          return(as_dt_list(assets)[])
         }
       ))
     },

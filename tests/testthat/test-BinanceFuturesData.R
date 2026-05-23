@@ -105,17 +105,41 @@ test_that("get_exchange_info preserves the full filters array in `filters_raw` (
   expect_equal(mls$stepSize, "0.001")
 })
 
-test_that("get_exchange_info attaches exchange-wide metadata as attributes", {
-  # Futures-specific top-level fields: timezone, serverTime,
-  # futuresType, rateLimits, exchangeFilters, assets. None fit on the
-  # per-symbol row; the parser used to silently discard them all.
+test_that("get_rate_limits (futures) returns one row per rate-limit rule", {
   data <- mock_futures_exchange_info_data()
-  data$futuresType <- "U_M"
   data$rateLimits <- list(
     list(rateLimitType = "REQUEST_WEIGHT", interval = "MINUTE", intervalNum = 1L, limit = 2400L),
     list(rateLimitType = "ORDERS", interval = "MINUTE", intervalNum = 1L, limit = 1200L)
   )
-  data$exchangeFilters <- list()
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures_data()$get_rate_limits()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 2L)
+  expect_setequal(dt$rate_limit_type, c("REQUEST_WEIGHT", "ORDERS"))
+})
+
+test_that("get_rate_limits (futures) returns empty data.table when omitted", {
+  resp <- mock_binance_response(data = mock_futures_exchange_info_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures_data()$get_rate_limits()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
+})
+
+test_that("get_exchange_filters (futures) returns empty when absent (common case)", {
+  resp <- mock_binance_response(data = mock_futures_exchange_info_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures_data()$get_exchange_filters()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
+})
+
+test_that("get_futures_assets returns one row per margin asset", {
+  data <- mock_futures_exchange_info_data()
   data$assets <- list(
     list(asset = "USDT", marginAvailable = TRUE, autoAssetExchange = "-1000"),
     list(asset = "BNFCR", marginAvailable = TRUE, autoAssetExchange = "0")
@@ -123,25 +147,20 @@ test_that("get_exchange_info attaches exchange-wide metadata as attributes", {
   resp <- mock_binance_response(data = data)
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_futures_data()$get_exchange_info()
+  dt <- new_futures_data()$get_futures_assets()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 2L)
+  expect_setequal(dt$asset, c("USDT", "BNFCR"))
+  expect_true(all(dt$margin_available))
+})
 
-  expect_equal(attr(dt, "timezone"), "UTC")
-  expect_s3_class(attr(dt, "server_time"), "POSIXct")
-  expect_equal(attr(dt, "futures_type"), "U_M")
+test_that("get_futures_assets returns empty data.table when absent", {
+  resp <- mock_binance_response(data = mock_futures_exchange_info_data())
+  httr2::local_mocked_responses(function(req) resp)
 
-  rl <- attr(dt, "rate_limits")
-  expect_s3_class(rl, "data.table")
-  expect_equal(nrow(rl), 2L)
-  expect_setequal(rl$rate_limit_type, c("REQUEST_WEIGHT", "ORDERS"))
-
-  ef <- attr(dt, "exchange_filters")
-  expect_s3_class(ef, "data.table")
-  expect_equal(nrow(ef), 0L)
-
-  assets <- attr(dt, "assets")
-  expect_s3_class(assets, "data.table")
-  expect_equal(nrow(assets), 2L)
-  expect_setequal(assets$asset, c("USDT", "BNFCR"))
+  dt <- new_futures_data()$get_futures_assets()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
 })
 
 # -- get_klines --

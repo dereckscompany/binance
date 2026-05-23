@@ -100,7 +100,9 @@ earn     <- BinanceEarn$new(keys = keys)
 | Method | Endpoint | Shape |
 |---|---|---|
 | `get_server_time()` | `/api/v3/time` | single row |
-| `get_exchange_info(symbol)` | `/api/v3/exchangeInfo` | one row per symbol, `;`-collapsed string arrays (`order_types`, `permissions`, `allowed_self_trade_prevention_modes`, …); flattened numeric filters (`lot_min_qty`, `lot_max_qty`, `lot_step_size`, `price_min`, `price_max`, `price_tick_size`, `min_notional`); full filters array preserved as JSON in `filters_raw`; `permission_sets` JSON-encoded. Exchange-wide metadata (`timezone`, `server_time`, `rate_limits`, `exchange_filters`, `sors`) attached as `attr(dt, ...)` |
+| `get_exchange_info(symbol)` | `/api/v3/exchangeInfo` | one row per symbol, `;`-collapsed string arrays (`order_types`, `permissions`, `allowed_self_trade_prevention_modes`, …); flattened numeric filters (`lot_min_qty`, `lot_max_qty`, `lot_step_size`, `price_min`, `price_max`, `price_tick_size`, `min_notional`); full filters array preserved as JSON in `filters_raw`; `permission_sets` JSON-encoded |
+| `get_rate_limits()` | `/api/v3/exchangeInfo` (`rateLimits` slice) | one row per rate-limit rule |
+| `get_exchange_filters()` | `/api/v3/exchangeInfo` (`exchangeFilters` slice) | one row per exchange-wide filter (usually empty) |
 
 ### Tickers and 24hr stats
 
@@ -133,7 +135,10 @@ depth[side == "ask"][order(-price)][1:5]
 
 | Method | Endpoint | Shape |
 |---|---|---|
-| `get_exchange_info()` | `/fapi/v1/exchangeInfo` | one row per symbol; same string-array + filter treatment as spot (including `filters_raw`). Exchange-wide metadata (`timezone`, `server_time`, `futures_type`, `rate_limits`, `exchange_filters`, `assets`) attached as `attr(dt, ...)` |
+| `get_exchange_info()` | `/fapi/v1/exchangeInfo` | one row per symbol; same string-array + filter treatment as spot (including `filters_raw`) |
+| `get_rate_limits()` | `/fapi/v1/exchangeInfo` (`rateLimits` slice) | one row per rate-limit rule |
+| `get_exchange_filters()` | `/fapi/v1/exchangeInfo` (`exchangeFilters` slice) | one row per exchange-wide filter (usually empty) |
+| `get_futures_assets()` | `/fapi/v1/exchangeInfo` (`assets` slice) | one row per margin asset |
 | `get_klines(symbol, interval, ...)` | `/fapi/v1/klines` | one row per kline |
 | `get_mark_price(symbol)` | `/fapi/v1/premiumIndex` | single row (or one row per symbol if `symbol = NULL`) |
 | `get_funding_rate(symbol, ...)` | `/fapi/v1/fundingRate` | one row per funding interval |
@@ -397,7 +402,7 @@ different axis — **never a list column** — and **no data is dropped**;
 fields that don't fit a per-entity row are surfaced via a sibling
 method or as an attribute on the returned `data.table`.
 
-There are six shape treatments. A handful of endpoints use two
+There are five shape treatments. A handful of endpoints use two
 treatments together when their nesting has two layers.
 
 ### Treatment A — `;` collapse for arrays of plain strings
@@ -490,12 +495,13 @@ filter columns on `exchange_info` (`lot_min_qty`, `lot_max_qty`,
 
 ### Treatment D — Re-route to a sibling method
 
-When a response bundles two heterogeneous collections (e.g.
-account-level fields **and** a list of balances, or asset balances
-**and** open positions), they can't share rows without either a
-Cartesian join (replicated nonsense) or list columns. The same data
-is always reachable via a sibling method that returns it in the right
-shape.
+When a response bundles a collection that doesn't fit the per-entity
+row of the calling endpoint — typically heterogeneous siblings (e.g.
+account-level fields **and** balances, or per-symbol rows **and**
+exchange-wide rate-limit rules) — the parser keeps only the rows for
+the entity the method names, and the rest is exposed via a dedicated
+sibling method. Every method still returns one `data.table`; no data
+is lost.
 
 ```{r}
 # `BinanceFutures::get_account` returns one row per asset balance.
@@ -507,6 +513,16 @@ acct      <- futures$get_account()    # one row per asset
 positions <- futures$get_positions()  # one row per open position
 ```
 
+```{r}
+# `/exchangeInfo` bundles per-symbol rows + exchange-wide rate-limit
+# rules + exchange-wide filter rules. Per-symbol stays on the main
+# method; the rest moves to siblings.
+market <- BinanceMarketData$new()
+info        <- market$get_exchange_info()       # one row per symbol
+rate_limits <- market$get_rate_limits()         # one row per rate-limit rule
+ex_filters  <- market$get_exchange_filters()    # one row per exchange-wide filter (usually empty)
+```
+
 The cases:
 
 - `BinanceFutures::get_account()` re-routes `positions` to
@@ -514,39 +530,11 @@ The cases:
 - `BinanceAccount::get_account_info()` re-routes `balances` to
   `get_balances()` (both methods hit `/api/v3/account`; they just
   parse different halves of the response).
-
-No data is lost — the same field is one method call away, in the
-right shape for the entity it describes.
-
-### Treatment D′ — Ride along as an attribute
-
-When the API response contains exchange-wide metadata that doesn't
-fit the per-entity row (and isn't already covered by a sibling
-method), attach it as an attribute on the returned `data.table`.
-Power users reach it via `attr()`; typical users see a clean
-rectangular table.
-
-```{r}
-market <- BinanceMarketData$new()
-info <- market$get_exchange_info()
-
-# Per-symbol rows look the same as any other data.table.
-info[symbol == "BTCUSDT", .(symbol, status, lot_min_qty, price_tick_size)]
-
-# Exchange-wide metadata rides along as attributes.
-attr(info, "server_time")     # POSIXct
-attr(info, "rate_limits")     # data.table — one row per rate-limit rule
-attr(info, "exchange_filters")
-attr(info, "sors")            # spot only
-```
-
-Where this is used:
-
-- `BinanceMarketData::get_exchange_info()` — `timezone`,
-  `server_time`, `rate_limits`, `exchange_filters`, `sors`.
-- `BinanceFuturesData::get_exchange_info()` — `timezone`,
-  `server_time`, `futures_type`, `rate_limits`, `exchange_filters`,
-  `assets`.
+- `get_exchange_info()` (spot + futures) re-routes `rateLimits` to
+  `get_rate_limits()`, `exchangeFilters` to `get_exchange_filters()`,
+  and (futures only) `assets` to `get_futures_assets()`. The constant
+  scalars (`timezone = "UTC"`, `futuresType = "U_M"`) and `serverTime`
+  (already in `get_server_time()`) are not re-exposed.
 
 ### Treatment E — JSON string for dynamic-key or array-of-array objects
 
