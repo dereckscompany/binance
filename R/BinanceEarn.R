@@ -169,7 +169,9 @@ BinanceEarn <- R6::R6Class(
             }
             return(r)
           })
-          return(as_dt_list(rows)[])
+          dt <- as_dt_list(rows)
+          coerce_cols(dt, "subscription_start_time", ms_to_datetime)
+          return(dt[])
         }
       ))
     },
