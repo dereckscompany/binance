@@ -99,6 +99,20 @@ test_that("get_flexible_products emits NA tier_annual_percentage_rate when upstr
   expect_equal(length(list_cols), 0L)
 })
 
+test_that("get_flexible_products converts subscription_start_time to POSIXct (regression)", {
+  # Reviewer P2: the @return block documents subscription_start_time as
+  # POSIXct but the parser was leaving it as raw numeric ms. Patch the
+  # default fixture to include the field so the conversion is exercised.
+  data <- mock_flexible_products_data()
+  data$rows[[1]]$subscriptionStartTime <- 1646182276000
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_earn()$get_flexible_products()
+  expect_true("subscription_start_time" %in% names(dt))
+  expect_s3_class(dt$subscription_start_time, "POSIXct")
+})
+
 # -- get_locked_products --
 
 test_that("get_locked_products returns data.table with expected columns", {
