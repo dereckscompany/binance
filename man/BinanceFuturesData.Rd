@@ -37,12 +37,15 @@ The base URL defaults to \verb{https://fapi.binance.com} via \code{\link[=get_fu
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#market-data-endpoints}{Binance USD-M Futures Market Data}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api}{Binance USD-M Futures Market Data}
 }
 
 \subsection{Endpoints Covered}{\tabular{lll}{
    Method \tab Endpoint \tab Auth \cr
    get_exchange_info \tab GET /fapi/v1/exchangeInfo \tab No \cr
+   get_rate_limits \tab GET /fapi/v1/exchangeInfo \tab No \cr
+   get_exchange_filters \tab GET /fapi/v1/exchangeInfo \tab No \cr
+   get_futures_assets \tab GET /fapi/v1/exchangeInfo \tab No \cr
    get_klines \tab GET /fapi/v1/klines \tab No \cr
    get_mark_price \tab GET /fapi/v1/premiumIndex \tab No \cr
    get_funding_rate \tab GET /fapi/v1/fundingRate \tab No \cr
@@ -84,6 +87,40 @@ while (!later::loop_empty()) later::run_now()
 futures <- BinanceFuturesData$new()
 info <- futures$get_exchange_info()
 print(info[, .(symbol, contract_type, status, base_asset)])
+
+# Recover filter types not in curated columns
+jsonlite::fromJSON(info$filters_raw[1])
+
+# Exchange-wide metadata via sibling methods
+futures$get_rate_limits()
+futures$get_futures_assets()
+}
+
+## ------------------------------------------------
+## Method `BinanceFuturesData$get_rate_limits`
+## ------------------------------------------------
+
+\dontrun{
+futures <- BinanceFuturesData$new()
+futures$get_rate_limits()
+}
+
+## ------------------------------------------------
+## Method `BinanceFuturesData$get_exchange_filters`
+## ------------------------------------------------
+
+\dontrun{
+futures <- BinanceFuturesData$new()
+futures$get_exchange_filters()
+}
+
+## ------------------------------------------------
+## Method `BinanceFuturesData$get_futures_assets`
+## ------------------------------------------------
+
+\dontrun{
+futures <- BinanceFuturesData$new()
+futures$get_futures_assets()
 }
 
 ## ------------------------------------------------
@@ -215,6 +252,9 @@ print(klines)
 \itemize{
 \item \href{#method-BinanceFuturesData-new}{\code{BinanceFuturesData$new()}}
 \item \href{#method-BinanceFuturesData-get_exchange_info}{\code{BinanceFuturesData$get_exchange_info()}}
+\item \href{#method-BinanceFuturesData-get_rate_limits}{\code{BinanceFuturesData$get_rate_limits()}}
+\item \href{#method-BinanceFuturesData-get_exchange_filters}{\code{BinanceFuturesData$get_exchange_filters()}}
+\item \href{#method-BinanceFuturesData-get_futures_assets}{\code{BinanceFuturesData$get_futures_assets()}}
 \item \href{#method-BinanceFuturesData-get_klines}{\code{BinanceFuturesData$get_klines()}}
 \item \href{#method-BinanceFuturesData-get_mark_price}{\code{BinanceFuturesData$get_mark_price()}}
 \item \href{#method-BinanceFuturesData-get_funding_rate}{\code{BinanceFuturesData$get_funding_rate()}}
@@ -281,8 +321,8 @@ Includes precision, order types, filters, contract type, and trading status.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#exchange-information}{Binance Futures Exchange Info}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Exchange-Information}{Binance Futures Exchange Info}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -343,9 +383,32 @@ fields returned by the API, converted to snake_case. Key columns include:
 \item \code{margin_asset} (character): Margin asset code (e.g., \code{"USDT"}).
 \item \code{price_precision} (integer): Decimal precision for prices.
 \item \code{quantity_precision} (integer): Decimal precision for quantities.
-\item \code{order_types} (list): Allowed order types for this symbol.
-\item \code{filters} (list): List of filter objects.
+\item \code{order_types} (character): Semicolon-separated allowed order types.
+Recover via \code{strsplit(dt$order_types[1], ";", fixed = TRUE)[[1]]}.
+\item \code{time_in_force} (character): Semicolon-separated allowed
+time-in-force values.
+\item \code{underlying_sub_type} (character): Semicolon-separated underlying
+sub-types.
+\item \code{permission_sets} (character): Semicolon-separated permission sets.
+\item \code{lot_min_qty} (numeric): Minimum order quantity (from LOT_SIZE filter).
+\item \code{lot_max_qty} (numeric): Maximum order quantity (from LOT_SIZE filter).
+\item \code{lot_step_size} (numeric): Quantity step size (from LOT_SIZE filter).
+\item \code{price_min} (numeric): Minimum price (from PRICE_FILTER).
+\item \code{price_max} (numeric): Maximum price (from PRICE_FILTER).
+\item \code{price_tick_size} (numeric): Price tick size (from PRICE_FILTER).
+\item \code{min_notional} (numeric): Minimum notional value (from MIN_NOTIONAL filter).
+\item \code{filters_raw} (character): JSON-encoded copy of the full per-symbol
+\code{filters} array. Preserves filter types not pulled into curated
+columns (\code{PERCENT_PRICE}, \code{MARKET_LOT_SIZE}, \code{MAX_NUM_ORDERS},
+\code{MAX_NUM_ALGO_ORDERS}, \code{MIN_NOTIONAL}'s extra fields, ...).
+Recover with \code{jsonlite::fromJSON(dt$filters_raw[1])}. \code{NA} if
+Binance returned no filters for the symbol.
 }
+
+Exchange-wide metadata returned by the same endpoint is exposed
+via sibling methods: \code{get_rate_limits()}, \code{get_exchange_filters()},
+\code{get_futures_assets()}. Server time is available via
+\code{BinanceMarketData$get_server_time()}.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -353,6 +416,119 @@ fields returned by the API, converted to snake_case. Key columns include:
 futures <- BinanceFuturesData$new()
 info <- futures$get_exchange_info()
 print(info[, .(symbol, contract_type, status, base_asset)])
+
+# Recover filter types not in curated columns
+jsonlite::fromJSON(info$filters_raw[1])
+
+# Exchange-wide metadata via sibling methods
+futures$get_rate_limits()
+futures$get_futures_assets()
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BinanceFuturesData-get_rate_limits"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceFuturesData-get_rate_limits}{}}}
+\subsection{Method \code{get_rate_limits()}}{
+Get Futures Exchange Rate Limits
+
+Retrieves the USDⓈ-M futures API rate-limit rules. Same sibling
+pattern as \code{BinanceMarketData$get_rate_limits()}.
+\subsection{API Endpoint}{
+
+\verb{GET https://fapi.binance.com/fapi/v1/exchangeInfo}
+}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceFuturesData$get_rate_limits()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
+with one row per rate-limit rule. Columns: \code{rate_limit_type},
+\code{interval}, \code{interval_num}, \code{limit}. Empty \code{data.table} if
+Binance returned no \code{rateLimits} block.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+futures <- BinanceFuturesData$new()
+futures$get_rate_limits()
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BinanceFuturesData-get_exchange_filters"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceFuturesData-get_exchange_filters}{}}}
+\subsection{Method \code{get_exchange_filters()}}{
+Get Futures Exchange-Wide Filters
+
+Retrieves the exchange-wide filter rules. Almost always empty.
+Sibling to \code{get_exchange_info()}.
+\subsection{API Endpoint}{
+
+\verb{GET https://fapi.binance.com/fapi/v1/exchangeInfo}
+}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceFuturesData$get_exchange_filters()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
+with one row per exchange-wide filter rule. Empty when none.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+futures <- BinanceFuturesData$new()
+futures$get_exchange_filters()
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BinanceFuturesData-get_futures_assets"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceFuturesData-get_futures_assets}{}}}
+\subsection{Method \code{get_futures_assets()}}{
+Get Futures Margin Assets
+
+Retrieves the margin-asset configuration returned at the top
+level of futures \verb{/fapi/v1/exchangeInfo} (one row per asset
+usable as margin — USDT, BNFCR, etc.).
+\subsection{API Endpoint}{
+
+\verb{GET https://fapi.binance.com/fapi/v1/exchangeInfo}
+}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceFuturesData$get_futures_assets()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
+with one row per margin asset. Typical columns:
+\itemize{
+\item \code{asset} (character): Asset symbol (e.g., \code{"USDT"}).
+\item \code{margin_available} (logical): Whether the asset can be used as margin.
+\item \code{auto_asset_exchange} (character): Auto-exchange threshold.
+}
+
+Empty \code{data.table} if Binance returned no \code{assets} block.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+futures <- BinanceFuturesData$new()
+futures$get_futures_assets()
 }
 }
 \if{html}{\out{</div>}}
@@ -374,8 +550,8 @@ Retrieves historical kline/candlestick data for a futures symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#kline-candlestick-data}{Binance Futures Kline/Candlestick Data}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Kline-Candlestick-Data}{Binance Futures Kline/Candlestick Data}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -498,8 +674,8 @@ for a specific symbol or all symbols.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#mark-price}{Binance Futures Mark Price}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Mark-Price}{Binance Futures Mark Price}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -578,8 +754,8 @@ Retrieves historical funding rate data for a symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#get-funding-rate-history}{Binance Futures Funding Rate History}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Get-Funding-Rate-History}{Binance Futures Funding Rate History}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -665,8 +841,8 @@ or all symbols.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#24hr-ticker-price-change-statistics}{Binance Futures 24hr Ticker}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/24hr-Ticker-Price-Change-Statistics}{Binance Futures 24hr Ticker}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -750,8 +926,8 @@ Retrieves the latest price for a specific futures symbol or all symbols.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#symbol-price-ticker}{Binance Futures Symbol Price Ticker}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Symbol-Price-Ticker}{Binance Futures Symbol Price Ticker}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -817,8 +993,8 @@ or all symbols.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#symbol-order-book-ticker}{Binance Futures Symbol Order Book Ticker}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Symbol-Order-Book-Ticker}{Binance Futures Symbol Order Book Ticker}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -889,8 +1065,8 @@ Retrieves the current open interest for a futures symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#open-interest}{Binance Futures Open Interest}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Open-Interest}{Binance Futures Open Interest}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -954,8 +1130,8 @@ Retrieves the order book (bids and asks) for a futures symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#order-book}{Binance Futures Order Book}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Order-Book}{Binance Futures Order Book}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1033,8 +1209,8 @@ Retrieves the most recent trades for a futures symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#recent-trades-list}{Binance Futures Recent Trades List}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Recent-Trades-List}{Binance Futures Recent Trades List}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1116,8 +1292,8 @@ Retrieves historical index price kline/candlestick data for a pair.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#index-price-kline-candlestick-data}{Binance Futures Index Price Kline/Candlestick Data}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Index-Price-Kline-Candlestick-Data}{Binance Futures Index Price Kline/Candlestick Data}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1218,8 +1394,8 @@ Retrieves historical mark price kline/candlestick data for a symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/#mark-price-kline-candlestick-data}{Binance Futures Mark Price Kline/Candlestick Data}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Mark-Price-Kline-Candlestick-Data}{Binance Futures Mark Price Kline/Candlestick Data}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{

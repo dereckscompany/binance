@@ -75,7 +75,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible List](https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Simple-Earn-Flexible-Product-List)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -91,6 +91,11 @@ BinanceEarn <- R6::R6Class(
     #'     {
     #'       "asset": "USDT",
     #'       "latestAnnualPercentageRate": "0.03250000",
+    #'       "tierAnnualPercentageRate": {
+    #'         "0-5BTC": 0.05,
+    #'         "5-10BTC": 0.03
+    #'       },
+    #'       "airDropPercentageRate": "0.05000000",
     #'       "canPurchase": true,
     #'       "canRedeem": true,
     #'       "isSoldOut": false,
@@ -111,6 +116,12 @@ BinanceEarn <- R6::R6Class(
     #' @return `data.table` with one row per product and the following columns:
     #' - `asset` (character): Asset symbol (e.g., `"USDT"`).
     #' - `latest_annual_percentage_rate` (character): Current annual yield rate.
+    #' - `tier_annual_percentage_rate` (character): JSON-encoded
+    #'   per-tier APR map (dynamic keys like `"0-5BTC"`, `"5-10BTC"`).
+    #'   Recover via `jsonlite::fromJSON(dt$tier_annual_percentage_rate[1])`.
+    #'   `NA` when the field is absent.
+    #' - `air_drop_percentage_rate` (character): Air-drop APR if the
+    #'   product currently carries one.
     #' - `can_purchase` (logical): Whether new subscriptions are accepted.
     #' - `can_redeem` (logical): Whether redemptions are allowed.
     #' - `is_sold_out` (logical): Whether the product is sold out.
@@ -136,7 +147,29 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data)[])
+          rows <- data$rows
+          if (is.null(rows) || length(rows) == 0) {
+            return(data.table::data.table()[])
+          }
+          # `tierAnnualPercentageRate` is a nested object with DYNAMIC
+          # keys (e.g. `"0-5BTC": 0.05, "5-10BTC": 0.03`) — different
+          # products use different tier breakpoints. Wide-prefixing
+          # would produce a sparse soup of columns; instead serialise
+          # the whole field as a JSON string so the structure is
+          # preserved and recoverable via
+          # `jsonlite::fromJSON(dt$tier_annual_percentage_rate[1])`.
+          rows <- lapply(rows, function(r) {
+            tier <- r[["tierAnnualPercentageRate"]]
+            if (is.null(tier) || length(tier) == 0L) {
+              r[["tierAnnualPercentageRate"]] <- NA_character_
+            } else {
+              r[["tierAnnualPercentageRate"]] <- as.character(
+                jsonlite::toJSON(tier, auto_unbox = TRUE)
+              )
+            }
+            return(r)
+          })
+          return(as_dt_list(rows)[])
         }
       ))
     },
@@ -151,7 +184,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked List](https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Simple-Earn-Locked-Product-List)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -160,6 +193,9 @@ BinanceEarn <- R6::R6Class(
     #' ```
     #'
     #' ### JSON Response
+    #' Shape captured 2026-05-22 from the live docs. Binance renamed
+    #' `detail.apy` → `detail.apr` and added the extra-reward / boost
+    #' fields; older internal examples that still show `apy` are stale.
     #' ```json
     #' {
     #'   "total": 1,
@@ -171,7 +207,15 @@ BinanceEarn <- R6::R6Class(
     #'         "rewardAsset": "BTC",
     #'         "duration": 30,
     #'         "renewable": true,
-    #'         "apy": "0.05000000"
+    #'         "isSoldOut": false,
+    #'         "apr": "0.05000000",
+    #'         "status": "CREATED",
+    #'         "subscriptionStartTime": 1646182276000,
+    #'         "extraRewardAsset": "BNB",
+    #'         "extraRewardAPR": "0.01000000",
+    #'         "boostRewardAsset": "BTC",
+    #'         "boostApr": "0.00100000",
+    #'         "boostEndTime": 1646182276000
     #'       },
     #'       "quota": {
     #'         "totalPersonalQuota": "10.00000000",
@@ -186,10 +230,33 @@ BinanceEarn <- R6::R6Class(
     #' @param current Integer or NULL; current page (default 1, starting from 1).
     #' @param size Integer or NULL; page size (default 10, max 100).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per product and the following columns:
+    #' @return `data.table` with **one row per product** and the following
+    #'   columns. Nested `detail` and `quota` objects are wide-prefixed
+    #'   (`detail_*` and `quota_*`) per the package's "no list columns"
+    #'   policy. Field names mirror the current Binance API
+    #'   (verified 2026-05-22):
     #' - `project_id` (character): Unique project identifier.
-    #' - `detail` (list): Nested product details (asset, reward asset, duration, APY).
-    #' - `quota` (list): Nested quota details (total personal quota, minimum).
+    #' - `detail_asset` (character): Subscription asset (e.g. `"BTC"`).
+    #' - `detail_reward_asset` (character): Reward asset.
+    #' - `detail_duration` (integer): Lock-up duration in days.
+    #' - `detail_renewable` (logical): Whether the product auto-renews.
+    #' - `detail_is_sold_out` (logical): Whether the offering is currently
+    #'   sold out (no new subscriptions accepted).
+    #' - `detail_apr` (character): Annual percentage rate. NOTE: Binance
+    #'   renamed this from `apy` → `apr` on the live API; older docs
+    #'   that show `apy` are stale.
+    #' - `detail_status` (character): Product lifecycle state (e.g.
+    #'   `"CREATED"`, `"PURCHASING"`).
+    #' - `detail_subscription_start_time` (numeric): Subscription open
+    #'   timestamp in milliseconds.
+    #' - `detail_extra_reward_asset` (character): Additional reward
+    #'   asset, if the product carries a boost.
+    #' - `detail_extra_reward_apr` (character): Extra reward APR.
+    #' - `detail_boost_reward_asset` (character): Boost reward asset.
+    #' - `detail_boost_apr` (character): Boost APR.
+    #' - `detail_boost_end_time` (numeric): Boost end timestamp in ms.
+    #' - `quota_total_personal_quota` (character): Per-user maximum.
+    #' - `quota_minimum` (character): Per-user minimum.
     #'
     #' @examples
     #' \dontrun{
@@ -207,7 +274,26 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data)[])
+          rows <- data$rows
+          if (is.null(rows) || length(rows) == 0) {
+            return(data.table::data.table()[])
+          }
+          # Wide-prefix the nested `detail` and `quota` fixed-schema
+          # objects so the returned table has no list columns. Mirrors
+          # the alpaca `parse_snapshot` approach for nested objects.
+          rows <- lapply(rows, function(r) {
+            for (nested in c("detail", "quota")) {
+              sub <- r[[nested]]
+              if (!is.null(sub) && is.list(sub) && length(sub) > 0) {
+                for (nm in names(sub)) {
+                  r[[paste0(nested, "_", nm)]] <- sub[[nm]]
+                }
+              }
+              r[[nested]] <- NULL
+            }
+            return(r)
+          })
+          return(as_dt_list(rows)[])
         }
       ))
     },
@@ -224,7 +310,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible Subscribe](https://developers.binance.com/docs/simple_earn/flexible-locked/earn)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -299,7 +385,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked Subscribe](https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Subscribe-Locked-Product)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -369,7 +455,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible Redeem](https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Redeem-Flexible-Product)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -444,7 +530,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked Redeem](https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Redeem-Locked-Product)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -506,7 +592,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible Position](https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Flexible-Product-Position)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -515,16 +601,28 @@ BinanceEarn <- R6::R6Class(
     #' ```
     #'
     #' ### JSON Response
+    #' Shape captured 2026-05-22 from the live docs.
     #' ```json
     #' {
     #'   "total": 1,
     #'   "rows": [
     #'     {
-    #'       "totalAmount": "100.00000000",
-    #'       "latestAnnualPercentageRate": "0.03250000",
+    #'       "totalAmount": "75.46000000",
+    #'       "tierAnnualPercentageRate": {
+    #'         "0-5BTC": 0.05,
+    #'         "5-10BTC": 0.03
+    #'       },
+    #'       "latestAnnualPercentageRate": "0.02599895",
+    #'       "yesterdayAirdropPercentageRate": "0.02599895",
     #'       "asset": "USDT",
+    #'       "airDropAsset": "BETH",
     #'       "canRedeem": true,
+    #'       "collateralAmount": "232.23123213",
     #'       "productId": "USDT001",
+    #'       "yesterdayRealTimeRewards": "0.10293829",
+    #'       "cumulativeBonusRewards": "0.22759183",
+    #'       "cumulativeRealTimeRewards": "0.22759183",
+    #'       "cumulativeTotalRewards": "0.45459183",
     #'       "autoSubscribe": true
     #'     }
     #'   ]
@@ -539,9 +637,27 @@ BinanceEarn <- R6::R6Class(
     #' @return `data.table` with one row per position and the following columns:
     #' - `total_amount` (character): Total amount in the position.
     #' - `latest_annual_percentage_rate` (character): Current annual yield rate.
+    #' - `tier_annual_percentage_rate` (character, optional):
+    #'   JSON-encoded per-tier APR map when the position carries
+    #'   tier-based rates (dynamic keys like `"0-5BTC"`). Recover via
+    #'   `jsonlite::fromJSON(dt$tier_annual_percentage_rate[1])`.
+    #' - `yesterday_airdrop_percentage_rate` (character): Air-drop APR
+    #'   for the previous accrual period.
     #' - `asset` (character): Asset symbol (e.g., `"USDT"`).
+    #' - `air_drop_asset` (character): Asset paid as an air-drop reward,
+    #'   if any.
     #' - `can_redeem` (logical): Whether redemption is allowed.
+    #' - `collateral_amount` (character): Amount currently locked as
+    #'   collateral, if the position is being used as such.
     #' - `product_id` (character): Product identifier.
+    #' - `yesterday_real_time_rewards` (character): Real-time rewards
+    #'   accrued in the previous period.
+    #' - `cumulative_bonus_rewards` (character): Cumulative bonus
+    #'   rewards earned on this position.
+    #' - `cumulative_real_time_rewards` (character): Cumulative
+    #'   real-time rewards.
+    #' - `cumulative_total_rewards` (character): Cumulative total
+    #'   rewards (bonus + real-time).
     #' - `auto_subscribe` (logical): Whether auto-subscription is enabled.
     #'
     #' @examples
@@ -561,7 +677,25 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data)[])
+          rows <- data$rows
+          if (is.null(rows) || length(rows) == 0) {
+            return(data.table::data.table()[])
+          }
+          # `tierAnnualPercentageRate` can appear on position rows too;
+          # same treatment as `get_flexible_products` — JSON-encode so
+          # dynamic tier keys are preserved.
+          rows <- lapply(rows, function(r) {
+            tier <- r[["tierAnnualPercentageRate"]]
+            if (!is.null(tier) && length(tier) > 0L) {
+              r[["tierAnnualPercentageRate"]] <- as.character(
+                jsonlite::toJSON(tier, auto_unbox = TRUE)
+              )
+            } else if (!is.null(tier)) {
+              r[["tierAnnualPercentageRate"]] <- NA_character_
+            }
+            return(r)
+          })
+          return(as_dt_list(rows)[])
         }
       ))
     },
@@ -577,7 +711,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked Position](https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Locked-Product-Position)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -586,25 +720,49 @@ BinanceEarn <- R6::R6Class(
     #' ```
     #'
     #' ### JSON Response
+    #' Shape captured 2026-05-22 from the live docs. NOTE: Binance
+    #' returns the rate as uppercase `APY` (not `apy`); our snake_case
+    #' converter lowers it to `apy` in the data.table.
     #' ```json
     #' {
-    #'   "total": 1,
     #'   "rows": [
     #'     {
-    #'       "positionId": "12345",
-    #'       "projectId": "BTC30d001",
-    #'       "asset": "BTC",
-    #'       "amount": "0.01000000",
-    #'       "purchaseTime": 1661493146000,
-    #'       "duration": 30,
-    #'       "accrualDays": 15,
-    #'       "rewardAsset": "BTC",
-    #'       "apy": "0.05000000",
-    #'       "isRenewable": true,
-    #'       "isAutoRenew": true,
-    #'       "redeemDate": 1664085146000
+    #'       "positionId": 123123,
+    #'       "parentPositionId": 123122,
+    #'       "projectId": "Axs*90",
+    #'       "asset": "AXS",
+    #'       "amount": "122.09202928",
+    #'       "purchaseTime": 1646182276000,
+    #'       "duration": "60",
+    #'       "accrualDays": "4",
+    #'       "rewardAsset": "AXS",
+    #'       "APY": "0.2032",
+    #'       "rewardAmt": "5.17181528",
+    #'       "extraRewardAsset": "BNB",
+    #'       "extraRewardAPR": "0.0203",
+    #'       "estExtraRewardAmt": "5.17181528",
+    #'       "boostRewardAsset": "AXS",
+    #'       "boostApr": "0.0121",
+    #'       "totalBoostRewardAmt": "3.98201829",
+    #'       "nextPay": "1.29295383",
+    #'       "nextPayDate": 1646697600000,
+    #'       "payPeriod": "1",
+    #'       "redeemAmountEarly": "2802.24068892",
+    #'       "rewardsEndDate": 1651449600000,
+    #'       "deliverDate": 1651536000000,
+    #'       "redeemPeriod": "1",
+    #'       "redeemingAmt": "232.2323",
+    #'       "redeemTo": "FLEXIBLE",
+    #'       "partialAmtDeliverDate": 1651536000000,
+    #'       "canRedeemEarly": true,
+    #'       "canFastRedemption": true,
+    #'       "autoSubscribe": true,
+    #'       "type": "AUTO",
+    #'       "status": "HOLDING",
+    #'       "canReStake": true
     #'     }
-    #'   ]
+    #'   ],
+    #'   "total": 1
     #' }
     #' ```
     #'
@@ -614,16 +772,47 @@ BinanceEarn <- R6::R6Class(
     #' @param current Integer or NULL; current page (default 1, starting from 1).
     #' @param size Integer or NULL; page size (default 10, max 100).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per position and the following columns:
-    #' - `position_id` (character): Position identifier.
-    #' - `project_id` (character): Project identifier.
-    #' - `asset` (character): Asset symbol.
+    #' @return `data.table` with one row per position and the following columns
+    #'   (snake-case names; Binance's uppercase `APY` lowers to `apy`):
+    #' - `position_id` (numeric): Locked position identifier.
+    #' - `parent_position_id` (numeric): Parent position identifier
+    #'   (cross-reference for auto-renewed positions).
+    #' - `project_id` (character): Locked project identifier.
+    #' - `asset` (character): Locked asset symbol.
     #' - `amount` (character): Locked amount.
     #' - `purchase_time` (numeric): Subscription timestamp in ms.
-    #' - `duration` (integer): Lock duration in days.
-    #' - `accrual_days` (integer): Number of days interest has accrued.
-    #' - `reward_asset` (character): Reward asset symbol.
-    #' - `apy` (character): Annual percentage yield.
+    #' - `duration` (character): Lock duration in days.
+    #' - `accrual_days` (character): Days interest has accrued.
+    #' - `reward_asset` (character): Earned asset symbol.
+    #' - `apy` (character): Annual percentage yield (snake_case of `APY`).
+    #' - `reward_amt` (character): Earned amount so far.
+    #' - `extra_reward_asset` (character): Asset for the extra staking
+    #'   reward, if any.
+    #' - `extra_reward_apr` (character): APR of the extra staking reward.
+    #' - `est_extra_reward_amt` (character): Estimated extra reward
+    #'   distributed at maturity.
+    #' - `boost_reward_asset` (character): Boost reward asset.
+    #' - `boost_apr` (character): Boost APR.
+    #' - `total_boost_reward_amt` (character): Total boost reward earned.
+    #' - `next_pay` (character): Next estimated reward payment.
+    #' - `next_pay_date` (numeric): Next reward payment timestamp (ms).
+    #' - `pay_period` (character): Payment cycle in days.
+    #' - `redeem_amount_early` (character): Amount available for early
+    #'   redemption.
+    #' - `rewards_end_date` (numeric): Rewards accrual end timestamp (ms).
+    #' - `deliver_date` (numeric): Redemption arrival timestamp (ms).
+    #' - `redeem_period` (character): Redemption interval in days.
+    #' - `redeeming_amt` (character): Amount currently being redeemed.
+    #' - `redeem_to` (character): Destination on redemption
+    #'   (`"FLEXIBLE"` or `"SPOT"`).
+    #' - `partial_amt_deliver_date` (numeric): Arrival time of partial
+    #'   redemption.
+    #' - `can_redeem_early` (logical): Whether early redemption is allowed.
+    #' - `can_fast_redemption` (logical): Whether fast redemption is allowed.
+    #' - `auto_subscribe` (logical): Whether auto-subscription is enabled.
+    #' - `type` (character): Order type (`"AUTO"` or `"NORMAL"`).
+    #' - `status` (character): Position status (e.g., `"HOLDING"`).
+    #' - `can_re_stake` (logical): Whether re-staking is available.
     #'
     #' @examples
     #' \dontrun{
@@ -667,7 +856,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible Subscription Record](https://developers.binance.com/docs/simple_earn/flexible-locked/history)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -754,7 +943,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked Subscription Record](https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Locked-Subscription-Record)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -842,7 +1031,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Flexible Redemption Record](https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Flexible-Redemption-Record)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -929,7 +1118,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Simple Earn Locked Redemption Record](https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Locked-Redemption-Record)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```

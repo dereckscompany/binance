@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://api.binance.com"
 
 new_market <- function() {
-  BinanceMarketData$new(keys = KEYS, base_url = BASE)
+  return(BinanceMarketData$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -37,7 +37,7 @@ test_that("get_server_time returns data.table with datetime", {
 
 # -- get_exchange_info --
 
-test_that("get_exchange_info returns data.table with string arrays comma-joined", {
+test_that("get_exchange_info returns data.table with string arrays semicolon-joined", {
   resp <- mock_binance_response(data = mock_exchange_info_data())
   httr2::local_mocked_responses(function(req) resp)
 
@@ -51,23 +51,56 @@ test_that("get_exchange_info returns data.table with string arrays comma-joined"
   expect_equal(sort(dt$symbol), c("BTCUSDT", "ETHUSDT"))
   expect_equal(dt[symbol == "BTCUSDT"]$base_asset, "BTC")
 
-  # String array fields are now comma-separated strings
+  # String array fields are `;`-collapsed character columns (cross-package
+  # convention; see `collapse_string_array_fields()` in helpers_parse.R).
   expect_true("order_types" %in% names(dt))
   expect_type(dt$order_types, "character")
-  expect_equal(dt[symbol == "BTCUSDT"]$order_types, "LIMIT,LIMIT_MAKER,MARKET,STOP_LOSS_LIMIT,TAKE_PROFIT_LIMIT")
-  expect_equal(dt[symbol == "ETHUSDT"]$order_types, "LIMIT,MARKET")
+  expect_equal(
+    dt[symbol == "BTCUSDT"]$order_types,
+    "LIMIT;LIMIT_MAKER;MARKET;STOP_LOSS_LIMIT;TAKE_PROFIT_LIMIT"
+  )
+  expect_equal(dt[symbol == "ETHUSDT"]$order_types, "LIMIT;MARKET")
 
   expect_true("permissions" %in% names(dt))
   expect_type(dt$permissions, "character")
-  expect_equal(dt[symbol == "BTCUSDT"]$permissions, "SPOT,MARGIN")
+  expect_equal(dt[symbol == "BTCUSDT"]$permissions, "SPOT;MARGIN")
   expect_equal(dt[symbol == "ETHUSDT"]$permissions, "SPOT")
 
   expect_true("allowed_self_trade_prevention_modes" %in% names(dt))
   expect_type(dt$allowed_self_trade_prevention_modes, "character")
-  expect_equal(dt[symbol == "BTCUSDT"]$allowed_self_trade_prevention_modes, "EXPIRE_TAKER,EXPIRE_MAKER,EXPIRE_BOTH")
+  expect_equal(
+    dt[symbol == "BTCUSDT"]$allowed_self_trade_prevention_modes,
+    "EXPIRE_TAKER;EXPIRE_MAKER;EXPIRE_BOTH"
+  )
 
-  # filters still a list-column (heterogeneous)
-  expect_true("filters" %in% names(dt))
+  # `permission_sets` is Binance's array-of-arrays field. We serialise
+  # it as a JSON string so the inner groupings are preserved (a `;`-join
+  # would erase the semantic boundaries between alternative permission
+  # sets). Round-trip via jsonlite::fromJSON. ETH lacks it → NA.
+  expect_true("permission_sets" %in% names(dt))
+  expect_type(dt$permission_sets, "character")
+  expect_equal(
+    dt[symbol == "BTCUSDT"]$permission_sets,
+    '[["SPOT","MARGIN","TRD_GRP_004"]]'
+  )
+  # Round-trip recovers the nested structure.
+  recovered <- jsonlite::fromJSON(dt[symbol == "BTCUSDT"]$permission_sets, simplifyVector = FALSE)
+  expect_equal(recovered, list(list("SPOT", "MARGIN", "TRD_GRP_004")))
+  expect_true(is.na(dt[symbol == "ETHUSDT"]$permission_sets))
+
+  # No list columns anywhere — regression for the cross-package policy.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
+
+  # filters are now extracted into flat numeric columns (no list-column)
+  expect_false("filters" %in% names(dt))
+  expect_true("lot_min_qty" %in% names(dt))
+  expect_true("lot_max_qty" %in% names(dt))
+  expect_true("lot_step_size" %in% names(dt))
+  expect_true("price_min" %in% names(dt))
+  expect_true("price_max" %in% names(dt))
+  expect_true("price_tick_size" %in% names(dt))
+  expect_true("min_notional" %in% names(dt))
 
   # Other fields still present
   expect_true("iceberg_allowed" %in% names(dt))
@@ -81,12 +114,133 @@ test_that("get_exchange_info returns data.table with string arrays comma-joined"
   expect_false(dt[symbol == "ETHUSDT"]$iceberg_allowed)
 })
 
+test_that("get_exchange_info JSON-encodes multi-set permissionSets without flattening the grouping", {
+  # The cross-package convention is that `permissionSets` array-of-arrays
+  # is JSON-encoded so the inner groupings survive a round-trip. The
+  # default fixture only has ONE outer-array element; this test pushes a
+  # response with TWO alternative permission sets to confirm the
+  # encoding preserves the boundary between them.
+  data <- mock_exchange_info_data()
+  data$symbols[[1]]$permissionSets <- list(
+    list("SPOT", "MARGIN"),
+    list("TRD_GRP_004", "TRD_GRP_005")
+  )
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_market()$get_exchange_info()
+  ps_btc <- dt[symbol == "BTCUSDT"]$permission_sets
+  expect_type(ps_btc, "character")
+  recovered <- jsonlite::fromJSON(ps_btc, simplifyVector = FALSE)
+  expect_length(recovered, 2L)
+  expect_equal(recovered[[1]], list("SPOT", "MARGIN"))
+  expect_equal(recovered[[2]], list("TRD_GRP_004", "TRD_GRP_005"))
+})
+
+test_that("get_exchange_info preserves the full filters array in `filters_raw` (round-trips through JSON)", {
+  # Regression for the silent-drop bug: the parser used to pull out
+  # LOT_SIZE / PRICE_FILTER / NOTIONAL into curated columns and then
+  # discard the entire `filters` list. Any filter type we don't
+  # extract (PERCENT_PRICE, MARKET_LOT_SIZE, MAX_NUM_ORDERS,
+  # ICEBERG_PARTS, TRAILING_DELTA, etc.) was lost. Now the whole
+  # filters array survives as a JSON string column.
+  data <- mock_exchange_info_data()
+  data$symbols[[1]]$filters <- c(
+    data$symbols[[1]]$filters,
+    list(
+      list(filterType = "PERCENT_PRICE", multiplierUp = "5", multiplierDown = "0.2", avgPriceMins = 5L),
+      list(filterType = "MAX_NUM_ORDERS", maxNumOrders = 200L),
+      list(filterType = "TRAILING_DELTA", minTrailingAboveDelta = 10L, maxTrailingAboveDelta = 2000L)
+    )
+  )
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_market()$get_exchange_info()
+  expect_true("filters_raw" %in% names(dt))
+  expect_type(dt$filters_raw, "character")
+
+  # Round-trip the BTCUSDT row and check all filter types survived.
+  recovered <- jsonlite::fromJSON(
+    dt[symbol == "BTCUSDT"]$filters_raw,
+    simplifyVector = FALSE
+  )
+  types <- vapply(recovered, function(f) f$filterType, character(1))
+  expect_setequal(
+    types,
+    c("PRICE_FILTER", "LOT_SIZE", "PERCENT_PRICE", "MAX_NUM_ORDERS", "TRAILING_DELTA")
+  )
+  # Fields from the non-curated filter types survive round-trip.
+  pp <- recovered[[which(types == "PERCENT_PRICE")]]
+  expect_equal(pp$multiplierUp, "5")
+  expect_equal(pp$avgPriceMins, 5L)
+  td <- recovered[[which(types == "TRAILING_DELTA")]]
+  expect_equal(td$maxTrailingAboveDelta, 2000L)
+
+  # ETH symbol still has its single PRICE_FILTER.
+  recovered_eth <- jsonlite::fromJSON(
+    dt[symbol == "ETHUSDT"]$filters_raw,
+    simplifyVector = FALSE
+  )
+  expect_length(recovered_eth, 1L)
+  expect_equal(recovered_eth[[1]]$filterType, "PRICE_FILTER")
+})
+
+test_that("get_rate_limits returns one row per rate-limit rule", {
+  data <- mock_exchange_info_data()
+  data$rateLimits <- list(
+    list(rateLimitType = "REQUEST_WEIGHT", interval = "MINUTE", intervalNum = 1L, limit = 6000L),
+    list(rateLimitType = "ORDERS", interval = "SECOND", intervalNum = 10L, limit = 100L)
+  )
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_market()$get_rate_limits()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 2L)
+  expect_true("rate_limit_type" %in% names(dt))
+  expect_setequal(dt$rate_limit_type, c("REQUEST_WEIGHT", "ORDERS"))
+  expect_setequal(dt$interval, c("MINUTE", "SECOND"))
+})
+
+test_that("get_rate_limits returns empty data.table when Binance omits rateLimits", {
+  resp <- mock_binance_response(data = mock_exchange_info_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_market()$get_rate_limits()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
+})
+
+test_that("get_exchange_filters returns one row per exchange-wide filter rule", {
+  data <- mock_exchange_info_data()
+  data$exchangeFilters <- list(
+    list(filterType = "EXCHANGE_MAX_NUM_ORDERS", maxNumOrders = 1000L)
+  )
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_market()$get_exchange_filters()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 1L)
+  expect_equal(dt$filter_type, "EXCHANGE_MAX_NUM_ORDERS")
+})
+
+test_that("get_exchange_filters returns empty data.table when none (common case)", {
+  resp <- mock_binance_response(data = mock_exchange_info_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_market()$get_exchange_filters()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
+})
+
 test_that("get_exchange_info filters by symbol", {
   captured_url <- NULL
   resp <- mock_binance_response(data = mock_exchange_info_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_market()$get_exchange_info(symbol = "BTCUSDT")
@@ -152,6 +306,48 @@ test_that("get_24hr_stats returns stats with datetime columns", {
   expect_true("close_time" %in% names(dt))
   expect_s3_class(dt$open_time, "POSIXct")
   expect_s3_class(dt$close_time, "POSIXct")
+})
+
+# -- get_all_24hr_stats --
+
+test_that("get_all_24hr_stats returns one row per symbol with POSIXct times", {
+  resp <- mock_binance_response(data = mock_all_24hr_stats_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_market()$get_all_24hr_stats()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 2L)
+  expect_setequal(dt$symbol, c("BTCUSDT", "ETHUSDT"))
+  expect_true("open_time" %in% names(dt))
+  expect_true("close_time" %in% names(dt))
+  expect_s3_class(dt$open_time, "POSIXct")
+  expect_s3_class(dt$close_time, "POSIXct")
+  # No list columns.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
+})
+
+test_that("get_all_24hr_stats hits /api/v3/ticker/24hr with no `symbol` param", {
+  captured_url <- NULL
+  resp <- mock_binance_response(data = mock_all_24hr_stats_data())
+  httr2::local_mocked_responses(function(req) {
+    captured_url <<- req$url
+    return(resp)
+  })
+
+  new_market()$get_all_24hr_stats()
+  expect_true(grepl("/api/v3/ticker/24hr", captured_url))
+  # No symbol query param — that's what the "all" endpoint variant means.
+  expect_false(grepl("symbol=", captured_url))
+})
+
+test_that("get_all_24hr_stats returns empty data.table when no symbols", {
+  resp <- mock_binance_response(data = list())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_market()$get_all_24hr_stats()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
 })
 
 # -- get_avg_price --
@@ -240,7 +436,7 @@ test_that("get_klines passes limit parameter", {
   resp <- mock_binance_response(data = mock_klines_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_market()$get_klines("BTCUSDT", "1h", limit = 100)

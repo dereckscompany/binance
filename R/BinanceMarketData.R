@@ -23,13 +23,15 @@
 #' All methods are public endpoints requiring no authentication.
 #'
 #' ### Official Documentation
-#' [Binance Spot Market Data](https://binance-docs.github.io/apidocs/spot/en/#market-data-endpoints)
+#' [Binance Spot Market Data](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints)
 #'
 #' ### Endpoints Covered
 #' | Method | Endpoint | Auth |
 #' |--------|----------|------|
 #' | get_server_time | GET /api/v3/time | No |
 #' | get_exchange_info | GET /api/v3/exchangeInfo | No |
+#' | get_rate_limits | GET /api/v3/exchangeInfo | No |
+#' | get_exchange_filters | GET /api/v3/exchangeInfo | No |
 #' | get_ticker | GET /api/v3/ticker/price | No |
 #' | get_all_tickers | GET /api/v3/ticker/price | No |
 #' | get_book_ticker | GET /api/v3/ticker/bookTicker | No |
@@ -75,8 +77,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/time`
     #'
     #' ### Official Documentation
-    #' [Binance Check Server Time](https://binance-docs.github.io/apidocs/spot/en/#check-server-time)
-    #' Verified: 2026-03-10
+    #' [Binance Check Server Time](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints#check-server-time)
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Clock Drift Detection**: Compare server time against local clock to detect drift.
@@ -129,8 +131,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/exchangeInfo`
     #'
     #' ### Official Documentation
-    #' [Binance Exchange Info](https://binance-docs.github.io/apidocs/spot/en/#exchange-information)
-    #' Verified: 2026-03-10
+    #' [Binance Exchange Info](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints#exchange-information)
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Symbol Discovery**: Find available trading pairs and their status.
@@ -189,7 +191,9 @@ BinanceMarketData <- R6::R6Class(
     #'   - `quote_asset` (character): Quote asset code (e.g., `"USDT"`).
     #'   - `quote_asset_precision` (integer): Decimal precision for quote asset quantities.
     #'   - `quote_precision` (integer): Decimal precision for quote asset prices.
-    #'   - `order_types` (character): Comma-separated allowed order types (e.g., `"LIMIT,MARKET"`).
+    #'   - `order_types` (character): Semicolon-separated allowed order types
+    #'     (e.g., `"LIMIT;MARKET"`). Recover the vector via
+    #'     `strsplit(dt$order_types[1], ";", fixed = TRUE)[[1]]`.
     #'   - `iceberg_allowed` (logical): Whether iceberg orders are allowed.
     #'   - `oco_allowed` (logical): Whether OCO orders are allowed.
     #'   - `oto_allowed` (logical): Whether OTO orders are allowed.
@@ -198,16 +202,56 @@ BinanceMarketData <- R6::R6Class(
     #'   - `cancel_replace_allowed` (logical): Whether cancel-replace is allowed.
     #'   - `is_spot_trading_allowed` (logical): Whether spot trading is enabled.
     #'   - `is_margin_trading_allowed` (logical): Whether margin trading is enabled.
-    #'   - `filters` (list): List of filter objects (LOT_SIZE, PRICE_FILTER, etc.) — kept as list-column due to heterogeneous schemas.
-    #'   - `permissions` (character): Comma-separated trading permissions (e.g., `"SPOT,MARGIN"`).
+    #'   - `lot_min_qty` (numeric): Minimum order quantity from LOT_SIZE filter.
+    #'   - `lot_max_qty` (numeric): Maximum order quantity from LOT_SIZE filter.
+    #'   - `lot_step_size` (numeric): Quantity step size from LOT_SIZE filter.
+    #'   - `price_min` (numeric): Minimum price from PRICE_FILTER.
+    #'   - `price_max` (numeric): Maximum price from PRICE_FILTER.
+    #'   - `price_tick_size` (numeric): Price tick size from PRICE_FILTER.
+    #'   - `min_notional` (numeric): Minimum notional value from MIN_NOTIONAL filter.
+    #'   - `filters_raw` (character): JSON-encoded copy of the full per-symbol
+    #'     `filters` array. Preserves filter types not pulled into curated
+    #'     columns (`PERCENT_PRICE`, `PERCENT_PRICE_BY_SIDE`, `MARKET_LOT_SIZE`,
+    #'     `MAX_NUM_ORDERS`, `MAX_NUM_ALGO_ORDERS`, `MAX_NUM_ICEBERG_ORDERS`,
+    #'     `ICEBERG_PARTS`, `MAX_POSITION`, `TRAILING_DELTA`, ...). Recover
+    #'     with `jsonlite::fromJSON(dt$filters_raw[1])`. `NA` if Binance
+    #'     returned no filters for the symbol.
+    #'   - `permissions` (character): Semicolon-separated trading permissions
+    #'     (e.g., `"SPOT;MARGIN"`). Recover via
+    #'     `strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]`. **Note:**
+    #'     on newer symbols Binance often returns `permissions = []` and
+    #'     populates `permission_sets` instead. Prefer `permission_sets`
+    #'     for new code.
+    #'   - `permission_sets` (character): JSON string preserving
+    #'     Binance's array-of-arrays structure (e.g.
+    #'     `'[["SPOT","MARGIN"],["TRD_GRP_004"]]'`). Inner groupings
+    #'     carry semantic meaning — each inner array is an alternative
+    #'     permission set — so we don't flatten with `;`. Recover with
+    #'     `jsonlite::fromJSON(dt$permission_sets[1])`. `NA` when the
+    #'     symbol omits the field.
     #'   - `default_self_trade_prevention_mode` (character): Default STP mode.
-    #'   - `allowed_self_trade_prevention_modes` (character): Comma-separated allowed STP modes.
+    #'   - `allowed_self_trade_prevention_modes` (character): Semicolon-separated
+    #'     allowed STP modes.
+    #'
+    #' Exchange-wide metadata returned by the same endpoint
+    #' (`rateLimits`, `exchangeFilters`, `sors`) is exposed via sibling
+    #' methods — see [`get_rate_limits()`][BinanceMarketData] and
+    #' [`get_exchange_filters()`][BinanceMarketData]. The scalar
+    #' `serverTime` is available via the existing
+    #' [`get_server_time()`][BinanceMarketData].
     #'
     #' @examples
     #' \dontrun{
     #' market <- BinanceMarketData$new()
     #' info <- market$get_exchange_info("BTCUSDT")
     #' print(info[, .(symbol, status, base_asset, quote_asset)])
+    #'
+    #' # Recover filter types not in curated columns
+    #' jsonlite::fromJSON(info$filters_raw[1])
+    #'
+    #' # Exchange-wide metadata via sibling methods
+    #' market$get_rate_limits()
+    #' market$get_exchange_filters()
     #' }
     get_exchange_info = function(symbol = NULL, symbols = NULL) {
       query <- list()
@@ -226,13 +270,79 @@ BinanceMarketData <- R6::R6Class(
           if (is.null(syms) || length(syms) == 0) {
             return(data.table::data.table()[])
           }
-          # Comma-join simple string arrays before passing to as_dt_row
-          syms <- lapply(syms, function(s) {
-            for (field in c("orderTypes", "permissions", "allowedSelfTradePreventionModes")) {
-              if (!is.null(s[[field]]) && is.list(s[[field]])) {
-                s[[field]] <- paste(unlist(s[[field]]), collapse = ",")
+
+          # Helper to extract a specific filter field from the raw filters list
+          .extract_filter <- function(filters, filter_type, field) {
+            if (is.null(filters) || length(filters) == 0) {
+              return(NA_real_)
+            }
+            for (f in filters) {
+              if (!is.null(f$filterType) && f$filterType == filter_type) {
+                val <- f[[field]]
+                if (!is.null(val)) {
+                  return(as.numeric(val))
+                }
               }
             }
+            return(NA_real_)
+          }
+
+          # Extract filter values into flat fields, semicolon-join string
+          # arrays, and JSON-encode the raw filters list (so filter
+          # types we don't pull out into curated columns — PERCENT_PRICE,
+          # MARKET_LOT_SIZE, MAX_NUM_ORDERS, ICEBERG_PARTS,
+          # TRAILING_DELTA, etc. — are still reachable).
+          syms <- lapply(syms, function(s) {
+            # Flat string arrays → `;`-collapse via the shared helper.
+            s <- collapse_string_array_fields(
+              s,
+              c("orderTypes", "permissions", "allowedSelfTradePreventionModes")
+            )
+            # `permissionSets` is an ARRAY OF ARRAYS on Binance spot
+            # (e.g. `[["SPOT","MARGIN"], ["TRD_GRP_004"]]`), and the
+            # inner groupings carry semantic meaning — each inner array
+            # is an alternative permission set the user can satisfy.
+            # `;`-joining would flatten that information away, so we
+            # serialise the whole field as a JSON string. Recover the
+            # structure via `jsonlite::fromJSON(dt$permission_sets[1])`,
+            # which gives back a list-of-character-vectors. `NA` when
+            # the upstream field is absent.
+            ps <- s[["permissionSets"]]
+            if (is.null(ps) || length(ps) == 0L) {
+              s[["permissionSets"]] <- NA_character_
+            } else {
+              # auto_unbox = TRUE so each scalar string stays a scalar
+              # rather than being boxed into a length-1 array. The
+              # list-of-list outer structure is preserved.
+              s[["permissionSets"]] <- as.character(
+                jsonlite::toJSON(ps, auto_unbox = TRUE)
+              )
+            }
+            # Extract filter values as flat numeric fields
+            raw_filters <- s$filters
+            s$lot_min_qty <- .extract_filter(raw_filters, "LOT_SIZE", "minQty")
+            s$lot_max_qty <- .extract_filter(raw_filters, "LOT_SIZE", "maxQty")
+            s$lot_step_size <- .extract_filter(raw_filters, "LOT_SIZE", "stepSize")
+            s$price_min <- .extract_filter(raw_filters, "PRICE_FILTER", "minPrice")
+            s$price_max <- .extract_filter(raw_filters, "PRICE_FILTER", "maxPrice")
+            s$price_tick_size <- .extract_filter(raw_filters, "PRICE_FILTER", "tickSize")
+            # Current API uses NOTIONAL; legacy symbols may use MIN_NOTIONAL
+            min_not <- .extract_filter(raw_filters, "NOTIONAL", "minNotional")
+            if (is.na(min_not)) {
+              min_not <- .extract_filter(raw_filters, "MIN_NOTIONAL", "minNotional")
+            }
+            s$min_notional <- min_not
+            # Preserve the full filters array as a JSON string so filter
+            # types we don't pull into curated columns are still
+            # reachable. Recover with `jsonlite::fromJSON(dt$filters_raw[1])`.
+            if (is.null(raw_filters) || length(raw_filters) == 0L) {
+              s$filters_raw <- NA_character_
+            } else {
+              s$filters_raw <- as.character(
+                jsonlite::toJSON(raw_filters, auto_unbox = TRUE)
+              )
+            }
+            s$filters <- NULL
             return(s)
           })
           dt <- data.table::rbindlist(
@@ -240,6 +350,93 @@ BinanceMarketData <- R6::R6Class(
             fill = TRUE
           )
           return(dt[])
+        }
+      ))
+    },
+
+    #' @description
+    #' Get Exchange Rate Limits
+    #'
+    #' Retrieves the exchange-wide API rate-limit rules (request weight
+    #' per minute, orders per second / per day, etc.). These rules apply
+    #' to every method that hits the API, not to any single symbol —
+    #' so they live on a dedicated sibling method rather than being
+    #' replicated on each row of `get_exchange_info()`.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/api/v3/exchangeInfo`
+    #' (returns the same payload as [`get_exchange_info()`][BinanceMarketData];
+    #' this method extracts the `rateLimits` slice.)
+    #'
+    #' ### Official Documentation
+    #' [Binance Exchange Info](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints#exchange-information)
+    #' Verified: 2026-05-22
+    #'
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
+    #'   with one row per rate-limit rule. Columns:
+    #'   - `rate_limit_type` (character): `"REQUEST_WEIGHT"`, `"ORDERS"`,
+    #'     `"RAW_REQUESTS"`.
+    #'   - `interval` (character): `"SECOND"`, `"MINUTE"`, `"DAY"`.
+    #'   - `interval_num` (integer): Multiplier for `interval`.
+    #'   - `limit` (integer): Maximum requests / orders permitted in the
+    #'     interval.
+    #'
+    #'   Empty `data.table` if Binance returned no `rateLimits` block.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' market <- BinanceMarketData$new()
+    #' market$get_rate_limits()
+    #' }
+    get_rate_limits = function() {
+      return(private$.request(
+        endpoint = "/api/v3/exchangeInfo",
+        auth = FALSE,
+        .parser = function(data) {
+          rl <- data$rateLimits
+          if (is.null(rl) || length(rl) == 0L) {
+            return(data.table::data.table()[])
+          }
+          return(as_dt_list(rl)[])
+        }
+      ))
+    },
+
+    #' @description
+    #' Get Exchange-Wide Filters
+    #'
+    #' Retrieves the exchange-wide filter rules (e.g. `EXCHANGE_MAX_NUM_ORDERS`,
+    #' `EXCHANGE_MAX_NUM_ALGO_ORDERS`). These constrain the user across all
+    #' symbols rather than per-symbol, so they're a sibling method to
+    #' `get_exchange_info()`.
+    #'
+    #' Almost always empty in practice — Binance reserves the field
+    #' for future use but currently leaves it as `[]` on most accounts.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/api/v3/exchangeInfo`
+    #' (returns the same payload as [`get_exchange_info()`][BinanceMarketData];
+    #' this method extracts the `exchangeFilters` slice.)
+    #'
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
+    #'   with one row per exchange-wide filter rule. Empty when Binance
+    #'   returns no `exchangeFilters` (the common case).
+    #'
+    #' @examples
+    #' \dontrun{
+    #' market <- BinanceMarketData$new()
+    #' market$get_exchange_filters()
+    #' }
+    get_exchange_filters = function() {
+      return(private$.request(
+        endpoint = "/api/v3/exchangeInfo",
+        auth = FALSE,
+        .parser = function(data) {
+          ef <- data$exchangeFilters
+          if (is.null(ef) || length(ef) == 0L) {
+            return(data.table::data.table()[])
+          }
+          return(as_dt_list(ef)[])
         }
       ))
     },
@@ -255,8 +452,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/ticker/price`
     #'
     #' ### Official Documentation
-    #' [Binance Symbol Price Ticker](https://binance-docs.github.io/apidocs/spot/en/#symbol-price-ticker)
-    #' Verified: 2026-03-10
+    #' [Binance Symbol Price Ticker](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#symbol-price-ticker)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -297,8 +494,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/ticker/price`
     #'
     #' ### Official Documentation
-    #' [Binance Symbol Price Ticker](https://binance-docs.github.io/apidocs/spot/en/#symbol-price-ticker)
-    #' Verified: 2026-03-10
+    #' [Binance Symbol Price Ticker](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#symbol-price-ticker)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -341,8 +538,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/ticker/bookTicker`
     #'
     #' ### Official Documentation
-    #' [Binance Symbol Order Book Ticker](https://binance-docs.github.io/apidocs/spot/en/#symbol-order-book-ticker)
-    #' Verified: 2026-03-10
+    #' [Binance Symbol Order Book Ticker](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#symbol-order-book-ticker)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -394,8 +591,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/ticker/24hr`
     #'
     #' ### Official Documentation
-    #' [Binance 24hr Ticker Price Change Statistics](https://binance-docs.github.io/apidocs/spot/en/#24hr-ticker-price-change-statistics)
-    #' Verified: 2026-03-10
+    #' [Binance 24hr Ticker Price Change Statistics](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#24hr-ticker-price-change-statistics)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -478,6 +675,45 @@ BinanceMarketData <- R6::R6Class(
       ))
     },
 
+    #' @description
+    #' Get 24hr Ticker Statistics for All Symbols
+    #'
+    #' Retrieves rolling 24-hour price change statistics for all trading pairs
+    #' in a single request.
+    #'
+    #' ### API Endpoint
+    #' `GET https://api.binance.com/api/v3/ticker/24hr` (no symbol parameter)
+    #'
+    #' ### Official Documentation
+    #' [Binance 24hr Ticker Price Change Statistics](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#24hr-ticker-price-change-statistics)
+    #'
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with same
+    #'   columns as `get_24hr_stats()`, one row per symbol.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' market <- BinanceMarketData$new()
+    #' all_stats <- market$get_all_24hr_stats()
+    #' print(all_stats[1:5, .(symbol, last_price, price_change_percent, volume)])
+    #' }
+    get_all_24hr_stats = function() {
+      return(private$.request(
+        endpoint = "/api/v3/ticker/24hr",
+        auth = FALSE,
+        .parser = function(data) {
+          dt <- as_dt_list(data)
+          if (nrow(dt) > 0) {
+            for (col in c("open_time", "close_time")) {
+              if (col %in% names(dt)) {
+                dt[, (col) := ms_to_datetime(get(col))]
+              }
+            }
+          }
+          return(dt[])
+        }
+      ))
+    },
+
     # ---- Average Price ----
 
     #' @description
@@ -489,8 +725,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/avgPrice`
     #'
     #' ### Official Documentation
-    #' [Binance Current Average Price](https://binance-docs.github.io/apidocs/spot/en/#current-average-price)
-    #' Verified: 2026-03-10
+    #' [Binance Current Average Price](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#current-average-price)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -540,8 +776,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/depth`
     #'
     #' ### Official Documentation
-    #' [Binance Order Book](https://binance-docs.github.io/apidocs/spot/en/#order-book)
-    #' Verified: 2026-03-10
+    #' [Binance Order Book](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#order-book)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -598,8 +834,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/trades`
     #'
     #' ### Official Documentation
-    #' [Binance Recent Trades List](https://binance-docs.github.io/apidocs/spot/en/#recent-trades-list)
-    #' Verified: 2026-03-10
+    #' [Binance Recent Trades List](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#recent-trades-list)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -664,8 +900,8 @@ BinanceMarketData <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/klines`
     #'
     #' ### Official Documentation
-    #' [Binance Kline/Candlestick Data](https://binance-docs.github.io/apidocs/spot/en/#kline-candlestick-data)
-    #' Verified: 2026-03-10
+    #' [Binance Kline/Candlestick Data](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#klinecandlestick-data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -777,15 +1013,13 @@ BinanceMarketData <- R6::R6Class(
           rlang::abort("Both `startTime` and `endTime` are required when `fetch_all = TRUE`.")
         }
         # Convert ms strings back to POSIXct if needed
-        from <- if (inherits(startTime, "POSIXct")) {
-          startTime
-        } else {
-          as.POSIXct(as.numeric(startTime) / 1000, origin = "1970-01-01", tz = "UTC")
+        from <- startTime
+        if (!inherits(startTime, "POSIXct")) {
+          from <- as.POSIXct(as.numeric(startTime) / 1000, origin = "1970-01-01", tz = "UTC")
         }
-        to <- if (inherits(endTime, "POSIXct")) {
-          endTime
-        } else {
-          as.POSIXct(as.numeric(endTime) / 1000, origin = "1970-01-01", tz = "UTC")
+        to <- endTime
+        if (!inherits(endTime, "POSIXct")) {
+          to <- as.POSIXct(as.numeric(endTime) / 1000, origin = "1970-01-01", tz = "UTC")
         }
         return(binance_fetch_klines(
           symbol = symbol,

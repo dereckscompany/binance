@@ -235,7 +235,7 @@ Lists available Simple Earn flexible products, optionally filtered by asset.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Simple-Earn-Flexible-Product-List}{Binance Simple Earn Flexible List}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -253,6 +253,11 @@ Verified: 2026-03-10
     \{
       "asset": "USDT",
       "latestAnnualPercentageRate": "0.03250000",
+      "tierAnnualPercentageRate": \{
+        "0-5BTC": 0.05,
+        "5-10BTC": 0.03
+      \},
+      "airDropPercentageRate": "0.05000000",
       "canPurchase": true,
       "canRedeem": true,
       "isSoldOut": false,
@@ -293,6 +298,12 @@ Verified: 2026-03-10
 \itemize{
 \item \code{asset} (character): Asset symbol (e.g., \code{"USDT"}).
 \item \code{latest_annual_percentage_rate} (character): Current annual yield rate.
+\item \code{tier_annual_percentage_rate} (character): JSON-encoded
+per-tier APR map (dynamic keys like \code{"0-5BTC"}, \code{"5-10BTC"}).
+Recover via \code{jsonlite::fromJSON(dt$tier_annual_percentage_rate[1])}.
+\code{NA} when the field is absent.
+\item \code{air_drop_percentage_rate} (character): Air-drop APR if the
+product currently carries one.
 \item \code{can_purchase} (logical): Whether new subscriptions are accepted.
 \item \code{can_redeem} (logical): Whether redemptions are allowed.
 \item \code{is_sold_out} (logical): Whether the product is sold out.
@@ -331,7 +342,7 @@ Lists available Simple Earn locked products, optionally filtered by asset.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Simple-Earn-Locked-Product-List}{Binance Simple Earn Locked List}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -343,6 +354,10 @@ Verified: 2026-03-10
 
 \subsection{JSON Response}{
 
+Shape captured 2026-05-22 from the live docs. Binance renamed
+\code{detail.apy} → \code{detail.apr} and added the extra-reward / boost
+fields; older internal examples that still show \code{apy} are stale.
+
 \if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
   "total": 1,
   "rows": [
@@ -353,7 +368,15 @@ Verified: 2026-03-10
         "rewardAsset": "BTC",
         "duration": 30,
         "renewable": true,
-        "apy": "0.05000000"
+        "isSoldOut": false,
+        "apr": "0.05000000",
+        "status": "CREATED",
+        "subscriptionStartTime": 1646182276000,
+        "extraRewardAsset": "BNB",
+        "extraRewardAPR": "0.01000000",
+        "boostRewardAsset": "BTC",
+        "boostApr": "0.00100000",
+        "boostEndTime": 1646182276000
       \},
       "quota": \{
         "totalPersonalQuota": "10.00000000",
@@ -387,11 +410,34 @@ Verified: 2026-03-10
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per product and the following columns:
+\code{data.table} with \strong{one row per product} and the following
+columns. Nested \code{detail} and \code{quota} objects are wide-prefixed
+(\verb{detail_*} and \verb{quota_*}) per the package's "no list columns"
+policy. Field names mirror the current Binance API
+(verified 2026-05-22):
 \itemize{
 \item \code{project_id} (character): Unique project identifier.
-\item \code{detail} (list): Nested product details (asset, reward asset, duration, APY).
-\item \code{quota} (list): Nested quota details (total personal quota, minimum).
+\item \code{detail_asset} (character): Subscription asset (e.g. \code{"BTC"}).
+\item \code{detail_reward_asset} (character): Reward asset.
+\item \code{detail_duration} (integer): Lock-up duration in days.
+\item \code{detail_renewable} (logical): Whether the product auto-renews.
+\item \code{detail_is_sold_out} (logical): Whether the offering is currently
+sold out (no new subscriptions accepted).
+\item \code{detail_apr} (character): Annual percentage rate. NOTE: Binance
+renamed this from \code{apy} → \code{apr} on the live API; older docs
+that show \code{apy} are stale.
+\item \code{detail_status} (character): Product lifecycle state (e.g.
+\code{"CREATED"}, \code{"PURCHASING"}).
+\item \code{detail_subscription_start_time} (numeric): Subscription open
+timestamp in milliseconds.
+\item \code{detail_extra_reward_asset} (character): Additional reward
+asset, if the product carries a boost.
+\item \code{detail_extra_reward_apr} (character): Extra reward APR.
+\item \code{detail_boost_reward_asset} (character): Boost reward asset.
+\item \code{detail_boost_apr} (character): Boost APR.
+\item \code{detail_boost_end_time} (numeric): Boost end timestamp in ms.
+\item \code{quota_total_personal_quota} (character): Per-user maximum.
+\item \code{quota_minimum} (character): Per-user minimum.
 }
 }
 \subsection{Examples}{
@@ -422,7 +468,7 @@ Subscribes to a Simple Earn flexible product.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/earn}{Binance Simple Earn Flexible Subscribe}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -512,7 +558,7 @@ Subscribes to a Simple Earn locked product.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Subscribe-Locked-Product}{Binance Simple Earn Locked Subscribe}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -600,7 +646,7 @@ Redeems from a Simple Earn flexible product.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Redeem-Flexible-Product}{Binance Simple Earn Flexible Redeem}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -690,7 +736,7 @@ Redeems from a Simple Earn locked product.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/earn/Redeem-Locked-Product}{Binance Simple Earn Locked Redeem}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -765,7 +811,7 @@ Retrieves current flexible earn positions, optionally filtered by asset or produ
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Flexible-Product-Position}{Binance Simple Earn Flexible Position}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -777,15 +823,28 @@ Verified: 2026-03-10
 
 \subsection{JSON Response}{
 
+Shape captured 2026-05-22 from the live docs.
+
 \if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
   "total": 1,
   "rows": [
     \{
-      "totalAmount": "100.00000000",
-      "latestAnnualPercentageRate": "0.03250000",
+      "totalAmount": "75.46000000",
+      "tierAnnualPercentageRate": \{
+        "0-5BTC": 0.05,
+        "5-10BTC": 0.03
+      \},
+      "latestAnnualPercentageRate": "0.02599895",
+      "yesterdayAirdropPercentageRate": "0.02599895",
       "asset": "USDT",
+      "airDropAsset": "BETH",
       "canRedeem": true,
+      "collateralAmount": "232.23123213",
       "productId": "USDT001",
+      "yesterdayRealTimeRewards": "0.10293829",
+      "cumulativeBonusRewards": "0.22759183",
+      "cumulativeRealTimeRewards": "0.22759183",
+      "cumulativeTotalRewards": "0.45459183",
       "autoSubscribe": true
     \}
   ]
@@ -822,9 +881,27 @@ Verified: 2026-03-10
 \itemize{
 \item \code{total_amount} (character): Total amount in the position.
 \item \code{latest_annual_percentage_rate} (character): Current annual yield rate.
+\item \code{tier_annual_percentage_rate} (character, optional):
+JSON-encoded per-tier APR map when the position carries
+tier-based rates (dynamic keys like \code{"0-5BTC"}). Recover via
+\code{jsonlite::fromJSON(dt$tier_annual_percentage_rate[1])}.
+\item \code{yesterday_airdrop_percentage_rate} (character): Air-drop APR
+for the previous accrual period.
 \item \code{asset} (character): Asset symbol (e.g., \code{"USDT"}).
+\item \code{air_drop_asset} (character): Asset paid as an air-drop reward,
+if any.
 \item \code{can_redeem} (logical): Whether redemption is allowed.
+\item \code{collateral_amount} (character): Amount currently locked as
+collateral, if the position is being used as such.
 \item \code{product_id} (character): Product identifier.
+\item \code{yesterday_real_time_rewards} (character): Real-time rewards
+accrued in the previous period.
+\item \code{cumulative_bonus_rewards} (character): Cumulative bonus
+rewards earned on this position.
+\item \code{cumulative_real_time_rewards} (character): Cumulative
+real-time rewards.
+\item \code{cumulative_total_rewards} (character): Cumulative total
+rewards (bonus + real-time).
 \item \code{auto_subscribe} (logical): Whether auto-subscription is enabled.
 }
 }
@@ -857,7 +934,7 @@ position ID, or project ID.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Locked-Product-Position}{Binance Simple Earn Locked Position}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -869,24 +946,49 @@ Verified: 2026-03-10
 
 \subsection{JSON Response}{
 
+Shape captured 2026-05-22 from the live docs. NOTE: Binance
+returns the rate as uppercase \code{APY} (not \code{apy}); our snake_case
+converter lowers it to \code{apy} in the data.table.
+
 \if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
-  "total": 1,
   "rows": [
     \{
-      "positionId": "12345",
-      "projectId": "BTC30d001",
-      "asset": "BTC",
-      "amount": "0.01000000",
-      "purchaseTime": 1661493146000,
-      "duration": 30,
-      "accrualDays": 15,
-      "rewardAsset": "BTC",
-      "apy": "0.05000000",
-      "isRenewable": true,
-      "isAutoRenew": true,
-      "redeemDate": 1664085146000
+      "positionId": 123123,
+      "parentPositionId": 123122,
+      "projectId": "Axs*90",
+      "asset": "AXS",
+      "amount": "122.09202928",
+      "purchaseTime": 1646182276000,
+      "duration": "60",
+      "accrualDays": "4",
+      "rewardAsset": "AXS",
+      "APY": "0.2032",
+      "rewardAmt": "5.17181528",
+      "extraRewardAsset": "BNB",
+      "extraRewardAPR": "0.0203",
+      "estExtraRewardAmt": "5.17181528",
+      "boostRewardAsset": "AXS",
+      "boostApr": "0.0121",
+      "totalBoostRewardAmt": "3.98201829",
+      "nextPay": "1.29295383",
+      "nextPayDate": 1646697600000,
+      "payPeriod": "1",
+      "redeemAmountEarly": "2802.24068892",
+      "rewardsEndDate": 1651449600000,
+      "deliverDate": 1651536000000,
+      "redeemPeriod": "1",
+      "redeemingAmt": "232.2323",
+      "redeemTo": "FLEXIBLE",
+      "partialAmtDeliverDate": 1651536000000,
+      "canRedeemEarly": true,
+      "canFastRedemption": true,
+      "autoSubscribe": true,
+      "type": "AUTO",
+      "status": "HOLDING",
+      "canReStake": true
     \}
-  ]
+  ],
+  "total": 1
 \}
 }\if{html}{\out{</div>}}
 }
@@ -919,17 +1021,48 @@ Verified: 2026-03-10
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per position and the following columns:
+\code{data.table} with one row per position and the following columns
+(snake-case names; Binance's uppercase \code{APY} lowers to \code{apy}):
 \itemize{
-\item \code{position_id} (character): Position identifier.
-\item \code{project_id} (character): Project identifier.
-\item \code{asset} (character): Asset symbol.
+\item \code{position_id} (numeric): Locked position identifier.
+\item \code{parent_position_id} (numeric): Parent position identifier
+(cross-reference for auto-renewed positions).
+\item \code{project_id} (character): Locked project identifier.
+\item \code{asset} (character): Locked asset symbol.
 \item \code{amount} (character): Locked amount.
 \item \code{purchase_time} (numeric): Subscription timestamp in ms.
-\item \code{duration} (integer): Lock duration in days.
-\item \code{accrual_days} (integer): Number of days interest has accrued.
-\item \code{reward_asset} (character): Reward asset symbol.
-\item \code{apy} (character): Annual percentage yield.
+\item \code{duration} (character): Lock duration in days.
+\item \code{accrual_days} (character): Days interest has accrued.
+\item \code{reward_asset} (character): Earned asset symbol.
+\item \code{apy} (character): Annual percentage yield (snake_case of \code{APY}).
+\item \code{reward_amt} (character): Earned amount so far.
+\item \code{extra_reward_asset} (character): Asset for the extra staking
+reward, if any.
+\item \code{extra_reward_apr} (character): APR of the extra staking reward.
+\item \code{est_extra_reward_amt} (character): Estimated extra reward
+distributed at maturity.
+\item \code{boost_reward_asset} (character): Boost reward asset.
+\item \code{boost_apr} (character): Boost APR.
+\item \code{total_boost_reward_amt} (character): Total boost reward earned.
+\item \code{next_pay} (character): Next estimated reward payment.
+\item \code{next_pay_date} (numeric): Next reward payment timestamp (ms).
+\item \code{pay_period} (character): Payment cycle in days.
+\item \code{redeem_amount_early} (character): Amount available for early
+redemption.
+\item \code{rewards_end_date} (numeric): Rewards accrual end timestamp (ms).
+\item \code{deliver_date} (numeric): Redemption arrival timestamp (ms).
+\item \code{redeem_period} (character): Redemption interval in days.
+\item \code{redeeming_amt} (character): Amount currently being redeemed.
+\item \code{redeem_to} (character): Destination on redemption
+(\code{"FLEXIBLE"} or \code{"SPOT"}).
+\item \code{partial_amt_deliver_date} (numeric): Arrival time of partial
+redemption.
+\item \code{can_redeem_early} (logical): Whether early redemption is allowed.
+\item \code{can_fast_redemption} (logical): Whether fast redemption is allowed.
+\item \code{auto_subscribe} (logical): Whether auto-subscription is enabled.
+\item \code{type} (character): Order type (\code{"AUTO"} or \code{"NORMAL"}).
+\item \code{status} (character): Position status (e.g., \code{"HOLDING"}).
+\item \code{can_re_stake} (logical): Whether re-staking is available.
 }
 }
 \subsection{Examples}{
@@ -960,7 +1093,7 @@ Retrieves subscription history for flexible earn products.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/history}{Binance Simple Earn Flexible Subscription Record}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1062,7 +1195,7 @@ Retrieves subscription history for locked earn products.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Locked-Subscription-Record}{Binance Simple Earn Locked Subscription Record}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1165,7 +1298,7 @@ Retrieves redemption history for flexible earn products.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Flexible-Redemption-Record}{Binance Simple Earn Flexible Redemption Record}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1267,7 +1400,7 @@ Retrieves redemption history for locked earn products.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/simple_earn/flexible-locked/history/Get-Locked-Redemption-Record}{Binance Simple Earn Locked Redemption Record}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{

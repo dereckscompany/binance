@@ -21,7 +21,7 @@
 #' `get_price_index` is a public endpoint requiring no authentication.
 #'
 #' ### Official Documentation
-#' [Binance Margin Account/Trade](https://binance-docs.github.io/apidocs/spot/en/#margin-account-trade)
+#' [Binance Margin Account/Trade](https://developers.binance.com/docs/margin_trading/trade)
 #'
 #' ### Endpoints Covered
 #' | Method | Endpoint | Auth |
@@ -72,9 +72,9 @@ BinanceMarginData <- R6::R6Class(
     #' `GET https://api.binance.com/sapi/v1/margin/allPairs`
     #'
     #' ### Official Documentation
-    #' [Binance Get All Cross Margin Pairs](https://binance-docs.github.io/apidocs/spot/en/#get-all-cross-margin-pairs-market_data)
+    #' [Binance Get All Cross Margin Pairs](https://developers.binance.com/docs/margin_trading/market-data/Get-All-Cross-Margin-Pairs)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -148,9 +148,9 @@ BinanceMarginData <- R6::R6Class(
     #' `GET https://api.binance.com/sapi/v1/margin/isolated/allPairs`
     #'
     #' ### Official Documentation
-    #' [Binance Get All Isolated Margin Symbol](https://binance-docs.github.io/apidocs/spot/en/#get-all-isolated-margin-symbol-user_data)
+    #' [Binance Get All Isolated Margin Symbol](https://developers.binance.com/docs/margin_trading/market-data/Get-All-Isolated-Margin-Symbol)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -222,9 +222,9 @@ BinanceMarginData <- R6::R6Class(
     #' `GET https://api.binance.com/sapi/v1/margin/priceIndex`
     #'
     #' ### Official Documentation
-    #' [Binance Query Margin PriceIndex](https://binance-docs.github.io/apidocs/spot/en/#query-margin-priceindex-market_data)
+    #' [Binance Query Margin PriceIndex](https://developers.binance.com/docs/margin_trading/market-data/Query-Margin-PriceIndex)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -274,9 +274,9 @@ BinanceMarginData <- R6::R6Class(
     #' `GET https://api.binance.com/sapi/v1/margin/interestRateHistory`
     #'
     #' ### Official Documentation
-    #' [Binance Query Margin Interest Rate History](https://binance-docs.github.io/apidocs/spot/en/#query-margin-interest-rate-history-user_data)
+    #' [Binance Query Margin Interest Rate History](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Query-Margin-Interest-Rate-History)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -355,9 +355,9 @@ BinanceMarginData <- R6::R6Class(
     #' `GET https://api.binance.com/sapi/v1/margin/crossMarginData`
     #'
     #' ### Official Documentation
-    #' [Binance Query Cross Margin Fee Data](https://binance-docs.github.io/apidocs/spot/en/#query-cross-margin-fee-data-user_data)
+    #' [Binance Query Cross Margin Fee Data](https://developers.binance.com/docs/margin_trading/account/Query-Cross-Margin-Fee-Data)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -402,7 +402,9 @@ BinanceMarginData <- R6::R6Class(
     #'   - `borrowable` (logical): Whether borrowing is allowed.
     #'   - `daily_interest` (character): Daily interest rate as string.
     #'   - `yearly_interest` (character): Yearly interest rate as string.
-    #'   - `marginable_pairs` (list): List of marginable trading pairs.
+    #'   - `marginable_pair` (character): Marginable trading pair (one row per coin-pair combination).
+    #'
+    #' When a coin has multiple marginable pairs, coin-level fields are repeated on each row.
     #'
     #' @examples
     #' \dontrun{
@@ -424,7 +426,19 @@ BinanceMarginData <- R6::R6Class(
           if (is.null(data) || length(data) == 0) {
             return(data.table::data.table()[])
           }
-          return(as_dt_list(data)[])
+          # Expand marginablePairs to long format before building rows
+          rows <- lapply(data, function(item) {
+            pairs <- item$marginablePairs
+            item$marginablePairs <- NULL
+            dt <- as_dt_row(item)
+            if (!is.null(pairs) && length(pairs) > 0) {
+              pair_vals <- unlist(pairs)
+              dt <- dt[rep(1L, length(pair_vals))]
+              dt[, marginable_pair := pair_vals]
+            }
+            return(dt)
+          })
+          return(data.table::rbindlist(rows, fill = TRUE)[])
         }
       ))
     },
@@ -440,9 +454,9 @@ BinanceMarginData <- R6::R6Class(
     #' `GET https://api.binance.com/sapi/v1/margin/isolatedMarginData`
     #'
     #' ### Official Documentation
-    #' [Binance Query Isolated Margin Fee Data](https://binance-docs.github.io/apidocs/spot/en/#query-isolated-margin-fee-data-user_data)
+    #' [Binance Query Isolated Margin Fee Data](https://developers.binance.com/docs/margin_trading/account/Query-Isolated-Margin-Fee-Data)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```

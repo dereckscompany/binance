@@ -65,7 +65,7 @@ test_that("binance_build_request sends correct endpoint", {
   resp <- mock_binance_response(data = list(serverTime = 123))
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   binance_build_request(
@@ -93,7 +93,7 @@ test_that("binance_build_request drops NULL query params", {
   resp <- mock_binance_response(data = list(symbol = "BTCUSDT"))
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   binance_build_request(
@@ -110,7 +110,7 @@ test_that("binance_build_request signs when keys provided", {
   resp <- mock_binance_response(data = list())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   keys <- list(api_key = "test-key", api_secret = "test-secret")
@@ -128,7 +128,7 @@ test_that("binance_build_request does not sign when keys is NULL", {
   resp <- mock_binance_response(data = list(serverTime = 123))
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   binance_build_request(

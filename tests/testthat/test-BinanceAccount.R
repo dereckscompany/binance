@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://api.binance.com"
 
 new_account <- function() {
-  BinanceAccount$new(keys = KEYS, base_url = BASE)
+  return(BinanceAccount$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -18,13 +18,15 @@ test_that("BinanceAccount inherits from BinanceBase", {
 
 # -- get_account_info --
 
-test_that("get_account_info returns data.table with permissions expanded", {
+test_that("get_account_info returns a single-row data.table with permissions `;`-collapsed", {
   resp <- mock_binance_response(data = mock_account_data())
   httr2::local_mocked_responses(function(req) resp)
 
   info <- new_account()$get_account_info()
   expect_s3_class(info, "data.table")
-  # mock_account_data has permissions = list("SPOT"), so 1 row
+  # mock_account_data has permissions = list("SPOT") — collapsed to a
+  # scalar character. Schema is one row per account regardless of how
+  # many permissions are present.
   expect_equal(nrow(info), 1L)
   expect_true("maker_commission" %in% names(info))
   expect_true("taker_commission" %in% names(info))
@@ -38,16 +40,21 @@ test_that("get_account_info returns data.table with permissions expanded", {
   expect_equal(info$uid[1], 354937868L)
   expect_true(info$can_trade[1])
 
-  # commission_rates preserved, permissions expanded to scalar column
-  expect_true("commission_rates" %in% names(info))
-  expect_true("permission" %in% names(info))
-  expect_equal(info$permission, "SPOT")
+  # commission_rates flattened to wide columns.
+  expect_true("commission_rates_maker" %in% names(info))
+  expect_true("commission_rates_taker" %in% names(info))
+  expect_true("commission_rates_buyer" %in% names(info))
+  expect_true("commission_rates_seller" %in% names(info))
+  expect_false("commission_rates" %in% names(info))
 
-  # No list-column 'permissions' should exist
-  expect_false("permissions" %in% names(info))
+  # permissions is a single `;`-collapsed character column (cross-package
+  # convention via collapse_string_array_fields).
+  expect_true("permissions" %in% names(info))
+  expect_type(info$permissions, "character")
+  expect_equal(info$permissions, "SPOT")
 })
 
-test_that("get_account_info expands multiple permissions to long format", {
+test_that("get_account_info keeps one row even with multiple permissions (permissions `;`-joined)", {
   account_data <- mock_account_data()
   account_data$permissions <- list("SPOT", "MARGIN")
   resp <- mock_binance_response(data = account_data)
@@ -55,11 +62,16 @@ test_that("get_account_info expands multiple permissions to long format", {
 
   info <- new_account()$get_account_info()
   expect_s3_class(info, "data.table")
-  expect_equal(nrow(info), 2L)
-  expect_equal(info$permission, c("SPOT", "MARGIN"))
-  # Parent fields repeated
-  expect_equal(info$maker_commission, c(15L, 15L))
-  expect_equal(info$account_type, c("SPOT", "SPOT"))
+  expect_equal(nrow(info), 1L)
+  expect_equal(info$permissions, "SPOT;MARGIN")
+  # Round-trip via strsplit recovers the original vector.
+  expect_equal(
+    strsplit(info$permissions, ";", fixed = TRUE)[[1]],
+    c("SPOT", "MARGIN")
+  )
+  # No list columns anywhere.
+  list_cols <- names(info)[vapply(info, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
 })
 
 test_that("get_account_info does not include balances", {
@@ -91,7 +103,7 @@ test_that("get_balances passes omitZeroBalances parameter", {
   resp <- mock_binance_response(data = mock_account_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_account()$get_balances(omitZeroBalances = TRUE)
@@ -135,7 +147,7 @@ test_that("get_trades passes query parameters", {
   resp <- mock_binance_response(data = mock_my_trades_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_account()$get_trades("BTCUSDT", limit = 50)

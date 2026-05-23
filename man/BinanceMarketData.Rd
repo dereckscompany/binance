@@ -34,13 +34,15 @@ All methods are public endpoints requiring no authentication.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#market-data-endpoints}{Binance Spot Market Data}
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints}{Binance Spot Market Data}
 }
 
 \subsection{Endpoints Covered}{\tabular{lll}{
    Method \tab Endpoint \tab Auth \cr
    get_server_time \tab GET /api/v3/time \tab No \cr
    get_exchange_info \tab GET /api/v3/exchangeInfo \tab No \cr
+   get_rate_limits \tab GET /api/v3/exchangeInfo \tab No \cr
+   get_exchange_filters \tab GET /api/v3/exchangeInfo \tab No \cr
    get_ticker \tab GET /api/v3/ticker/price \tab No \cr
    get_all_tickers \tab GET /api/v3/ticker/price \tab No \cr
    get_book_ticker \tab GET /api/v3/ticker/bookTicker \tab No \cr
@@ -90,6 +92,31 @@ cat("Clock drift:", round(drift * 1000), "ms\n")
 market <- BinanceMarketData$new()
 info <- market$get_exchange_info("BTCUSDT")
 print(info[, .(symbol, status, base_asset, quote_asset)])
+
+# Recover filter types not in curated columns
+jsonlite::fromJSON(info$filters_raw[1])
+
+# Exchange-wide metadata via sibling methods
+market$get_rate_limits()
+market$get_exchange_filters()
+}
+
+## ------------------------------------------------
+## Method `BinanceMarketData$get_rate_limits`
+## ------------------------------------------------
+
+\dontrun{
+market <- BinanceMarketData$new()
+market$get_rate_limits()
+}
+
+## ------------------------------------------------
+## Method `BinanceMarketData$get_exchange_filters`
+## ------------------------------------------------
+
+\dontrun{
+market <- BinanceMarketData$new()
+market$get_exchange_filters()
 }
 
 ## ------------------------------------------------
@@ -130,6 +157,16 @@ print(book)
 market <- BinanceMarketData$new()
 stats <- market$get_24hr_stats("BTCUSDT")
 print(stats[, .(symbol, last_price, price_change_percent, volume)])
+}
+
+## ------------------------------------------------
+## Method `BinanceMarketData$get_all_24hr_stats`
+## ------------------------------------------------
+
+\dontrun{
+market <- BinanceMarketData$new()
+all_stats <- market$get_all_24hr_stats()
+print(all_stats[1:5, .(symbol, last_price, price_change_percent, volume)])
 }
 
 ## ------------------------------------------------
@@ -187,10 +224,13 @@ all_klines <- market$get_klines(
 \itemize{
 \item \href{#method-BinanceMarketData-get_server_time}{\code{BinanceMarketData$get_server_time()}}
 \item \href{#method-BinanceMarketData-get_exchange_info}{\code{BinanceMarketData$get_exchange_info()}}
+\item \href{#method-BinanceMarketData-get_rate_limits}{\code{BinanceMarketData$get_rate_limits()}}
+\item \href{#method-BinanceMarketData-get_exchange_filters}{\code{BinanceMarketData$get_exchange_filters()}}
 \item \href{#method-BinanceMarketData-get_ticker}{\code{BinanceMarketData$get_ticker()}}
 \item \href{#method-BinanceMarketData-get_all_tickers}{\code{BinanceMarketData$get_all_tickers()}}
 \item \href{#method-BinanceMarketData-get_book_ticker}{\code{BinanceMarketData$get_book_ticker()}}
 \item \href{#method-BinanceMarketData-get_24hr_stats}{\code{BinanceMarketData$get_24hr_stats()}}
+\item \href{#method-BinanceMarketData-get_all_24hr_stats}{\code{BinanceMarketData$get_all_24hr_stats()}}
 \item \href{#method-BinanceMarketData-get_avg_price}{\code{BinanceMarketData$get_avg_price()}}
 \item \href{#method-BinanceMarketData-get_depth}{\code{BinanceMarketData$get_depth()}}
 \item \href{#method-BinanceMarketData-get_trades}{\code{BinanceMarketData$get_trades()}}
@@ -220,8 +260,8 @@ Useful for detecting clock drift and ensuring HMAC signatures are valid.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#check-server-time}{Binance Check Server Time}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints#check-server-time}{Binance Check Server Time}
+Verified: 2026-05-22
 }
 
 \subsection{Automated Trading Usage}{
@@ -282,8 +322,8 @@ precision, order types, filters, and trading status for each symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#exchange-information}{Binance Exchange Info}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints#exchange-information}{Binance Exchange Info}
+Verified: 2026-05-22
 }
 
 \subsection{Automated Trading Usage}{
@@ -360,7 +400,9 @@ fields returned by the API, converted to snake_case. Key columns include:
 \item \code{quote_asset} (character): Quote asset code (e.g., \code{"USDT"}).
 \item \code{quote_asset_precision} (integer): Decimal precision for quote asset quantities.
 \item \code{quote_precision} (integer): Decimal precision for quote asset prices.
-\item \code{order_types} (character): Comma-separated allowed order types (e.g., \code{"LIMIT,MARKET"}).
+\item \code{order_types} (character): Semicolon-separated allowed order types
+(e.g., \code{"LIMIT;MARKET"}). Recover the vector via
+\code{strsplit(dt$order_types[1], ";", fixed = TRUE)[[1]]}.
 \item \code{iceberg_allowed} (logical): Whether iceberg orders are allowed.
 \item \code{oco_allowed} (logical): Whether OCO orders are allowed.
 \item \code{oto_allowed} (logical): Whether OTO orders are allowed.
@@ -369,11 +411,44 @@ fields returned by the API, converted to snake_case. Key columns include:
 \item \code{cancel_replace_allowed} (logical): Whether cancel-replace is allowed.
 \item \code{is_spot_trading_allowed} (logical): Whether spot trading is enabled.
 \item \code{is_margin_trading_allowed} (logical): Whether margin trading is enabled.
-\item \code{filters} (list): List of filter objects (LOT_SIZE, PRICE_FILTER, etc.) — kept as list-column due to heterogeneous schemas.
-\item \code{permissions} (character): Comma-separated trading permissions (e.g., \code{"SPOT,MARGIN"}).
+\item \code{lot_min_qty} (numeric): Minimum order quantity from LOT_SIZE filter.
+\item \code{lot_max_qty} (numeric): Maximum order quantity from LOT_SIZE filter.
+\item \code{lot_step_size} (numeric): Quantity step size from LOT_SIZE filter.
+\item \code{price_min} (numeric): Minimum price from PRICE_FILTER.
+\item \code{price_max} (numeric): Maximum price from PRICE_FILTER.
+\item \code{price_tick_size} (numeric): Price tick size from PRICE_FILTER.
+\item \code{min_notional} (numeric): Minimum notional value from MIN_NOTIONAL filter.
+\item \code{filters_raw} (character): JSON-encoded copy of the full per-symbol
+\code{filters} array. Preserves filter types not pulled into curated
+columns (\code{PERCENT_PRICE}, \code{PERCENT_PRICE_BY_SIDE}, \code{MARKET_LOT_SIZE},
+\code{MAX_NUM_ORDERS}, \code{MAX_NUM_ALGO_ORDERS}, \code{MAX_NUM_ICEBERG_ORDERS},
+\code{ICEBERG_PARTS}, \code{MAX_POSITION}, \code{TRAILING_DELTA}, ...). Recover
+with \code{jsonlite::fromJSON(dt$filters_raw[1])}. \code{NA} if Binance
+returned no filters for the symbol.
+\item \code{permissions} (character): Semicolon-separated trading permissions
+(e.g., \code{"SPOT;MARGIN"}). Recover via
+\code{strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]}. \strong{Note:}
+on newer symbols Binance often returns \verb{permissions = []} and
+populates \code{permission_sets} instead. Prefer \code{permission_sets}
+for new code.
+\item \code{permission_sets} (character): JSON string preserving
+Binance's array-of-arrays structure (e.g.
+\code{'[["SPOT","MARGIN"],["TRD_GRP_004"]]'}). Inner groupings
+carry semantic meaning — each inner array is an alternative
+permission set — so we don't flatten with \verb{;}. Recover with
+\code{jsonlite::fromJSON(dt$permission_sets[1])}. \code{NA} when the
+symbol omits the field.
 \item \code{default_self_trade_prevention_mode} (character): Default STP mode.
-\item \code{allowed_self_trade_prevention_modes} (character): Comma-separated allowed STP modes.
+\item \code{allowed_self_trade_prevention_modes} (character): Semicolon-separated
+allowed STP modes.
 }
+
+Exchange-wide metadata returned by the same endpoint
+(\code{rateLimits}, \code{exchangeFilters}, \code{sors}) is exposed via sibling
+methods — see \code{\link[=BinanceMarketData]{get_rate_limits()}} and
+\code{\link[=BinanceMarketData]{get_exchange_filters()}}. The scalar
+\code{serverTime} is available via the existing
+\code{\link[=BinanceMarketData]{get_server_time()}}.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -381,6 +456,106 @@ fields returned by the API, converted to snake_case. Key columns include:
 market <- BinanceMarketData$new()
 info <- market$get_exchange_info("BTCUSDT")
 print(info[, .(symbol, status, base_asset, quote_asset)])
+
+# Recover filter types not in curated columns
+jsonlite::fromJSON(info$filters_raw[1])
+
+# Exchange-wide metadata via sibling methods
+market$get_rate_limits()
+market$get_exchange_filters()
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BinanceMarketData-get_rate_limits"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceMarketData-get_rate_limits}{}}}
+\subsection{Method \code{get_rate_limits()}}{
+Get Exchange Rate Limits
+
+Retrieves the exchange-wide API rate-limit rules (request weight
+per minute, orders per second / per day, etc.). These rules apply
+to every method that hits the API, not to any single symbol —
+so they live on a dedicated sibling method rather than being
+replicated on each row of \code{get_exchange_info()}.
+\subsection{API Endpoint}{
+
+\verb{GET https://api.binance.com/api/v3/exchangeInfo}
+(returns the same payload as \code{\link[=BinanceMarketData]{get_exchange_info()}};
+this method extracts the \code{rateLimits} slice.)
+}
+
+\subsection{Official Documentation}{
+
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints#exchange-information}{Binance Exchange Info}
+Verified: 2026-05-22
+}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_rate_limits()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
+with one row per rate-limit rule. Columns:
+\itemize{
+\item \code{rate_limit_type} (character): \code{"REQUEST_WEIGHT"}, \code{"ORDERS"},
+\code{"RAW_REQUESTS"}.
+\item \code{interval} (character): \code{"SECOND"}, \code{"MINUTE"}, \code{"DAY"}.
+\item \code{interval_num} (integer): Multiplier for \code{interval}.
+\item \code{limit} (integer): Maximum requests / orders permitted in the
+interval.
+}
+
+Empty \code{data.table} if Binance returned no \code{rateLimits} block.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
+market$get_rate_limits()
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BinanceMarketData-get_exchange_filters"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceMarketData-get_exchange_filters}{}}}
+\subsection{Method \code{get_exchange_filters()}}{
+Get Exchange-Wide Filters
+
+Retrieves the exchange-wide filter rules (e.g. \code{EXCHANGE_MAX_NUM_ORDERS},
+\code{EXCHANGE_MAX_NUM_ALGO_ORDERS}). These constrain the user across all
+symbols rather than per-symbol, so they're a sibling method to
+\code{get_exchange_info()}.
+
+Almost always empty in practice — Binance reserves the field
+for future use but currently leaves it as \verb{[]} on most accounts.
+\subsection{API Endpoint}{
+
+\verb{GET https://api.binance.com/api/v3/exchangeInfo}
+(returns the same payload as \code{\link[=BinanceMarketData]{get_exchange_info()}};
+this method extracts the \code{exchangeFilters} slice.)
+}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_exchange_filters()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
+with one row per exchange-wide filter rule. Empty when Binance
+returns no \code{exchangeFilters} (the common case).
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
+market$get_exchange_filters()
 }
 }
 \if{html}{\out{</div>}}
@@ -402,8 +577,8 @@ Retrieves the latest price for a specific symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#symbol-price-ticker}{Binance Symbol Price Ticker}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#symbol-price-ticker}{Binance Symbol Price Ticker}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -462,8 +637,8 @@ Retrieves the latest price for all trading pairs in a single request.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#symbol-price-ticker}{Binance Symbol Price Ticker}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#symbol-price-ticker}{Binance Symbol Price Ticker}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -519,8 +694,8 @@ Retrieves the best bid and ask price and quantity for a symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#symbol-order-book-ticker}{Binance Symbol Order Book Ticker}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#symbol-order-book-ticker}{Binance Symbol Order Book Ticker}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -588,8 +763,8 @@ Retrieves rolling 24-hour price change statistics for a symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#24hr-ticker-price-change-statistics}{Binance 24hr Ticker Price Change Statistics}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#24hr-ticker-price-change-statistics}{Binance 24hr Ticker Price Change Statistics}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -676,6 +851,44 @@ print(stats[, .(symbol, last_price, price_change_percent, volume)])
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BinanceMarketData-get_all_24hr_stats"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceMarketData-get_all_24hr_stats}{}}}
+\subsection{Method \code{get_all_24hr_stats()}}{
+Get 24hr Ticker Statistics for All Symbols
+
+Retrieves rolling 24-hour price change statistics for all trading pairs
+in a single request.
+\subsection{API Endpoint}{
+
+\verb{GET https://api.binance.com/api/v3/ticker/24hr} (no symbol parameter)
+}
+
+\subsection{Official Documentation}{
+
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#24hr-ticker-price-change-statistics}{Binance 24hr Ticker Price Change Statistics}
+}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_all_24hr_stats()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with same
+columns as \code{get_24hr_stats()}, one row per symbol.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
+all_stats <- market$get_all_24hr_stats()
+print(all_stats[1:5, .(symbol, last_price, price_change_percent, volume)])
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarketData-get_avg_price"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarketData-get_avg_price}{}}}
 \subsection{Method \code{get_avg_price()}}{
@@ -689,8 +902,8 @@ Retrieves the current average price for a symbol (5-minute weighted average).
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#current-average-price}{Binance Current Average Price}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#current-average-price}{Binance Current Average Price}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -750,8 +963,8 @@ Retrieves the order book (bids and asks) for a symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#order-book}{Binance Order Book}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#order-book}{Binance Order Book}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -825,8 +1038,8 @@ Retrieves the most recent trades for a symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#recent-trades-list}{Binance Recent Trades List}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#recent-trades-list}{Binance Recent Trades List}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -902,8 +1115,8 @@ Retrieves historical kline/candlestick data for a symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#kline-candlestick-data}{Binance Kline/Candlestick Data}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#klinecandlestick-data}{Binance Kline/Candlestick Data}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{

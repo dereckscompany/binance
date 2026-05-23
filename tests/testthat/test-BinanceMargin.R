@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://api.binance.com"
 
 new_margin <- function() {
-  BinanceMargin$new(keys = KEYS, base_url = BASE)
+  return(BinanceMargin$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -36,7 +36,7 @@ test_that("add_borrow sends POST to correct endpoint", {
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_margin()$add_borrow(asset = "USDT", amount = 100)
@@ -49,7 +49,7 @@ test_that("add_borrow converts amount to character in query", {
   resp <- mock_binance_response(data = mock_margin_borrow_response())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$add_borrow(asset = "BTC", amount = 0.5)
@@ -85,7 +85,7 @@ test_that("add_order sends POST to correct endpoint", {
   resp <- mock_binance_response(data = mock_margin_order_response())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$add_order(
@@ -148,7 +148,7 @@ test_that("cancel_order sends DELETE method", {
   resp <- mock_binance_response(data = mock_margin_cancel_order_data())
   httr2::local_mocked_responses(function(req) {
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_margin()$cancel_order("BTCUSDT", orderId = 28)
@@ -184,7 +184,7 @@ test_that("get_order sends GET to correct endpoint", {
   resp <- mock_binance_response(data = mock_margin_query_order_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_order("BTCUSDT", orderId = 28)
@@ -199,12 +199,17 @@ test_that("get_account returns data.table with margin account info", {
 
   dt <- new_margin()$get_account()
   expect_s3_class(dt, "data.table")
-  expect_equal(nrow(dt), 1L)
+  # user_assets expanded to long format: 2 assets in mock => 2 rows
+  expect_equal(nrow(dt), 2L)
   expect_true("borrow_enabled" %in% names(dt))
   expect_true("margin_level" %in% names(dt))
-  expect_true("user_assets" %in% names(dt))
-  expect_equal(dt$account_type, "MARGIN")
-  expect_true(dt$borrow_enabled)
+  # user_assets is no longer a list-column; expanded with user_asset_ prefix
+  expect_false("user_assets" %in% names(dt))
+  expect_true("user_asset_asset" %in% names(dt))
+  expect_true("user_asset_free" %in% names(dt))
+  expect_true("user_asset_borrowed" %in% names(dt))
+  expect_equal(dt$account_type, c("MARGIN", "MARGIN"))
+  expect_true(all(dt$borrow_enabled))
 })
 
 test_that("get_account sends GET to correct endpoint", {
@@ -212,7 +217,7 @@ test_that("get_account sends GET to correct endpoint", {
   resp <- mock_binance_response(data = mock_margin_account_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_account()
@@ -238,7 +243,7 @@ test_that("get_max_borrowable passes asset parameter", {
   resp <- mock_binance_response(data = mock_max_borrowable_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_max_borrowable(asset = "BTC")
@@ -275,7 +280,7 @@ test_that("get_interest_history sends GET to correct endpoint", {
   resp <- mock_binance_response(data = mock_margin_interest_history_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_interest_history(asset = "USDT")
@@ -312,7 +317,7 @@ test_that("get_trades sends GET to correct endpoint with symbol", {
   resp <- mock_binance_response(data = mock_margin_trades_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_trades("BTCUSDT")
@@ -345,7 +350,7 @@ test_that("get_isolated_account sends GET to correct endpoint", {
   resp <- mock_binance_response(data = mock_isolated_margin_account_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_margin()$get_isolated_account()
@@ -401,7 +406,7 @@ test_that("add_isolated_transfer sends POST to correct endpoint", {
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_margin()$add_isolated_transfer(
@@ -413,4 +418,182 @@ test_that("add_isolated_transfer sends POST to correct endpoint", {
   )
   expect_true(grepl("sapi/v1/margin/isolated/transfer", captured_url))
   expect_equal(captured_method, "POST")
+})
+
+# ---- Tests added to close 6 untested-method gaps in TRADE-20 ----
+
+# -- add_repay --
+
+test_that("add_repay returns data.table with tran_id (POST /sapi/v1/margin/borrow-repay)", {
+  resp <- mock_binance_response(data = mock_margin_borrow_response())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_margin()$add_repay(asset = "USDT", amount = 100)
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 1L)
+  expect_true("tran_id" %in% names(dt))
+  expect_equal(dt$tran_id, 100000001L)
+})
+
+test_that("add_repay sends POST with amount coerced to character", {
+  captured <- NULL
+  resp <- mock_binance_response(data = mock_margin_borrow_response())
+  httr2::local_mocked_responses(function(req) {
+    captured <<- req
+    return(resp)
+  })
+
+  new_margin()$add_repay(asset = "USDT", amount = 0.5)
+  expect_equal(captured$method, "POST")
+  expect_true(grepl("/sapi/v1/margin/borrow-repay", captured$url))
+})
+
+# -- cancel_all_orders --
+
+test_that("cancel_all_orders returns one row per cancelled order with transact_time as POSIXct", {
+  # Wrap a single cancel-order record in a list — endpoint returns an array.
+  resp <- mock_binance_response(data = list(mock_margin_cancel_order_data()))
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_margin()$cancel_all_orders("BTCUSDT")
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 1L)
+  expect_equal(dt$symbol, "BTCUSDT")
+  expect_equal(dt$status, "CANCELED")
+  expect_s3_class(dt$transact_time, "POSIXct")
+})
+
+test_that("cancel_all_orders sends DELETE to /sapi/v1/margin/openOrders", {
+  captured <- NULL
+  resp <- mock_binance_response(data = list(mock_margin_cancel_order_data()))
+  httr2::local_mocked_responses(function(req) {
+    captured <<- req
+    return(resp)
+  })
+
+  new_margin()$cancel_all_orders("BTCUSDT")
+  expect_equal(captured$method, "DELETE")
+  expect_true(grepl("/sapi/v1/margin/openOrders", captured$url))
+})
+
+test_that("cancel_all_orders returns empty data.table when there are no open margin orders", {
+  # Per the cross-package "no stub rows" convention, the previously-
+  # synthetic `(symbol, status = "cancelled")` row is replaced by an
+  # empty data.table.
+  resp <- mock_binance_response(data = list())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_margin()$cancel_all_orders("BTCUSDT")
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
+})
+
+# -- get_open_orders --
+
+test_that("get_open_orders returns one row per open order", {
+  resp <- mock_binance_response(data = list(mock_margin_query_order_data()))
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_margin()$get_open_orders("BTCUSDT")
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 1L)
+  expect_equal(dt$symbol, "BTCUSDT")
+  expect_equal(dt$status, "FILLED")
+})
+
+test_that("get_open_orders returns empty data.table when no open orders", {
+  resp <- mock_binance_response(data = list())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_margin()$get_open_orders("BTCUSDT")
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
+})
+
+test_that("get_open_orders hits /sapi/v1/margin/openOrders", {
+  captured_url <- NULL
+  resp <- mock_binance_response(data = list())
+  httr2::local_mocked_responses(function(req) {
+    captured_url <<- req$url
+    return(resp)
+  })
+
+  new_margin()$get_open_orders("BTCUSDT")
+  expect_true(grepl("/sapi/v1/margin/openOrders", captured_url))
+})
+
+# -- get_all_orders --
+
+test_that("get_all_orders returns one row per order", {
+  resp <- mock_binance_response(data = list(mock_margin_query_order_data()))
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_margin()$get_all_orders("BTCUSDT")
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 1L)
+  expect_equal(dt$symbol, "BTCUSDT")
+})
+
+test_that("get_all_orders hits /sapi/v1/margin/allOrders", {
+  captured_url <- NULL
+  resp <- mock_binance_response(data = list())
+  httr2::local_mocked_responses(function(req) {
+    captured_url <<- req$url
+    return(resp)
+  })
+
+  new_margin()$get_all_orders("BTCUSDT")
+  expect_true(grepl("/sapi/v1/margin/allOrders", captured_url))
+})
+
+# -- get_max_transferable --
+
+test_that("get_max_transferable returns single-row data.table with amount + borrow_limit", {
+  resp <- mock_binance_response(data = mock_margin_max_transferable_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_margin()$get_max_transferable(asset = "USDT")
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 1L)
+  expect_equal(dt$amount, "3.59498107")
+  expect_equal(dt$borrow_limit, "10000")
+})
+
+test_that("get_max_transferable hits /sapi/v1/margin/maxTransferable with asset param", {
+  captured_url <- NULL
+  resp <- mock_binance_response(data = mock_margin_max_transferable_data())
+  httr2::local_mocked_responses(function(req) {
+    captured_url <<- req$url
+    return(resp)
+  })
+
+  new_margin()$get_max_transferable(asset = "BTC")
+  expect_true(grepl("/sapi/v1/margin/maxTransferable", captured_url))
+  expect_true(grepl("asset=BTC", captured_url))
+})
+
+# -- get_force_liquidation_history --
+
+test_that("get_force_liquidation_history returns one row per liquidation with time as POSIXct", {
+  resp <- mock_binance_response(data = mock_margin_force_liquidation_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_margin()$get_force_liquidation_history()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 1L)
+  expect_equal(dt$symbol, "BTCUSDT")
+  expect_equal(dt$side, "SELL")
+  expect_s3_class(dt$time, "POSIXct")
+})
+
+test_that("get_force_liquidation_history hits /sapi/v1/margin/forceLiquidationRec", {
+  captured_url <- NULL
+  resp <- mock_binance_response(data = mock_margin_force_liquidation_data())
+  httr2::local_mocked_responses(function(req) {
+    captured_url <<- req$url
+    return(resp)
+  })
+
+  new_margin()$get_force_liquidation_history()
+  expect_true(grepl("/sapi/v1/margin/forceLiquidationRec", captured_url))
 })

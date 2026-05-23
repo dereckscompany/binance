@@ -89,7 +89,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Borrow-Repay](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -158,7 +158,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Borrow-Repay](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -228,7 +228,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin New Order](https://developers.binance.com/docs/margin_trading/trade/Margin-Account-New-Order)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -385,7 +385,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Cancel Order](https://developers.binance.com/docs/margin_trading/trade/Margin-Account-Cancel-Order)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -476,7 +476,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Cancel All Orders](https://developers.binance.com/docs/margin_trading/trade/Margin-Account-Cancel-All-Open-Orders)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -525,9 +525,9 @@ BinanceMargin <- R6::R6Class(
     #'   - `transact_time` (POSIXct): Cancellation time.
     #'   - `is_isolated` (logical): Whether this is an isolated margin order.
     #'
-    #'   When no open orders exist, a single confirmation row with columns:
-    #'   - `symbol` (character): The requested trading pair.
-    #'   - `status` (character): `"cancelled"`.
+    #'   When there were no open orders to cancel, the return is an
+    #'   empty `data.table` (per the cross-package "no stub rows"
+    #'   convention — the absence of an error is the success signal).
     #'
     #' @examples
     #' \dontrun{
@@ -545,8 +545,10 @@ BinanceMargin <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
+          # Per the cross-package "empty response → empty data.table,
+          # no stub rows" convention: no orders to cancel ⇒ empty table.
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table(symbol = symbol, status = "cancelled")[])
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
@@ -570,7 +572,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Query Order](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Order)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -663,7 +665,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Open Orders](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Open-Orders)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -753,7 +755,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin All Orders](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-All-Orders)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -879,7 +881,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Account](https://developers.binance.com/docs/margin_trading/account/Query-Cross-Margin-Account-Details)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -929,7 +931,9 @@ BinanceMargin <- R6::R6Class(
     #' - `trade_enabled` (logical): Whether trading is enabled.
     #' - `transfer_enabled` (logical): Whether transfers are enabled.
     #' - `account_type` (character): Account type (`"MARGIN"`).
-    #' - `user_assets` (list): List of asset balance objects.
+    #' - `user_asset_*`: Per-asset fields prefixed with `user_asset_` (one row per asset).
+    #'
+    #' When the account has multiple assets, account-level fields are repeated on each row.
     #'
     #' @examples
     #' \dontrun{
@@ -942,7 +946,18 @@ BinanceMargin <- R6::R6Class(
         endpoint = "/sapi/v1/margin/account",
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
-          return(as_dt_row(data)[])
+          user_assets <- data$userAssets
+          data$userAssets <- NULL
+          dt <- as_dt_row(data)
+          # Expand userAssets to long format: one row per asset
+          if (!is.null(user_assets) && length(user_assets) > 0) {
+            assets_dt <- as_dt_list(user_assets)
+            asset_names <- names(assets_dt)
+            data.table::setnames(assets_dt, asset_names, paste0("user_asset_", asset_names))
+            dt <- dt[rep(1L, nrow(assets_dt))]
+            dt <- cbind(dt, assets_dt)
+          }
+          return(dt[])
         }
       ))
     },
@@ -958,7 +973,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Max Borrowable](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Query-Max-Borrow)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1012,7 +1027,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Max Transferable](https://developers.binance.com/docs/margin_trading/transfer/Query-Max-Transfer-Out-Amount)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1032,6 +1047,8 @@ BinanceMargin <- R6::R6Class(
     #' @param recvWindow Integer or NULL; max 60000.
     #' @return `data.table` with one row and the following columns:
     #' - `amount` (character): Maximum transferable-out amount.
+    #' - `borrow_limit` (character): Remaining borrow limit for the
+    #'   account, in the same asset units as `amount`.
     #'
     #' @examples
     #' \dontrun{
@@ -1066,7 +1083,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Interest History](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Get-Interest-History)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1160,7 +1177,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Force Liquidation](https://developers.binance.com/docs/margin_trading/trade/Get-Force-Liquidation-Record)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1251,7 +1268,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Margin Trades](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Trade-List)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1354,7 +1371,7 @@ BinanceMargin <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Isolated Margin Account](https://developers.binance.com/docs/margin_trading/account/Query-Isolated-Margin-Account-Info)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1463,9 +1480,13 @@ BinanceMargin <- R6::R6Class(
     #' `POST https://api.binance.com/sapi/v1/margin/isolated/transfer`
     #'
     #' ### Official Documentation
-    #' [Binance Isolated Margin Transfer](https://developers.binance.com/docs/margin_trading/transfer/Isolated-Margin-Account-Transfer)
+    #' [Binance Universal Transfer](https://developers.binance.com/docs/wallet/asset/user-universal-transfer)
+    #' (Binance retired the dedicated isolated-margin-transfer doc
+    #' page; the universal-transfer endpoint subsumes it. The
+    #' `sapi/v1/margin/isolated/transfer` REST endpoint this wrapper
+    #' calls still works at the time of writing.)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```

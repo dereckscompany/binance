@@ -68,6 +68,15 @@ mock_exchange_info_data <- function() {
           list(filterType = "LOT_SIZE", minQty = "0.00001000", maxQty = "9000.00000000", stepSize = "0.00001000")
         ),
         permissions = list("SPOT", "MARGIN"),
+        # New field Binance now returns alongside `permissions` — array
+        # of arrays where each inner array is an alternative permission
+        # set the user can satisfy. Live API often returns
+        # `permissions = []` on newer symbols and the meaningful data
+        # lives here. Inner groupings carry semantic meaning, so the
+        # parser serialises the whole field as a JSON string column
+        # (recover with `jsonlite::fromJSON`) rather than `;`-joining
+        # which would erase the boundaries.
+        permissionSets = list(list("SPOT", "MARGIN", "TRD_GRP_004")),
         defaultSelfTradePreventionMode = "EXPIRE_MAKER",
         allowedSelfTradePreventionModes = list("EXPIRE_TAKER", "EXPIRE_MAKER", "EXPIRE_BOTH")
       ),
@@ -92,6 +101,8 @@ mock_exchange_info_data <- function() {
           list(filterType = "PRICE_FILTER", minPrice = "0.01000000", maxPrice = "100000.00", tickSize = "0.01000000")
         ),
         permissions = list("SPOT"),
+        # ETH symbol intentionally omits `permissionSets` to exercise
+        # the missing-field branch (helper should set it to NA).
         defaultSelfTradePreventionMode = "NONE",
         allowedSelfTradePreventionModes = list("NONE")
       )
@@ -151,6 +162,39 @@ mock_24hr_stats_data <- function() {
     firstId = 1000L,
     lastId = 2000L,
     count = 1001L
+  ))
+}
+
+#' All-symbol 24hr stats — array form returned by /api/v3/ticker/24hr
+#' when no `symbol` query param is supplied. Two-symbol fixture is
+#' enough to exercise the row-binding and timestamp-conversion paths.
+#' @export
+mock_all_24hr_stats_data <- function() {
+  return(list(
+    mock_24hr_stats_data(),
+    list(
+      symbol = "ETHUSDT",
+      priceChange = "-25.10",
+      priceChangePercent = "-0.800",
+      weightedAvgPrice = "3120.50",
+      prevClosePrice = "3155.00",
+      lastPrice = "3130.40",
+      lastQty = "0.01000000",
+      bidPrice = "3130.30",
+      bidQty = "0.50000000",
+      askPrice = "3130.40",
+      askQty = "0.75000000",
+      openPrice = "3155.50",
+      highPrice = "3160.00",
+      lowPrice = "3100.00",
+      volume = "12345.67",
+      quoteVolume = "38567890.12",
+      openTime = 1729073059033,
+      closeTime = 1729159459033,
+      firstId = 5000L,
+      lastId = 6000L,
+      count = 1001L
+    )
   ))
 }
 
@@ -850,12 +894,20 @@ mock_sub_account_status_data <- function() {
 #' Flexible products
 #' @export
 mock_flexible_products_data <- function() {
+  # Shape verified 2026-05-22 against the live docs; includes
+  # `tierAnnualPercentageRate` — a nested object with DYNAMIC keys
+  # (per-product size tiers). Parser serialises it as a JSON string
+  # so the structure is preserved.
   return(list(
     total = 1L,
     rows = list(
       list(
         asset = "USDT",
         latestAnnualPercentageRate = "0.03250000",
+        tierAnnualPercentageRate = list(
+          "0-5BTC" = 0.05,
+          "5-10BTC" = 0.03
+        ),
         canPurchase = TRUE,
         canRedeem = TRUE,
         isSoldOut = FALSE,
@@ -870,6 +922,10 @@ mock_flexible_products_data <- function() {
 }
 
 #' Locked products
+#' Shape captured 2026-05-22 from
+#' https://developers.binance.com/docs/simple_earn/flexible-locked/account/Get-Simple-Earn-Locked-Product-List
+#' — `detail.apr` (not `apy`), plus `isSoldOut`, `status`,
+#' `subscriptionStartTime`, and the extra-reward / boost fields.
 #' @export
 mock_locked_products_data <- function() {
   return(list(
@@ -877,7 +933,21 @@ mock_locked_products_data <- function() {
     rows = list(
       list(
         projectId = "BTC30d001",
-        detail = list(asset = "BTC", rewardAsset = "BTC", duration = 30L, renewable = TRUE, apy = "0.05000000"),
+        detail = list(
+          asset = "BTC",
+          rewardAsset = "BTC",
+          duration = 30L,
+          renewable = TRUE,
+          isSoldOut = FALSE,
+          apr = "0.05000000",
+          status = "CREATED",
+          subscriptionStartTime = 1646182276000,
+          extraRewardAsset = "BNB",
+          extraRewardAPR = "0.01000000",
+          boostRewardAsset = "BTC",
+          boostApr = "0.00100000",
+          boostEndTime = 1646182276000
+        ),
         quota = list(totalPersonalQuota = "10.00000000", minimum = "0.001")
       )
     )
@@ -1476,4 +1546,42 @@ mock_futures_income_data <- function() {
 #' @export
 mock_futures_position_mode_data <- function() {
   return(list(dualSidePosition = FALSE))
+}
+
+# ---- Mocks added to close 8 untested-method gaps in TRADE-20 ----
+
+#' Margin max transferable response
+#' Shape from https://developers.binance.com/docs/margin_trading/transfer/Query-Max-Transfer-Out-Amount
+#' @export
+mock_margin_max_transferable_data <- function() {
+  return(list(amount = "3.59498107", borrowLimit = "10000"))
+}
+
+#' Futures position-margin modify response
+#' Shape from https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Modify-Isolated-Position-Margin
+#' @export
+mock_futures_modify_position_margin_response <- function() {
+  return(list(
+    amount = 100.0,
+    code = 200L,
+    msg = "Successfully modify position margin.",
+    type = 1L
+  ))
+}
+
+#' Futures position-margin history response
+#' Shape from https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Get-Position-Margin-Change-History
+#' @export
+mock_futures_position_margin_history_data <- function() {
+  return(list(
+    list(
+      symbol = "BTCUSDT",
+      type = 1L,
+      deltaType = "INCREASE_MARGIN",
+      amount = "100.00000000",
+      asset = "USDT",
+      time = 1710000000000,
+      positionSide = "BOTH"
+    )
+  ))
 }

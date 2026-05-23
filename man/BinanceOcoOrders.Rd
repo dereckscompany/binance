@@ -26,7 +26,7 @@ All methods require authentication (valid API key and secret).
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#spot-account-trade}{Binance Spot Trading}
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints}{Binance Spot Trading}
 }
 
 \subsection{Endpoints Covered}{\tabular{lll}{
@@ -152,8 +152,8 @@ a limit order and a stop-loss (or stop-loss-limit) order.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#new-oco-trade}{Binance New OCO}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#order-lists}{Binance New OCO}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -252,7 +252,7 @@ Verified: 2026-03-10
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per child order (long format) and the following columns:
+\code{data.table} with one row per child order report (long format) and the following columns:
 \itemize{
 \item \code{order_list_id} (integer): OCO order list identifier (repeated per child order).
 \item \code{contingency_type} (character): Always \code{"OCO"}.
@@ -261,10 +261,17 @@ Verified: 2026-03-10
 \item \code{list_client_order_id} (character): Client-assigned list ID.
 \item \code{transact_time} (POSIXct): Transaction time.
 \item \code{symbol} (character): Trading pair from parent OCO.
-\item \code{order_symbol} (character): Trading pair from child order.
-\item \code{order_id} (integer): Child order ID.
-\item \code{client_order_id} (character): Child order client ID.
-\item \code{order_reports} (list): List of order report objects (kept as list-column).
+\item \code{order_report_symbol} (character): Trading pair from child order report.
+\item \code{order_report_order_id} (integer): Child order ID.
+\item \code{order_report_client_order_id} (character): Child order client ID.
+\item \code{order_report_transact_time} (numeric): Child order transaction time.
+\item \code{order_report_price} (character): Child order price.
+\item \code{order_report_orig_qty} (character): Child order original quantity.
+\item \code{order_report_executed_qty} (character): Child order executed quantity.
+\item \code{order_report_status} (character): Child order status (e.g., \code{"NEW"}).
+\item \code{order_report_type} (character): Child order type (e.g., \code{"STOP_LOSS_LIMIT"}, \code{"LIMIT_MAKER"}).
+\item \code{order_report_side} (character): Child order side.
+\item \code{order_report_stop_price} (character): Stop price (if applicable).
 }
 }
 \subsection{Examples}{
@@ -298,8 +305,8 @@ Cancels an entire OCO order list by order list ID or client order ID.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#cancel-oco-trade}{Binance Cancel OCO}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#order-lists}{Binance Cancel OCO}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -390,7 +397,12 @@ Verified: 2026-03-10
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per child order (long format) and the following columns:
+\code{data.table} with \strong{one row per child order report} (long
+format), matching the shape returned by \code{add_oco_order()}. The
+thinner \code{orders} array Binance returns is dropped in favour of
+the richer \code{orderReports} payload, which includes the
+cancellation status, prices, quantities, and stop price for
+each child order. Columns:
 \itemize{
 \item \code{order_list_id} (integer): OCO order list identifier (repeated per child order).
 \item \code{contingency_type} (character): Always \code{"OCO"}.
@@ -399,9 +411,16 @@ Verified: 2026-03-10
 \item \code{list_client_order_id} (character): Client-assigned list ID.
 \item \code{transact_time} (POSIXct): Cancellation time (if present).
 \item \code{symbol} (character): Trading pair from parent OCO.
-\item \code{order_symbol} (character): Trading pair from child order.
-\item \code{order_id} (integer): Child order ID.
-\item \code{client_order_id} (character): Child order client ID.
+\item \code{order_report_symbol} (character): Trading pair from child order.
+\item \code{order_report_order_id} (integer): Child order ID.
+\item \code{order_report_client_order_id} (character): Child order client ID.
+\item \code{order_report_price} (character): Child order price.
+\item \code{order_report_orig_qty} (character): Child order original quantity.
+\item \code{order_report_executed_qty} (character): Child order executed quantity.
+\item \code{order_report_status} (character): Child order status (e.g., \code{"CANCELED"}).
+\item \code{order_report_type} (character): Child order type.
+\item \code{order_report_side} (character): Child order side.
+\item \code{order_report_stop_price} (character): Stop price (if applicable).
 }
 }
 \subsection{Examples}{
@@ -432,8 +451,8 @@ original client order ID.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#query-oco-user_data}{Binance Query OCO}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-order-list-user_data}{Binance Query OCO}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -529,8 +548,8 @@ Retrieves all currently open OCO order lists.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#query-open-oco-user_data}{Binance Query Open OCO}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-open-order-lists-user_data}{Binance Query Open OCO}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -623,8 +642,8 @@ recent OCOs.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#query-all-oco-user_data}{Binance Query All OCO}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-all-order-lists-user_data}{Binance Query All OCO}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{

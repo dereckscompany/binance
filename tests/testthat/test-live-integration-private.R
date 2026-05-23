@@ -236,7 +236,7 @@ test_that("[LIVE] futures get_account returns data.table", {
   dt <- tryCatch(
     futures$get_account(),
     error = function(e) {
-      skip(paste("Futures account not available:", conditionMessage(e)))
+      return(skip(paste("Futures account not available:", conditionMessage(e))))
     }
   )
   expect_s3_class(dt, "data.table")
@@ -249,7 +249,7 @@ test_that("[LIVE] futures get_balances returns data.table", {
   dt <- tryCatch(
     futures$get_balances(),
     error = function(e) {
-      skip(paste("Futures account not available:", conditionMessage(e)))
+      return(skip(paste("Futures account not available:", conditionMessage(e))))
     }
   )
   expect_s3_class(dt, "data.table")
@@ -264,7 +264,7 @@ test_that("[LIVE] futures get_positions returns data.table", {
   dt <- tryCatch(
     futures$get_positions("BTCUSDT"),
     error = function(e) {
-      skip(paste("Futures account not available:", conditionMessage(e)))
+      return(skip(paste("Futures account not available:", conditionMessage(e))))
     }
   )
   expect_s3_class(dt, "data.table")
@@ -279,7 +279,7 @@ test_that("[LIVE] futures get_position_mode returns data.table", {
   dt <- tryCatch(
     futures$get_position_mode(),
     error = function(e) {
-      skip(paste("Futures account not available:", conditionMessage(e)))
+      return(skip(paste("Futures account not available:", conditionMessage(e))))
     }
   )
   expect_s3_class(dt, "data.table")
@@ -299,7 +299,7 @@ test_that("[LIVE] futures add_order_test validates without executing", {
       timeInForce = "GTC"
     ),
     error = function(e) {
-      skip(paste("Futures account not available:", conditionMessage(e)))
+      return(skip(paste("Futures account not available:", conditionMessage(e))))
     }
   )
   expect_s3_class(dt, "data.table")
@@ -310,7 +310,7 @@ test_that("[LIVE] futures get_open_orders returns data.table", {
   dt <- tryCatch(
     futures$get_open_orders("BTCUSDT"),
     error = function(e) {
-      skip(paste("Futures account not available:", conditionMessage(e)))
+      return(skip(paste("Futures account not available:", conditionMessage(e))))
     }
   )
   expect_s3_class(dt, "data.table")
@@ -321,7 +321,7 @@ test_that("[LIVE] futures get_income_history returns data.table", {
   dt <- tryCatch(
     futures$get_income_history(limit = 10),
     error = function(e) {
-      skip(paste("Futures account not available:", conditionMessage(e)))
+      return(skip(paste("Futures account not available:", conditionMessage(e))))
     }
   )
   expect_s3_class(dt, "data.table")

@@ -139,7 +139,7 @@ enabled. Returns a withdrawal ID on success.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/wallet/capital/withdraw}{Binance Withdraw}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{Automated Trading Usage}{
@@ -262,7 +262,7 @@ status, and time range. Max time range is 90 days.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/wallet/capital/withdraw-history}{Binance Withdraw History}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{Automated Trading Usage}{

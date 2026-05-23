@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://api.binance.com"
 
 new_trading <- function() {
-  BinanceTrading$new(keys = KEYS, base_url = BASE)
+  return(BinanceTrading$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -45,8 +45,8 @@ test_that("add_order returns order data.table with correct columns", {
 test_that("add_order expands fills to long format when present", {
   order_data <- mock_order_response()
   order_data$fills <- list(
-    list(price = "50000.00", qty = "0.00005000", commission = "0.00000005", commissionAsset = "BTC"),
-    list(price = "50001.00", qty = "0.00005000", commission = "0.00000005", commissionAsset = "BTC")
+    list(price = "50000.00", qty = "0.00005000", commission = "0.00000005", commissionAsset = "BTC", tradeId = 1L),
+    list(price = "50001.00", qty = "0.00005000", commission = "0.00000005", commissionAsset = "BTC", tradeId = 2L)
   )
   resp <- mock_binance_response(data = order_data)
   httr2::local_mocked_responses(function(req) resp)
@@ -64,14 +64,63 @@ test_that("add_order expands fills to long format when present", {
 
   expect_equal(dt$symbol, c("BTCUSDT", "BTCUSDT"))
   expect_equal(dt$order_id, c(28L, 28L))
-  # Fill columns are present with prefix
+  # Fill columns are present with prefix + 1-indexed fill_index.
   expect_true("fill_price" %in% names(dt))
   expect_true("fill_qty" %in% names(dt))
   expect_true("fill_commission" %in% names(dt))
   expect_true("fill_commission_asset" %in% names(dt))
+  expect_true("fill_index" %in% names(dt))
   expect_equal(dt$fill_price, c("50000.00", "50001.00"))
-  # No list-column 'fills' should exist
+  expect_equal(dt$fill_index, c(1L, 2L))
+  # No list-column 'fills' should exist.
   expect_false("fills" %in% names(dt))
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
+})
+
+test_that("add_order parser returns empty data.table on NULL data (no crash)", {
+  # Regression: parser used to do `fills <- data$fills` without
+  # guarding NULL, crashing with "$ operator applied to NULL" if
+  # upstream returned NULL (empty body / JSON-parse failure).
+  resp <- mock_binance_response(data = NULL)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_trading()$add_order(
+    type = "LIMIT",
+    symbol = "BTCUSDT",
+    side = "BUY",
+    price = 50000,
+    quantity = 0.0001
+  )
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
+})
+
+test_that("add_order with no fills still emits NA-filled fill_* columns (schema-stable)", {
+  # Default newOrderRespType for non-MARKET/LIMIT IOC/FOK is ACK or RESULT,
+  # neither of which includes `fills`. The returned table should still
+  # carry the fill_* columns as NA so downstream code that always reads
+  # `dt$fill_price` doesn't break on order types that omit fills.
+  order_data <- mock_order_response()
+  order_data$fills <- NULL
+  resp <- mock_binance_response(data = order_data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_trading()$add_order(
+    type = "LIMIT",
+    symbol = "BTCUSDT",
+    side = "BUY",
+    price = 50000,
+    quantity = 0.0001
+  )
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 1L)
+  for (col in c("fill_index", "fill_price", "fill_qty", "fill_commission", "fill_commission_asset", "fill_trade_id")) {
+    expect_true(col %in% names(dt), info = paste("missing column:", col))
+    expect_true(is.na(dt[[col]]), info = paste("expected NA in column:", col))
+  }
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
 })
 
 test_that("add_order sends correct endpoint", {
@@ -79,7 +128,7 @@ test_that("add_order sends correct endpoint", {
   resp <- mock_binance_response(data = mock_order_response())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_trading()$add_order(
@@ -100,7 +149,7 @@ test_that("add_order_test hits test endpoint and returns confirmation dt", {
   resp <- mock_binance_response(data = list())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   dt <- new_trading()$add_order_test(
@@ -112,11 +161,17 @@ test_that("add_order_test hits test endpoint and returns confirmation dt", {
   )
   expect_true(grepl("order/test", captured_url))
   expect_s3_class(dt, "data.table")
+  # `{}` on success is now reported as `validated = TRUE` — a single
+  # logical column rather than a synthetic stub row echoing the
+  # request (symbol/side/type). The absence of an error is the
+  # validation signal.
   expect_equal(nrow(dt), 1L)
-  expect_equal(dt$symbol, "BTCUSDT")
-  expect_equal(dt$side, "BUY")
-  expect_equal(dt$type, "LIMIT")
-  expect_equal(dt$status, "validated")
+  expect_true("validated" %in% names(dt))
+  expect_true(dt$validated)
+  # No echoed request fields in the success row — those weren't
+  # returned by Binance.
+  expect_false("symbol" %in% names(dt))
+  expect_false("status" %in% names(dt))
 })
 
 # -- cancel_order --
@@ -149,7 +204,7 @@ test_that("cancel_order sends DELETE method", {
   resp <- mock_binance_response(data = mock_cancel_order_data())
   httr2::local_mocked_responses(function(req) {
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_trading()$cancel_order("BTCUSDT", orderId = 28)
@@ -172,6 +227,18 @@ test_that("cancel_all_orders returns data.table with datetime", {
   expect_s3_class(dt$transact_time, "POSIXct")
 })
 
+test_that("cancel_all_orders returns empty data.table when there are no open orders (no stub row)", {
+  # Per the cross-package "no stub rows" convention, the previously-
+  # synthetic `(symbol, status = "cancelled")` row is replaced by an
+  # empty data.table. The absence of an error is the success signal.
+  resp <- mock_binance_response(data = list())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_trading()$cancel_all_orders("BTCUSDT")
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
+})
+
 test_that("cancel_all_orders sends DELETE to openOrders endpoint", {
   captured_url <- NULL
   captured_method <- NULL
@@ -179,7 +246,7 @@ test_that("cancel_all_orders sends DELETE to openOrders endpoint", {
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_trading()$cancel_all_orders("BTCUSDT")
@@ -254,7 +321,7 @@ test_that("get_all_orders passes query parameters", {
   resp <- mock_binance_response(data = mock_open_orders_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_trading()$get_all_orders("BTCUSDT", limit = 50)

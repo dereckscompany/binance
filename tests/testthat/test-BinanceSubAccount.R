@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://api.binance.com"
 
 new_sub <- function() {
-  BinanceSubAccount$new(keys = KEYS, base_url = BASE)
+  return(BinanceSubAccount$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -36,7 +36,7 @@ test_that("add_sub_account hits correct endpoint with POST", {
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_sub()$add_sub_account(subAccountString = "testsub01")
@@ -76,7 +76,7 @@ test_that("get_sub_accounts hits correct endpoint", {
   resp <- mock_binance_response(data = mock_sub_account_list_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_sub()$get_sub_accounts()
@@ -88,7 +88,7 @@ test_that("get_sub_accounts passes query parameters", {
   resp <- mock_binance_response(data = mock_sub_account_list_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_sub()$get_sub_accounts(email = "testsub01@virtual.com", page = 1, limit = 10)
@@ -127,7 +127,7 @@ test_that("get_balances hits correct endpoint", {
   resp <- mock_binance_response(data = mock_sub_account_balances_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_sub()$get_balances(email = "testsub01@virtual.com")
@@ -151,20 +151,52 @@ test_that("get_spot_summary hits correct endpoint", {
   resp <- mock_binance_response(data = list(totalCount = 2L, masterAccountTotalAsset = "0.5"))
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_sub()$get_spot_summary()
   expect_true(grepl("sapi/v1/sub-account/spotSummary", captured_url))
 })
 
-test_that("get_spot_summary returns data.table", {
-  resp <- mock_binance_response(data = list(totalCount = 2L, masterAccountTotalAsset = "0.5"))
+test_that("get_spot_summary returns empty data.table when no sub-accounts (no stub row)", {
+  # Previously this returned a synthetic 1-row table of just master-level
+  # fields. Per the cross-package "no stub rows" convention, zero
+  # sub-accounts → zero rows.
+  resp <- mock_binance_response(data = list(totalCount = 0L, masterAccountTotalAsset = "0"))
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_sub()$get_spot_summary()
   expect_s3_class(dt, "data.table")
-  expect_equal(nrow(dt), 1L)
+  expect_equal(nrow(dt), 0L)
+})
+
+test_that("get_spot_summary expands spotSubUserAssetBtcVoList to one row per sub-account", {
+  resp <- mock_binance_response(
+    data = list(
+      totalCount = 2L,
+      masterAccountTotalAsset = "0.5",
+      spotSubUserAssetBtcVoList = list(
+        list(email = "sub1@example.com", totalAsset = "0.1"),
+        list(email = "sub2@example.com", totalAsset = "0.4")
+      )
+    )
+  )
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_sub()$get_spot_summary()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 2L)
+  # Master-level summary fields replicated on each row.
+  expect_equal(unique(dt$total_count), 2L)
+  expect_equal(unique(dt$master_account_total_asset), "0.5")
+  # Sub-account-level fields with sub_user_ prefix.
+  expect_true("sub_user_email" %in% names(dt))
+  expect_true("sub_user_total_asset" %in% names(dt))
+  expect_equal(dt$sub_user_email, c("sub1@example.com", "sub2@example.com"))
+  expect_equal(dt$sub_user_total_asset, c("0.1", "0.4"))
+  # No list columns.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
 })
 
 # -- add_transfer --
@@ -193,7 +225,7 @@ test_that("add_transfer hits correct endpoint with POST", {
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_sub()$add_transfer(
@@ -262,7 +294,7 @@ test_that("get_transfer_history hits correct endpoint", {
   resp <- mock_binance_response(data = mock_sub_account_transfer_history_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_sub()$get_transfer_history()
@@ -274,7 +306,7 @@ test_that("get_transfer_history passes query parameters", {
   resp <- mock_binance_response(data = mock_sub_account_transfer_history_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_sub()$get_transfer_history(fromEmail = "master@test.com", page = 1, limit = 10)
@@ -296,19 +328,21 @@ test_that("get_transfer_history returns empty data.table when no results", {
 
 test_that("get_futures_account hits correct endpoint", {
   captured_url <- NULL
-  resp <- mock_binance_response(data = list(
-    futureAccountResp = list(
-      email = "sub@virtual.com",
-      asset = "USDT",
-      totalInitialMargin = "0.0",
-      assets = list(
-        list(asset = "USDT", walletBalance = "1500.00000000", marginBalance = "1500.00000000")
+  resp <- mock_binance_response(
+    data = list(
+      futureAccountResp = list(
+        email = "sub@virtual.com",
+        asset = "USDT",
+        totalInitialMargin = "0.0",
+        assets = list(
+          list(asset = "USDT", walletBalance = "1500.00000000", marginBalance = "1500.00000000")
+        )
       )
     )
-  ))
+  )
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_sub()$get_futures_account(email = "sub@virtual.com", futuresType = 1)
@@ -318,16 +352,18 @@ test_that("get_futures_account hits correct endpoint", {
 })
 
 test_that("get_futures_account returns data.table with assets expanded", {
-  resp <- mock_binance_response(data = list(
-    futureAccountResp = list(
-      email = "sub@virtual.com",
-      asset = "USDT",
-      totalInitialMargin = "0.0",
-      assets = list(
-        list(asset = "USDT", walletBalance = "1500.00000000", marginBalance = "1500.00000000")
+  resp <- mock_binance_response(
+    data = list(
+      futureAccountResp = list(
+        email = "sub@virtual.com",
+        asset = "USDT",
+        totalInitialMargin = "0.0",
+        assets = list(
+          list(asset = "USDT", walletBalance = "1500.00000000", marginBalance = "1500.00000000")
+        )
       )
     )
-  ))
+  )
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_sub()$get_futures_account(email = "sub@virtual.com", futuresType = 1)
@@ -342,11 +378,13 @@ test_that("get_futures_account returns data.table with assets expanded", {
 })
 
 test_that("get_futures_account works without futureAccountResp wrapper", {
-  resp <- mock_binance_response(data = list(
-    email = "sub@virtual.com",
-    asset = "USDT",
-    totalInitialMargin = "0.0"
-  ))
+  resp <- mock_binance_response(
+    data = list(
+      email = "sub@virtual.com",
+      asset = "USDT",
+      totalInitialMargin = "0.0"
+    )
+  )
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_sub()$get_futures_account(email = "sub@virtual.com", futuresType = 1)
@@ -362,7 +400,7 @@ test_that("get_margin_account hits correct endpoint", {
   resp <- mock_binance_response(data = list(email = "sub@virtual.com", marginLevel = "999.0", totalAssetOfBtc = "0.1"))
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_sub()$get_margin_account(email = "sub@virtual.com")
@@ -402,7 +440,7 @@ test_that("get_status hits correct endpoint", {
   resp <- mock_binance_response(data = mock_sub_account_status_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_sub()$get_status()
@@ -414,7 +452,7 @@ test_that("get_status passes email parameter", {
   resp <- mock_binance_response(data = mock_sub_account_status_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_sub()$get_status(email = "testsub01@virtual.com")

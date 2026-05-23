@@ -15,7 +15,7 @@
 #' environment variables or passed to the constructor).
 #'
 #' ### Official Documentation
-#' [Binance Account Endpoints](https://binance-docs.github.io/apidocs/spot/en/#account-endpoints)
+#' [Binance Account Endpoints](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints)
 #'
 #' ### Endpoints Covered
 #' | Method | Endpoint | HTTP |
@@ -59,8 +59,8 @@ BinanceAccount <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/account`
     #'
     #' ### Official Documentation
-    #' [Binance Account Information](https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance Account Information](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#account-information-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Commission Rates**: Access maker/taker commission rates for cost analysis.
@@ -74,18 +74,39 @@ BinanceAccount <- R6::R6Class(
     #' ```
     #'
     #' ### JSON Response
+    #' Shape captured 2026-05-22 from the live docs.
     #' ```json
     #' {
     #'   "makerCommission": 15,
     #'   "takerCommission": 15,
+    #'   "buyerCommission": 0,
+    #'   "sellerCommission": 0,
+    #'   "commissionRates": {
+    #'     "maker": "0.00150000",
+    #'     "taker": "0.00150000",
+    #'     "buyer": "0.00000000",
+    #'     "seller": "0.00000000"
+    #'   },
     #'   "canTrade": true,
     #'   "canWithdraw": true,
     #'   "canDeposit": true,
+    #'   "brokered": false,
+    #'   "requireSelfTradePrevention": false,
+    #'   "preventSor": false,
+    #'   "updateTime": 123456789,
     #'   "accountType": "SPOT",
-    #'   "balances": [...],
+    #'   "balances": [
+    #'     { "asset": "BTC", "free": "4723846.89208129", "locked": "0.00000000" }
+    #'   ],
+    #'   "permissions": ["SPOT", "MARGIN"],
     #'   "uid": 354937868
     #' }
     #' ```
+    #'
+    #' Note: this parser drops the `balances` array — call `get_balances()`
+    #' for the per-asset shape. `commissionRates` is flattened to wide
+    #' `commission_rates_*` columns and `permissions` is `;`-collapsed
+    #' so the return is always one row per account.
     #'
     #' @param recvWindow Integer or NULL; max 60000.
     #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
@@ -93,7 +114,10 @@ BinanceAccount <- R6::R6Class(
     #' - `taker_commission` (integer): Taker commission rate (basis points).
     #' - `buyer_commission` (integer): Buyer commission rate (basis points).
     #' - `seller_commission` (integer): Seller commission rate (basis points).
-    #' - `commission_rates` (list): Nested object with `maker`, `taker`, `buyer`, `seller` as decimal strings.
+    #' - `commission_rates_maker` (character): Maker commission rate as decimal string.
+    #' - `commission_rates_taker` (character): Taker commission rate as decimal string.
+    #' - `commission_rates_buyer` (character): Buyer commission rate as decimal string.
+    #' - `commission_rates_seller` (character): Seller commission rate as decimal string.
     #' - `can_trade` (logical): Whether the account can place trades.
     #' - `can_withdraw` (logical): Whether the account can withdraw.
     #' - `can_deposit` (logical): Whether the account can deposit.
@@ -102,10 +126,13 @@ BinanceAccount <- R6::R6Class(
     #' - `prevent_sor` (logical): Whether smart order routing is prevented.
     #' - `update_time` (numeric): Last account update timestamp in milliseconds.
     #' - `account_type` (character): Account type (e.g., `"SPOT"`).
-    #' - `permission` (character): Account permission (one row per permission, e.g., `"SPOT"`, `"MARGIN"`).
+    #' - `permissions` (character): `;`-separated account permissions
+    #'   (e.g., `"SPOT;MARGIN"`). Recover the vector with
+    #'   `strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]`. Single
+    #'   row per account — collapsed via the shared
+    #'   `collapse_string_array_fields()` helper for cross-package
+    #'   consistency.
     #' - `uid` (integer): Unique account identifier.
-    #'
-    #' When the account has multiple permissions, account fields are repeated on each row.
     #'
     #' @examples
     #' \dontrun{
@@ -119,16 +146,21 @@ BinanceAccount <- R6::R6Class(
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
           data$balances <- NULL
-          permissions <- data$permissions
-          data$permissions <- NULL
-          dt <- as_dt_row(data)
-          # Expand permissions to long format: one row per permission
-          if (!is.null(permissions) && length(permissions) > 0) {
-            perms <- unlist(permissions)
-            dt <- dt[rep(1L, length(perms))]
-            dt[, permission := perms]
+          # Flatten `commissionRates` nested object into wide columns
+          # (Treatment B — fixed-schema object).
+          cr <- data$commissionRates
+          if (!is.null(cr)) {
+            for (nm in names(cr)) {
+              data[[paste0("commissionRates_", nm)]] <- cr[[nm]]
+            }
+            data$commissionRates <- NULL
           }
-          return(dt[])
+          # `permissions` is an array of plain strings — collapse to a
+          # `;`-joined character column via the shared helper. This
+          # matches the cross-package convention and keeps the account
+          # info shape stable at exactly one row (the README's contract).
+          data <- collapse_string_array_fields(data, "permissions")
+          return(as_dt_row(data)[])
         }
       ))
     },
@@ -142,8 +174,8 @@ BinanceAccount <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/account`
     #'
     #' ### Official Documentation
-    #' [Binance Account Information](https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance Account Information](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#account-information-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Balance Check**: Verify available funds before placing orders.
@@ -213,8 +245,8 @@ BinanceAccount <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/myTrades`
     #'
     #' ### Official Documentation
-    #' [Binance Account Trade List](https://binance-docs.github.io/apidocs/spot/en/#account-trade-list-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance Account Trade List](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#account-trade-list-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Trade History**: Build trade logs for P&L calculations.

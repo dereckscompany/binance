@@ -41,3 +41,5 @@ log.txt
 ^local$
 ^binance\.Rcheck$
 ^.*\.tar\.gz$
+^docs$
+^\.playwright-mcp$

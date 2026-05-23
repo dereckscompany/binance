@@ -75,7 +75,7 @@ sign_request <- function(req, keys, .get_timestamp_ms = NULL) {
     encoded_vals <- vapply(
       parsed_url$query,
       function(v) {
-        utils::URLencode(v, reserved = TRUE)
+        return(utils::URLencode(v, reserved = TRUE))
       },
       character(1)
     )

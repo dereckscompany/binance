@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://fapi.binance.com"
 
 new_futures_data <- function() {
-  BinanceFuturesData$new(keys = KEYS, base_url = BASE)
+  return(BinanceFuturesData$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -39,10 +39,24 @@ test_that("get_exchange_info returns data.table with futures symbol metadata", {
   expect_true("quote_asset" %in% names(dt))
   expect_true("margin_asset" %in% names(dt))
   expect_true("order_types" %in% names(dt))
-  expect_true("filters" %in% names(dt))
+  # filters are extracted into flat numeric columns
+  expect_false("filters" %in% names(dt))
+  expect_true("lot_min_qty" %in% names(dt))
+  expect_true("lot_max_qty" %in% names(dt))
+  expect_true("lot_step_size" %in% names(dt))
+  expect_true("price_min" %in% names(dt))
+  expect_true("price_max" %in% names(dt))
+  expect_true("price_tick_size" %in% names(dt))
+  expect_true("min_notional" %in% names(dt))
+  # String arrays are `;`-collapsed character (cross-package convention).
+  expect_type(dt$order_types, "character")
+  expect_false(grepl(",", dt$order_types, fixed = TRUE), info = "should be `;`-joined, not `,`-joined")
   expect_equal(dt$symbol, "BTCUSDT")
   expect_equal(dt$contract_type, "PERPETUAL")
   expect_equal(dt$base_asset, "BTC")
+  # No list columns anywhere.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
 })
 
 test_that("get_exchange_info hits correct endpoint", {
@@ -50,11 +64,103 @@ test_that("get_exchange_info hits correct endpoint", {
   resp <- mock_binance_response(data = mock_futures_exchange_info_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_exchange_info()
   expect_true(grepl("/fapi/v1/exchangeInfo", captured_url))
+})
+
+test_that("get_exchange_info preserves the full filters array in `filters_raw` (round-trips through JSON)", {
+  # Same regression as spot: parser used to pull curated filter columns
+  # and discard the rest. Futures-specific filter types include
+  # PERCENT_PRICE, MARKET_LOT_SIZE, MAX_NUM_ORDERS, MAX_NUM_ALGO_ORDERS,
+  # and the MIN_NOTIONAL field used to be silently dropped because
+  # futures uses field name "notional" not "minNotional".
+  data <- mock_futures_exchange_info_data()
+  data$symbols[[1]]$filters <- c(
+    data$symbols[[1]]$filters,
+    list(
+      list(filterType = "PERCENT_PRICE", multiplierUp = "1.05", multiplierDown = "0.95", multiplierDecimal = 4L),
+      list(filterType = "MARKET_LOT_SIZE", minQty = "0.001", maxQty = "1000", stepSize = "0.001"),
+      list(filterType = "MAX_NUM_ORDERS", limit = 200L),
+      list(filterType = "MAX_NUM_ALGO_ORDERS", limit = 10L)
+    )
+  )
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures_data()$get_exchange_info()
+  expect_true("filters_raw" %in% names(dt))
+  expect_type(dt$filters_raw, "character")
+
+  recovered <- jsonlite::fromJSON(dt$filters_raw[1], simplifyVector = FALSE)
+  types <- vapply(recovered, function(f) f$filterType, character(1))
+  expect_setequal(
+    types,
+    c("PRICE_FILTER", "PERCENT_PRICE", "MARKET_LOT_SIZE", "MAX_NUM_ORDERS", "MAX_NUM_ALGO_ORDERS")
+  )
+  mls <- recovered[[which(types == "MARKET_LOT_SIZE")]]
+  expect_equal(mls$minQty, "0.001")
+  expect_equal(mls$stepSize, "0.001")
+})
+
+test_that("get_rate_limits (futures) returns one row per rate-limit rule", {
+  data <- mock_futures_exchange_info_data()
+  data$rateLimits <- list(
+    list(rateLimitType = "REQUEST_WEIGHT", interval = "MINUTE", intervalNum = 1L, limit = 2400L),
+    list(rateLimitType = "ORDERS", interval = "MINUTE", intervalNum = 1L, limit = 1200L)
+  )
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures_data()$get_rate_limits()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 2L)
+  expect_setequal(dt$rate_limit_type, c("REQUEST_WEIGHT", "ORDERS"))
+})
+
+test_that("get_rate_limits (futures) returns empty data.table when omitted", {
+  resp <- mock_binance_response(data = mock_futures_exchange_info_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures_data()$get_rate_limits()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
+})
+
+test_that("get_exchange_filters (futures) returns empty when absent (common case)", {
+  resp <- mock_binance_response(data = mock_futures_exchange_info_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures_data()$get_exchange_filters()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
+})
+
+test_that("get_futures_assets returns one row per margin asset", {
+  data <- mock_futures_exchange_info_data()
+  data$assets <- list(
+    list(asset = "USDT", marginAvailable = TRUE, autoAssetExchange = "-1000"),
+    list(asset = "BNFCR", marginAvailable = TRUE, autoAssetExchange = "0")
+  )
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures_data()$get_futures_assets()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 2L)
+  expect_setequal(dt$asset, c("USDT", "BNFCR"))
+  expect_true(all(dt$margin_available))
+})
+
+test_that("get_futures_assets returns empty data.table when absent", {
+  resp <- mock_binance_response(data = mock_futures_exchange_info_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures_data()$get_futures_assets()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
 })
 
 # -- get_klines --
@@ -91,7 +197,7 @@ test_that("get_klines passes limit and hits correct endpoint", {
   resp <- mock_binance_response(data = mock_klines_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_klines("BTCUSDT", "1h", limit = 100)
@@ -123,7 +229,7 @@ test_that("get_mark_price hits correct endpoint", {
   resp <- mock_binance_response(data = mock_futures_mark_price_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_mark_price("BTCUSDT")
@@ -152,7 +258,7 @@ test_that("get_funding_rate hits correct endpoint", {
   resp <- mock_binance_response(data = mock_futures_funding_rate_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_funding_rate("BTCUSDT")
@@ -182,7 +288,7 @@ test_that("get_24hr_stats hits correct endpoint", {
   resp <- mock_binance_response(data = mock_24hr_stats_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_24hr_stats("BTCUSDT")
@@ -209,7 +315,7 @@ test_that("get_ticker hits correct endpoint", {
   resp <- mock_binance_response(data = mock_futures_ticker_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_ticker("BTCUSDT")
@@ -237,7 +343,7 @@ test_that("get_book_ticker hits correct endpoint", {
   resp <- mock_binance_response(data = mock_book_ticker_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_book_ticker("BTCUSDT")
@@ -264,7 +370,7 @@ test_that("get_open_interest hits correct endpoint", {
   resp <- mock_binance_response(data = mock_futures_open_interest_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_open_interest("BTCUSDT")
@@ -292,7 +398,7 @@ test_that("get_depth hits correct endpoint", {
   resp <- mock_binance_response(data = mock_orderbook_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_depth("BTCUSDT", limit = 20)
@@ -321,7 +427,7 @@ test_that("get_trades hits correct endpoint", {
   resp <- mock_binance_response(data = mock_trades_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_trades("BTCUSDT", limit = 10)
@@ -348,7 +454,7 @@ test_that("get_index_price_klines hits correct endpoint with pair param", {
   resp <- mock_binance_response(data = mock_klines_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_index_price_klines("BTCUSDT", "1h", limit = 50)
@@ -376,7 +482,7 @@ test_that("get_mark_price_klines hits correct endpoint", {
   resp <- mock_binance_response(data = mock_klines_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures_data()$get_mark_price_klines("BTCUSDT", "4h")

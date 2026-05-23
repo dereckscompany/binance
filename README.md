@@ -31,24 +31,81 @@ a bug or wish to make an improvement.
 
 ## Design Philosophy
 
-All API responses are returned as `data.table` objects with two
-transformations applied:
+All API responses are returned as `data.table` objects. The package
+targets a consistent “one entity = one row, no list columns” shape, but
+the exact transformation is endpoint-specific. See each method’s
+`@return` block for the precise list of columns and any per-endpoint
+behaviour.
+
+The transformations the parsers apply:
 
 1.  **snake_case column names** - camelCase keys from the JSON response
     (e.g. `insertTime`, `quoteQty`) are converted to snake_case
-    (`insert_time`, `quote_qty`). No columns are renamed beyond.
-2.  **type coercion** - known columns are type coerced in `data.table`
-    before return.
+    (`insert_time`, `quote_qty`). A handful of endpoints additionally
+    rename for clarity (e.g. nested objects are wide-prefixed to
+    `parent_child` columns; collapsed array fields land under the plural
+    form like `permissions`).
 
-That’s it. **No fields are dropped and no columns are renamed** beyond
-snake case conversion. If a column exists in the Binance API response,
-it will exist in the returned `data.table`. If you don’t need a column,
-drop it yourself.
+2.  **Type coercion** for well-known columns - millisecond timestamps
+    become `POSIXct`; selected nested numeric `filters` are extracted
+    into flat `lot_min_qty` / `price_tick_size` / `min_notional`
+    columns.
 
-- The only exception is klines (candlestick data), where Binance returns
-  positional arrays instead of named objects. These are assigned
-  descriptive column names (`open_time`, `open`, `high`, `low`, `close`,
-  `volume`, `close_time`, etc.) matching the Binance documentation.
+3.  **Shape normalisation** for nested arrays and objects, applied per
+    endpoint:
+
+    - **Arrays of plain strings** (e.g. `orderTypes`, `permissions`,
+      `allowedSelfTradePreventionModes`) → collapsed into one
+      `;`-separated character column. Recover via
+      `strsplit(x, ";", fixed = TRUE)[[1]]`.
+    - **Arrays of objects with a fixed schema** (e.g. order `fills`,
+      account `assets`, OCO `orderReports`, sub-account
+      `spotSubUserAssetBtcVoList`) → exploded to long format with parent
+      fields replicated and a `<child>_` prefix on the child columns. A
+      1-indexed position column is added where order matters.
+    - **Single nested objects with a fixed schema** (e.g. account
+      `commissionRates`, locked-earn `detail` / `quota`) → flattened to
+      wide `parent_child` columns.
+    - **Nested objects with dynamic keys** (e.g. spot exchange-info
+      `permissionSets`, flexible-earn `tierAnnualPercentageRate`) →
+      serialised as a JSON string column so the inner structure is
+      preserved; recover via `jsonlite::fromJSON(x)`.
+
+**Endpoints that reshape rather than drop:**
+
+The parsers never discard API data — every field is either on the row,
+on a sibling row, on a sibling method’s return, or attached as an
+attribute on the returned `data.table`.
+
+- `get_account_info()` (spot) - account-level fields are returned as a
+  single row; the companion `balances` array is parsed by the sibling
+  `get_balances()` (both methods hit `/api/v3/account` and parse
+  different halves).
+- `get_account()` (futures) - one row per asset balance; the companion
+  `positions` array is parsed by the sibling `get_positions()` (which
+  hits `/fapi/v2/positionRisk`).
+- `get_exchange_info()` (spot and futures) - one row per symbol. The
+  full per-symbol `filters` array is preserved as a JSON-encoded
+  `filters_raw` column alongside the curated `lot_*` / `price_*` /
+  `min_notional` columns (recover with
+  `jsonlite::fromJSON(dt$filters_raw[1])`). Exchange-wide blocks (rate
+  limits, exchange-wide filter rules, and on futures the margin-asset
+  config) are exposed via sibling methods on the same class:
+  `get_rate_limits()`, `get_exchange_filters()`, and (futures only)
+  `get_futures_assets()`. `serverTime` is the long-standing
+  `get_server_time()`. The constants (`timezone = "UTC"`,
+  `futuresType = "U_M"`) are not re-exposed.
+- The OCO endpoints (`add_oco_order()`, `cancel_oco_order()`) expand the
+  richer `orderReports` payload; the thinner `orders` duplicate is a
+  strict subset of the same data and so is omitted.
+
+**Klines** are a special case: Binance returns positional arrays instead
+of named objects, so we assign descriptive column names (`open_time`,
+`open`, `high`, `low`, `close`, `volume`, `close_time`, etc.) matching
+the Binance documentation.
+
+If a column you expect is missing, check the method’s `@return`; if it
+still looks wrong, please file an issue.
 
 ## Available Classes
 
@@ -123,7 +180,7 @@ BINANCE_API_SECRET = your-api-secret
 ```
 
 If you don’t have a key, visit the [Binance API
-documentation](https://binance-docs.github.io/apidocs/).
+documentation](https://developers.binance.com/docs/binance-spot-api-docs).
 
 ## Quick Start – Market Data
 
@@ -241,9 +298,9 @@ trading$add_order_test(
 )
 ```
 
-    #>     symbol   side   type    status
-    #>     <char> <char> <char>    <char>
-    #> 1: BTCUSDT    BUY  LIMIT validated
+    #>    validated
+    #>       <lgcl>
+    #> 1:      TRUE
 
 ### Query an Order
 
@@ -298,15 +355,18 @@ account$get_account_info()
     #>    maker_commission taker_commission buyer_commission seller_commission
     #>               <int>            <int>            <int>             <int>
     #> 1:               15               15                0                 0
-    #>    commission_rates can_trade can_withdraw can_deposit brokered
-    #>              <list>    <lgcl>       <lgcl>      <lgcl>   <lgcl>
-    #> 1:        <list[4]>      TRUE         TRUE        TRUE    FALSE
-    #>    require_self_trade_prevention prevent_sor update_time account_type       uid
-    #>                           <lgcl>      <lgcl>       <int>       <char>     <int>
-    #> 1:                         FALSE       FALSE   123456789         SPOT 354937868
-    #>    permission
-    #>        <char>
-    #> 1:       SPOT
+    #>    can_trade can_withdraw can_deposit brokered require_self_trade_prevention
+    #>       <lgcl>       <lgcl>      <lgcl>   <lgcl>                        <lgcl>
+    #> 1:      TRUE         TRUE        TRUE    FALSE                         FALSE
+    #>    prevent_sor update_time account_type permissions       uid
+    #>         <lgcl>       <int>       <char>      <char>     <int>
+    #> 1:       FALSE   123456789         SPOT        SPOT 354937868
+    #>    commission_rates_maker commission_rates_taker commission_rates_buyer
+    #>                    <char>                 <char>                 <char>
+    #> 1:             0.00150000             0.00150000             0.00000000
+    #>    commission_rates_seller
+    #>                     <char>
+    #> 1:              0.00000000
 
 ### Trade History
 
@@ -345,12 +405,19 @@ margin$get_account()
     #>    borrow_enabled margin_level total_asset_of_btc total_liability_of_btc
     #>            <lgcl>       <char>             <char>                 <char>
     #> 1:           TRUE  11.64405625         6.82000000             0.58633215
+    #> 2:           TRUE  11.64405625         6.82000000             0.58633215
     #>    total_net_asset_of_btc trade_enabled transfer_enabled account_type
     #>                    <char>        <lgcl>           <lgcl>       <char>
     #> 1:             6.23366785          TRUE             TRUE       MARGIN
-    #>    user_assets
-    #>         <list>
-    #> 1:   <list[2]>
+    #> 2:             6.23366785          TRUE             TRUE       MARGIN
+    #>    user_asset_asset user_asset_borrowed user_asset_free user_asset_interest
+    #>              <char>              <char>          <char>              <char>
+    #> 1:              BTC          0.00000000      0.00499500          0.00000000
+    #> 2:             USDT        100.00000000    200.00000000          0.01000000
+    #>    user_asset_locked user_asset_net_asset
+    #>               <char>               <char>
+    #> 1:        0.00000000           0.00499500
+    #> 2:        0.00000000          99.99000000
 
 ### Max Borrowable
 
@@ -458,9 +525,9 @@ futures$add_order_test(
 )
 ```
 
-    #>     symbol   side   type    status
-    #>     <char> <char> <char>    <char>
-    #> 1: BTCUSDT    BUY  LIMIT validated
+    #>    validated
+    #>       <lgcl>
+    #> 1:      TRUE
 
 #### Set Leverage
 
@@ -507,43 +574,17 @@ while (!later$loop_empty()) {
 
     #>     symbol          price
     #>     <char>         <char>
-    #> 1: BTCUSDT 70588.67000000
-    #>               open_time     open     high      low    close    volume
-    #>                  <POSc>    <num>    <num>    <num>    <num>     <num>
-    #>  1: 2026-03-11 12:00:00 69172.99 69777.66 68977.91 69361.13 1045.6407
-    #>  2: 2026-03-11 13:00:00 69361.13 71091.18 69331.04 70186.09 2647.3215
-    #>  3: 2026-03-11 14:00:00 70186.08 70987.00 69906.77 70578.70 2251.7766
-    #>  4: 2026-03-11 15:00:00 70578.70 70654.43 69702.25 70227.91 1844.6963
-    #>  5: 2026-03-11 16:00:00 70227.92 70826.39 70161.78 70570.71 1837.9240
-    #>  6: 2026-03-11 17:00:00 70570.71 71321.00 70512.01 70785.99 2122.2065
-    #>  7: 2026-03-11 18:00:00 70785.99 70895.31 70415.27 70617.64 1134.1341
-    #>  8: 2026-03-11 19:00:00 70617.63 70742.38 70375.68 70641.82  644.2315
-    #>  9: 2026-03-11 20:00:00 70641.81 70700.00 70394.23 70634.96  383.3450
-    #> 10: 2026-03-11 21:00:00 70634.96 70776.71 70499.94 70588.67  177.7033
-    #>              close_time quote_volume trades taker_buy_base_volume
-    #>                  <POSc>        <num>  <int>                 <num>
-    #>  1: 2026-03-11 12:59:59     72482029 228899             510.41277
-    #>  2: 2026-03-11 13:59:59    185985831 529759            1327.90532
-    #>  3: 2026-03-11 14:59:59    158748246 515782            1118.16259
-    #>  4: 2026-03-11 15:59:59    129415293 427890             846.35834
-    #>  5: 2026-03-11 16:59:59    129634949 312976             946.41941
-    #>  6: 2026-03-11 17:59:59    150535351 401049            1188.53693
-    #>  7: 2026-03-11 18:59:59     80176342 225379             441.85105
-    #>  8: 2026-03-11 19:59:59     45451850 134850             278.53724
-    #>  9: 2026-03-11 20:59:59     27035744  84807             167.08903
-    #> 10: 2026-03-11 21:59:59     12553900  33826              94.14297
-    #>     taker_buy_quote_volume ignore
-    #>                      <num> <char>
-    #>  1:               35394305      0
-    #>  2:               93335113      0
-    #>  3:               78864177      0
-    #>  4:               59386903      0
-    #>  5:               66762796      0
-    #>  6:               84314438      0
-    #>  7:               31232309      0
-    #>  8:               19650193      0
-    #>  9:               11784374      0
-    #> 10:                6651493      0
+    #> 1: BTCUSDT 67232.90000000
+    #>     open_time      open   high      low    close   volume          close_time
+    #>        <POSc>     <num>  <num>    <num>    <num>    <num>              <POSc>
+    #> 1: 2017-07-03 0.0163479 0.8000 0.015758 0.015771 148976.1 2017-07-09 23:59:59
+    #> 2: 2017-07-10 0.0157710 0.0158 0.015730 0.015788  95432.0 2017-07-16 23:59:59
+    #> 3: 2017-07-17 0.0157880 0.0159 0.015700 0.015850 120000.0 2017-07-23 23:59:59
+    #>    quote_volume trades taker_buy_base_volume taker_buy_quote_volume ignore
+    #>           <num>  <int>                 <num>                  <num> <char>
+    #> 1:     2434.191    308             1756.8740               28.46694      0
+    #> 2:     1505.250    205              876.1235               13.82000      0
+    #> 3:     1899.600    250              950.0000               15.06750      0
 
 ## Sample Data
 

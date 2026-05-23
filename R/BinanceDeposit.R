@@ -65,7 +65,7 @@ BinanceDeposit <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Deposit Address](https://developers.binance.com/docs/wallet/capital/deposite-address)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Address Lookup**: Retrieve deposit addresses to share with external systems or users.
@@ -134,7 +134,7 @@ BinanceDeposit <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Deposit History](https://developers.binance.com/docs/wallet/capital/deposite-history)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Deposit Monitoring**: Poll for status `1` (success) deposits to trigger trading logic

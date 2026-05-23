@@ -15,7 +15,7 @@
 #' All methods require authentication (valid API key and secret).
 #'
 #' ### Official Documentation
-#' [Binance Spot Trading](https://binance-docs.github.io/apidocs/spot/en/#spot-account-trade)
+#' [Binance Spot Trading](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints)
 #'
 #' ### Endpoints Covered
 #' | Method | Endpoint | HTTP |
@@ -65,8 +65,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' `POST https://api.binance.com/api/v3/order/oco`
     #'
     #' ### Official Documentation
-    #' [Binance New OCO](https://binance-docs.github.io/apidocs/spot/en/#new-oco-trade)
-    #' Verified: 2026-03-10
+    #' [Binance New OCO](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#order-lists)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -121,7 +121,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' @param newOrderRespType Character or NULL; `"ACK"`, `"RESULT"`, or `"FULL"`.
     #' @param selfTradePreventionMode Character or NULL.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per child order (long format) and the following columns:
+    #' @return `data.table` with one row per child order report (long format) and the following columns:
     #' - `order_list_id` (integer): OCO order list identifier (repeated per child order).
     #' - `contingency_type` (character): Always `"OCO"`.
     #' - `list_status_type` (character): Status type (e.g., `"EXEC_STARTED"`).
@@ -129,10 +129,17 @@ BinanceOcoOrders <- R6::R6Class(
     #' - `list_client_order_id` (character): Client-assigned list ID.
     #' - `transact_time` (POSIXct): Transaction time.
     #' - `symbol` (character): Trading pair from parent OCO.
-    #' - `order_symbol` (character): Trading pair from child order.
-    #' - `order_id` (integer): Child order ID.
-    #' - `client_order_id` (character): Child order client ID.
-    #' - `order_reports` (list): List of order report objects (kept as list-column).
+    #' - `order_report_symbol` (character): Trading pair from child order report.
+    #' - `order_report_order_id` (integer): Child order ID.
+    #' - `order_report_client_order_id` (character): Child order client ID.
+    #' - `order_report_transact_time` (numeric): Child order transaction time.
+    #' - `order_report_price` (character): Child order price.
+    #' - `order_report_orig_qty` (character): Child order original quantity.
+    #' - `order_report_executed_qty` (character): Child order executed quantity.
+    #' - `order_report_status` (character): Child order status (e.g., `"NEW"`).
+    #' - `order_report_type` (character): Child order type (e.g., `"STOP_LOSS_LIMIT"`, `"LIMIT_MAKER"`).
+    #' - `order_report_side` (character): Child order side.
+    #' - `order_report_stop_price` (character): Stop price (if applicable).
     #'
     #' @examples
     #' \dontrun{
@@ -186,19 +193,21 @@ BinanceOcoOrders <- R6::R6Class(
         method = "POST",
         body = body,
         .parser = function(data) {
-          orders <- data$orders
+          order_reports <- data$orderReports
+          data$orderReports <- NULL
           data$orders <- NULL
           dt <- as_dt_row(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
             dt[, transact_time := ms_to_datetime(transact_time)]
           }
-          # Expand orders to long format: one row per child order
-          if (!is.null(orders) && length(orders) > 0) {
-            orders_dt <- as_dt_list(orders)
-            order_names <- names(orders_dt)
-            data.table::setnames(orders_dt, order_names, paste0("order_", order_names))
-            dt <- dt[rep(1L, nrow(orders_dt))]
-            dt <- cbind(dt, orders_dt)
+          # Expand orderReports to long format: one row per child order
+          # orderReports is a superset of orders (includes price, qty, status, etc.)
+          if (!is.null(order_reports) && length(order_reports) > 0) {
+            reports_dt <- as_dt_list(order_reports)
+            report_names <- names(reports_dt)
+            data.table::setnames(reports_dt, report_names, paste0("order_report_", report_names))
+            dt <- dt[rep(1L, nrow(reports_dt))]
+            dt <- cbind(dt, reports_dt)
           }
           return(dt[])
         }
@@ -216,8 +225,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' `DELETE https://api.binance.com/api/v3/orderList`
     #'
     #' ### Official Documentation
-    #' [Binance Cancel OCO](https://binance-docs.github.io/apidocs/spot/en/#cancel-oco-trade)
-    #' Verified: 2026-03-10
+    #' [Binance Cancel OCO](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#order-lists)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -287,7 +296,12 @@ BinanceOcoOrders <- R6::R6Class(
     #' @param orderListId Integer or NULL; the OCO order list ID.
     #' @param listClientOrderId Character or NULL; the client order list ID.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per child order (long format) and the following columns:
+    #' @return `data.table` with **one row per child order report** (long
+    #'   format), matching the shape returned by `add_oco_order()`. The
+    #'   thinner `orders` array Binance returns is dropped in favour of
+    #'   the richer `orderReports` payload, which includes the
+    #'   cancellation status, prices, quantities, and stop price for
+    #'   each child order. Columns:
     #' - `order_list_id` (integer): OCO order list identifier (repeated per child order).
     #' - `contingency_type` (character): Always `"OCO"`.
     #' - `list_status_type` (character): Status type (e.g., `"ALL_DONE"`).
@@ -295,9 +309,16 @@ BinanceOcoOrders <- R6::R6Class(
     #' - `list_client_order_id` (character): Client-assigned list ID.
     #' - `transact_time` (POSIXct): Cancellation time (if present).
     #' - `symbol` (character): Trading pair from parent OCO.
-    #' - `order_symbol` (character): Trading pair from child order.
-    #' - `order_id` (integer): Child order ID.
-    #' - `client_order_id` (character): Child order client ID.
+    #' - `order_report_symbol` (character): Trading pair from child order.
+    #' - `order_report_order_id` (integer): Child order ID.
+    #' - `order_report_client_order_id` (character): Child order client ID.
+    #' - `order_report_price` (character): Child order price.
+    #' - `order_report_orig_qty` (character): Child order original quantity.
+    #' - `order_report_executed_qty` (character): Child order executed quantity.
+    #' - `order_report_status` (character): Child order status (e.g., `"CANCELED"`).
+    #' - `order_report_type` (character): Child order type.
+    #' - `order_report_side` (character): Child order side.
+    #' - `order_report_stop_price` (character): Stop price (if applicable).
     #'
     #' @examples
     #' \dontrun{
@@ -320,21 +341,23 @@ BinanceOcoOrders <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          orders <- data$orders
-          data$orders <- NULL
-          # Also remove orderReports to avoid list-column
+          # Mirror `add_oco_order`: expand `orderReports` to long format
+          # (it's the richer payload, including cancellation status,
+          # prices, quantities, stop price). The thinner `orders`
+          # array duplicates a subset and is dropped.
+          order_reports <- data$orderReports
           data$orderReports <- NULL
+          data$orders <- NULL
           dt <- as_dt_row(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
             dt[, transact_time := ms_to_datetime(transact_time)]
           }
-          # Expand orders to long format: one row per child order
-          if (!is.null(orders) && length(orders) > 0) {
-            orders_dt <- as_dt_list(orders)
-            order_names <- names(orders_dt)
-            data.table::setnames(orders_dt, order_names, paste0("order_", order_names))
-            dt <- dt[rep(1L, nrow(orders_dt))]
-            dt <- cbind(dt, orders_dt)
+          if (!is.null(order_reports) && length(order_reports) > 0) {
+            reports_dt <- as_dt_list(order_reports)
+            report_names <- names(reports_dt)
+            data.table::setnames(reports_dt, report_names, paste0("order_report_", report_names))
+            dt <- dt[rep(1L, nrow(reports_dt))]
+            dt <- cbind(dt, reports_dt)
           }
           return(dt[])
         }
@@ -353,8 +376,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/orderList`
     #'
     #' ### Official Documentation
-    #' [Binance Query OCO](https://binance-docs.github.io/apidocs/spot/en/#query-oco-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance Query OCO](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-order-list-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -449,8 +472,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/openOrderList`
     #'
     #' ### Official Documentation
-    #' [Binance Query Open OCO](https://binance-docs.github.io/apidocs/spot/en/#query-open-oco-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance Query Open OCO](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-open-order-lists-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -546,8 +569,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/allOrderList`
     #'
     #' ### Official Documentation
-    #' [Binance Query All OCO](https://binance-docs.github.io/apidocs/spot/en/#query-all-oco-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance Query All OCO](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-all-order-lists-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```

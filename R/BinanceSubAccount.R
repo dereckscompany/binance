@@ -77,7 +77,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Create Virtual Sub-Account](https://developers.binance.com/docs/sub_account/account-management/Create-a-Virtual-Sub-account)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -129,7 +129,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Query Sub-Account List](https://developers.binance.com/docs/sub_account/account-management/Query-Sub-account-List)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -204,7 +204,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Sub-Account Assets](https://developers.binance.com/docs/sub_account/asset-management/Query-Sub-account-Assets-V3)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -262,7 +262,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Sub-Account Spot Summary](https://developers.binance.com/docs/sub_account/asset-management/Query-Sub-account-Spot-Assets-Summary)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -292,10 +292,13 @@ BinanceSubAccount <- R6::R6Class(
     #' @param page Integer or NULL; page number (default 1).
     #' @param size Integer or NULL; results per page (default 10, max 20).
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `total_count` (integer): Total number of sub-accounts.
-    #' - `master_account_total_asset` (character): Master account total asset value in BTC.
-    #' - `spot_sub_user_asset_btc_vo_list` (list): Nested list of per-sub-account spot asset summaries.
+    #' @return `data.table` with **one row per sub-account**; the
+    #'   master-level summary fields are replicated on each row. Columns:
+    #' - `total_count` (integer): Total number of sub-accounts (repeated per row).
+    #' - `master_account_total_asset` (character): Master account total
+    #'   asset value in BTC (repeated per row).
+    #' - `sub_user_email` (character): Sub-account email.
+    #' - `sub_user_total_asset` (character): Sub-account total asset value in BTC.
     #'
     #' @examples
     #' \dontrun{
@@ -316,7 +319,24 @@ BinanceSubAccount <- R6::R6Class(
           if (is.null(data) || length(data) == 0) {
             return(data.table::data.table()[])
           }
-          return(as_dt_row(data)[])
+          sub_users <- data$spotSubUserAssetBtcVoList
+          data$spotSubUserAssetBtcVoList <- NULL
+          # If there are no sub-accounts return an empty data.table. The
+          # `@return` says "one row per sub-account", so zero
+          # sub-accounts is zero rows — fabricating a 1-row table of
+          # just master-level fields would violate the cross-package
+          # "no stub rows" convention (the master-level scalars are
+          # also available without calling this method).
+          if (is.null(sub_users) || length(sub_users) == 0) {
+            return(data.table::data.table()[])
+          }
+          dt <- as_dt_row(data)
+          sub_dt <- as_dt_list(sub_users)
+          sub_names <- names(sub_dt)
+          data.table::setnames(sub_dt, sub_names, paste0("sub_user_", sub_names))
+          dt <- dt[rep(1L, nrow(sub_dt))]
+          dt <- cbind(dt, sub_dt)
+          return(dt[])
         }
       ))
     },
@@ -334,7 +354,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Universal Transfer](https://developers.binance.com/docs/sub_account/asset-management/Universal-Transfer)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -445,7 +465,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Universal Transfer History](https://developers.binance.com/docs/sub_account/asset-management/Query-Universal-Transfer-History)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -547,7 +567,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Sub-Account Futures Account V2](https://developers.binance.com/docs/sub_account/asset-management/Get-Detail-on-Sub-accounts-Futures-Account-V2)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -628,7 +648,10 @@ BinanceSubAccount <- R6::R6Class(
         ),
         .parser = function(data) {
           # The response may be wrapped in futureAccountResp
-          inner <- if (!is.null(data$futureAccountResp)) data$futureAccountResp else data
+          inner <- data
+          if (!is.null(data$futureAccountResp)) {
+            inner <- data$futureAccountResp
+          }
           assets <- inner$assets
           inner$assets <- NULL
           dt <- as_dt_row(inner)
@@ -655,7 +678,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Sub-Account Margin Account](https://developers.binance.com/docs/sub_account/asset-management/Get-Detail-on-Sub-accounts-Margin-Account)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -719,7 +742,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Sub-Account Status](https://developers.binance.com/docs/sub_account/account-management/Get-Sub-accounts-Status-on-Margin-Or-Futures)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```

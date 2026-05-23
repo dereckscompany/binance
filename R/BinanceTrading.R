@@ -16,7 +16,7 @@
 #' All methods require authentication (valid API key and secret).
 #'
 #' ### Official Documentation
-#' [Binance Spot Trading](https://binance-docs.github.io/apidocs/spot/en/#spot-account-trade)
+#' [Binance Spot Trading](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints)
 #'
 #' ### Endpoints Covered
 #' | Method | Endpoint | HTTP |
@@ -81,8 +81,8 @@ BinanceTrading <- R6::R6Class(
     #' `POST https://api.binance.com/api/v3/order`
     #'
     #' ### Official Documentation
-    #' [Binance New Order](https://binance-docs.github.io/apidocs/spot/en/#new-order-trade)
-    #' Verified: 2026-03-10
+    #' [Binance New Order](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#new-order-trade)
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Limit Orders**: Set specific entry/exit prices for strategy execution.
@@ -145,13 +145,21 @@ BinanceTrading <- R6::R6Class(
     #' - `working_time` (numeric): Timestamp when the order started working.
     #' - `self_trade_prevention_mode` (character): STP mode applied.
     #' - `transact_time` (POSIXct): Transaction time converted from `transactTime`.
-    #' - `fill_price` (character): Fill execution price (one row per fill when `newOrderRespType = "FULL"`).
-    #' - `fill_qty` (character): Fill quantity.
-    #' - `fill_commission` (character): Commission charged for this fill.
-    #' - `fill_commission_asset` (character): Asset used for commission (e.g., `"BNB"`).
+    #' - `fill_index` (integer): 1-indexed fill position (`NA` when the order
+    #'   had no fills).
+    #' - `fill_price` (character): Fill execution price (`NA` when no fills).
+    #' - `fill_qty` (character): Fill quantity (`NA` when no fills).
+    #' - `fill_commission` (character): Commission charged for this fill
+    #'   (`NA` when no fills).
+    #' - `fill_commission_asset` (character): Asset used for commission
+    #'   (e.g., `"BNB"`; `NA` when no fills).
+    #' - `fill_trade_id` (integer): Fill trade ID (`NA` when no fills).
     #'
-    #' When the order has multiple fills, parent order fields are repeated on each row.
-    #' When there are no fills, a single row is returned without fill columns.
+    #' When the order has N fills, the parent order fields are replicated on
+    #' each of the N rows and `fill_index` runs `1..N`. When the order has
+    #' no fills (e.g. a resting `LIMIT` order with `newOrderRespType = "ACK"`
+    #' / `"RESULT"`), a single row is returned with the `fill_*` columns
+    #' present as `NA` so the schema is stable across response types.
     #'
     #' @examples
     #' \dontrun{
@@ -198,20 +206,39 @@ BinanceTrading <- R6::R6Class(
         method = "POST",
         body = body,
         .parser = function(data) {
+          # Guard against `data = NULL` (empty body / JSON-parse failure).
+          # Without this the `data$fills` access below would throw
+          # "$ operator applied to NULL".
+          if (is.null(data) || length(data) == 0) {
+            return(data.table::data.table()[])
+          }
           fills <- data$fills
           data$fills <- NULL
           dt <- as_dt_row(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
             dt[, transact_time := ms_to_datetime(transact_time)]
           }
-          # Expand fills to long format: one row per fill with parent fields repeated
+          # Expand fills to long format: one row per fill with parent
+          # fields repeated, plus a 1-indexed `fill_index`. To keep the
+          # returned schema stable across orders with and without fills,
+          # always emit the `fill_*` columns — empty when the order had
+          # no fills, populated otherwise.
           if (!is.null(fills) && length(fills) > 0) {
             fills_dt <- as_dt_list(fills)
-            # Prefix fill columns to avoid collision with parent order columns
             fill_names <- names(fills_dt)
             data.table::setnames(fills_dt, fill_names, paste0("fill_", fill_names))
+            fills_dt[, fill_index := seq_len(.N)]
             dt <- dt[rep(1L, nrow(fills_dt))]
             dt <- cbind(dt, fills_dt)
+          } else {
+            # No fills: one parent row with NA fill_* columns so the
+            # schema matches the populated case.
+            dt[, fill_index := NA_integer_]
+            dt[, fill_price := NA_character_]
+            dt[, fill_qty := NA_character_]
+            dt[, fill_commission := NA_character_]
+            dt[, fill_commission_asset := NA_character_]
+            dt[, fill_trade_id := NA_integer_]
           }
           return(dt[])
         }
@@ -229,8 +256,8 @@ BinanceTrading <- R6::R6Class(
     #' `POST https://api.binance.com/api/v3/order/test`
     #'
     #' ### Official Documentation
-    #' [Binance Test New Order](https://binance-docs.github.io/apidocs/spot/en/#test-new-order-trade)
-    #' Verified: 2026-03-10
+    #' [Binance Test New Order](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#test-new-order-trade)
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Parameter Validation**: Verify order parameters are correct before live submission.
@@ -276,11 +303,12 @@ BinanceTrading <- R6::R6Class(
     #' @param newOrderRespType Character or NULL; `"ACK"`, `"RESULT"`, or `"FULL"`.
     #' @param selfTradePreventionMode Character or NULL.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`), single row with columns:
-    #'   - `symbol` (character): The validated trading pair.
-    #'   - `side` (character): `"BUY"` or `"SELL"`.
-    #'   - `type` (character): Order type.
-    #'   - `status` (character): `"validated"`.
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
+    #'   with a single row and a single `validated` (logical) column,
+    #'   set to `TRUE` on success. Binance returns `{}` on a successful
+    #'   test order — the absence of an error is the validation
+    #'   signal, so we don't fabricate a stub row echoing the request
+    #'   parameters (per the cross-package "no stub rows" convention).
     #'
     #' @examples
     #' \dontrun{
@@ -289,7 +317,7 @@ BinanceTrading <- R6::R6Class(
     #'   type = "LIMIT", symbol = "BTCUSDT", side = "BUY",
     #'   price = 50000, quantity = 0.0001
     #' )
-    #' print(test)
+    #' stopifnot(test$validated)
     #' }
     add_order_test = function(
       type,
@@ -327,13 +355,14 @@ BinanceTrading <- R6::R6Class(
         method = "POST",
         body = body,
         .parser = function(data) {
+          # `{}` on success — Binance's "request would have validated"
+          # signal. Per the cross-package convention we don't fabricate
+          # a stub row with the request parameters; the absence of an
+          # error is the success signal. Return a single-row table with
+          # one logical column so callers can write
+          # `dt$validated` without checking nrow().
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table(
-              symbol = symbol,
-              side = side,
-              type = type,
-              status = "validated"
-            )[])
+            return(data.table::data.table(validated = TRUE)[])
           }
           return(as_dt_row(data)[])
         }
@@ -351,8 +380,8 @@ BinanceTrading <- R6::R6Class(
     #' `DELETE https://api.binance.com/api/v3/order`
     #'
     #' ### Official Documentation
-    #' [Binance Cancel Order](https://binance-docs.github.io/apidocs/spot/en/#cancel-order-trade)
-    #' Verified: 2026-03-10
+    #' [Binance Cancel Order](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#cancel-order-trade)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -441,8 +470,8 @@ BinanceTrading <- R6::R6Class(
     #' `DELETE https://api.binance.com/api/v3/openOrders`
     #'
     #' ### Official Documentation
-    #' [Binance Cancel All Open Orders](https://binance-docs.github.io/apidocs/spot/en/#cancel-all-open-orders-on-a-symbol-trade)
-    #' Verified: 2026-03-10
+    #' [Binance Cancel All Open Orders](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#cancel-all-open-orders-on-a-symbol-trade)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -510,9 +539,9 @@ BinanceTrading <- R6::R6Class(
     #'   - `self_trade_prevention_mode` (character): STP mode applied.
     #'   - `transact_time` (POSIXct): Cancellation time.
     #'
-    #'   When no open orders exist, a single confirmation row with columns:
-    #'   - `symbol` (character): The requested trading pair.
-    #'   - `status` (character): `"cancelled"`.
+    #'   When there were no open orders to cancel, the return is an
+    #'   empty `data.table` (per the cross-package "no stub rows"
+    #'   convention — the absence of an error is the success signal).
     #'
     #' @examples
     #' \dontrun{
@@ -526,8 +555,14 @@ BinanceTrading <- R6::R6Class(
         method = "DELETE",
         query = list(symbol = symbol, recvWindow = recvWindow),
         .parser = function(data) {
+          # Per the cross-package "empty response → empty data.table,
+          # no stub rows" convention: when there were no orders to
+          # cancel, return an empty table rather than fabricate a
+          # synthetic `(symbol, status = "cancelled")` row that pretends
+          # to be a cancelled order. The absence of an error is the
+          # success signal.
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table(symbol = symbol, status = "cancelled")[])
+            return(data.table::data.table()[])
           }
           dt <- as_dt_list(data)
           if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
@@ -549,8 +584,8 @@ BinanceTrading <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/order`
     #'
     #' ### Official Documentation
-    #' [Binance Query Order](https://binance-docs.github.io/apidocs/spot/en/#query-order-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance Query Order](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-order-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -651,8 +686,8 @@ BinanceTrading <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/openOrders`
     #'
     #' ### Official Documentation
-    #' [Binance Current Open Orders](https://binance-docs.github.io/apidocs/spot/en/#current-open-orders-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance Current Open Orders](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#current-open-orders-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -750,8 +785,8 @@ BinanceTrading <- R6::R6Class(
     #' `GET https://api.binance.com/api/v3/allOrders`
     #'
     #' ### Official Documentation
-    #' [Binance All Orders](https://binance-docs.github.io/apidocs/spot/en/#all-orders-user_data)
-    #' Verified: 2026-03-10
+    #' [Binance All Orders](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#all-orders-user_data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```

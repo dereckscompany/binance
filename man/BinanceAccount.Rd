@@ -26,7 +26,7 @@ environment variables or passed to the constructor).
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#account-endpoints}{Binance Account Endpoints}
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints}{Binance Account Endpoints}
 }
 
 \subsection{Endpoints Covered}{\tabular{lll}{
@@ -122,8 +122,8 @@ and account type. For balances, use \code{get_balances()}.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data}{Binance Account Information}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#account-information-user_data}{Binance Account Information}
+Verified: 2026-05-22
 }
 
 \subsection{Automated Trading Usage}{
@@ -143,17 +143,39 @@ Verified: 2026-03-10
 
 \subsection{JSON Response}{
 
+Shape captured 2026-05-22 from the live docs.
+
 \if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
   "makerCommission": 15,
   "takerCommission": 15,
+  "buyerCommission": 0,
+  "sellerCommission": 0,
+  "commissionRates": \{
+    "maker": "0.00150000",
+    "taker": "0.00150000",
+    "buyer": "0.00000000",
+    "seller": "0.00000000"
+  \},
   "canTrade": true,
   "canWithdraw": true,
   "canDeposit": true,
+  "brokered": false,
+  "requireSelfTradePrevention": false,
+  "preventSor": false,
+  "updateTime": 123456789,
   "accountType": "SPOT",
-  "balances": [...],
+  "balances": [
+    \{ "asset": "BTC", "free": "4723846.89208129", "locked": "0.00000000" \}
+  ],
+  "permissions": ["SPOT", "MARGIN"],
   "uid": 354937868
 \}
 }\if{html}{\out{</div>}}
+
+Note: this parser drops the \code{balances} array — call \code{get_balances()}
+for the per-asset shape. \code{commissionRates} is flattened to wide
+\verb{commission_rates_*} columns and \code{permissions} is \verb{;}-collapsed
+so the return is always one row per account.
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceAccount$get_account_info(recvWindow = NULL)}\if{html}{\out{</div>}}
@@ -173,7 +195,10 @@ Verified: 2026-03-10
 \item \code{taker_commission} (integer): Taker commission rate (basis points).
 \item \code{buyer_commission} (integer): Buyer commission rate (basis points).
 \item \code{seller_commission} (integer): Seller commission rate (basis points).
-\item \code{commission_rates} (list): Nested object with \code{maker}, \code{taker}, \code{buyer}, \code{seller} as decimal strings.
+\item \code{commission_rates_maker} (character): Maker commission rate as decimal string.
+\item \code{commission_rates_taker} (character): Taker commission rate as decimal string.
+\item \code{commission_rates_buyer} (character): Buyer commission rate as decimal string.
+\item \code{commission_rates_seller} (character): Seller commission rate as decimal string.
 \item \code{can_trade} (logical): Whether the account can place trades.
 \item \code{can_withdraw} (logical): Whether the account can withdraw.
 \item \code{can_deposit} (logical): Whether the account can deposit.
@@ -182,11 +207,14 @@ Verified: 2026-03-10
 \item \code{prevent_sor} (logical): Whether smart order routing is prevented.
 \item \code{update_time} (numeric): Last account update timestamp in milliseconds.
 \item \code{account_type} (character): Account type (e.g., \code{"SPOT"}).
-\item \code{permission} (character): Account permission (one row per permission, e.g., \code{"SPOT"}, \code{"MARGIN"}).
+\item \code{permissions} (character): \verb{;}-separated account permissions
+(e.g., \code{"SPOT;MARGIN"}). Recover the vector with
+\code{strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]}. Single
+row per account — collapsed via the shared
+\code{collapse_string_array_fields()} helper for cross-package
+consistency.
 \item \code{uid} (integer): Unique account identifier.
 }
-
-When the account has multiple permissions, account fields are repeated on each row.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -215,8 +243,8 @@ Retrieves asset balances for the account.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data}{Binance Account Information}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#account-information-user_data}{Binance Account Information}
+Verified: 2026-05-22
 }
 
 \subsection{Automated Trading Usage}{
@@ -298,8 +326,8 @@ Retrieves trades for a specific symbol. Requires authentication.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#account-trade-list-user_data}{Binance Account Trade List}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#account-trade-list-user_data}{Binance Account Trade List}
+Verified: 2026-05-22
 }
 
 \subsection{Automated Trading Usage}{

@@ -67,7 +67,7 @@ BinanceWithdrawal <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Withdraw](https://developers.binance.com/docs/wallet/capital/withdraw)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Profit Extraction**: Withdraw profits to a cold wallet at regular intervals.
@@ -193,7 +193,7 @@ BinanceWithdrawal <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Withdraw History](https://developers.binance.com/docs/wallet/capital/withdraw-history)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### Automated Trading Usage
     #' - **Withdrawal Monitoring**: Poll for status `6` (completed) to confirm funds have

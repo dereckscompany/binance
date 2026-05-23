@@ -82,7 +82,7 @@ BinanceTransfer <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Universal Transfer](https://developers.binance.com/docs/wallet/asset/user-universal-transfer)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -194,7 +194,7 @@ BinanceTransfer <- R6::R6Class(
     #'
     #' ### Official Documentation
     #' [Binance Universal Transfer](https://developers.binance.com/docs/wallet/asset/query-user-universal-transfer)
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```

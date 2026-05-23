@@ -79,7 +79,7 @@ test_that("backfill skips completed combos on resume", {
   resp <- mock_response(mock_klines_data())
   httr2::local_mocked_responses(function(req) {
     captured_urls <<- c(captured_urls, req$url)
-    resp
+    return(resp)
   })
 
   binance_backfill_klines(
@@ -121,34 +121,44 @@ test_that("backfill clamps -Inf from to 2017-07-01", {
 
 # -- Error Handling --
 
-test_that("backfill attaches failures attribute on error", {
+test_that("backfill warns per failure and emits a final summary warning", {
   outfile <- tempfile(fileext = ".csv")
   on.exit(unlink(outfile), add = TRUE)
 
   # Mock HTTP to return an error
   httr2::local_mocked_responses(function(req) {
-    httr2::response(
+    return(httr2::response(
       status_code = 500L,
       headers = list(`Content-Type` = "application/json"),
       body = charToRaw("{\"code\": -1000, \"msg\": \"Internal error\"}")
-    )
+    ))
   })
 
-  result <- suppressWarnings(binance_backfill_klines(
-    symbols = "BTCUSDT",
-    timeframes = "1d",
-    from = lubridate::as_datetime("2024-10-16", tz = "UTC"),
-    to = lubridate::as_datetime("2024-10-17", tz = "UTC"),
-    file = outfile,
-    sleep = 0,
-    verbose = FALSE
-  ))
+  warnings_seen <- character(0)
+  result <- withCallingHandlers(
+    binance_backfill_klines(
+      symbols = "BTCUSDT",
+      timeframes = "1d",
+      from = lubridate::as_datetime("2024-10-16", tz = "UTC"),
+      to = lubridate::as_datetime("2024-10-17", tz = "UTC"),
+      file = outfile,
+      sleep = 0,
+      verbose = FALSE
+    ),
+    warning = function(w) {
+      warnings_seen <<- c(warnings_seen, conditionMessage(w))
+      invokeRestart("muffleWarning")
+    }
+  )
 
-  failures <- attr(result, "failures")
-  expect_s3_class(failures, "data.table")
-  expect_equal(nrow(failures), 1L)
-  expect_equal(failures$symbol, "BTCUSDT")
-  expect_equal(failures$timeframe, "1d")
+  # Per-combo warning fires inside the tryCatch (line 160 of backfill.R)
+  expect_true(any(grepl("BTCUSDT", warnings_seen) & grepl("FAILED", warnings_seen)))
+  # Final summary warning lists the failure count + combo identifier.
+  expect_true(any(grepl("1 of 1", warnings_seen) & grepl("BTCUSDT/1d", warnings_seen)))
+
+  # No hidden state on the return value — it's just the file path.
+  expect_type(result, "character")
+  expect_null(attr(result, "failures"))
 })
 
 # -- Multiple Symbols/Timeframes --

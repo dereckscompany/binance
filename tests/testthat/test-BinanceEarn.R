@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://api.binance.com"
 
 new_earn <- function() {
-  BinanceEarn$new(keys = KEYS, base_url = BASE)
+  return(BinanceEarn$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -30,6 +30,18 @@ test_that("get_flexible_products returns data.table with expected columns", {
   expect_true("status" %in% names(dt))
   expect_equal(dt$asset, "USDT")
   expect_equal(dt$product_id, "USDT001")
+
+  # tierAnnualPercentageRate has dynamic keys — preserved as JSON string,
+  # not list-column. Recover via jsonlite::fromJSON.
+  expect_true("tier_annual_percentage_rate" %in% names(dt))
+  expect_type(dt$tier_annual_percentage_rate, "character")
+  recovered <- jsonlite::fromJSON(dt$tier_annual_percentage_rate)
+  expect_equal(recovered$`0-5BTC`, 0.05)
+  expect_equal(recovered$`5-10BTC`, 0.03)
+
+  # No list columns anywhere.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
 })
 
 test_that("get_flexible_products hits correct endpoint", {
@@ -37,7 +49,7 @@ test_that("get_flexible_products hits correct endpoint", {
   resp <- mock_binance_response(data = mock_flexible_products_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_earn()$get_flexible_products(asset = "USDT")
@@ -50,7 +62,7 @@ test_that("get_flexible_products passes pagination parameters", {
   resp <- mock_binance_response(data = mock_flexible_products_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_earn()$get_flexible_products(current = 1, size = 50)
@@ -67,6 +79,26 @@ test_that("get_flexible_products returns empty data.table when no products", {
   expect_equal(nrow(dt), 0L)
 })
 
+test_that("get_flexible_products emits NA tier_annual_percentage_rate when upstream omits it", {
+  # Regression: the JSON-encode branch in the parser sets the field to
+  # NA_character_ when `tierAnnualPercentageRate` is missing/empty.
+  # Without a fixture variant that omits the field, this empty branch
+  # is dead code in tests.
+  data <- mock_flexible_products_data()
+  data$rows[[1]]$tierAnnualPercentageRate <- NULL
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_earn()$get_flexible_products()
+  expect_equal(nrow(dt), 1L)
+  expect_true("tier_annual_percentage_rate" %in% names(dt))
+  expect_true(is.na(dt$tier_annual_percentage_rate))
+  expect_type(dt$tier_annual_percentage_rate, "character")
+  # Still no list columns.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
+})
+
 # -- get_locked_products --
 
 test_that("get_locked_products returns data.table with expected columns", {
@@ -80,12 +112,65 @@ test_that("get_locked_products returns data.table with expected columns", {
   expect_equal(dt$project_id, "BTC30d001")
 })
 
+test_that("get_locked_products wide-prefixes nested detail/quota (no list columns)", {
+  resp <- mock_binance_response(data = mock_locked_products_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_earn()$get_locked_products()
+
+  # No list columns anywhere — nested objects are flattened.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
+
+  # Detail object wide-prefixed. Field set tracks current Binance API
+  # (verified 2026-05-22): `apr` not `apy`, plus extra-reward / boost
+  # fields.
+  expect_true(all(
+    c(
+      "detail_asset",
+      "detail_reward_asset",
+      "detail_duration",
+      "detail_renewable",
+      "detail_is_sold_out",
+      "detail_apr",
+      "detail_status",
+      "detail_subscription_start_time",
+      "detail_extra_reward_asset",
+      "detail_extra_reward_apr",
+      "detail_boost_reward_asset",
+      "detail_boost_apr",
+      "detail_boost_end_time"
+    ) %in%
+      names(dt)
+  ))
+  expect_equal(dt$detail_asset, "BTC")
+  expect_equal(dt$detail_reward_asset, "BTC")
+  expect_equal(dt$detail_duration, 30L)
+  expect_true(dt$detail_renewable)
+  expect_false(dt$detail_is_sold_out)
+  expect_equal(dt$detail_apr, "0.05000000")
+  expect_equal(dt$detail_status, "CREATED")
+  expect_equal(dt$detail_extra_reward_asset, "BNB")
+  expect_equal(dt$detail_boost_apr, "0.00100000")
+
+  # Quota object wide-prefixed.
+  expect_true(all(
+    c("quota_total_personal_quota", "quota_minimum") %in% names(dt)
+  ))
+  expect_equal(dt$quota_total_personal_quota, "10.00000000")
+  expect_equal(dt$quota_minimum, "0.001")
+
+  # Raw nested fields are gone.
+  expect_false("detail" %in% names(dt))
+  expect_false("quota" %in% names(dt))
+})
+
 test_that("get_locked_products hits correct endpoint", {
   captured_url <- NULL
   resp <- mock_binance_response(data = mock_locked_products_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_earn()$get_locked_products(asset = "BTC")
@@ -115,7 +200,7 @@ test_that("add_flexible_subscription hits correct endpoint with POST", {
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_earn()$add_flexible_subscription(productId = "USDT001", amount = 100)
@@ -128,7 +213,7 @@ test_that("add_flexible_subscription converts amount to character in query", {
   resp <- mock_binance_response(data = mock_flexible_subscribe_response())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_earn()$add_flexible_subscription(productId = "USDT001", amount = 100.5)
@@ -158,7 +243,7 @@ test_that("add_locked_subscription hits correct endpoint with POST", {
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_earn()$add_locked_subscription(projectId = "BTC30d001", amount = 0.01)
@@ -188,7 +273,7 @@ test_that("add_flexible_redemption hits correct endpoint with POST", {
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_earn()$add_flexible_redemption(productId = "USDT001", amount = 50)
@@ -201,7 +286,7 @@ test_that("add_flexible_redemption converts amount to character if provided", {
   resp <- mock_binance_response(data = mock_flexible_redeem_response())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_earn()$add_flexible_redemption(productId = "USDT001", amount = 25.5)
@@ -213,7 +298,7 @@ test_that("add_flexible_redemption works with redeemAll instead of amount", {
   resp <- mock_binance_response(data = mock_flexible_redeem_response())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_earn()$add_flexible_redemption(productId = "USDT001", redeemAll = TRUE)
@@ -241,7 +326,7 @@ test_that("add_locked_redemption hits correct endpoint with POST", {
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_earn()$add_locked_redemption(positionId = "12345")
@@ -265,6 +350,37 @@ test_that("get_flexible_position returns data.table with expected columns", {
   expect_true("auto_subscribe" %in% names(dt))
   expect_equal(dt$asset, "USDT")
   expect_equal(dt$product_id, "USDT001")
+  # Reward / collateral / airdrop fields surfaced.
+  expect_true("yesterday_airdrop_percentage_rate" %in% names(dt))
+  expect_true("air_drop_asset" %in% names(dt))
+  expect_true("collateral_amount" %in% names(dt))
+  expect_true("cumulative_total_rewards" %in% names(dt))
+  # tier_annual_percentage_rate: mock has it as `list()` (empty) — the
+  # JSON-encode branch converts that to NA_character_ for schema
+  # stability. Without this assertion the empty-branch is dead code.
+  expect_true("tier_annual_percentage_rate" %in% names(dt))
+  expect_true(is.na(dt$tier_annual_percentage_rate))
+  expect_type(dt$tier_annual_percentage_rate, "character")
+  # No list columns.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
+})
+
+test_that("get_flexible_position JSON-encodes populated tierAnnualPercentageRate", {
+  data <- mock_flexible_position_data()
+  data$rows[[1]]$tierAnnualPercentageRate <- list(
+    "0-5BTC" = 0.05,
+    "5-10BTC" = 0.03
+  )
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_earn()$get_flexible_position()
+  expect_equal(nrow(dt), 1L)
+  expect_type(dt$tier_annual_percentage_rate, "character")
+  recovered <- jsonlite::fromJSON(dt$tier_annual_percentage_rate)
+  expect_equal(recovered$`0-5BTC`, 0.05)
+  expect_equal(recovered$`5-10BTC`, 0.03)
 })
 
 test_that("get_flexible_position hits correct endpoint", {
@@ -272,7 +388,7 @@ test_that("get_flexible_position hits correct endpoint", {
   resp <- mock_binance_response(data = mock_flexible_position_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_earn()$get_flexible_position(asset = "USDT", productId = "USDT001")
@@ -297,7 +413,7 @@ test_that("get_locked_position hits correct endpoint", {
   resp <- mock_binance_response(data = list(total = 0L, rows = list()))
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_earn()$get_locked_position(asset = "BTC", positionId = "12345")
@@ -338,7 +454,7 @@ test_that("get_flexible_subscription_history hits correct endpoint", {
   resp <- mock_binance_response(data = mock_flexible_subscription_history_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_earn()$get_flexible_subscription_history(asset = "USDT", startTime = 1661493146000, endTime = 1661593146000)
@@ -364,7 +480,7 @@ test_that("get_locked_subscription_history hits correct endpoint", {
   resp <- mock_binance_response(data = list(total = 0L, rows = list()))
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_earn()$get_locked_subscription_history(asset = "BTC", current = 1, size = 10)
@@ -379,7 +495,7 @@ test_that("get_flexible_redemption_history hits correct endpoint", {
   resp <- mock_binance_response(data = list(total = 0L, rows = list()))
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_earn()$get_flexible_redemption_history(productId = "USDT001", asset = "USDT")
@@ -395,7 +511,7 @@ test_that("get_locked_redemption_history hits correct endpoint", {
   resp <- mock_binance_response(data = list(total = 0L, rows = list()))
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_earn()$get_locked_redemption_history(positionId = "12345", asset = "BTC")

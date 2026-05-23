@@ -138,7 +138,7 @@ Transfers assets between wallet types (spot, margin, futures, funding).
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/wallet/asset/user-universal-transfer}{Binance Universal Transfer}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -241,7 +241,7 @@ time range and pagination.
 \subsection{Official Documentation}{
 
 \href{https://developers.binance.com/docs/wallet/asset/query-user-universal-transfer}{Binance Universal Transfer}
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{

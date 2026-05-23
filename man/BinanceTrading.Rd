@@ -27,7 +27,7 @@ All methods require authentication (valid API key and secret).
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#spot-account-trade}{Binance Spot Trading}
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints}{Binance Spot Trading}
 }
 
 \subsection{Endpoints Covered}{\tabular{lll}{
@@ -114,7 +114,7 @@ test <- trading$add_order_test(
   type = "LIMIT", symbol = "BTCUSDT", side = "BUY",
   price = 50000, quantity = 0.0001
 )
-print(test)
+stopifnot(test$validated)
 }
 
 ## ------------------------------------------------
@@ -204,8 +204,8 @@ Places a new spot order on Binance.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#new-order-trade}{Binance New Order}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#new-order-trade}{Binance New Order}
+Verified: 2026-05-22
 }
 
 \subsection{Automated Trading Usage}{
@@ -311,14 +311,22 @@ Verified: 2026-03-10
 \item \code{working_time} (numeric): Timestamp when the order started working.
 \item \code{self_trade_prevention_mode} (character): STP mode applied.
 \item \code{transact_time} (POSIXct): Transaction time converted from \code{transactTime}.
-\item \code{fill_price} (character): Fill execution price (one row per fill when \code{newOrderRespType = "FULL"}).
-\item \code{fill_qty} (character): Fill quantity.
-\item \code{fill_commission} (character): Commission charged for this fill.
-\item \code{fill_commission_asset} (character): Asset used for commission (e.g., \code{"BNB"}).
+\item \code{fill_index} (integer): 1-indexed fill position (\code{NA} when the order
+had no fills).
+\item \code{fill_price} (character): Fill execution price (\code{NA} when no fills).
+\item \code{fill_qty} (character): Fill quantity (\code{NA} when no fills).
+\item \code{fill_commission} (character): Commission charged for this fill
+(\code{NA} when no fills).
+\item \code{fill_commission_asset} (character): Asset used for commission
+(e.g., \code{"BNB"}; \code{NA} when no fills).
+\item \code{fill_trade_id} (integer): Fill trade ID (\code{NA} when no fills).
 }
 
-When the order has multiple fills, parent order fields are repeated on each row.
-When there are no fills, a single row is returned without fill columns.
+When the order has N fills, the parent order fields are replicated on
+each of the N rows and \code{fill_index} runs \verb{1..N}. When the order has
+no fills (e.g. a resting \code{LIMIT} order with \code{newOrderRespType = "ACK"}
+/ \code{"RESULT"}), a single row is returned with the \verb{fill_*} columns
+present as \code{NA} so the schema is stable across response types.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -352,8 +360,8 @@ Returns \code{{}} on success.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#test-new-order-trade}{Binance Test New Order}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#test-new-order-trade}{Binance Test New Order}
+Verified: 2026-05-22
 }
 
 \subsection{Automated Trading Usage}{
@@ -442,13 +450,12 @@ Verified: 2026-03-10
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}), single row with columns:
-\itemize{
-\item \code{symbol} (character): The validated trading pair.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{type} (character): Order type.
-\item \code{status} (character): \code{"validated"}.
-}
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
+with a single row and a single \code{validated} (logical) column,
+set to \code{TRUE} on success. Binance returns \code{{}} on a successful
+test order — the absence of an error is the validation
+signal, so we don't fabricate a stub row echoing the request
+parameters (per the cross-package "no stub rows" convention).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -458,7 +465,7 @@ test <- trading$add_order_test(
   type = "LIMIT", symbol = "BTCUSDT", side = "BUY",
   price = 50000, quantity = 0.0001
 )
-print(test)
+stopifnot(test$validated)
 }
 }
 \if{html}{\out{</div>}}
@@ -480,8 +487,8 @@ Cancels an active order by order ID or client order ID.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#cancel-order-trade}{Binance Cancel Order}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#cancel-order-trade}{Binance Cancel Order}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -581,8 +588,8 @@ Cancels all active orders on a trading pair.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#cancel-all-open-orders-on-a-symbol-trade}{Binance Cancel All Open Orders}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#cancel-all-open-orders-on-a-symbol-trade}{Binance Cancel All Open Orders}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -666,11 +673,9 @@ When orders are cancelled, one row per order with columns:
 \item \code{transact_time} (POSIXct): Cancellation time.
 }
 
-When no open orders exist, a single confirmation row with columns:
-\itemize{
-\item \code{symbol} (character): The requested trading pair.
-\item \code{status} (character): \code{"cancelled"}.
-}
+When there were no open orders to cancel, the return is an
+empty \code{data.table} (per the cross-package "no stub rows"
+convention — the absence of an error is the success signal).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -699,8 +704,8 @@ Retrieves details for a specific order by order ID or client order ID.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#query-order-user_data}{Binance Query Order}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-order-user_data}{Binance Query Order}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -810,8 +815,8 @@ Retrieves all currently open orders, optionally filtered by symbol.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#current-open-orders-user_data}{Binance Current Open Orders}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#current-open-orders-user_data}{Binance Current Open Orders}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -917,8 +922,8 @@ the most recent orders are returned.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#all-orders-user_data}{Binance All Orders}
-Verified: 2026-03-10
+\href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#all-orders-user_data}{Binance All Orders}
+Verified: 2026-05-22
 }
 
 \subsection{curl}{

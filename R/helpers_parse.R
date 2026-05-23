@@ -68,6 +68,99 @@ as_dt_list <- function(items) {
   return(dt[])
 }
 
+#' Collapse a Plain-String Array Field on a Single Record
+#'
+#' Walks the named list `x` and replaces any named field whose value is a
+#' length >= 1 list of plain character strings (or atomic character vector)
+#' with a single semicolon-separated character scalar. Used by the parsers
+#' that need a one-row-per-entity shape with no list columns.
+#'
+#' ### Separator choice
+#' We use `;` rather than `,` because semicolon is far less likely to
+#' appear inside any of the values themselves (the array elements are
+#' short codes / snake_case identifiers / tickers — none of which contain
+#' semicolons). Commas legitimately appear inside URL query strings, so
+#' a future URL-valued field would need either URL-encoding or a
+#' different separator entirely. Semicolon sidesteps that.
+#'
+#' The same convention is used across the sister packages (`alpaca`,
+#' `kucoin`) for cross-package consistency.
+#'
+#' If any individual value contains a literal `;`, we'd silently corrupt
+#' the data on a subsequent split. To make any future shape change loud,
+#' we emit a once-per-session warning when that happens.
+#'
+#' ### Recovering the original values
+#' Splitting on `;` gives back the original vector:
+#'
+#' ```r
+#' dt <- market$get_exchange_info()
+#' strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]
+#' #> [1] "SPOT" "MARGIN"
+#' ```
+#'
+#' Empty / missing arrays are written as `NA_character_` (not `list()`),
+#' so downstream `rbindlist(fill = TRUE)` builds a character column
+#' rather than falling back to a list column when some records have
+#' arrays and others don't.
+#'
+#' Only fields in `fields` are touched; nested objects elsewhere are left
+#' alone so they can be flattened by their own parser.
+#'
+#' @param x A named list representing a single API record.
+#' @param fields Character vector; names of fields to collapse.
+#' @return The same named list with the matching fields collapsed in place.
+#'
+#' @keywords internal
+#' @noRd
+collapse_string_array_fields <- function(x, fields) {
+  for (nm in fields) {
+    val <- x[[nm]]
+    if (is.null(val) || length(val) == 0L) {
+      x[[nm]] <- NA_character_
+      next
+    }
+    if (is.list(val)) {
+      val <- unlist(val, use.names = FALSE)
+    }
+    if (is.atomic(val) && length(val) >= 1L) {
+      val_chr <- as.character(val)
+      # Drop NA elements BEFORE joining. `paste(c("real", NA),
+      # collapse = ";")` would produce the literal string `"real;NA"`,
+      # indistinguishable from a real "NA" value — same trap we hit on
+      # alpaca's news image_sizes. If every element is NA, fall back to
+      # `NA_character_` so empty / all-missing arrays round-trip to NA.
+      val_chr <- val_chr[!is.na(val_chr)]
+      if (length(val_chr) == 0L) {
+        x[[nm]] <- NA_character_
+        next
+      }
+      # `na.rm = TRUE` on the collision check is defensive — by here
+      # `val_chr` has no NAs, but it's cheap insurance against future
+      # refactors that might add an `NA` element back upstream.
+      if (any(grepl(";", val_chr, fixed = TRUE), na.rm = TRUE)) {
+        rlang::warn(
+          paste0(
+            "Field `",
+            nm,
+            "` contains a literal `;` which collides with the ",
+            "collapse separator. Joining anyway; downstream code that ",
+            "splits on `;` will see corrupted values. Please report this ",
+            "so we can switch the separator for this field."
+          ),
+          # Fire once per session per field — once the user has seen the
+          # warning for a given field they know that field's shape is
+          # changing, and there's no value in repeating.
+          .frequency = "once",
+          .frequency_id = paste0("collapse_sep_collision_", nm)
+        )
+      }
+      x[[nm]] <- paste(val_chr, collapse = ";")
+    }
+  }
+  return(x)
+}
+
 #' Convert a Binance Millisecond Timestamp to POSIXct
 #'
 #' @param ms Numeric; millisecond Unix timestamp.
@@ -96,6 +189,18 @@ ms_to_datetime <- function(ms) {
 #' @keywords internal
 #' @noRd
 parse_orderbook <- function(data) {
+  # Guard against `data = NULL` / empty list (which `parse_binance_response()`
+  # can return on an empty body or JSON-parse failure). Without this,
+  # `data$bids` and `data$lastUpdateId` below would error with
+  # "$ operator applied to NULL".
+  if (is.null(data) || length(data) == 0) {
+    return(data.table::data.table(
+      last_update_id = character(),
+      side = character(),
+      price = numeric(),
+      size = numeric()
+    )[])
+  }
   parse_side <- function(entries, side_label) {
     if (is.null(entries) || length(entries) == 0) {
       return(data.table::data.table(
@@ -133,6 +238,13 @@ parse_orderbook <- function(data) {
 #' @keywords internal
 #' @noRd
 parse_paginated <- function(data, time_cols = character(0)) {
+  # Guard against `data = NULL` (empty body / JSON-parse failure) before
+  # subscripting. `is.null(data$rows)` on a NULL `data` returns TRUE so
+  # this is partly defensive — but `data` itself being NULL is a real
+  # path through `parse_binance_response()`.
+  if (is.null(data) || length(data) == 0) {
+    return(data.table::data.table()[])
+  }
   rows <- data$rows
   if (is.null(rows) || length(rows) == 0) {
     return(data.table::data.table()[])

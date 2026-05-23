@@ -31,14 +31,32 @@ We invite you to read the source code and make contributions if you find a bug o
 
 ## Design Philosophy
 
-All API responses are returned as `data.table` objects with two transformations applied:
+All API responses are returned as `data.table` objects. The package targets a consistent "one entity = one row, no list columns" shape, but the exact transformation is endpoint-specific. See each method's `@return` block for the precise list of columns and any per-endpoint behaviour.
 
-1. **snake_case column names** - camelCase keys from the JSON response (e.g. `insertTime`, `quoteQty`) are converted to snake_case (`insert_time`, `quote_qty`). No columns are renamed beyond.
-1. **type coercion** - known columns are type coerced in `data.table` before return.
+The transformations the parsers apply:
 
-That's it. **No fields are dropped and no columns are renamed** beyond snake case conversion. If a column exists in the Binance API response, it will exist in the returned `data.table`. If you don't need a column, drop it yourself.
+1. **snake_case column names** - camelCase keys from the JSON response (e.g. `insertTime`, `quoteQty`) are converted to snake_case (`insert_time`, `quote_qty`). A handful of endpoints additionally rename for clarity (e.g. nested objects are wide-prefixed to `parent_child` columns; collapsed array fields land under the plural form like `permissions`).
 
-- The only exception is klines (candlestick data), where Binance returns positional arrays instead of named objects. These are assigned descriptive column names (`open_time`, `open`, `high`, `low`, `close`, `volume`, `close_time`, etc.) matching the Binance documentation.
+2. **Type coercion** for well-known columns - millisecond timestamps become `POSIXct`; selected nested numeric `filters` are extracted into flat `lot_min_qty` / `price_tick_size` / `min_notional` columns.
+
+3. **Shape normalisation** for nested arrays and objects, applied per endpoint:
+    - **Arrays of plain strings** (e.g. `orderTypes`, `permissions`, `allowedSelfTradePreventionModes`) → collapsed into one `;`-separated character column. Recover via `strsplit(x, ";", fixed = TRUE)[[1]]`.
+    - **Arrays of objects with a fixed schema** (e.g. order `fills`, account `assets`, OCO `orderReports`, sub-account `spotSubUserAssetBtcVoList`) → exploded to long format with parent fields replicated and a `<child>_` prefix on the child columns. A 1-indexed position column is added where order matters.
+    - **Single nested objects with a fixed schema** (e.g. account `commissionRates`, locked-earn `detail` / `quota`) → flattened to wide `parent_child` columns.
+    - **Nested objects with dynamic keys** (e.g. spot exchange-info `permissionSets`, flexible-earn `tierAnnualPercentageRate`) → serialised as a JSON string column so the inner structure is preserved; recover via `jsonlite::fromJSON(x)`.
+
+**Endpoints that reshape rather than drop:**
+
+The parsers never discard API data — every field is either on the row, on a sibling row, on a sibling method's return, or attached as an attribute on the returned `data.table`.
+
+- `get_account_info()` (spot) - account-level fields are returned as a single row; the companion `balances` array is parsed by the sibling `get_balances()` (both methods hit `/api/v3/account` and parse different halves).
+- `get_account()` (futures) - one row per asset balance; the companion `positions` array is parsed by the sibling `get_positions()` (which hits `/fapi/v2/positionRisk`).
+- `get_exchange_info()` (spot and futures) - one row per symbol. The full per-symbol `filters` array is preserved as a JSON-encoded `filters_raw` column alongside the curated `lot_*` / `price_*` / `min_notional` columns (recover with `jsonlite::fromJSON(dt$filters_raw[1])`). Exchange-wide blocks (rate limits, exchange-wide filter rules, and on futures the margin-asset config) are exposed via sibling methods on the same class: `get_rate_limits()`, `get_exchange_filters()`, and (futures only) `get_futures_assets()`. `serverTime` is the long-standing `get_server_time()`. The constants (`timezone = "UTC"`, `futuresType = "U_M"`) are not re-exposed.
+- The OCO endpoints (`add_oco_order()`, `cancel_oco_order()`) expand the richer `orderReports` payload; the thinner `orders` duplicate is a strict subset of the same data and so is omitted.
+
+**Klines** are a special case: Binance returns positional arrays instead of named objects, so we assign descriptive column names (`open_time`, `open`, `high`, `low`, `close`, `volume`, `close_time`, etc.) matching the Binance documentation.
+
+If a column you expect is missing, check the method's `@return`; if it still looks wrong, please file an issue.
 
 ## Available Classes
 
@@ -111,7 +129,7 @@ BINANCE_API_KEY = your-api-key
 BINANCE_API_SECRET = your-api-secret
 ```
 
-If you don't have a key, visit the [Binance API documentation](https://binance-docs.github.io/apidocs/).
+If you don't have a key, visit the [Binance API documentation](https://developers.binance.com/docs/binance-spot-api-docs).
 
 ## Quick Start -- Market Data
 

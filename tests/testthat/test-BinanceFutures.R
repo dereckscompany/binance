@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://fapi.binance.com"
 
 new_futures <- function() {
-  BinanceFutures$new(keys = KEYS, base_url = BASE)
+  return(BinanceFutures$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -50,7 +50,7 @@ test_that("add_order hits correct endpoint", {
   resp <- mock_binance_response(data = mock_futures_order_response())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures()$add_order(symbol = "BTCUSDT", side = "BUY", type = "MARKET", quantity = 0.001)
@@ -81,11 +81,12 @@ test_that("add_order_test returns confirmation dt on success", {
     timeInForce = "GTC"
   )
   expect_s3_class(dt, "data.table")
+  # `{}` on success → `validated = TRUE`, no echoed request fields.
   expect_equal(nrow(dt), 1L)
-  expect_equal(dt$symbol, "BTCUSDT")
-  expect_equal(dt$side, "BUY")
-  expect_equal(dt$type, "LIMIT")
-  expect_equal(dt$status, "validated")
+  expect_true("validated" %in% names(dt))
+  expect_true(dt$validated)
+  expect_false("symbol" %in% names(dt))
+  expect_false("status" %in% names(dt))
 })
 
 test_that("add_order_test hits /fapi/v1/order/test", {
@@ -93,7 +94,7 @@ test_that("add_order_test hits /fapi/v1/order/test", {
   resp <- mock_binance_response(data = list())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures()$add_order_test(symbol = "BTCUSDT", side = "SELL", type = "MARKET", quantity = 0.001)
@@ -132,7 +133,7 @@ test_that("cancel_all_orders hits correct endpoint", {
   resp <- mock_binance_response(data = mock_futures_cancel_all_response())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_futures()$cancel_all_orders("BTCUSDT")
@@ -207,11 +208,78 @@ test_that("get_account returns data.table with assets expanded to long format", 
   expect_true("total_wallet_balance" %in% names(dt))
   # No list-column 'assets' - expanded with prefix
   expect_false("assets" %in% names(dt))
+  # `positions` is intentionally dropped — see get_account @return note.
+  expect_false("positions" %in% names(dt))
+  expect_false(any(grepl("^position_", names(dt))))
   # Asset columns present with prefix
   expect_true("asset_asset" %in% names(dt))
   expect_true("asset_wallet_balance" %in% names(dt))
   expect_equal(dt$asset_asset, "USDT")
   expect_equal(dt$asset_wallet_balance, "1000.00000000")
+})
+
+test_that("get_account preserves all assets when account has multiple assets + positions", {
+  # Regression: a prior bug `dt[rep(1L, nrow(positions_dt))]` was
+  # collapsing the assets dt back to one row before cross-joining with
+  # positions, so 2 assets + 3 positions returned 3 rows ALL for asset 1.
+  # Fix: positions are dropped from this method (use get_positions()
+  # for those). Verify that 2 assets returns 2 rows with both assets
+  # preserved.
+  data <- mock_futures_account_data()
+  data$assets <- list(
+    list(
+      asset = "USDT",
+      walletBalance = "1000.00",
+      unrealizedProfit = "0",
+      marginBalance = "1000.00",
+      maintMargin = "0",
+      initialMargin = "0",
+      positionInitialMargin = "0",
+      openOrderInitialMargin = "0",
+      crossWalletBalance = "1000.00",
+      crossUnPnl = "0",
+      availableBalance = "1000.00",
+      maxWithdrawAmount = "1000.00",
+      marginAvailable = TRUE,
+      updateTime = 0L
+    ),
+    list(
+      asset = "BNB",
+      walletBalance = "10.00",
+      unrealizedProfit = "0",
+      marginBalance = "10.00",
+      maintMargin = "0",
+      initialMargin = "0",
+      positionInitialMargin = "0",
+      openOrderInitialMargin = "0",
+      crossWalletBalance = "10.00",
+      crossUnPnl = "0",
+      availableBalance = "10.00",
+      maxWithdrawAmount = "10.00",
+      marginAvailable = TRUE,
+      updateTime = 0L
+    )
+  )
+  # Three open positions on different symbols — should NOT contaminate
+  # the asset rows.
+  data$positions <- list(
+    list(symbol = "BTCUSDT", positionAmt = "0.1"),
+    list(symbol = "ETHUSDT", positionAmt = "1.0"),
+    list(symbol = "BNBUSDT", positionAmt = "5.0")
+  )
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures()$get_account()
+  expect_equal(nrow(dt), 2L)
+  expect_setequal(dt$asset_asset, c("USDT", "BNB"))
+  # No position_* columns leak through.
+  expect_false(any(grepl("^position_", names(dt))))
+  # Account-level fields replicated on both rows.
+  expect_equal(unique(dt$total_wallet_balance), "1000.00000000")
+  # No list columns anywhere.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
 })
 
 # -- get_balances --
@@ -338,4 +406,69 @@ test_that("Binance API error is raised correctly for futures trading", {
     new_futures()$get_account(),
     "Binance API error -1013"
   )
+})
+
+# -- modify_position_margin --
+
+test_that("modify_position_margin returns single-row data.table with code/msg/amount/type", {
+  resp <- mock_binance_response(data = mock_futures_modify_position_margin_response())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures()$modify_position_margin("BTCUSDT", amount = 100, type = 1L)
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 1L)
+  expect_equal(dt$code, 200L)
+  expect_equal(dt$msg, "Successfully modify position margin.")
+  expect_equal(dt$amount, 100)
+  expect_equal(dt$type, 1L)
+})
+
+test_that("modify_position_margin sends POST to /fapi/v1/positionMargin with amount coerced to character", {
+  captured <- NULL
+  resp <- mock_binance_response(data = mock_futures_modify_position_margin_response())
+  httr2::local_mocked_responses(function(req) {
+    captured <<- req
+    return(resp)
+  })
+
+  new_futures()$modify_position_margin("BTCUSDT", amount = 0.5, type = 2L)
+  expect_equal(captured$method, "POST")
+  expect_true(grepl("/fapi/v1/positionMargin", captured$url))
+})
+
+# -- get_position_margin_history --
+
+test_that("get_position_margin_history returns one row per change with POSIXct time", {
+  resp <- mock_binance_response(data = mock_futures_position_margin_history_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures()$get_position_margin_history("BTCUSDT")
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 1L)
+  expect_equal(dt$symbol, "BTCUSDT")
+  expect_equal(dt$delta_type, "INCREASE_MARGIN")
+  expect_equal(dt$asset, "USDT")
+  expect_s3_class(dt$time, "POSIXct")
+})
+
+test_that("get_position_margin_history returns empty data.table on empty response", {
+  resp <- mock_binance_response(data = list())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures()$get_position_margin_history("BTCUSDT")
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
+})
+
+test_that("get_position_margin_history hits /fapi/v1/positionMargin/history", {
+  captured_url <- NULL
+  resp <- mock_binance_response(data = mock_futures_position_margin_history_data())
+  httr2::local_mocked_responses(function(req) {
+    captured_url <<- req$url
+    return(resp)
+  })
+
+  new_futures()$get_position_margin_history("BTCUSDT", type = 1L)
+  expect_true(grepl("/fapi/v1/positionMargin/history", captured_url))
+  expect_true(grepl("symbol=BTCUSDT", captured_url))
 })

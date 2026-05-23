@@ -5,7 +5,7 @@ KEYS <- get_api_keys(api_key = "test-key", api_secret = "test-secret")
 BASE <- "https://api.binance.com"
 
 new_transfer <- function() {
-  BinanceTransfer$new(keys = KEYS, base_url = BASE)
+  return(BinanceTransfer$new(keys = KEYS, base_url = BASE))
 }
 
 # -- Construction --
@@ -40,7 +40,7 @@ test_that("add_transfer hits correct endpoint with POST", {
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
     captured_method <<- req$method
-    resp
+    return(resp)
   })
 
   new_transfer()$add_transfer(
@@ -57,7 +57,7 @@ test_that("add_transfer passes parameters in query string", {
   resp <- mock_binance_response(data = mock_transfer_response())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_transfer()$add_transfer(
@@ -85,7 +85,7 @@ test_that("add_transfer passes optional fromSymbol and toSymbol", {
   resp <- mock_binance_response(data = mock_transfer_response())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_transfer()$add_transfer(
@@ -138,7 +138,7 @@ test_that("get_transfer_history hits correct endpoint", {
   resp <- mock_binance_response(data = mock_transfer_history_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_transfer()$get_transfer_history(type = "MAIN_UMFUTURE")
@@ -151,7 +151,7 @@ test_that("get_transfer_history passes query parameters", {
   resp <- mock_binance_response(data = mock_transfer_history_data())
   httr2::local_mocked_responses(function(req) {
     captured_url <<- req$url
-    resp
+    return(resp)
   })
 
   new_transfer()$get_transfer_history(

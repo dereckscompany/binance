@@ -27,7 +27,7 @@ The base URL defaults to \verb{https://fapi.binance.com} via \code{\link[=get_fu
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/futures/en/}{Binance Futures API}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/general-info}{Binance Futures API}
 }
 
 \subsection{Endpoints Covered}{\tabular{lll}{
@@ -120,7 +120,7 @@ test <- futures$add_order_test(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
   quantity = 0.001, price = 50000, timeInForce = "GTC"
 )
-print(test)
+stopifnot(test$validated)
 }
 
 ## ------------------------------------------------
@@ -181,6 +181,8 @@ print(all)
 futures <- BinanceFutures$new()
 account <- futures$get_account()
 print(account)
+positions <- futures$get_positions()
+print(positions)
 }
 
 ## ------------------------------------------------
@@ -363,7 +365,7 @@ Places a new USD-M futures order on Binance.
 
 \href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/New-Order}{Binance Futures New Order}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -522,7 +524,7 @@ and authentication exactly as \code{add_order()}, but no order is actually creat
 
 \href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/New-Order-Test}{Binance Futures New Order Test}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -606,13 +608,10 @@ Verified: 2026-03-10
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}), single row with columns:
-\itemize{
-\item \code{symbol} (character): The validated trading pair.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{type} (character): Order type.
-\item \code{status} (character): \code{"validated"}.
-}
+\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
+with a single row and a single \code{validated} (logical) column,
+set to \code{TRUE} on success. Binance returns \code{{}} on a successful
+test order; the absence of an error is the validation signal.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -622,7 +621,7 @@ test <- futures$add_order_test(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
   quantity = 0.001, price = 50000, timeInForce = "GTC"
 )
-print(test)
+stopifnot(test$validated)
 }
 }
 \if{html}{\out{</div>}}
@@ -646,7 +645,7 @@ Cancels an active futures order by order ID or client order ID.
 
 \href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Cancel-Order}{Binance Futures Cancel Order}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -757,7 +756,7 @@ Cancels all active futures orders on a trading pair.
 
 \href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Cancel-All-Open-Orders}{Binance Futures Cancel All Open Orders}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -834,7 +833,7 @@ Retrieves details for a specific futures order by order ID or client order ID.
 
 \href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Query-Order}{Binance Futures Query Order}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -940,7 +939,7 @@ Retrieves all currently open futures orders, optionally filtered by symbol.
 
 \href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Current-All-Open-Orders}{Binance Futures Current Open Orders}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1037,7 +1036,7 @@ Retrieves all futures orders for a symbol (open, cancelled, filled).
 
 \href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/All-Orders}{Binance Futures All Orders}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1150,7 +1149,7 @@ and positions (kept as list columns).
 
 \href{https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Account-Information-V2}{Binance Futures Account Information V2}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1232,7 +1231,10 @@ Verified: 2026-03-10
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+\code{data.table} with \strong{one row per asset balance} in the
+account; account-level fields are replicated on each row. The
+companion \code{positions} array Binance returns is intentionally
+dropped — see the long note below. Columns:
 \itemize{
 \item \code{fee_tier} (integer): Commission fee tier.
 \item \code{can_trade} (logical): Whether trading is permitted.
@@ -1246,15 +1248,24 @@ Verified: 2026-03-10
 \item \code{total_cross_wallet_balance} (character): Total cross-wallet balance.
 \item \code{available_balance} (character): Available balance for new positions.
 \item \code{max_withdraw_amount} (character): Maximum withdrawable amount.
-\item \code{asset_name} (character): Per-asset name (one row per asset, expanded from \code{assets}).
+\item \code{asset_asset} (character): Per-asset symbol — one row per asset
+(Binance returns the symbol under the \code{asset} field within the
+\code{assets} array, hence the doubled name after \code{asset_} prefixing).
 \item \code{asset_wallet_balance} (character): Per-asset wallet balance.
 \item \code{asset_unrealized_profit} (character): Per-asset unrealised PnL.
 \item \code{asset_margin_balance} (character): Per-asset margin balance.
 \item \code{asset_available_balance} (character): Per-asset available balance.
-\item \code{positions} (list): Nested list of per-symbol position details (kept as list-column).
 }
 
-When the account has multiple assets, account-level fields are repeated on each row.
+Account-level fields are replicated on each asset row. For
+per-position data (entry price, leverage, side, unrealised PnL on
+open contracts) use \code{get_positions()} — Binance returns positions
+alongside assets in this response, but they are a heterogeneous
+shape (one entity is an asset balance, the other is a derivative
+position) and combining them would require a Cartesian join no
+user expects. We therefore intentionally drop the \code{positions}
+array here; \code{get_positions()} hits \verb{/fapi/v2/positionRisk} and
+returns one row per open position.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -1262,6 +1273,8 @@ When the account has multiple assets, account-level fields are repeated on each 
 futures <- BinanceFutures$new()
 account <- futures$get_account()
 print(account)
+positions <- futures$get_positions()
+print(positions)
 }
 }
 \if{html}{\out{</div>}}
@@ -1285,7 +1298,7 @@ Retrieves all asset balances for the futures account.
 
 \href{https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Futures-Account-Balance-V2}{Binance Futures Account Balance V2}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1377,7 +1390,7 @@ Retrieves position risk information, optionally filtered by symbol.
 
 \href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Position-Information-V2}{Binance Futures Position Information V2}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1469,7 +1482,7 @@ Changes the initial leverage for a futures symbol.
 
 \href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Initial-Leverage}{Binance Futures Change Initial Leverage}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1552,7 +1565,7 @@ Changes the margin type for a futures symbol.
 
 \href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Margin-Type}{Binance Futures Change Margin Type}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1633,7 +1646,7 @@ Adds or reduces the isolated margin for a position.
 
 \href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Modify-Isolated-Position-Margin}{Binance Futures Modify Isolated Position Margin}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1729,7 +1742,7 @@ Retrieves the history of position margin changes.
 
 \href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Get-Position-Margin-Change-History}{Binance Futures Get Position Margin Change History}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1823,7 +1836,7 @@ Retrieves the trade history for the futures account.
 
 \href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Account-Trade-List}{Binance Futures Account Trade List}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -1936,7 +1949,7 @@ realized PnL, commissions, etc.).
 
 \href{https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Get-Income-History}{Binance Futures Get Income History}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -2049,7 +2062,7 @@ Changes the position mode between one-way and hedge mode.
 
 \href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Position-Mode}{Binance Futures Change Position Mode}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -2125,9 +2138,9 @@ Retrieves the current position mode (one-way or hedge mode).
 
 \subsection{Official Documentation}{
 
-\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Get-Current-Position-Mode}{Binance Futures Get Current Position Mode}
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Get-Current-Position-Mode}{Binance Futures Get Current Position Mode}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{

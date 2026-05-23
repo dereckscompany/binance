@@ -81,3 +81,29 @@ test_that("parse_orderbook returns proper data.table", {
   expect_true("size" %in% names(result))
   expect_equal(result$side, c("bid", "ask"))
 })
+
+test_that("parse_orderbook returns empty data.table on NULL or empty data (no crash)", {
+  # Regression: parser used to do `data$bids` without guarding NULL,
+  # crashing with "$ operator applied to NULL" if upstream returned
+  # NULL (empty body / JSON-parse failure).
+  empty_null <- binance:::parse_orderbook(NULL)
+  expect_s3_class(empty_null, "data.table")
+  expect_equal(nrow(empty_null), 0L)
+  expect_true(all(c("last_update_id", "side", "price", "size") %in% names(empty_null)))
+
+  empty_list <- binance:::parse_orderbook(list())
+  expect_s3_class(empty_list, "data.table")
+  expect_equal(nrow(empty_list), 0L)
+})
+
+test_that("parse_paginated returns empty data.table on NULL data (no crash)", {
+  # Regression: parser used to do `rows <- data$rows` without guarding
+  # NULL, crashing on empty-body responses.
+  result <- binance:::parse_paginated(NULL)
+  expect_s3_class(result, "data.table")
+  expect_equal(nrow(result), 0L)
+
+  result_empty <- binance:::parse_paginated(list())
+  expect_s3_class(result_empty, "data.table")
+  expect_equal(nrow(result_empty), 0L)
+})

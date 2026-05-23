@@ -16,7 +16,7 @@
 #' The base URL defaults to `https://fapi.binance.com` via [get_futures_base_url()].
 #'
 #' ### Official Documentation
-#' [Binance Futures API](https://binance-docs.github.io/apidocs/futures/en/)
+#' [Binance Futures API](https://developers.binance.com/docs/derivatives/usds-margined-futures/general-info)
 #'
 #' ### Endpoints Covered
 #' | Method | Endpoint | HTTP |
@@ -107,6 +107,7 @@ BinanceFutures <- R6::R6Class(
       } else {
         super$initialize(keys = keys, base_url = base_url, async = async, time_source = time_source)
       }
+      return(invisible(self))
     },
 
     # ---- Order Placement ----
@@ -122,7 +123,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures New Order](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/New-Order)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -306,7 +307,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures New Order Test](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/New-Order-Test)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -348,11 +349,10 @@ BinanceFutures <- R6::R6Class(
     #' @param workingType Character or NULL; `"MARK_PRICE"` or `"CONTRACT_PRICE"`.
     #' @param newOrderRespType Character or NULL; `"ACK"`, `"RESULT"`.
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`), single row with columns:
-    #'   - `symbol` (character): The validated trading pair.
-    #'   - `side` (character): `"BUY"` or `"SELL"`.
-    #'   - `type` (character): Order type.
-    #'   - `status` (character): `"validated"`.
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
+    #'   with a single row and a single `validated` (logical) column,
+    #'   set to `TRUE` on success. Binance returns `{}` on a successful
+    #'   test order; the absence of an error is the validation signal.
     #'
     #' @examples
     #' \dontrun{
@@ -361,7 +361,7 @@ BinanceFutures <- R6::R6Class(
     #'   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
     #'   quantity = 0.001, price = 50000, timeInForce = "GTC"
     #' )
-    #' print(test)
+    #' stopifnot(test$validated)
     #' }
     add_order_test = function(
       symbol,
@@ -435,13 +435,12 @@ BinanceFutures <- R6::R6Class(
         method = "POST",
         body = body,
         .parser = function(data) {
+          # `{}` on success — Binance's "request would have validated"
+          # signal. Per the cross-package convention we don't fabricate
+          # a stub row with the request parameters; the absence of an
+          # error is the success signal.
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table(
-              symbol = symbol,
-              side = side,
-              type = type,
-              status = "validated"
-            )[])
+            return(data.table::data.table(validated = TRUE)[])
           }
           return(as_dt_row(data)[])
         }
@@ -461,7 +460,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Cancel Order](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Cancel-Order)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -560,7 +559,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Cancel All Open Orders](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Cancel-All-Open-Orders)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -621,7 +620,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Query Order](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Query-Order)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -718,7 +717,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Current Open Orders](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Current-All-Open-Orders)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -807,7 +806,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures All Orders](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/All-Orders)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -917,7 +916,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Account Information V2](https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Account-Information-V2)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -986,7 +985,10 @@ BinanceFutures <- R6::R6Class(
     #' ```
     #'
     #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
+    #' @return `data.table` with **one row per asset balance** in the
+    #'   account; account-level fields are replicated on each row. The
+    #'   companion `positions` array Binance returns is intentionally
+    #'   dropped — see the long note below. Columns:
     #' - `fee_tier` (integer): Commission fee tier.
     #' - `can_trade` (logical): Whether trading is permitted.
     #' - `can_deposit` (logical): Whether deposits are permitted.
@@ -999,20 +1001,31 @@ BinanceFutures <- R6::R6Class(
     #' - `total_cross_wallet_balance` (character): Total cross-wallet balance.
     #' - `available_balance` (character): Available balance for new positions.
     #' - `max_withdraw_amount` (character): Maximum withdrawable amount.
-    #' - `asset_name` (character): Per-asset name (one row per asset, expanded from `assets`).
+    #' - `asset_asset` (character): Per-asset symbol — one row per asset
+    #'   (Binance returns the symbol under the `asset` field within the
+    #'   `assets` array, hence the doubled name after `asset_` prefixing).
     #' - `asset_wallet_balance` (character): Per-asset wallet balance.
     #' - `asset_unrealized_profit` (character): Per-asset unrealised PnL.
     #' - `asset_margin_balance` (character): Per-asset margin balance.
     #' - `asset_available_balance` (character): Per-asset available balance.
-    #' - `positions` (list): Nested list of per-symbol position details (kept as list-column).
     #'
-    #' When the account has multiple assets, account-level fields are repeated on each row.
+    #' Account-level fields are replicated on each asset row. For
+    #' per-position data (entry price, leverage, side, unrealised PnL on
+    #' open contracts) use `get_positions()` — Binance returns positions
+    #' alongside assets in this response, but they are a heterogeneous
+    #' shape (one entity is an asset balance, the other is a derivative
+    #' position) and combining them would require a Cartesian join no
+    #' user expects. We therefore intentionally drop the `positions`
+    #' array here; `get_positions()` hits `/fapi/v2/positionRisk` and
+    #' returns one row per open position.
     #'
     #' @examples
     #' \dontrun{
     #' futures <- BinanceFutures$new()
     #' account <- futures$get_account()
     #' print(account)
+    #' positions <- futures$get_positions()
+    #' print(positions)
     #' }
     get_account = function(recvWindow = NULL) {
       return(private$.request(
@@ -1020,12 +1033,14 @@ BinanceFutures <- R6::R6Class(
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
           assets <- data$assets
+          # `positions` is intentionally dropped here — see @return note
+          # above. Callers wanting positions should use `get_positions()`.
           data$assets <- NULL
+          data$positions <- NULL
           dt <- as_dt_row(data)
-          # Expand assets to long format: one row per asset
+          # Expand assets to long format: one row per asset.
           if (!is.null(assets) && length(assets) > 0) {
             assets_dt <- as_dt_list(assets)
-            # Prefix asset columns to avoid collision with parent account columns
             asset_names <- names(assets_dt)
             data.table::setnames(assets_dt, asset_names, paste0("asset_", asset_names))
             dt <- dt[rep(1L, nrow(assets_dt))]
@@ -1047,7 +1062,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Account Balance V2](https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Futures-Account-Balance-V2)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1129,7 +1144,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Position Information V2](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Position-Information-V2)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1212,7 +1227,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Change Initial Leverage](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Initial-Leverage)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1280,7 +1295,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Change Margin Type](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Margin-Type)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1349,7 +1364,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Modify Isolated Position Margin](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Modify-Isolated-Position-Margin)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1429,7 +1444,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Get Position Margin Change History](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Get-Position-Margin-Change-History)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1517,7 +1532,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Account Trade List](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Account-Trade-List)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1622,7 +1637,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Get Income History](https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Get-Income-History)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1757,7 +1772,7 @@ BinanceFutures <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance Futures Change Position Mode](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Position-Mode)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1820,9 +1835,9 @@ BinanceFutures <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/positionSide/dual`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Get Current Position Mode](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Get-Current-Position-Mode)
+    #' [Binance Futures Get Current Position Mode](https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Get-Current-Position-Mode)
     #'
-    #' Verified: 2026-03-10
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```

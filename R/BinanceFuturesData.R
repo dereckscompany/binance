@@ -26,12 +26,15 @@
 #' The base URL defaults to `https://fapi.binance.com` via [get_futures_base_url()].
 #'
 #' ### Official Documentation
-#' [Binance USD-M Futures Market Data](https://binance-docs.github.io/apidocs/futures/en/#market-data-endpoints)
+#' [Binance USD-M Futures Market Data](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api)
 #'
 #' ### Endpoints Covered
 #' | Method | Endpoint | Auth |
 #' |--------|----------|------|
 #' | get_exchange_info | GET /fapi/v1/exchangeInfo | No |
+#' | get_rate_limits | GET /fapi/v1/exchangeInfo | No |
+#' | get_exchange_filters | GET /fapi/v1/exchangeInfo | No |
+#' | get_futures_assets | GET /fapi/v1/exchangeInfo | No |
 #' | get_klines | GET /fapi/v1/klines | No |
 #' | get_mark_price | GET /fapi/v1/premiumIndex | No |
 #' | get_funding_rate | GET /fapi/v1/fundingRate | No |
@@ -110,8 +113,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/exchangeInfo`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Exchange Info](https://binance-docs.github.io/apidocs/futures/en/#exchange-information)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Exchange Info](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Exchange-Information)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -164,14 +167,44 @@ BinanceFuturesData <- R6::R6Class(
     #'   - `margin_asset` (character): Margin asset code (e.g., `"USDT"`).
     #'   - `price_precision` (integer): Decimal precision for prices.
     #'   - `quantity_precision` (integer): Decimal precision for quantities.
-    #'   - `order_types` (list): Allowed order types for this symbol.
-    #'   - `filters` (list): List of filter objects.
+    #'   - `order_types` (character): Semicolon-separated allowed order types.
+    #'     Recover via `strsplit(dt$order_types[1], ";", fixed = TRUE)[[1]]`.
+    #'   - `time_in_force` (character): Semicolon-separated allowed
+    #'     time-in-force values.
+    #'   - `underlying_sub_type` (character): Semicolon-separated underlying
+    #'     sub-types.
+    #'   - `permission_sets` (character): Semicolon-separated permission sets.
+    #'   - `lot_min_qty` (numeric): Minimum order quantity (from LOT_SIZE filter).
+    #'   - `lot_max_qty` (numeric): Maximum order quantity (from LOT_SIZE filter).
+    #'   - `lot_step_size` (numeric): Quantity step size (from LOT_SIZE filter).
+    #'   - `price_min` (numeric): Minimum price (from PRICE_FILTER).
+    #'   - `price_max` (numeric): Maximum price (from PRICE_FILTER).
+    #'   - `price_tick_size` (numeric): Price tick size (from PRICE_FILTER).
+    #'   - `min_notional` (numeric): Minimum notional value (from MIN_NOTIONAL filter).
+    #'   - `filters_raw` (character): JSON-encoded copy of the full per-symbol
+    #'     `filters` array. Preserves filter types not pulled into curated
+    #'     columns (`PERCENT_PRICE`, `MARKET_LOT_SIZE`, `MAX_NUM_ORDERS`,
+    #'     `MAX_NUM_ALGO_ORDERS`, `MIN_NOTIONAL`'s extra fields, ...).
+    #'     Recover with `jsonlite::fromJSON(dt$filters_raw[1])`. `NA` if
+    #'     Binance returned no filters for the symbol.
+    #'
+    #' Exchange-wide metadata returned by the same endpoint is exposed
+    #' via sibling methods: `get_rate_limits()`, `get_exchange_filters()`,
+    #' `get_futures_assets()`. Server time is available via
+    #' `BinanceMarketData$get_server_time()`.
     #'
     #' @examples
     #' \dontrun{
     #' futures <- BinanceFuturesData$new()
     #' info <- futures$get_exchange_info()
     #' print(info[, .(symbol, contract_type, status, base_asset)])
+    #'
+    #' # Recover filter types not in curated columns
+    #' jsonlite::fromJSON(info$filters_raw[1])
+    #'
+    #' # Exchange-wide metadata via sibling methods
+    #' futures$get_rate_limits()
+    #' futures$get_futures_assets()
     #' }
     get_exchange_info = function() {
       return(private$.request(
@@ -182,11 +215,157 @@ BinanceFuturesData <- R6::R6Class(
           if (is.null(syms) || length(syms) == 0) {
             return(data.table::data.table()[])
           }
+
+          .extract_filter <- function(filters, filter_type, field) {
+            if (is.null(filters) || length(filters) == 0) {
+              return(NA_real_)
+            }
+            for (f in filters) {
+              if (!is.null(f$filterType) && f$filterType == filter_type) {
+                val <- f[[field]]
+                if (!is.null(val)) return(as.numeric(val))
+              }
+            }
+            return(NA_real_)
+          }
+
+          syms <- lapply(syms, function(s) {
+            # Collapse string arrays with `;` (cross-package convention;
+            # see `collapse_string_array_fields()` in helpers_parse.R).
+            s <- collapse_string_array_fields(
+              s,
+              c("orderTypes", "timeInForce", "underlyingSubType", "permissionSets")
+            )
+            # Extract filter values as flat numeric fields
+            raw_filters <- s$filters
+            s$lot_min_qty <- .extract_filter(raw_filters, "LOT_SIZE", "minQty")
+            s$lot_max_qty <- .extract_filter(raw_filters, "LOT_SIZE", "maxQty")
+            s$lot_step_size <- .extract_filter(raw_filters, "LOT_SIZE", "stepSize")
+            s$price_min <- .extract_filter(raw_filters, "PRICE_FILTER", "minPrice")
+            s$price_max <- .extract_filter(raw_filters, "PRICE_FILTER", "maxPrice")
+            s$price_tick_size <- .extract_filter(raw_filters, "PRICE_FILTER", "tickSize")
+            s$min_notional <- .extract_filter(raw_filters, "MIN_NOTIONAL", "notional")
+            # Preserve the full filters array as a JSON string so filter
+            # types we don't pull into curated columns (PERCENT_PRICE,
+            # MARKET_LOT_SIZE, MAX_NUM_ORDERS, MAX_NUM_ALGO_ORDERS, etc.)
+            # are still reachable. Recover with
+            # `jsonlite::fromJSON(dt$filters_raw[1])`.
+            if (is.null(raw_filters) || length(raw_filters) == 0L) {
+              s$filters_raw <- NA_character_
+            } else {
+              s$filters_raw <- as.character(
+                jsonlite::toJSON(raw_filters, auto_unbox = TRUE)
+              )
+            }
+            s$filters <- NULL
+            return(s)
+          })
           dt <- data.table::rbindlist(
             lapply(syms, as_dt_row),
             fill = TRUE
           )
           return(dt[])
+        }
+      ))
+    },
+
+    #' @description
+    #' Get Futures Exchange Rate Limits
+    #'
+    #' Retrieves the USDⓈ-M futures API rate-limit rules. Same sibling
+    #' pattern as `BinanceMarketData$get_rate_limits()`.
+    #'
+    #' ### API Endpoint
+    #' `GET https://fapi.binance.com/fapi/v1/exchangeInfo`
+    #'
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
+    #'   with one row per rate-limit rule. Columns: `rate_limit_type`,
+    #'   `interval`, `interval_num`, `limit`. Empty `data.table` if
+    #'   Binance returned no `rateLimits` block.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' futures <- BinanceFuturesData$new()
+    #' futures$get_rate_limits()
+    #' }
+    get_rate_limits = function() {
+      return(private$.request(
+        endpoint = "/fapi/v1/exchangeInfo",
+        auth = FALSE,
+        .parser = function(data) {
+          rl <- data$rateLimits
+          if (is.null(rl) || length(rl) == 0L) {
+            return(data.table::data.table()[])
+          }
+          return(as_dt_list(rl)[])
+        }
+      ))
+    },
+
+    #' @description
+    #' Get Futures Exchange-Wide Filters
+    #'
+    #' Retrieves the exchange-wide filter rules. Almost always empty.
+    #' Sibling to `get_exchange_info()`.
+    #'
+    #' ### API Endpoint
+    #' `GET https://fapi.binance.com/fapi/v1/exchangeInfo`
+    #'
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
+    #'   with one row per exchange-wide filter rule. Empty when none.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' futures <- BinanceFuturesData$new()
+    #' futures$get_exchange_filters()
+    #' }
+    get_exchange_filters = function() {
+      return(private$.request(
+        endpoint = "/fapi/v1/exchangeInfo",
+        auth = FALSE,
+        .parser = function(data) {
+          ef <- data$exchangeFilters
+          if (is.null(ef) || length(ef) == 0L) {
+            return(data.table::data.table()[])
+          }
+          return(as_dt_list(ef)[])
+        }
+      ))
+    },
+
+    #' @description
+    #' Get Futures Margin Assets
+    #'
+    #' Retrieves the margin-asset configuration returned at the top
+    #' level of futures `/fapi/v1/exchangeInfo` (one row per asset
+    #' usable as margin — USDT, BNFCR, etc.).
+    #'
+    #' ### API Endpoint
+    #' `GET https://fapi.binance.com/fapi/v1/exchangeInfo`
+    #'
+    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
+    #'   with one row per margin asset. Typical columns:
+    #'   - `asset` (character): Asset symbol (e.g., `"USDT"`).
+    #'   - `margin_available` (logical): Whether the asset can be used as margin.
+    #'   - `auto_asset_exchange` (character): Auto-exchange threshold.
+    #'
+    #'   Empty `data.table` if Binance returned no `assets` block.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' futures <- BinanceFuturesData$new()
+    #' futures$get_futures_assets()
+    #' }
+    get_futures_assets = function() {
+      return(private$.request(
+        endpoint = "/fapi/v1/exchangeInfo",
+        auth = FALSE,
+        .parser = function(data) {
+          assets <- data$assets
+          if (is.null(assets) || length(assets) == 0L) {
+            return(data.table::data.table()[])
+          }
+          return(as_dt_list(assets)[])
         }
       ))
     },
@@ -202,8 +381,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/klines`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Kline/Candlestick Data](https://binance-docs.github.io/apidocs/futures/en/#kline-candlestick-data)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Kline/Candlestick Data](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Kline-Candlestick-Data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -309,15 +488,13 @@ BinanceFuturesData <- R6::R6Class(
         if (is.null(startTime) || is.null(endTime)) {
           rlang::abort("Both `startTime` and `endTime` are required when `fetch_all = TRUE`.")
         }
-        from <- if (inherits(startTime, "POSIXct")) {
-          startTime
-        } else {
-          as.POSIXct(as.numeric(startTime) / 1000, origin = "1970-01-01", tz = "UTC")
+        from <- startTime
+        if (!inherits(startTime, "POSIXct")) {
+          from <- as.POSIXct(as.numeric(startTime) / 1000, origin = "1970-01-01", tz = "UTC")
         }
-        to <- if (inherits(endTime, "POSIXct")) {
-          endTime
-        } else {
-          as.POSIXct(as.numeric(endTime) / 1000, origin = "1970-01-01", tz = "UTC")
+        to <- endTime
+        if (!inherits(endTime, "POSIXct")) {
+          to <- as.POSIXct(as.numeric(endTime) / 1000, origin = "1970-01-01", tz = "UTC")
         }
         return(binance_fetch_klines(
           symbol = symbol,
@@ -366,8 +543,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/premiumIndex`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Mark Price](https://binance-docs.github.io/apidocs/futures/en/#mark-price)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Mark Price](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Mark-Price)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -449,8 +626,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/fundingRate`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Funding Rate History](https://binance-docs.github.io/apidocs/futures/en/#get-funding-rate-history)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Funding Rate History](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Get-Funding-Rate-History)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -534,8 +711,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/ticker/24hr`
     #'
     #' ### Official Documentation
-    #' [Binance Futures 24hr Ticker](https://binance-docs.github.io/apidocs/futures/en/#24hr-ticker-price-change-statistics)
-    #' Verified: 2026-03-10
+    #' [Binance Futures 24hr Ticker](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/24hr-Ticker-Price-Change-Statistics)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -622,8 +799,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/ticker/price`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Symbol Price Ticker](https://binance-docs.github.io/apidocs/futures/en/#symbol-price-ticker)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Symbol Price Ticker](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Symbol-Price-Ticker)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -688,8 +865,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/ticker/bookTicker`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Symbol Order Book Ticker](https://binance-docs.github.io/apidocs/futures/en/#symbol-order-book-ticker)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Symbol Order Book Ticker](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Symbol-Order-Book-Ticker)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -759,8 +936,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/openInterest`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Open Interest](https://binance-docs.github.io/apidocs/futures/en/#open-interest)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Open Interest](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Open-Interest)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -814,8 +991,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/depth`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Order Book](https://binance-docs.github.io/apidocs/futures/en/#order-book)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Order Book](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Order-Book)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -876,8 +1053,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/trades`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Recent Trades List](https://binance-docs.github.io/apidocs/futures/en/#recent-trades-list)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Recent Trades List](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Recent-Trades-List)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -951,8 +1128,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/indexPriceKlines`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Index Price Kline/Candlestick Data](https://binance-docs.github.io/apidocs/futures/en/#index-price-kline-candlestick-data)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Index Price Kline/Candlestick Data](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Index-Price-Kline-Candlestick-Data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```
@@ -1067,8 +1244,8 @@ BinanceFuturesData <- R6::R6Class(
     #' `GET https://fapi.binance.com/fapi/v1/markPriceKlines`
     #'
     #' ### Official Documentation
-    #' [Binance Futures Mark Price Kline/Candlestick Data](https://binance-docs.github.io/apidocs/futures/en/#mark-price-kline-candlestick-data)
-    #' Verified: 2026-03-10
+    #' [Binance Futures Mark Price Kline/Candlestick Data](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Mark-Price-Kline-Candlestick-Data)
+    #' Verified: 2026-05-22
     #'
     #' ### curl
     #' ```

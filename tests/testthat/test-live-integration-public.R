@@ -93,8 +93,8 @@ test_that("[LIVE] get_avg_price returns data.table for BTCUSDT", {
   throttle()
 })
 
-test_that("[LIVE] get_orderbook returns data.table with bids and asks", {
-  dt <- market$get_orderbook("BTCUSDT", limit = 20)
+test_that("[LIVE] get_depth returns data.table with bids and asks", {
+  dt <- market$get_depth("BTCUSDT", limit = 20)
   expect_s3_class(dt, "data.table")
   expect_true(nrow(dt) > 0)
   expect_true(all(c("side", "price", "size") %in% names(dt)))

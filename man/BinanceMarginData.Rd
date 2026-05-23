@@ -32,7 +32,7 @@ Most methods require authentication (valid API key and secret).
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#margin-account-trade}{Binance Margin Account/Trade}
+\href{https://developers.binance.com/docs/margin_trading/trade}{Binance Margin Account/Trade}
 }
 
 \subsection{Endpoints Covered}{\tabular{lll}{
@@ -166,9 +166,9 @@ Retrieves a list of all cross margin trading pairs available on Binance.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#get-all-cross-margin-pairs-market_data}{Binance Get All Cross Margin Pairs}
+\href{https://developers.binance.com/docs/margin_trading/market-data/Get-All-Cross-Margin-Pairs}{Binance Get All Cross Margin Pairs}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -252,9 +252,9 @@ Retrieves a list of all isolated margin trading pairs available on Binance.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#get-all-isolated-margin-symbol-user_data}{Binance Get All Isolated Margin Symbol}
+\href{https://developers.binance.com/docs/margin_trading/market-data/Get-All-Isolated-Margin-Symbol}{Binance Get All Isolated Margin Symbol}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -336,9 +336,9 @@ endpoint that does not require authentication.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#query-margin-priceindex-market_data}{Binance Query Margin PriceIndex}
+\href{https://developers.binance.com/docs/margin_trading/market-data/Query-Margin-PriceIndex}{Binance Query Margin PriceIndex}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -398,9 +398,9 @@ Retrieves historical interest rate data for a given asset.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#query-margin-interest-rate-history-user_data}{Binance Query Margin Interest Rate History}
+\href{https://developers.binance.com/docs/margin_trading/borrow-and-repay/Query-Margin-Interest-Rate-History}{Binance Query Margin Interest Rate History}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -489,9 +489,9 @@ Retrieves cross margin data including borrowing limits and interest rates.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#query-cross-margin-fee-data-user_data}{Binance Query Cross Margin Fee Data}
+\href{https://developers.binance.com/docs/margin_trading/account/Query-Cross-Margin-Fee-Data}{Binance Query Cross Margin Fee Data}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
@@ -556,8 +556,10 @@ Verified: 2026-03-10
 \item \code{borrowable} (logical): Whether borrowing is allowed.
 \item \code{daily_interest} (character): Daily interest rate as string.
 \item \code{yearly_interest} (character): Yearly interest rate as string.
-\item \code{marginable_pairs} (list): List of marginable trading pairs.
+\item \code{marginable_pair} (character): Marginable trading pair (one row per coin-pair combination).
 }
+
+When a coin has multiple marginable pairs, coin-level fields are repeated on each row.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -586,9 +588,9 @@ Retrieves isolated margin data including leverage and borrowing limits.
 
 \subsection{Official Documentation}{
 
-\href{https://binance-docs.github.io/apidocs/spot/en/#query-isolated-margin-fee-data-user_data}{Binance Query Isolated Margin Fee Data}
+\href{https://developers.binance.com/docs/margin_trading/account/Query-Isolated-Margin-Fee-Data}{Binance Query Isolated Margin Fee Data}
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 }
 
 \subsection{curl}{
