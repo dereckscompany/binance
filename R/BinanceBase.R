@@ -131,13 +131,17 @@ BinanceBase <- R6::R6Class(
       .parser = identity,
       timeout = 30
     ) {
+      request_keys <- NULL
+      if (auth) {
+        request_keys <- private$.keys
+      }
       return(binance_build_request(
         base_url = private$.base_url,
         endpoint = endpoint,
         method = method,
         query = query,
         body = body,
-        keys = if (auth) private$.keys else NULL,
+        keys = request_keys,
         .perform = private$.perform,
         .parser = .parser,
         is_async = private$.is_async,

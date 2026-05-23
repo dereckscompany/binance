@@ -170,19 +170,32 @@ BinanceOcoOrders <- R6::R6Class(
     ) {
       side <- rlang::arg_match0(side, c("BUY", "SELL"))
 
+      stop_limit_price_str <- NULL
+      if (!is.null(stopLimitPrice)) {
+        stop_limit_price_str <- as.character(stopLimitPrice)
+      }
+      limit_iceberg_qty_str <- NULL
+      if (!is.null(limitIcebergQty)) {
+        limit_iceberg_qty_str <- as.character(limitIcebergQty)
+      }
+      stop_iceberg_qty_str <- NULL
+      if (!is.null(stopIcebergQty)) {
+        stop_iceberg_qty_str <- as.character(stopIcebergQty)
+      }
+
       body <- list(
         symbol = symbol,
         side = side,
         quantity = as.character(quantity),
         price = as.character(price),
         stopPrice = as.character(stopPrice),
-        stopLimitPrice = if (!is.null(stopLimitPrice)) as.character(stopLimitPrice),
+        stopLimitPrice = stop_limit_price_str,
         stopLimitTimeInForce = stopLimitTimeInForce,
         listClientOrderId = listClientOrderId,
         limitClientOrderId = limitClientOrderId,
         stopClientOrderId = stopClientOrderId,
-        limitIcebergQty = if (!is.null(limitIcebergQty)) as.character(limitIcebergQty),
-        stopIcebergQty = if (!is.null(stopIcebergQty)) as.character(stopIcebergQty),
+        limitIcebergQty = limit_iceberg_qty_str,
+        stopIcebergQty = stop_iceberg_qty_str,
         newOrderRespType = newOrderRespType,
         selfTradePreventionMode = selfTradePreventionMode,
         recvWindow = recvWindow

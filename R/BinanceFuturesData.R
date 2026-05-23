@@ -224,32 +224,22 @@ BinanceFuturesData <- R6::R6Class(
           # returned data.table rather than being silently discarded.
           # Access via `attr(dt, "rate_limits")` etc.
           meta_timezone <- data$timezone
-          meta_server_time <- if (!is.null(data$serverTime)) {
-            ms_to_datetime(data$serverTime)
-          } else {
-            lubridate::NA_POSIXct_
+          meta_server_time <- lubridate::NA_POSIXct_
+          if (!is.null(data$serverTime)) {
+            meta_server_time <- ms_to_datetime(data$serverTime)
           }
           meta_futures_type <- data$futuresType
-          meta_rate_limits <- if (
-            !is.null(data$rateLimits) &&
-              length(data$rateLimits) > 0
-          ) {
-            as_dt_list(data$rateLimits)
-          } else {
-            data.table::data.table()
+          meta_rate_limits <- data.table::data.table()
+          if (!is.null(data$rateLimits) && length(data$rateLimits) > 0) {
+            meta_rate_limits <- as_dt_list(data$rateLimits)
           }
-          meta_exchange_filters <- if (
-            !is.null(data$exchangeFilters) &&
-              length(data$exchangeFilters) > 0
-          ) {
-            as_dt_list(data$exchangeFilters)
-          } else {
-            data.table::data.table()
+          meta_exchange_filters <- data.table::data.table()
+          if (!is.null(data$exchangeFilters) && length(data$exchangeFilters) > 0) {
+            meta_exchange_filters <- as_dt_list(data$exchangeFilters)
           }
-          meta_assets <- if (!is.null(data$assets) && length(data$assets) > 0) {
-            as_dt_list(data$assets)
-          } else {
-            data.table::data.table()
+          meta_assets <- data.table::data.table()
+          if (!is.null(data$assets) && length(data$assets) > 0) {
+            meta_assets <- as_dt_list(data$assets)
           }
 
           .extract_filter <- function(filters, filter_type, field) {
@@ -431,15 +421,13 @@ BinanceFuturesData <- R6::R6Class(
         if (is.null(startTime) || is.null(endTime)) {
           rlang::abort("Both `startTime` and `endTime` are required when `fetch_all = TRUE`.")
         }
-        from <- if (inherits(startTime, "POSIXct")) {
-          startTime
-        } else {
-          as.POSIXct(as.numeric(startTime) / 1000, origin = "1970-01-01", tz = "UTC")
+        from <- startTime
+        if (!inherits(startTime, "POSIXct")) {
+          from <- as.POSIXct(as.numeric(startTime) / 1000, origin = "1970-01-01", tz = "UTC")
         }
-        to <- if (inherits(endTime, "POSIXct")) {
-          endTime
-        } else {
-          as.POSIXct(as.numeric(endTime) / 1000, origin = "1970-01-01", tz = "UTC")
+        to <- endTime
+        if (!inherits(endTime, "POSIXct")) {
+          to <- as.POSIXct(as.numeric(endTime) / 1000, origin = "1970-01-01", tz = "UTC")
         }
         return(binance_fetch_klines(
           symbol = symbol,

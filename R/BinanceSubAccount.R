@@ -648,7 +648,10 @@ BinanceSubAccount <- R6::R6Class(
         ),
         .parser = function(data) {
           # The response may be wrapped in futureAccountResp
-          inner <- if (!is.null(data$futureAccountResp)) data$futureAccountResp else data
+          inner <- data
+          if (!is.null(data$futureAccountResp)) {
+            inner <- data$futureAccountResp
+          }
           assets <- inner$assets
           inner$assets <- NULL
           dt <- as_dt_row(inner)
