@@ -39,6 +39,34 @@ test_that("ms_to_datetime handles NULL and NA", {
   expect_true(is.na(binance:::ms_to_datetime(NA)))
 })
 
+test_that("ms_to_datetime returns a full-length POSIXct vector for all-NA input", {
+  # Regression for the all-NA short-circuit bug: previously returned
+  # `NA_POSIXct_` (length 1) when every input was NA. When that result
+  # flowed back through `coerce_cols()` -> `data.table::set()`, the
+  # length-1 POSIXct got coerced into the existing column's type
+  # (numeric / logical / character) rather than replacing the column
+  # with a POSIXct one — so endpoints whose docs promised
+  # `(POSIXct)` could quietly return numeric columns when every row
+  # had a NULL upstream value. The helper must always return a vector
+  # the same length as the input.
+  result <- binance:::ms_to_datetime(c(NA_real_, NA_real_))
+  expect_s3_class(result, "POSIXct")
+  expect_length(result, 2L)
+  expect_true(all(is.na(result)))
+})
+
+test_that("coerce_cols converts an all-NA column to POSIXct (regression for #6 review)", {
+  # Direct repro from the PR review: pre-fix, `class(dt$update_time)`
+  # came back as "numeric" because the all-NA short-circuit in
+  # `ms_to_datetime` returned a length-1 NA that `data.table::set()`
+  # coerced into the existing numeric column.
+  dt <- data.table::data.table(update_time = c(NA_real_, NA_real_))
+  invisible(binance:::coerce_cols(dt, "update_time", binance:::ms_to_datetime))
+  expect_s3_class(dt$update_time, "POSIXct")
+  expect_length(dt$update_time, 2L)
+  expect_true(all(is.na(dt$update_time)))
+})
+
 test_that("parse_klines returns proper OHLCV data.table", {
   kline_data <- list(
     list(

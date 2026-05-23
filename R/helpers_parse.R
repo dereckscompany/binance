@@ -170,9 +170,17 @@ collapse_string_array_fields <- function(x, fields) {
 #' @keywords internal
 #' @noRd
 ms_to_datetime <- function(ms) {
-  if (is.null(ms) || all(is.na(ms))) {
+  if (is.null(ms)) {
     return(lubridate::NA_POSIXct_)
   }
+  # Don't short-circuit on `all(is.na(ms))` — returning the length-1
+  # `NA_POSIXct_` from there would, when fed back through
+  # `coerce_cols()` -> `data.table::set()`, get recycled into the
+  # existing column's type rather than replacing the column with a
+  # POSIXct one. The helper must return a vector the same length as
+  # `ms` so the column lands as POSIXct regardless of whether every
+  # value is NA. `lubridate::as_datetime()` does the right thing on
+  # all-NA input on its own.
   return(lubridate::as_datetime(as.numeric(ms) / 1000))
 }
 
