@@ -176,6 +176,38 @@ test_that("coerce_cols works with arbitrary functions, not just ms_to_datetime",
   expect_equal(dt$price, c(100.5, 200.5))
 })
 
+test_that("coerce_cols deduplicates `cols` so each column is coerced once", {
+  # Regression: passing the same column name twice used to feed the
+  # already-converted value back through `fn`, producing garbage. e.g.
+  # `ms_to_datetime` on an already-POSIXct value reinterprets the
+  # epoch-seconds-as-numeric as epoch-milliseconds and returns a year
+  # in the 56,000s. With `unique(cols)` the second pass is skipped.
+  dt <- data.table::data.table(time = 1729159459033)
+  binance:::coerce_cols(dt, c("time", "time"), binance:::ms_to_datetime)
+  expect_s3_class(dt$time, "POSIXct")
+  expect_equal(as.numeric(dt$time), 1729159459.033, tolerance = 0.001)
+})
+
+test_that("ms_to_datetime does not warn on all-NA character input", {
+  # Regression: `as.numeric(NA_character_)` emits "NAs introduced by
+  # coercion" — but that NA -> NA path is the documented contract.
+  expect_warning(binance:::ms_to_datetime(c(NA_character_, NA_character_)), NA)
+  out <- binance:::ms_to_datetime(c(NA_character_, NA_character_))
+  expect_s3_class(out, "POSIXct")
+  expect_length(out, 2L)
+  expect_true(all(is.na(out)))
+})
+
+test_that("ms_to_datetime still warns on genuinely malformed character input", {
+  # Counter-regression: we must NOT silence the warning blanket-wide
+  # via `suppressWarnings()`. A genuinely malformed string is a real
+  # bug and callers should hear about it.
+  expect_warning(
+    binance:::ms_to_datetime(c("not-a-number", NA_character_)),
+    "NAs introduced by coercion"
+  )
+})
+
 # -- utc_string_to_datetime --
 
 test_that("utc_string_to_datetime parses Binance UTC strings", {

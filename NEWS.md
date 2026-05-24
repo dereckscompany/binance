@@ -1,3 +1,10 @@
+# binance 0.2.2
+
+## Bug fixes
+
+* **`coerce_cols(dt, cols, fn)` deduplicates `cols`**. Previously passing the same column name twice — `coerce_cols(dt, c("time", "time"), ms_to_datetime)` — would feed the already-coerced POSIXct value back through `ms_to_datetime`, reinterpreting epoch-seconds as epoch-ms and silently producing wildly wrong values (year 56,000+). Now uses `for (col in unique(cols))`. Same fix applied to the sister `kucoin` and `alpaca` helpers.
+* **`ms_to_datetime()` no longer emits spurious `"NAs introduced by coercion"` warnings** on all-`NA_character_` input. Implemented by type-dispatching on the input and only feeding the non-NA entries to `as.numeric()` — not `suppressWarnings()`, which would hide genuine bad input (e.g. a malformed numeric string from a future API change). Pinned by a counter-regression test that asserts a malformed string still warns loudly. Applies to every endpoint whose payload sometimes omits a timestamp field.
+
 # binance 0.2.1
 
 ## Refactor
