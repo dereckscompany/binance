@@ -153,18 +153,32 @@ market$get_klines(symbol = "BTCUSDT", interval = "1h", limit = 5)
 
 ### Fetch All Klines (Large Date Ranges)
 
-When you need historical data spanning more than 1000 candles, use `fetch_all = TRUE`. This automatically segments the time range into multiple API calls, deduplicates overlapping boundaries, and returns the combined result:
+When you need more than 1000 candles, pass `fetch_all = TRUE`. The method pages forward through the range — following the data and stopping at the first empty or short page — and returns the combined result. Because Binance returns candles from the first one on or after `startTime`, an empty leading stretch (e.g. dates before a symbol was listed) is skipped in a single request:
 
-```{r, eval = FALSE}
-# Fetch all 1h klines across a 5-month date range (multiple API calls)
-market$get_klines(
+```{r}
+all_klines <- market$get_klines(
   symbol = "BTCUSDT",
   interval = "1h",
   startTime = as.POSIXct("2024-01-01", tz = "UTC"),
   endTime = as.POSIXct("2024-06-01", tz = "UTC"),
   fetch_all = TRUE,
-  sleep = 0.5
+  sleep = 0
 )
+nrow(all_klines)
+```
+
+Pass an `on_page` callback to **stream** each page as it is fetched instead of holding the whole result in memory — the method then returns invisibly and your callback owns the data (this is how `binance_backfill_klines()` writes to disk page by page):
+
+```{r}
+candles <- 0L
+market$get_klines(
+  symbol = "BTCUSDT", interval = "1h",
+  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
+  endTime = as.POSIXct("2024-02-01", tz = "UTC"),
+  fetch_all = TRUE,
+  on_page = function(page) candles <<- candles + nrow(page)
+)
+candles
 ```
 
 > **Note:** Large date ranges consume multiple API requests. Use the `sleep` parameter to avoid hitting Binance rate limits. For bulk multi-symbol downloads, see `binance_backfill_klines()`.

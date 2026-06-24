@@ -150,17 +150,43 @@ binance_backfill_klines <- function(
       }
     }
 
-    dt <- tryCatch(
+    # Write each page as it arrives, so a crash loses at most one page and never
+    # re-requests a completed page. Drop the candle still forming at the live edge
+    # (close_time in the future): persisting it would store a half-built candle
+    # that resume then skips over (resume advances past the last stored
+    # open_time), so it would never be refreshed to its final values. Keeping only
+    # closed candles means the next run re-fetches and completes it. Closed
+    # historical candles are unaffected — including ones that straddle a past `to`.
+    combo_rows <- 0L
+    write_page <- function(page) {
+      page <- page[close_time <= lubridate::now("UTC")]
+      if (nrow(page) == 0L) {
+        return(invisible(NULL))
+      }
+      page[, symbol := sym]
+      page[, timeframe := intv]
+      if (!file_exists) {
+        data.table::fwrite(page, file, append = FALSE)
+        file_exists <<- TRUE
+      } else {
+        data.table::fwrite(page, file, append = TRUE)
+      }
+      combo_rows <<- combo_rows + nrow(page)
+      return(invisible(NULL))
+    }
+
+    ok <- tryCatch(
       {
-        result <- binance_fetch_klines(
+        binance_fetch_klines(
           symbol = sym,
           timeframe = intv,
           from = combo_from,
           to = to,
           .req_fn = sync_req_fn,
-          is_async = FALSE
+          is_async = FALSE,
+          on_page = write_page
         )
-        result
+        TRUE
       },
       error = function(e) {
         failures[[length(failures) + 1L]] <<- data.table::data.table(
@@ -169,45 +195,16 @@ binance_backfill_klines <- function(
           error = conditionMessage(e)
         )
         rlang::warn(sprintf("[%d/%d] %s %s: FAILED - %s", i, total, sym, intv, conditionMessage(e)))
-        return(NULL)
+        return(FALSE)
       }
     )
 
-    # Drop the candle still forming at the live edge. A kline whose close_time
-    # is in the future has not closed yet; persisting it would store a
-    # half-built candle that resume then skips over (resume advances past the
-    # last stored open_time), so it would never be refreshed to its final
-    # values. Keeping only closed candles means the next run re-fetches and
-    # completes it. Closed historical candles are unaffected — including ones
-    # that straddle an explicit past `to`.
-    if (!is.null(dt) && nrow(dt) > 0L) {
-      dt <- dt[close_time <= lubridate::now("UTC")]
-    }
-
-    if (!is.null(dt) && nrow(dt) > 0L) {
-      dt[, symbol := sym]
-      dt[, timeframe := intv]
-
-      if (!file_exists) {
-        data.table::fwrite(dt, file, append = FALSE)
-        file_exists <- TRUE
-      } else {
-        data.table::fwrite(dt, file, append = TRUE)
+    if (isTRUE(ok) && verbose) {
+      msg <- sprintf("[%d/%d] %s %s: %d rows", i, total, sym, intv, combo_rows)
+      if (!is.null(resumed_from)) {
+        msg <- paste0(msg, sprintf(" (resumed from %s)", format(resumed_from, "%Y-%m-%d")))
       }
-
-      if (verbose) {
-        msg <- sprintf("[%d/%d] %s %s: %d rows", i, total, sym, intv, nrow(dt))
-        if (!is.null(resumed_from)) {
-          msg <- paste0(msg, sprintf(" (resumed from %s)", format(resumed_from, "%Y-%m-%d")))
-        }
-        rlang::inform(msg)
-      }
-    } else if (is.null(dt)) {
-      # Error already handled above
-    } else {
-      if (verbose) {
-        rlang::inform(sprintf("[%d/%d] %s %s: 0 rows", i, total, sym, intv))
-      }
+      rlang::inform(msg)
     }
 
     if (i < total) {

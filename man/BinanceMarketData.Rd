@@ -1161,7 +1161,8 @@ Verified: 2026-05-22
   endTime = NULL,
   limit = NULL,
   fetch_all = FALSE,
-  sleep = 0.2
+  sleep = 0.2,
+  on_page = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -1181,17 +1182,25 @@ Verified: 2026-05-22
 
 \item{\code{limit}}{Integer or NULL; max results (default 500, max 1000).}
 
-\item{\code{fetch_all}}{Logical; if \code{TRUE}, automatically segments the time range
-into multiple API calls of up to 1000 candles each, fetches all segments,
-deduplicates overlapping boundaries, and returns the combined result sorted
-by \code{open_time}. Both \code{startTime} and \code{endTime} are required when enabled.
-\strong{Warning}: large date ranges will consume multiple API requests and may
-impact your rate-limit quota. Default \code{FALSE}.}
+\item{\code{fetch_all}}{Logical; if \code{TRUE}, automatically pages forward through the
+time range — following the data and stopping at the first empty or short
+page — and returns the combined result sorted by \code{open_time}. Both
+\code{startTime} and \code{endTime} are required when enabled. \strong{Warning}: large
+date ranges will consume multiple API requests and may impact your
+rate-limit quota. Default \code{FALSE}.}
 
 \item{\code{sleep}}{Numeric; seconds to wait between consecutive API calls when
 \code{fetch_all = TRUE}. Use this to avoid hitting Binance rate limits. Only
 applies in synchronous mode; async mode chains requests sequentially via
 promises. Default \code{0.2}.}
+
+\item{\code{on_page}}{Optional \verb{function(page)} called with each page (a
+\code{data.table}) as it is fetched, when \code{fetch_all = TRUE}. When supplied,
+pages are streamed to the callback and \strong{not} accumulated — the method
+returns invisibly, so the callback owns the data (e.g. writes it to disk).
+Use it to process arbitrarily large ranges without holding everything in
+memory. Ignored in single-call mode (\code{fetch_all = FALSE}), where there is
+only one page. Default \code{NULL} (buffer and return the combined table).}
 }
 \if{html}{\out{</div>}}
 }

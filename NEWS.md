@@ -1,3 +1,30 @@
+# binance 0.2.4
+
+## Features
+
+* **Kline fetching now pages forward by following the data** instead of
+  pre-slicing the range into fixed windows. `binance_fetch_klines()` (used by
+  `get_klines(fetch_all = TRUE)` on both `BinanceMarketData` and
+  `BinanceFuturesData`, and by `binance_backfill_klines()`) requests up to
+  `max_candles` candles from a cursor, advances past the last candle returned,
+  and stops as soon as a page comes back empty or short. Because Binance returns
+  candles with `open_time >= startTime`, an empty leading stretch — e.g. years
+  before a symbol was listed — is skipped in a **single** request instead of
+  being probed slice by slice. This turns what used to be hundreds of empty
+  requests into one, with identical results on dense ranges.
+
+* **New `on_page` callback** on `BinanceMarketData$get_klines()` and
+  `BinanceFuturesData$get_klines()` (active when `fetch_all = TRUE`). Each page
+  (a `data.table`) is passed to `on_page(page)` as it is fetched and is **not**
+  accumulated — so a caller can process arbitrarily large ranges without holding
+  everything in memory; the method then returns invisibly. Works in both
+  synchronous and asynchronous modes.
+
+* **`binance_backfill_klines()` now writes each page as it is fetched** (via the
+  same `on_page` mechanism), so an interrupted backfill loses at most one page
+  and never re-requests a page that was already written. The closed-candle filter
+  (only persist candles whose `close_time` has passed) now runs per page.
+
 # binance 0.2.3
 
 ## Bug fixes

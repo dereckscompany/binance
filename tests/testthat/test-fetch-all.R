@@ -300,3 +300,62 @@ test_that("binance_fetch_klines works in async mode (futures)", {
     expect_true(call_count >= 2L, info = paste("Async futures should make >= 2 calls, got", call_count))
   }
 })
+
+# ---------------------------------------------------------------------------
+# Async mode: on_page streaming
+# ---------------------------------------------------------------------------
+test_that("binance_fetch_klines streams pages to on_page in async mode", {
+  skip_if_not_installed("promises")
+  skip_if_not_installed("later")
+
+  call_count <- 0L
+  mock_req_fn <- function(endpoint, method, query, auth, .parser) {
+    call_count <<- call_count + 1L
+    start_ms <- as.numeric(query$startTime)
+    end_ms <- as.numeric(query$endTime)
+    interval_ms <- 3600000
+    n <- max(1L, min(1000L, floor((end_ms - start_ms) / interval_ms)))
+    klines <- make_mock_klines(n, start_ms = start_ms, interval_ms = interval_ms)
+    return(promises::promise_resolve(.parser(klines)))
+  }
+
+  pages_seen <- 0L
+  rows_seen <- 0L
+  p <- binance:::binance_fetch_klines(
+    symbol = "BTCUSDT",
+    timeframe = "1h",
+    from = as.POSIXct("2024-01-01", tz = "UTC"),
+    to = as.POSIXct("2024-03-25", tz = "UTC"),
+    .req_fn = mock_req_fn,
+    is_async = TRUE,
+    endpoint = "/api/v3/klines",
+    max_candles = 1000L,
+    sleep = 0,
+    on_page = function(page) {
+      pages_seen <<- pages_seen + 1L
+      rows_seen <<- rows_seen + nrow(page)
+    }
+  )
+
+  expect_true(promises::is.promise(p))
+
+  resolved <- "unset"
+  error_msg <- NULL
+  promises::then(
+    p,
+    onFulfilled = function(val) {
+      return(resolved <<- val)
+    },
+    onRejected = function(err) {
+      return(error_msg <<- conditionMessage(err))
+    }
+  )
+  for (i in 1:20) {
+    later::run_now(timeoutSecs = 0.5)
+  }
+
+  expect_null(error_msg, info = paste("Promise rejected with:", error_msg))
+  expect_null(resolved) # streaming -> resolves invisibly to NULL
+  expect_gt(pages_seen, 1L)
+  expect_gt(rows_seen, 1000L)
+})

@@ -1,12 +1,16 @@
 # File: R/impl_klines.R
-# Shared klines fetching implementation used by both BinanceMarketData and
-# binance_backfill_klines(). Handles time-range segmentation, per-segment
-# HTTP requests, deduplication, and sorting.
+# Shared klines fetching implementation used by both BinanceMarketData,
+# BinanceFuturesData, and binance_backfill_klines(). Pages FORWARD through a time
+# range by following the data: it requests up to `max_candles` candles starting
+# at a cursor, advances the cursor past the last candle returned, and stops as
+# soon as a page comes back empty or shorter than `max_candles`. Because Binance
+# returns candles with open_time >= startTime, an empty leading stretch (e.g. a
+# range before the symbol was listed) is skipped in a single request rather than
+# probed slice by slice.
 
 # Frequency Map for Binance Kline Timeframes
 #
 # Maps human-readable timeframe strings to their duration in seconds.
-# Used by binance_fetch_klines() for time-range segmentation.
 binance_timeframe_map <- list(
   "1s" = 1L,
   "1m" = 60L,
@@ -29,12 +33,18 @@ binance_timeframe_map <- list(
 # Fetch Klines from Binance
 #
 # Core implementation for fetching historical OHLCV candlestick data from
-# Binance's REST API. Automatically segments the requested time range into
-# chunks of up to 1000 candles (the per-request limit), fetches each segment
-# via the supplied .req_fn, deduplicates, and sorts.
+# Binance's REST API. Pages forward from `from` to `to` in requests of up to
+# `max_candles` candles each, following the data and stopping when a page is
+# empty or short.
 #
-# This function is used internally by BinanceMarketData$get_klines() and
-# by binance_backfill_klines(). It does not depend on any R6 class instance.
+# If `on_page` is supplied, each parsed page (a data.table) is passed to it as
+# the page arrives and nothing is accumulated — streaming, memory-light — and the
+# function returns invisibly. Otherwise every page is combined, de-duplicated by
+# open_time, sorted ascending, and returned as one data.table (the historical
+# behaviour).
+#
+# Used internally by BinanceMarketData$get_klines(), BinanceFuturesData$get_klines(),
+# and binance_backfill_klines(). It does not depend on any R6 class instance.
 binance_fetch_klines <- function(
   symbol,
   timeframe = "1h",
@@ -44,7 +54,8 @@ binance_fetch_klines <- function(
   is_async = FALSE,
   endpoint = "/api/v3/klines",
   max_candles = 1000L,
-  sleep = 0
+  sleep = 0,
+  on_page = NULL
 ) {
   if (!timeframe %in% names(binance_timeframe_map)) {
     rlang::abort(paste0(
@@ -55,34 +66,18 @@ binance_fetch_klines <- function(
     ))
   }
 
-  timeframe_seconds <- binance_timeframe_map[[timeframe]]
-  from_ms <- as.numeric(from) * 1000
-  to_ms <- as.numeric(to) * 1000
+  from_ms <- floor(as.numeric(from) * 1000)
+  to_ms <- floor(as.numeric(to) * 1000)
+  streaming <- !is.null(on_page)
 
-  # Split into segments of up to max_candles each, with 1-candle overlap
-  # to prevent gaps at segment boundaries. Dedup handles the overlap.
-  segments <- list()
-  seg_start <- from_ms
-  while (seg_start < to_ms) {
-    seg_end <- min(seg_start + max_candles * timeframe_seconds * 1000, to_ms)
-    segments[[length(segments) + 1L]] <- list(
-      startTime = format(seg_start, scientific = FALSE),
-      endTime = format(seg_end, scientific = FALSE)
-    )
-    # Overlap by 1 candle only when there are more segments to come.
-    if (seg_end >= to_ms) {
-      break
-    }
-    seg_start <- seg_end - timeframe_seconds * 1000
+  # Nothing to fetch for a zero-width or inverted range.
+  if (from_ms >= to_ms) {
+    return(if (streaming) invisible(NULL) else data.table::data.table()[])
   }
 
-  if (length(segments) == 0L) {
-    return(data.table::data.table()[])
-  }
-
-  # Combiner: rbindlist, dedup by open_time, sort ascending
+  # Combine buffered pages: stack, de-dup by open_time, sort ascending.
   combine_klines <- function(results_list) {
-    dts <- Filter(function(x) nrow(x) > 0, results_list)
+    dts <- Filter(function(x) !is.null(x) && nrow(x) > 0L, results_list)
     if (length(dts) == 0L) {
       return(data.table::data.table()[])
     }
@@ -92,16 +87,16 @@ binance_fetch_klines <- function(
     return(dt[])
   }
 
-  # Fetch function for one segment
-  fetch_segment <- function(seg) {
+  # Fetch one page: candles with open_time in [start_ms, to_ms], up to max_candles.
+  fetch_page <- function(start_ms) {
     return(.req_fn(
       endpoint = endpoint,
       method = "GET",
       query = list(
         symbol = symbol,
         interval = timeframe,
-        startTime = seg$startTime,
-        endTime = seg$endTime,
+        startTime = format(start_ms, scientific = FALSE),
+        endTime = format(to_ms, scientific = FALSE),
         limit = max_candles
       ),
       auth = FALSE,
@@ -109,31 +104,61 @@ binance_fetch_klines <- function(
     ))
   }
 
-  # Async: sequential promise chain (one segment at a time to respect rate limits)
-  if (is_async) {
-    seed <- promises::promise_resolve(list())
-    chain <- Reduce(
-      function(acc_promise, seg) {
-        return(acc_promise$then(function(acc) {
-          return(fetch_segment(seg)$then(function(result) {
-            return(c(acc, list(result)))
-          }))
-        }))
-      },
-      segments,
-      accumulate = FALSE,
-      init = seed
-    )
-    return(chain$then(combine_klines))
+  # The start cursor for the NEXT request given a just-fetched page, or NULL if
+  # we are done (empty page, short page, or we've passed `to`).
+  next_start <- function(page) {
+    if (is.null(page) || nrow(page) == 0L || nrow(page) < max_candles) {
+      return(NULL)
+    }
+    ns <- floor(as.numeric(max(page$open_time)) * 1000) + 1
+    if (ns > to_ms) {
+      return(NULL)
+    }
+    return(ns)
   }
 
-  # Sync: sequential with sleep between segments
-  all_results <- vector("list", length(segments))
-  for (i in seq_along(segments)) {
-    all_results[[i]] <- fetch_segment(segments[[i]])
-    if (i < length(segments) && sleep > 0) {
+  # --- Async: recursive promise chain, one page at a time ---
+  if (is_async) {
+    step <- function(start_ms, acc) {
+      return(fetch_page(start_ms)$then(function(page) {
+        has_rows <- !is.null(page) && nrow(page) > 0L
+        if (has_rows && streaming) {
+          on_page(page)
+        } else if (has_rows) {
+          acc <- c(acc, list(page))
+        }
+        ns <- next_start(page)
+        if (is.null(ns)) {
+          return(if (streaming) invisible(NULL) else combine_klines(acc))
+        }
+        return(step(ns, acc))
+      }))
+    }
+    return(step(from_ms, list()))
+  }
+
+  # --- Sync: loop, one page at a time ---
+  acc <- list()
+  start_ms <- from_ms
+  repeat {
+    page <- fetch_page(start_ms)
+    has_rows <- !is.null(page) && nrow(page) > 0L
+    if (has_rows && streaming) {
+      on_page(page)
+    } else if (has_rows) {
+      acc[[length(acc) + 1L]] <- page
+    }
+    ns <- next_start(page)
+    if (is.null(ns)) {
+      break
+    }
+    if (sleep > 0) {
       Sys.sleep(sleep)
     }
+    start_ms <- ns
   }
-  return(combine_klines(all_results))
+  if (streaming) {
+    return(invisible(NULL))
+  }
+  return(combine_klines(acc))
 }

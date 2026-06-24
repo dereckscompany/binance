@@ -140,19 +140,22 @@ klines[, .(open_time, open, high, low, close, volume)]
 
 ### Fetch All Klines (Large Date Ranges)
 
-When you need more than 1000 candles, use `fetch_all = TRUE` to automatically
-segment the time range into multiple API calls, deduplicate boundaries, and
-return the combined result:
+When you need more than 1000 candles, pass `fetch_all = TRUE`. The method pages
+forward through the range — following the data and stopping at the first empty or
+short page — then returns the combined result. Because Binance returns candles
+from the first one on or after `startTime`, an empty leading stretch (e.g. dates
+before a symbol was listed) is skipped in a **single** request rather than probed
+piece by piece:
 
-```{r fetch-all-klines, eval = FALSE}
-# Fetch all 1h klines across a 5-month date range (multiple API calls)
+```{r fetch-all-klines}
+# Fetch all 1h klines across a date range (paged automatically)
 all_klines <- market$get_klines(
   symbol = "BTCUSDT",
   interval = "1h",
   startTime = as.POSIXct("2024-01-01", tz = "UTC"),
   endTime = as.POSIXct("2024-06-01", tz = "UTC"),
   fetch_all = TRUE,
-  sleep = 0.5
+  sleep = 0
 )
 
 nrow(all_klines)
@@ -162,6 +165,37 @@ head(all_klines[, .(open_time, open, high, low, close, volume)])
 > **Note:** Large date ranges consume multiple API requests. Use the `sleep`
 > parameter to respect Binance rate limits. For bulk multi-symbol downloads,
 > see `?binance_backfill_klines`.
+
+### Streaming Pages with `on_page`
+
+For very large pulls you may not want to hold the whole result in memory. Pass an
+`on_page` callback (used only when `fetch_all = TRUE`) and each page is handed to
+it **as it is fetched** — nothing is accumulated, and the method returns
+invisibly, so the callback owns the data (write it to disk, append to a database,
+and so on):
+
+```{r on-page-klines}
+pages <- 0L
+candles <- 0L
+
+market$get_klines(
+  symbol = "BTCUSDT",
+  interval = "1h",
+  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
+  endTime = as.POSIXct("2024-02-01", tz = "UTC"),
+  fetch_all = TRUE,
+  on_page = function(page) {
+    pages <<- pages + 1L
+    candles <<- candles + nrow(page)
+    # e.g. data.table::fwrite(page, "klines.csv", append = TRUE)
+  }
+)
+
+cat("streamed", pages, "page(s),", candles, "candle(s)\n")
+```
+
+This is exactly how `binance_backfill_klines()` writes to disk page by page, so an
+interrupted download loses at most one page.
 
 ### Server Time
 
@@ -459,20 +493,22 @@ The `time_source` parameter is available on all class constructors:
 
 ## Bulk Historical Data: Backfill Klines
 
-Download historical kline data across multiple symbols and intervals,
-with automatic CSV-based resume support:
+Download historical kline data across multiple symbols and timeframes, written
+to CSV **page by page** with automatic resume — an interrupted download loses at
+most one page, and re-running continues each series from its last saved candle:
 
 ```{r backfill, eval = FALSE}
 binance_backfill_klines(
   symbols = c("BTCUSDT", "ETHUSDT"),
-  intervals = c("1d", "4h"),
+  timeframes = c("1d", "4h"),
   from = lubridate::as_datetime("2020-01-01"),
   to = lubridate::now("UTC"),
   file = "my_klines.csv"
 )
 
-# Resume an interrupted download — just run the same call again
-# It reads the existing CSV and skips completed symbol-interval combos
+# Resume an interrupted download — just run the same call again.
+# It reads the existing CSV and continues each symbol/timeframe from its last
+# saved candle.
 ```
 
 ---

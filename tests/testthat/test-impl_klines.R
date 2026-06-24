@@ -128,34 +128,26 @@ test_that("binance_fetch_klines fetches single segment correctly", {
   expect_equal(q$interval, "1h")
 })
 
-test_that("binance_fetch_klines segments large time ranges", {
+test_that("binance_fetch_klines pages forward through large ranges (multiple calls)", {
   call_count <- 0L
 
-  # 1000 candles * 3600s = 3,600,000s per segment
-  # Request 2000 candles worth = should be 2+ segments
+  # 2000 hours of 1h candles -> more than one 1000-candle page.
   from_ts <- 1729100000
   to_ts <- from_ts + 2000 * 3600
 
   fake_req_fn <- function(endpoint, method, query, auth, .parser, ...) {
     call_count <<- call_count + 1L
-    # Return 1 candle per segment
     start_ms <- as.numeric(query$startTime)
-    data <- list(
-      list(
-        start_ms,
-        "67000.00",
-        "67100.00",
-        "66900.00",
-        "67050.00",
-        "100.00",
-        start_ms + 3600000 - 1,
-        "6700000.00",
-        500L,
-        "50.00",
-        "3350000.00",
-        "0"
-      )
-    )
+    end_ms <- as.numeric(query$endTime)
+    interval_ms <- 3600000
+    n <- max(1L, min(1000L, floor((end_ms - start_ms) / interval_ms)))
+    data <- lapply(seq_len(n), function(i) {
+      ts <- start_ms + (i - 1) * interval_ms
+      return(list(
+        ts, "67000", "67100", "66900", "67050", "100",
+        ts + interval_ms - 1, "6700000", 500L, "50", "3350000", "0"
+      ))
+    })
     return(.parser(data))
   }
 
@@ -169,6 +161,7 @@ test_that("binance_fetch_klines segments large time ranges", {
 
   expect_gt(call_count, 1L)
   expect_s3_class(result, "data.table")
+  expect_gt(nrow(result), 1000L)
 })
 
 test_that("binance_fetch_klines deduplicates by open_time", {
@@ -344,34 +337,65 @@ test_that("binance_fetch_klines handles empty API responses", {
   expect_equal(nrow(result), 0L)
 })
 
-# -- Segment overlap --
+# -- Forward-follow: stop at empty, and on_page streaming --
 
-test_that("binance_fetch_klines segments overlap by 1 candle", {
-  captured_queries <- list()
+test_that("binance_fetch_klines stops after one empty page (no slice-by-slice probing)", {
   call_count <- 0L
-
-  # Force 2 segments: 1000 candles * 900s * 1000ms = 900,000,000ms per segment
-  from_ts <- 1000000
-  to_ts <- from_ts + 1000 * 900 + 900 # just over 1 segment at 15m
-
   fake_req_fn <- function(endpoint, method, query, auth, .parser, ...) {
     call_count <<- call_count + 1L
-    captured_queries[[call_count]] <<- query
-    return(.parser(list()))
+    return(.parser(list())) # empty
   }
 
-  binance_fetch_klines(
-    symbol = "BTCUSDT",
-    timeframe = "15m",
-    from = from_ts,
-    to = to_ts,
+  # A wide range entirely before any data — pre-fix this was probed slice by slice.
+  result <- binance_fetch_klines(
+    symbol = "NEWCOIN",
+    timeframe = "1m",
+    from = 1500000000,
+    to = 1500000000 + 1e7,
     .req_fn = fake_req_fn
   )
 
-  expect_equal(call_count, 2L)
+  expect_equal(call_count, 1L)
+  expect_s3_class(result, "data.table")
+  expect_equal(nrow(result), 0L)
+})
 
-  # Second segment's startTime should be first segment's endTime minus interval_ms (900*1000)
-  seg1_end <- as.numeric(captured_queries[[1]]$endTime)
-  seg2_start <- as.numeric(captured_queries[[2]]$startTime)
-  expect_equal(seg2_start, seg1_end - 900 * 1000)
+test_that("binance_fetch_klines streams pages to on_page and returns invisibly", {
+  call_count <- 0L
+  from_ts <- 1729100000
+  to_ts <- from_ts + 2000 * 3600
+
+  fake_req_fn <- function(endpoint, method, query, auth, .parser, ...) {
+    call_count <<- call_count + 1L
+    start_ms <- as.numeric(query$startTime)
+    end_ms <- as.numeric(query$endTime)
+    interval_ms <- 3600000
+    n <- max(1L, min(1000L, floor((end_ms - start_ms) / interval_ms)))
+    data <- lapply(seq_len(n), function(i) {
+      ts <- start_ms + (i - 1) * interval_ms
+      return(list(
+        ts, "67000", "67100", "66900", "67050", "100",
+        ts + interval_ms - 1, "6700000", 500L, "50", "3350000", "0"
+      ))
+    })
+    return(.parser(data))
+  }
+
+  pages_seen <- 0L
+  rows_seen <- 0L
+  res <- binance_fetch_klines(
+    symbol = "BTCUSDT",
+    timeframe = "1h",
+    from = from_ts,
+    to = to_ts,
+    .req_fn = fake_req_fn,
+    on_page = function(page) {
+      pages_seen <<- pages_seen + 1L
+      rows_seen <<- rows_seen + nrow(page)
+    }
+  )
+
+  expect_null(res) # streaming -> returns invisibly (NULL)
+  expect_equal(pages_seen, call_count) # one on_page call per fetched page
+  expect_gt(rows_seen, 1000L)
 })
