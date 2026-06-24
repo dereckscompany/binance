@@ -923,16 +923,23 @@ BinanceMarketData <- R6::R6Class(
     #' @param startTime POSIXct or numeric or NULL; start time (ms or POSIXct).
     #' @param endTime POSIXct or numeric or NULL; end time (ms or POSIXct).
     #' @param limit Integer or NULL; max results (default 500, max 1000).
-    #' @param fetch_all Logical; if `TRUE`, automatically segments the time range
-    #'   into multiple API calls of up to 1000 candles each, fetches all segments,
-    #'   deduplicates overlapping boundaries, and returns the combined result sorted
-    #'   by `open_time`. Both `startTime` and `endTime` are required when enabled.
-    #'   **Warning**: large date ranges will consume multiple API requests and may
-    #'   impact your rate-limit quota. Default `FALSE`.
+    #' @param fetch_all Logical; if `TRUE`, automatically pages forward through the
+    #'   time range — following the data and stopping at the first empty or short
+    #'   page — and returns the combined result sorted by `open_time`. Both
+    #'   `startTime` and `endTime` are required when enabled. **Warning**: large
+    #'   date ranges will consume multiple API requests and may impact your
+    #'   rate-limit quota. Default `FALSE`.
     #' @param sleep Numeric; seconds to wait between consecutive API calls when
     #'   `fetch_all = TRUE`. Use this to avoid hitting Binance rate limits. Only
     #'   applies in synchronous mode; async mode chains requests sequentially via
     #'   promises. Default `0.2`.
+    #' @param on_page Optional `function(page)` called with each page (a
+    #'   `data.table`) as it is fetched, when `fetch_all = TRUE`. When supplied,
+    #'   pages are streamed to the callback and **not** accumulated — the method
+    #'   returns invisibly, so the callback owns the data (e.g. writes it to disk).
+    #'   Use it to process arbitrarily large ranges without holding everything in
+    #'   memory. Ignored in single-call mode (`fetch_all = FALSE`), where there is
+    #'   only one page. Default `NULL` (buffer and return the combined table).
     #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
     #'   - `open_time` (POSIXct): Candle open time.
     #'   - `open` (numeric): Opening price.
@@ -967,7 +974,8 @@ BinanceMarketData <- R6::R6Class(
       endTime = NULL,
       limit = NULL,
       fetch_all = FALSE,
-      sleep = 0.2
+      sleep = 0.2,
+      on_page = NULL
     ) {
       valid_intervals <- c(
         "1s",
@@ -1012,7 +1020,8 @@ BinanceMarketData <- R6::R6Class(
           is_async = private$.is_async,
           endpoint = "/api/v3/klines",
           max_candles = 1000L,
-          sleep = sleep
+          sleep = sleep,
+          on_page = on_page
         ))
       }
 
