@@ -9,6 +9,13 @@
 #' from a partially completed backfill by reading the existing file and skipping
 #' symbol-timeframe combinations that are already up to date.
 #'
+#' Only **closed** candles are persisted: the candle still forming at the live
+#' edge (one whose `close_time` is in the future) is dropped before writing, so
+#' a half-built candle is never stored. Because resume advances past the last
+#' stored candle, an unclosed candle written once would never be refreshed to
+#' its final values — dropping it means the next run re-fetches and completes
+#' it. Closed historical candles are unaffected.
+#'
 #' @param symbols Character vector of trading pair symbols (e.g.,
 #'   `c("BTCUSDT", "ETHUSDT")`). Must not be NULL or empty.
 #' @param timeframes Character vector of candle timeframes (e.g., `c("1d", "1h")`).
@@ -165,6 +172,17 @@ binance_backfill_klines <- function(
         return(NULL)
       }
     )
+
+    # Drop the candle still forming at the live edge. A kline whose close_time
+    # is in the future has not closed yet; persisting it would store a
+    # half-built candle that resume then skips over (resume advances past the
+    # last stored open_time), so it would never be refreshed to its final
+    # values. Keeping only closed candles means the next run re-fetches and
+    # completes it. Closed historical candles are unaffected — including ones
+    # that straddle an explicit past `to`.
+    if (!is.null(dt) && nrow(dt) > 0L) {
+      dt <- dt[close_time <= lubridate::now("UTC")]
+    }
 
     if (!is.null(dt) && nrow(dt) > 0L) {
       dt[, symbol := sym]

@@ -55,6 +55,14 @@ timeframes, writing results incrementally to a CSV file. Supports resuming
 from a partially completed backfill by reading the existing file and skipping
 symbol-timeframe combinations that are already up to date.
 }
+\details{
+Only \strong{closed} candles are persisted: the candle still forming at the live
+edge (one whose \code{close_time} is in the future) is dropped before writing, so
+a half-built candle is never stored. Because resume advances past the last
+stored candle, an unclosed candle written once would never be refreshed to
+its final values — dropping it means the next run re-fetches and completes
+it. Closed historical candles are unaffected.
+}
 \examples{
 \dontrun{
 binance_backfill_klines(
