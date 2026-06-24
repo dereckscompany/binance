@@ -96,6 +96,86 @@ test_that("backfill skips completed combos on resume", {
   expect_equal(length(captured_urls), 0L)
 })
 
+# -- Closed-candle-only persistence --
+
+test_that("backfill drops the still-forming candle at the live edge", {
+  outfile <- tempfile(fileext = ".csv")
+  on.exit(unlink(outfile), add = TRUE)
+
+  # One closed candle (close_time in the past) and one still forming (close_time
+  # in the future). Only the closed one should be written.
+  now_ms <- floor(as.numeric(lubridate::now("UTC")) * 1000)
+  day_ms <- 86400 * 1000
+  closed_open_ms <- now_ms - 3 * day_ms
+  closed_close_ms <- now_ms - 2 * day_ms
+  forming_open_ms <- now_ms - 1 * day_ms
+  forming_close_ms <- now_ms + 1 * day_ms # not yet closed
+
+  kline_data <- list(
+    list(
+      closed_open_ms,
+      "100.0", "110.0", "90.0", "105.0", "1000.0",
+      closed_close_ms,
+      "105000.0", 500L, "600.0", "63000.0", "0"
+    ),
+    list(
+      forming_open_ms,
+      "105.0", "115.0", "95.0", "108.0", "800.0",
+      forming_close_ms,
+      "86400.0", 400L, "500.0", "54000.0", "0"
+    )
+  )
+  resp <- mock_response(kline_data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  binance_backfill_klines(
+    symbols = "BTCUSDT",
+    timeframes = "1d",
+    from = lubridate::as_datetime(closed_open_ms / 1000, tz = "UTC"),
+    to = lubridate::now("UTC"),
+    file = outfile,
+    sleep = 0,
+    verbose = FALSE
+  )
+
+  dt <- data.table::fread(outfile)
+  dt[, close_time := lubridate::as_datetime(close_time, tz = "UTC")]
+  expect_equal(nrow(dt), 1L)
+  expect_true(all(dt$close_time <= lubridate::now("UTC")))
+  expect_equal(dt$close, 105.0)
+})
+
+test_that("backfill with only a forming candle writes nothing", {
+  outfile <- tempfile(fileext = ".csv")
+  on.exit(unlink(outfile), add = TRUE)
+
+  now_ms <- floor(as.numeric(lubridate::now("UTC")) * 1000)
+  day_ms <- 86400 * 1000
+  kline_data <- list(
+    list(
+      now_ms - day_ms,
+      "105.0", "115.0", "95.0", "108.0", "800.0",
+      now_ms + day_ms, # close_time in the future
+      "86400.0", 400L, "500.0", "54000.0", "0"
+    )
+  )
+  resp <- mock_response(kline_data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  binance_backfill_klines(
+    symbols = "BTCUSDT",
+    timeframes = "1d",
+    from = lubridate::as_datetime((now_ms - day_ms) / 1000, tz = "UTC"),
+    to = lubridate::now("UTC"),
+    file = outfile,
+    sleep = 0,
+    verbose = FALSE
+  )
+
+  # Nothing closed yet, so no file is created.
+  expect_false(file.exists(outfile))
+})
+
 # -- from Clamping --
 
 test_that("backfill clamps -Inf from to 2017-07-01", {

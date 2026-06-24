@@ -1,3 +1,18 @@
+# binance 0.2.3
+
+## Bug fixes
+
+* **`binance_backfill_klines()` no longer persists the still-forming candle.**
+  When the backfill window reached the live edge, Binance returns the candle
+  currently forming (its `close_time` in the future). The function wrote that
+  half-built candle to the CSV, and because resume advances past the last stored
+  `open_time`, it was never refreshed to its final values — so the most recent
+  candle of every `(symbol, timeframe)` could be permanently incomplete. The
+  function now drops any candle whose `close_time` is in the future before
+  writing; the next run re-fetches and completes it once closed. Closed
+  historical candles — including ones that straddle an explicit past `to` — are
+  unaffected.
+
 # binance 0.2.2
 
 ## Bug fixes
