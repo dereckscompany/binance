@@ -377,7 +377,7 @@ stream$depth("BTCUSDT", speed = "100ms")
 # connect, then drive the event loop explicitly (interrupt to stop)
 stream$connect()
 while (!later$loop_empty()) {
-  later$run_now()
+  later$run_now(0.1) # the timeout makes each tick wait for work, not busy-spin
 }
 ```
 

@@ -46,8 +46,8 @@ BinanceMarketStream <- R6::R6Class(
     #'   combined-stream endpoint.
     #' @param auto_reconnect (scalar<logical>) auto-reconnect with backoff. Default
     #'   `TRUE`.
-    #' @param max_reconnects (ReconnectLimit) give up after this many failed
-    #'   reconnects. Default `10`.
+    #' @param max_reconnects (scalar<count in [1, Inf[>) give up after this many
+    #'   failed reconnects. Default `10`.
     #' @param proactive_reconnect (scalar<logical>) reconnect at 23h to beat the 24h
     #'   cutoff. Default `TRUE`.
     #' @return (class<BinanceMarketStream>) invisibly, self.
@@ -93,8 +93,9 @@ BinanceMarketStream <- R6::R6Class(
     #' ```
     #'
     #' @param symbol (scalar<character>) trading pair (e.g. `"BTCUSDT"`).
-    #' @param speed (Speed) update cadence, `"1000ms"` (Binance default) or
-    #'   `"100ms"` (full fidelity). Default `"1000ms"`.
+    #' @param speed (scalar<character in c("1000ms", "100ms")>) update cadence,
+    #'   `"1000ms"` (Binance default) or `"100ms"` (full fidelity). Default
+    #'   `"1000ms"`.
     #' @param handler (function?) if supplied, called with the raw JSON string for
     #'   **this** stream only. If `NULL`, use a global `$on("message")` handler
     #'   instead. Default `NULL`.

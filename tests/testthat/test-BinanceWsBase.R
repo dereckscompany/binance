@@ -35,8 +35,6 @@ test_that("ws_backoff_delay grows but stays bounded and >= 1", {
 # ---- Connection-free class behaviour ----------------------------------------
 
 test_that("BinanceMarketStream tracks subscriptions and builds depth stream names", {
-  skip_if_not_installed("websocket")
-  skip_if_not_installed("later")
 
   stream <- BinanceMarketStream$new()
   expect_false(stream$is_open())
@@ -54,8 +52,6 @@ test_that("BinanceMarketStream tracks subscriptions and builds depth stream name
 })
 
 test_that("$on validates the event name and requires a function", {
-  skip_if_not_installed("websocket")
-  skip_if_not_installed("later")
   stream <- BinanceMarketStream$new()
   expect_error(stream$on("nope", function(x) x))
   expect_error(stream$on("message", "not a function"))
@@ -63,8 +59,6 @@ test_that("$on validates the event name and requires a function", {
 })
 
 test_that("dispatch sends raw messages to global and per-stream handlers correctly", {
-  skip_if_not_installed("websocket")
-  skip_if_not_installed("later")
 
   global <- list()
   per_stream <- list()
@@ -82,9 +76,30 @@ test_that("dispatch sends raw messages to global and per-stream handlers correct
   expect_length(per_stream, 1L) # per-stream handler not called for eth
 })
 
+test_that("control responses are filtered from messages; errors reach the error handler", {
+  msgs <- list()
+  errs <- list()
+  stream <- BinanceMarketStream$new()
+  stream$on("message", function(m) msgs[[length(msgs) + 1L]] <<- m)
+  stream$on("error", function(e) errs[[length(errs) + 1L]] <<- e)
+  priv <- stream$.__enclos_env__$private
+
+  priv$.dispatch('{"result":null,"id":1}') # a SUBSCRIBE ack
+  expect_length(msgs, 0L) # never delivered as a message
+  expect_length(errs, 0L) # a success ack is not an error
+
+  priv$.dispatch('{"error":{"code":2,"msg":"Invalid request"},"id":1}')
+  expect_length(msgs, 0L) # a failed control response never reaches message handlers
+  expect_length(errs, 1L) # it surfaces to the error handler instead
+  expect_equal(errs[[1L]]$error$msg, "Invalid request")
+})
+
+test_that("$send errors when the socket is not open", {
+  stream <- BinanceMarketStream$new()
+  expect_error(stream$send('{"method":"PING"}'), "not open")
+})
+
 test_that("a throwing handler warns but does not propagate", {
-  skip_if_not_installed("websocket")
-  skip_if_not_installed("later")
   stream <- BinanceMarketStream$new()
   stream$on("message", function(m) stop("boom"))
   priv <- stream$.__enclos_env__$private
@@ -92,8 +107,6 @@ test_that("a throwing handler warns but does not propagate", {
 })
 
 test_that("close() is safe before any connection", {
-  skip_if_not_installed("websocket")
-  skip_if_not_installed("later")
   stream <- BinanceMarketStream$new()
   expect_invisible(stream$close())
   expect_false(stream$is_open())
@@ -102,8 +115,6 @@ test_that("close() is safe before any connection", {
 # ---- Live integration (skip-guarded) ----------------------------------------
 
 test_that("live: depth stream connects and delivers depthUpdate messages", {
-  skip_if_not_installed("websocket")
-  skip_if_not_installed("later")
   if (!nzchar(Sys.getenv("BINANCE_LIVE_TESTS"))) {
     skip("Set BINANCE_LIVE_TESTS to run live WebSocket tests")
   }

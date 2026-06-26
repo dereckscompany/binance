@@ -108,7 +108,7 @@ assert_return_BinanceWsBase__is_open <- function(value) {
 
 assert_args_ws_control_message <- function(method, params, id) {
   assert_scalar_character(method)
-  assert_value_in_set(method, c("SUBSCRIBE", "UNSUBSCRIBE", "LIST_SUBSCRIPTIONS"))
+  assert_value_in_set(method, c("SUBSCRIBE", "UNSUBSCRIBE"))
   assert_character(params)
   assert_no_missing_values(params)
   assert_scalar_count(id)

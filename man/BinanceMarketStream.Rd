@@ -100,8 +100,8 @@ combined-stream endpoint.}
 \item{\code{auto_reconnect}}{(scalar<logical>) auto-reconnect with backoff. Default
 \code{TRUE}.}
 
-\item{\code{max_reconnects}}{(ReconnectLimit) give up after this many failed
-reconnects. Default \code{10}.}
+\item{\code{max_reconnects}}{(scalar<count in [1, Inf[>) give up after this many
+failed reconnects. Default \code{10}.}
 
 \item{\code{proactive_reconnect}}{(scalar<logical>) reconnect at 23h to beat the 24h
 cutoff. Default \code{TRUE}.}
@@ -150,8 +150,9 @@ it must be streamed live.
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g. \code{"BTCUSDT"}).}
 
-\item{\code{speed}}{(Speed) update cadence, \code{"1000ms"} (Binance default) or
-\code{"100ms"} (full fidelity). Default \code{"1000ms"}.}
+\item{\code{speed}}{(scalar<character in c("1000ms", "100ms")>) update cadence,
+\code{"1000ms"} (Binance default) or \code{"100ms"} (full fidelity). Default
+\code{"1000ms"}.}
 
 \item{\code{handler}}{(function?) if supplied, called with the raw JSON string for
 \strong{this} stream only. If \code{NULL}, use a global \verb{$on("message")} handler

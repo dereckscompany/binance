@@ -69,7 +69,7 @@ stream$on("message", function(msg) record(msg))
 stream$depth("BTCUSDT", speed = "100ms")
 stream$connect() # non-blocking: wires up + starts connecting, returns immediately
 
-while (!later::loop_empty()) later::run_now() # you own the loop
+while (!later::loop_empty()) later::run_now(0.1) # you own the loop
 ```
 
 This is the right approach when the client lives **inside a program that already

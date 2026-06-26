@@ -2,8 +2,7 @@
 # Pure, connection-free helpers for the WebSocket stream clients
 # (BinanceWsBase / BinanceMarketStream). Unit-testable in isolation, and — like
 # the public methods — typed and asserted via roxyassert (the type renders in the
-# docs and generates the runtime check from one source). Named types it uses
-# (`Speed`, `ControlMethod`) are defined in `types_ws.R`.
+# docs and generates the runtime check from one source).
 
 #' Build a Binance stream control message (SUBSCRIBE / UNSUBSCRIBE)
 #'
@@ -11,7 +10,8 @@
 #' connection. `params` is always encoded as a JSON array, even for a single
 #' stream, so a one-element subscription is not accidentally unboxed to a scalar.
 #'
-#' @param method (ControlMethod) the control method.
+#' @param method (scalar<character in c("SUBSCRIBE", "UNSUBSCRIBE")>) the control
+#'   method.
 #' @param params (character) stream names (lower-case, e.g. `"btcusdt@depth"`).
 #' @param id (scalar<count in [1, Inf[>) client request id echoed back by the server.
 #' @return (scalar<character>) a single-line JSON string ready to `$send()`.
@@ -32,7 +32,8 @@ ws_control_message <- function(method, params, id) {
 #' stream name. The symbol is lower-cased, as Binance requires for stream paths.
 #'
 #' @param symbol (scalar<character>) trading pair (e.g. `"BTCUSDT"`).
-#' @param speed (Speed) `"1000ms"` (default) or `"100ms"`.
+#' @param speed (scalar<character in c("1000ms", "100ms")>) `"1000ms"` (default)
+#'   or `"100ms"`.
 #' @return (scalar<character>) the stream name (e.g. `"btcusdt@depth@100ms"`).
 #' @keywords internal
 #' @noRd

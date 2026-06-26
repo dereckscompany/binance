@@ -59,9 +59,9 @@ BinanceWsBase <- R6::R6Class(
     #'   URL (e.g. the USD-M futures endpoint) to point the client elsewhere.
     #' @param auto_reconnect (scalar<logical>) reconnect automatically (with
     #'   backoff) when the socket drops. Default `TRUE`.
-    #' @param max_reconnects (ReconnectLimit) give up after this many consecutive
-    #'   failed reconnects (the process then exits its `$run()` loop, so an external
-    #'   supervisor can restart it). Default `10`.
+    #' @param max_reconnects (scalar<count in [1, Inf[>) give up after this many
+    #'   consecutive failed reconnects (the process then exits its `$run()` loop, so
+    #'   an external supervisor can restart it). Default `10`.
     #' @param proactive_reconnect (scalar<logical>) reconnect proactively after 23
     #'   hours to beat Binance's 24-hour forced disconnect. Default `TRUE`.
     #' @return (class<BinanceWsBase>) invisibly, self.
@@ -83,7 +83,8 @@ BinanceWsBase <- R6::R6Class(
     #' @description
     #' Register an Event Handler (Node-style `ws.on`)
     #'
-    #' @param event (WsEvent) the event to handle.
+    #' @param event (scalar<character in c("open", "message", "close", "error")>)
+    #'   the event to handle.
     #' @param handler (function) called when the event fires. For `"message"` it
     #'   receives the raw JSON string; for the others it receives the socket event.
     #' @return (class<BinanceWsBase>) invisibly, self (chainable).
@@ -100,15 +101,17 @@ BinanceWsBase <- R6::R6Class(
     #' (non-blocking) — handlers only fire once something pumps `later`. Idempotent:
     #' a no-op if already open. With `$run()` you do not call this directly (it
     #' connects for you); call it yourself when you drive the loop, i.e.
-    #' `$connect()` then `while (!later::loop_empty()) later::run_now()`, or when the
-    #' client lives inside an app (Shiny, a trading engine) that already runs a
-    #' `later` loop — there the host loop fires your handlers.
+    #' `$connect()` then `while (!later::loop_empty()) later::run_now(0.1)`, or when
+    #' the client lives inside an app (Shiny, a trading engine) that already runs a
+    #' `later` loop — there the host loop fires your handlers. (The `0.1` timeout
+    #' makes each tick wait for work instead of busy-spinning.)
     #' @return (class<BinanceWsBase>) invisibly, self.
     connect = function() {
       if (private$.is_connecting_or_open()) {
         return(invisible(self))
       }
       private$.running <- TRUE
+      private$.schedule_keepalive()
       private$.open_socket()
       return(invisible(assert_return_BinanceWsBase__connect(self)))
     },
@@ -204,6 +207,7 @@ BinanceWsBase <- R6::R6Class(
     #' @return (class<BinanceWsBase>) invisibly, self.
     close = function() {
       private$.running <- FALSE
+      private$.cancel_keepalive()
       private$.cancel_timers()
       if (!is.null(private$.ws)) {
         try(private$.ws$close(), silent = TRUE)
@@ -239,6 +243,8 @@ BinanceWsBase <- R6::R6Class(
     .next_id = 0L,
     .reconnect_timer = NULL,
     .proactive_timer = NULL,
+    .keepalive_timer = NULL,
+    .proactive_closing = FALSE,
 
     # ---- Connection ----
 
@@ -258,8 +264,13 @@ BinanceWsBase <- R6::R6Class(
       ws$onClose(function(event) {
         private$.cancel_timers()
         private$.emit("close", event)
-        if (private$.auto_reconnect && isTRUE(private$.running)) {
-          private$.schedule_reconnect()
+        if (isTRUE(private$.running)) {
+          if (isTRUE(private$.proactive_closing)) {
+            private$.proactive_closing <- FALSE
+            private$.open_socket() # planned 23h refresh: reconnect now, no backoff
+          } else if (private$.auto_reconnect) {
+            private$.schedule_reconnect()
+          }
         }
         return(invisible(NULL))
       })
@@ -286,9 +297,14 @@ BinanceWsBase <- R6::R6Class(
     # handlers (registered by subclasses) are routed via the combined-stream
     # `stream` key, parsed only when any are present.
     .dispatch = function(raw) {
-      # SUBSCRIBE/UNSUBSCRIBE acknowledgements ({"result":...,"id":...}) are
-      # control responses, not stream data — never deliver them to handlers.
+      # Control responses are not stream data: {"result":...} acks a SUBSCRIBE /
+      # UNSUBSCRIBE, {"error":...} reports one that failed. Never deliver either as
+      # a "message" (it would corrupt a raw archive); surface a failure to "error".
       if (startsWith(raw, "{\"result\"")) {
+        return(invisible(NULL))
+      }
+      if (startsWith(raw, "{\"error\"")) {
+        private$.emit("error", jsonlite::fromJSON(raw, simplifyVector = FALSE))
         return(invisible(NULL))
       }
       for (h in private$.handlers$message) {
@@ -359,6 +375,7 @@ BinanceWsBase <- R6::R6Class(
           "WebSocket: giving up after %d failed reconnects.", private$.max_reconnects
         ))
         private$.running <- FALSE
+        private$.cancel_keepalive()
         return(invisible(NULL))
       }
       delay <- ws_backoff_delay(private$.reconnect_attempts)
@@ -377,7 +394,8 @@ BinanceWsBase <- R6::R6Class(
       }
       private$.proactive_timer <- later::later(function() {
         if (isTRUE(private$.running) && !is.null(private$.ws)) {
-          try(private$.ws$close(), silent = TRUE) # onClose triggers a fresh reconnect
+          private$.proactive_closing <- TRUE # tell onClose this is a planned refresh
+          try(private$.ws$close(), silent = TRUE)
         }
         return(invisible(NULL))
       }, 23 * 3600)
@@ -393,6 +411,32 @@ BinanceWsBase <- R6::R6Class(
       }
       private$.reconnect_timer <- NULL
       private$.proactive_timer <- NULL
+      return(invisible(NULL))
+    },
+
+    # ---- Keepalive ----
+
+    # Keep one task on the `later` queue for the whole active lifetime, so a caller
+    # driving the loop with `while (!later::loop_empty()) later::run_now()` never
+    # sees an empty queue during the async connect handshake (or between messages)
+    # and exits early. The *pending* heartbeat is what matters, not its firing, so a
+    # long interval costs nothing; it re-arms while running and spans reconnects, so
+    # it is cancelled only on a real stop — not in `.cancel_timers()`.
+    .schedule_keepalive = function() {
+      private$.keepalive_timer <- later::later(function() {
+        if (isTRUE(private$.running)) {
+          private$.schedule_keepalive()
+        }
+        return(invisible(NULL))
+      }, 30)
+      return(invisible(NULL))
+    },
+
+    .cancel_keepalive = function() {
+      if (is.function(private$.keepalive_timer)) {
+        try(private$.keepalive_timer(), silent = TRUE)
+      }
+      private$.keepalive_timer <- NULL
       return(invisible(NULL))
     }
   )

@@ -102,9 +102,9 @@ URL (e.g. the USD-M futures endpoint) to point the client elsewhere.}
 \item{\code{auto_reconnect}}{(scalar<logical>) reconnect automatically (with
 backoff) when the socket drops. Default \code{TRUE}.}
 
-\item{\code{max_reconnects}}{(ReconnectLimit) give up after this many consecutive
-failed reconnects (the process then exits its \verb{$run()} loop, so an external
-supervisor can restart it). Default \code{10}.}
+\item{\code{max_reconnects}}{(scalar<count in [1, Inf[>) give up after this many
+consecutive failed reconnects (the process then exits its \verb{$run()} loop, so
+an external supervisor can restart it). Default \code{10}.}
 
 \item{\code{proactive_reconnect}}{(scalar<logical>) reconnect proactively after 23
 hours to beat Binance's 24-hour forced disconnect. Default \code{TRUE}.}
@@ -127,7 +127,8 @@ Register an Event Handler (Node-style \code{ws.on})
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{event}}{(WsEvent) the event to handle.}
+\item{\code{event}}{(scalar<character in c("open", "message", "close", "error")>)
+the event to handle.}
 
 \item{\code{handler}}{(function) called when the event fires. For \code{"message"} it
 receives the raw JSON string; for the others it receives the socket event.}
@@ -148,9 +149,10 @@ Wires the socket callbacks and starts connecting, then returns immediately
 (non-blocking) — handlers only fire once something pumps \code{later}. Idempotent:
 a no-op if already open. With \verb{$run()} you do not call this directly (it
 connects for you); call it yourself when you drive the loop, i.e.
-\verb{$connect()} then \code{while (!later::loop_empty()) later::run_now()}, or when the
-client lives inside an app (Shiny, a trading engine) that already runs a
-\code{later} loop — there the host loop fires your handlers.
+\verb{$connect()} then \code{while (!later::loop_empty()) later::run_now(0.1)}, or when
+the client lives inside an app (Shiny, a trading engine) that already runs a
+\code{later} loop — there the host loop fires your handlers. (The \code{0.1} timeout
+makes each tick wait for work instead of busy-spinning.)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceWsBase$connect()}\if{html}{\out{</div>}}
 }
