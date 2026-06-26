@@ -1,0 +1,111 @@
+---
+title: "Live WebSocket Streams with binance"
+author: "Dereck Mezquita"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Live WebSocket Streams with binance}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+The REST classes (e.g. [`BinanceMarketData`]) give you a *snapshot* — the order
+book at the instant you ask. The WebSocket classes give you the *stream* — every
+change as it happens. Binance only archives snapshots, so the live order-book
+diff stream is the one piece of market data that is lost forever if you do not
+record it.
+
+`binance` exposes streams with a **Node.js-style event API**: you register a
+handler and the library calls it as messages arrive. This is the same shape as
+JavaScript's `ws.on("message", ...)` and as Binance's own official connectors.
+
+> Requires the `websocket` and `later` packages: `install.packages(c("websocket", "later"))`.
+
+## The event API
+
+```{r api}
+box::use(binance[BinanceMarketStream])
+
+stream <- BinanceMarketStream$new()
+
+# ws.on("message", ...) — handlers receive the RAW JSON string
+stream$on("message", function(msg) cat(msg, "\n"))
+
+stream$depth("BTCUSDT", speed = "100ms") # subscribe to the order-book diff stream
+stream$run()                             # keep the process alive; interrupt to stop
+```
+
+`$run()` is the only thing R needs that Node gives for free — see the event-loop
+note below.
+
+## No `async` flag (unlike the REST classes)
+
+A REST call has a single result, so it can be synchronous (returns a value) or
+asynchronous (returns a promise). A socket is an **endless push stream** with no
+single result — so the only sensible shape is a callback, and there is nothing
+to dualise. Streams are always event-driven.
+
+> **Event loop.** R has no always-on event loop like Node.js. Handlers only fire
+> when the loop ticks via `later::run_now()`. `$run()` does this for you — it
+> connects, then pumps `later::run_now()` until you close the client, so the
+> process stays alive while the socket is open (exactly how Node keeps a process
+> alive). Inside **Shiny** or another running loop, you do not call `$run()` —
+> register your handlers and the existing loop fires them.
+
+## Recording the order book to disk
+
+The order book is a firehose; write it compressed, one file per symbol per day,
+and let a separate step turn it into Parquet later. The recorder itself is tiny:
+
+```{r recorder}
+box::use(binance[BinanceMarketStream])
+
+con <- gzfile("btcusdt-depth.ndjson.gz", open = "ab")
+on.exit(close(con))
+
+stream <- BinanceMarketStream$new()
+stream$on("message", function(msg) cat(msg, "\n", file = con, sep = ""))
+stream$depth("BTCUSDT", speed = "100ms")
+stream$run()
+```
+
+The raw message is written verbatim — faithful bronze data from which the full
+book can be reconstructed later.
+
+## Many symbols, one connection
+
+Up to 1024 streams share a single connection, so recording 100 order books is
+one socket, not 100. Just subscribe to each:
+
+```{r multi}
+stream <- BinanceMarketStream$new()
+stream$on("message", function(msg) write_somewhere(msg))
+for (sym in c("BTCUSDT", "ETHUSDT", "SOLUSDT")) {
+  stream$depth(sym, speed = "100ms")
+}
+stream$run()
+```
+
+## Reconnection is automatic
+
+You do not manage reconnection. On an unexpected disconnect the client reconnects
+with exponential backoff (plus jitter, so it can never trip Binance's
+connection-rate limit), reconnects proactively at 23 hours to beat Binance's
+24-hour forced disconnect, and re-subscribes every stream after reconnecting.
+If reconnects are exhausted, `$run()` returns — so an external supervisor (a
+cron + lock, a container restart policy) can bring the recorder back.
+
+```{r reconnect}
+stream <- BinanceMarketStream$new(max_reconnects = 10) # then $run() returns; let the supervisor restart
+```
+
+## Stopping
+
+Interrupt the session (Ctrl-C), or call `stream$close()` from a handler — that
+stops auto-reconnect, cancels timers, closes the socket, and `$run()` returns.

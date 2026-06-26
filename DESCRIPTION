@@ -1,7 +1,7 @@
 Package: binance
 Type: Package
 Title: API Wrapper to Binance Cryptocurrency Exchange
-Version: 0.2.4
+Version: 0.3.0
 URL: https://dereckscompany.github.io/binance/
 BugReports: https://github.com/dereckscompany/binance/issues
 Authors@R:
@@ -15,7 +15,8 @@ Description: R API wrapper to the Binance cryptocurrency exchange supporting
     classes for spot market data, trading (including OCO orders), account
     management, deposits, withdrawals, internal transfers, margin trading,
     margin data, sub-accounts, Simple Earn, and USD-M futures (market data and
-    trading). Includes bulk kline backfill with CSV resume support and timestamp
+    trading). Includes bulk kline backfill with CSV resume support, live
+    event-driven WebSocket market-data streams (order book depth), and timestamp
     conversion utilities.
 License: MIT
 Encoding: UTF-8
@@ -36,6 +37,7 @@ Suggests:
     promises,
     coro,
     later,
+    websocket,
     box,
     testthat (>= 3.0.0),
     withr,
