@@ -1,3 +1,43 @@
+# binance 0.3.0
+
+## New features
+
+* **Live WebSocket market-data streams.** A new event-driven client for
+  Binance's public spot streams, modelled on the Node.js `ws` API (and on
+  Binance's own official connectors). Two new exported R6 classes:
+  - **`BinanceWsBase`** — the abstract base: register handlers with
+    `$on("message"|"open"|"close"|"error", handler)`, `$subscribe()` /
+    `$unsubscribe()`, and `$run()` to keep the process alive and pump R's
+    `later` event loop (which, like Node, is built on libuv). Connection
+    management is automatic: full-jitter exponential-backoff reconnect on an
+    unexpected close, a proactive reconnect at 23h (before Binance's 24h forced
+    disconnect), automatic re-subscribe of every tracked stream after a
+    reconnect, and library-handled ping/pong.
+  - **`BinanceMarketStream`** — typed spot streams; first endpoint is
+    **`$depth(symbol, speed)`**, the order-book diff stream (`<symbol>@depth` /
+    `@depth@100ms`) — the only order-book data Binance does not archive, so it
+    must be captured live. Many symbols share one connection (up to 1024
+    streams).
+
+  Handlers receive the **raw JSON message string** — parse with
+  `jsonlite::fromJSON()` or write straight to disk for faithful archival. Unlike
+  the REST classes there is no `async` flag: a socket is an endless push stream
+  with no single result, so it is always event-driven (the one thing R adds over
+  Node is `$run()` to keep the loop alive). Built on the `websocket` and `later`
+  packages, now hard `Imports`.
+
+* **New `vignette("websocket-streams", package = "binance")`** — the event API,
+  the two ways to drive the event loop (your own `later` loop, or `$run()`), the
+  order-book recorder pattern, and reconnection.
+
+* **Typed contracts via `roxyassert`.** The new WebSocket classes adopt
+  [`roxyassert`](https://github.com/dereckscompany/roxyassert): every
+  `@param`/`@return` is a typed annotation, and the argument/return checks are
+  generated from it into `R/contracts-generated.R` (committed, like `NAMESPACE`)
+  so the documented contract and the runtime check come from one source. This is
+  the first use of roxyassert in the package; the rest migrates incrementally
+  (untyped tags are untouched). Adds `assert` to `Imports`.
+
 # binance 0.2.4
 
 ## Features

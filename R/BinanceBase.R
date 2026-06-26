@@ -85,11 +85,6 @@ BinanceBase <- R6::R6Class(
       }
 
       if (private$.is_async) {
-        if (!requireNamespace("promises", quietly = TRUE)) {
-          rlang::abort(
-            "Package 'promises' is required for async mode. Install with: install.packages('promises')"
-          )
-        }
         private$.perform <- httr2::req_perform_promise
       } else {
         private$.perform <- httr2::req_perform

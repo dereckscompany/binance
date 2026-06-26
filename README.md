@@ -124,10 +124,15 @@ still looks wrong, please file an issue.
 | `BinanceMargin` | Margin borrowing, repayment, orders, and account queries | Yes |
 | `BinanceFuturesData` | Futures exchange info, mark price, funding rates, klines | No |
 | `BinanceFutures` | Futures order placement, positions, leverage, account queries | Yes |
+| `BinanceMarketStream` | Live spot market-data WebSocket streams (order-book depth) | No |
 | `BinanceBase` | Internal base class (not used directly) | — |
+| `BinanceWsBase` | Internal base class for WebSocket streams (not used directly) | — |
 
-All classes accept an `async = TRUE` argument at construction and share
-a common `time_source` parameter for clock drift correction.
+All REST classes accept an `async = TRUE` argument at construction and
+share a common `time_source` parameter for clock drift correction. The
+WebSocket classes are always event-driven (a socket is an endless push
+stream, not a single request) — see [WebSocket
+Streams](#websocket-streams) below.
 
 ## Installation
 
@@ -611,6 +616,41 @@ while (!later$loop_empty()) {
     #> 1:     2434.191    308             1756.8740               28.46694      0
     #> 2:     1505.250    205              876.1235               13.82000      0
     #> 3:     1899.600    250              950.0000               15.06750      0
+
+## WebSocket Streams
+
+Beyond the REST API, the package opens **live market-data WebSocket
+streams** — most importantly the order-book **diff stream**, the only
+order-book data Binance does not archive, so it has to be captured as it
+happens. The client is event-driven, modelled on the Node.js `ws` API:
+register handlers with `$on()`, then drive R’s `later` event loop
+yourself — the same explicit pattern as the async REST example above.
+
+``` r
+box::use(binance[BinanceMarketStream], later)
+
+stream <- BinanceMarketStream$new()
+
+# handlers receive the raw JSON message string
+stream$on("open", function(e) message("connected"))
+stream$on("message", function(msg) cat(msg, "\n"))
+
+# subscribe to the BTC/USDT order-book diff stream at 100 ms
+stream$depth("BTCUSDT", speed = "100ms")
+
+# connect, then drive the event loop explicitly (interrupt to stop)
+stream$connect()
+while (!later$loop_empty()) {
+  later$run_now(0.1) # the timeout makes each tick wait for work, not busy-spin
+}
+```
+
+`$run()` is a convenience that wraps exactly that connect-and-pump loop
+and tears down cleanly on an interrupt — reach for it when the stream is
+the only thing running. Write each raw message straight to an
+append-only file and you have an order-book recorder; see
+`vignette("websocket-streams")` for the recorder pattern and
+reconnection.
 
 ## Sample Data
 
