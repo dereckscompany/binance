@@ -164,8 +164,12 @@ BinanceWsBase <- R6::R6Class(
     #' Connects if needed, then blocks and pumps R's `later` event loop so handlers
     #' keep firing — the equivalent of Node keeping a process alive while a socket
     #' is open. It runs until the client is closed: either `$close()` is called
-    #' (e.g. from a handler) or reconnects are exhausted. Stop a running recorder
-    #' with an interrupt.
+    #' (e.g. from a handler) or reconnects are exhausted.
+    #'
+    #' Teardown is clean and guaranteed: a normal close, an **interrupt** (Ctrl-C),
+    #' or an error all close the socket and cancel timers on the way out (via
+    #' `on.exit()`), so you never leave a half-open connection. An interrupt is
+    #' caught and returns quietly; any other error still propagates after cleanup.
     #'
     #' @param timeout Numeric; seconds each `later::run_now()` tick waits for work
     #'   before looping (keeps CPU near zero between messages). Default `0.1`.
@@ -174,9 +178,15 @@ BinanceWsBase <- R6::R6Class(
       if (!private$.is_connecting_or_open()) {
         self$connect()
       }
-      while (isTRUE(private$.running)) {
-        later::run_now(timeout)
-      }
+      on.exit(self$close(), add = TRUE)
+      tryCatch(
+        while (isTRUE(private$.running)) {
+          later::run_now(timeout)
+        },
+        interrupt = function(cnd) {
+          return(invisible(NULL))
+        }
+      )
       return(invisible(self))
     },
 

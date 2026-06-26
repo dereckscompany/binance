@@ -224,8 +224,12 @@ Run the Event Loop (keep the process alive)
 Connects if needed, then blocks and pumps R's \code{later} event loop so handlers
 keep firing — the equivalent of Node keeping a process alive while a socket
 is open. It runs until the client is closed: either \verb{$close()} is called
-(e.g. from a handler) or reconnects are exhausted. Stop a running recorder
-with an interrupt.
+(e.g. from a handler) or reconnects are exhausted.
+
+Teardown is clean and guaranteed: a normal close, an \strong{interrupt} (Ctrl-C),
+or an error all close the socket and cancel timers on the way out (via
+\code{on.exit()}), so you never leave a half-open connection. An interrupt is
+caught and returns quietly; any other error still propagates after cleanup.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceWsBase$run(timeout = 0.1)}\if{html}{\out{</div>}}
 }
