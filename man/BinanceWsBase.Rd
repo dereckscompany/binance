@@ -46,8 +46,9 @@ close (so a reconnect storm can never trip Binance's connection rate limit).
 
 \subsection{Dependencies}{
 
-Requires the \code{websocket} and \code{later} packages (both \code{Suggests}). They are
-checked at construction.
+Built on the \code{websocket} (the client) and \code{later} (R's libuv event loop)
+packages, both hard \code{Imports} — no optional-dependency dance, they are always
+present.
 }
 }
 \examples{
@@ -93,24 +94,25 @@ Initialise a BinanceWsBase Object
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{base_url}}{Character; the WebSocket base URL. Defaults to the spot
-combined-stream endpoint, so every message arrives tagged as
-\verb{\{"stream":...,"data":...\}} and can be routed per stream.}
+\item{\code{base_url}}{(scalar<character>) the WebSocket base URL. Defaults to the
+spot combined-stream endpoint, so every message arrives tagged as
+\verb{\{"stream":...,"data":...\}} and can be routed per stream. Pass a different
+URL (e.g. the USD-M futures endpoint) to point the client elsewhere.}
 
-\item{\code{auto_reconnect}}{Logical; reconnect automatically (with backoff) when
-the socket drops. Default \code{TRUE}.}
+\item{\code{auto_reconnect}}{(scalar<logical>) reconnect automatically (with
+backoff) when the socket drops. Default \code{TRUE}.}
 
-\item{\code{max_reconnects}}{Integer; give up after this many consecutive failed
-reconnects (the process then exits its \verb{$run()} loop, so an external
+\item{\code{max_reconnects}}{(ReconnectLimit) give up after this many consecutive
+failed reconnects (the process then exits its \verb{$run()} loop, so an external
 supervisor can restart it). Default \code{10}.}
 
-\item{\code{proactive_reconnect}}{Logical; reconnect proactively after 23 hours to
-beat Binance's 24-hour forced disconnect. Default \code{TRUE}.}
+\item{\code{proactive_reconnect}}{(scalar<logical>) reconnect proactively after 23
+hours to beat Binance's 24-hour forced disconnect. Default \code{TRUE}.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Invisible self.
+(class<BinanceWsBase>) invisibly, self.
 }
 }
 \if{html}{\out{<hr>}}
@@ -125,15 +127,15 @@ Register an Event Handler (Node-style \code{ws.on})
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{event}}{Character; one of \code{"open"}, \code{"message"}, \code{"close"}, \code{"error"}.}
+\item{\code{event}}{(WsEvent) the event to handle.}
 
-\item{\code{handler}}{Function; called when the event fires. For \code{"message"} it
+\item{\code{handler}}{(function) called when the event fires. For \code{"message"} it
 receives the raw JSON string; for the others it receives the socket event.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Invisible self (chainable).
+(class<BinanceWsBase>) invisibly, self (chainable).
 }
 }
 \if{html}{\out{<hr>}}
@@ -142,14 +144,19 @@ Invisible self (chainable).
 \subsection{Method \code{connect()}}{
 Open the Connection
 
-Wires the socket callbacks and connects. Idempotent — a no-op if already
-open. You usually do not call this directly: \verb{$run()} connects for you.
+Wires the socket callbacks and starts connecting, then returns immediately
+(non-blocking) — handlers only fire once something pumps \code{later}. Idempotent:
+a no-op if already open. With \verb{$run()} you do not call this directly (it
+connects for you); call it yourself when you drive the loop, i.e.
+\verb{$connect()} then \code{while (!later::loop_empty()) later::run_now()}, or when the
+client lives inside an app (Shiny, a trading engine) that already runs a
+\code{later} loop — there the host loop fires your handlers.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceWsBase$connect()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
-Invisible self.
+(class<BinanceWsBase>) invisibly, self.
 }
 }
 \if{html}{\out{<hr>}}
@@ -167,12 +174,12 @@ Tracks the streams (so they are restored after a reconnect) and sends a
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{streams}}{Character vector; stream names (e.g. \code{"btcusdt@depth"}).}
+\item{\code{streams}}{(character) stream names (e.g. \code{"btcusdt@depth"}).}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Invisible self.
+(class<BinanceWsBase>) invisibly, self.
 }
 }
 \if{html}{\out{<hr>}}
@@ -187,12 +194,12 @@ Unsubscribe from Streams
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{streams}}{Character vector; stream names to drop.}
+\item{\code{streams}}{(character) stream names to drop.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Invisible self.
+(class<BinanceWsBase>) invisibly, self.
 }
 }
 \if{html}{\out{<hr>}}
@@ -207,12 +214,12 @@ Send a Raw Control Message
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{message}}{Character; a JSON string to send on the socket.}
+\item{\code{message}}{(scalar<character>) a JSON string to send on the socket.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Invisible self.
+(class<BinanceWsBase>) invisibly, self.
 }
 }
 \if{html}{\out{<hr>}}
@@ -230,6 +237,10 @@ Teardown is clean and guaranteed: a normal close, an \strong{interrupt} (Ctrl-C)
 or an error all close the socket and cancel timers on the way out (via
 \code{on.exit()}), so you never leave a half-open connection. An interrupt is
 caught and returns quietly; any other error still propagates after cleanup.
+
+\verb{$run()} is convenience for a standalone client; when you embed the client in
+a program that already drives a \code{later} loop, use \verb{$connect()} and let that
+loop pump instead (see \verb{$connect()}).
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceWsBase$run(timeout = 0.1)}\if{html}{\out{</div>}}
 }
@@ -237,13 +248,14 @@ caught and returns quietly; any other error still propagates after cleanup.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{timeout}}{Numeric; seconds each \code{later::run_now()} tick waits for work
-before looping (keeps CPU near zero between messages). Default \code{0.1}.}
+\item{\code{timeout}}{(scalar<numeric in ]0, Inf[>) seconds each \code{later::run_now()}
+tick waits for work before looping (keeps CPU near zero between messages).
+Default \code{0.1}.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Invisible self.
+(class<BinanceWsBase>) invisibly, self.
 }
 }
 \if{html}{\out{<hr>}}
@@ -259,7 +271,7 @@ Stops auto-reconnect, cancels timers, and closes the socket. After this,
 }
 
 \subsection{Returns}{
-Invisible self.
+(class<BinanceWsBase>) invisibly, self.
 }
 }
 \if{html}{\out{<hr>}}
@@ -272,7 +284,7 @@ Currently Tracked Subscriptions
 }
 
 \subsection{Returns}{
-Character vector of subscribed stream names.
+(character) subscribed stream names (possibly length 0).
 }
 }
 \if{html}{\out{<hr>}}
@@ -285,7 +297,7 @@ Is the Socket Open?
 }
 
 \subsection{Returns}{
-Logical scalar.
+(scalar<logical>) \code{TRUE} if the socket is open.
 }
 }
 \if{html}{\out{<hr>}}

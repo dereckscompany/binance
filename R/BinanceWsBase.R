@@ -32,8 +32,9 @@
 #' - **Ping/pong** keepalive is answered automatically by the `websocket` package.
 #'
 #' ### Dependencies
-#' Requires the `websocket` and `later` packages (both `Suggests`). They are
-#' checked at construction.
+#' Built on the `websocket` (the client) and `later` (R's libuv event loop)
+#' packages, both hard `Imports` — no optional-dependency dance, they are always
+#' present.
 #'
 #' @examples
 #' \dontrun{
@@ -52,68 +53,64 @@ BinanceWsBase <- R6::R6Class(
     #' @description
     #' Initialise a BinanceWsBase Object
     #'
-    #' @param base_url Character; the WebSocket base URL. Defaults to the spot
-    #'   combined-stream endpoint, so every message arrives tagged as
-    #'   `{"stream":...,"data":...}` and can be routed per stream.
-    #' @param auto_reconnect Logical; reconnect automatically (with backoff) when
-    #'   the socket drops. Default `TRUE`.
-    #' @param max_reconnects Integer; give up after this many consecutive failed
-    #'   reconnects (the process then exits its `$run()` loop, so an external
+    #' @param base_url (scalar<character>) the WebSocket base URL. Defaults to the
+    #'   spot combined-stream endpoint, so every message arrives tagged as
+    #'   `{"stream":...,"data":...}` and can be routed per stream. Pass a different
+    #'   URL (e.g. the USD-M futures endpoint) to point the client elsewhere.
+    #' @param auto_reconnect (scalar<logical>) reconnect automatically (with
+    #'   backoff) when the socket drops. Default `TRUE`.
+    #' @param max_reconnects (ReconnectLimit) give up after this many consecutive
+    #'   failed reconnects (the process then exits its `$run()` loop, so an external
     #'   supervisor can restart it). Default `10`.
-    #' @param proactive_reconnect Logical; reconnect proactively after 23 hours to
-    #'   beat Binance's 24-hour forced disconnect. Default `TRUE`.
-    #' @return Invisible self.
+    #' @param proactive_reconnect (scalar<logical>) reconnect proactively after 23
+    #'   hours to beat Binance's 24-hour forced disconnect. Default `TRUE`.
+    #' @return (class<BinanceWsBase>) invisibly, self.
     initialize = function(
       base_url = "wss://stream.binance.com:9443/stream",
       auto_reconnect = TRUE,
       max_reconnects = 10L,
       proactive_reconnect = TRUE
     ) {
-      for (pkg in c("websocket", "later")) {
-        if (!requireNamespace(pkg, quietly = TRUE)) {
-          rlang::abort(sprintf(
-            "Package '%s' is required for WebSocket streams. Install with: install.packages('%s')",
-            pkg, pkg
-          ))
-        }
-      }
+      assert_args_BinanceWsBase__initialize(base_url, auto_reconnect, max_reconnects, proactive_reconnect)
       private$.base_url <- base_url
       private$.auto_reconnect <- isTRUE(auto_reconnect)
       private$.max_reconnects <- as.integer(max_reconnects)
       private$.proactive_reconnect <- isTRUE(proactive_reconnect)
       private$.handlers <- list(open = list(), message = list(), close = list(), error = list())
-      return(invisible(self))
+      return(invisible(assert_return_BinanceWsBase__initialize(self)))
     },
 
     #' @description
     #' Register an Event Handler (Node-style `ws.on`)
     #'
-    #' @param event Character; one of `"open"`, `"message"`, `"close"`, `"error"`.
-    #' @param handler Function; called when the event fires. For `"message"` it
+    #' @param event (WsEvent) the event to handle.
+    #' @param handler (function) called when the event fires. For `"message"` it
     #'   receives the raw JSON string; for the others it receives the socket event.
-    #' @return Invisible self (chainable).
+    #' @return (class<BinanceWsBase>) invisibly, self (chainable).
     on = function(event, handler) {
-      event <- match.arg(event, c("open", "message", "close", "error"))
-      if (!is.function(handler)) {
-        rlang::abort("`handler` must be a function.")
-      }
+      assert_args_BinanceWsBase__on(event, handler)
       private$.handlers[[event]] <- c(private$.handlers[[event]], handler)
-      return(invisible(self))
+      return(invisible(assert_return_BinanceWsBase__on(self)))
     },
 
     #' @description
     #' Open the Connection
     #'
-    #' Wires the socket callbacks and connects. Idempotent — a no-op if already
-    #' open. You usually do not call this directly: `$run()` connects for you.
-    #' @return Invisible self.
+    #' Wires the socket callbacks and starts connecting, then returns immediately
+    #' (non-blocking) — handlers only fire once something pumps `later`. Idempotent:
+    #' a no-op if already open. With `$run()` you do not call this directly (it
+    #' connects for you); call it yourself when you drive the loop, i.e.
+    #' `$connect()` then `while (!later::loop_empty()) later::run_now()`, or when the
+    #' client lives inside an app (Shiny, a trading engine) that already runs a
+    #' `later` loop — there the host loop fires your handlers.
+    #' @return (class<BinanceWsBase>) invisibly, self.
     connect = function() {
       if (private$.is_connecting_or_open()) {
         return(invisible(self))
       }
       private$.running <- TRUE
       private$.open_socket()
-      return(invisible(self))
+      return(invisible(assert_return_BinanceWsBase__connect(self)))
     },
 
     #' @description
@@ -121,41 +118,44 @@ BinanceWsBase <- R6::R6Class(
     #'
     #' Tracks the streams (so they are restored after a reconnect) and sends a
     #' `SUBSCRIBE` frame if connected; otherwise they are sent on the next open.
-    #' @param streams Character vector; stream names (e.g. `"btcusdt@depth"`).
-    #' @return Invisible self.
+    #' @param streams (character) stream names (e.g. `"btcusdt@depth"`).
+    #' @return (class<BinanceWsBase>) invisibly, self.
     subscribe = function(streams) {
+      assert_args_BinanceWsBase__subscribe(streams)
       streams <- tolower(streams)
       private$.streams <- union(private$.streams, streams)
       if (private$.is_open()) {
         private$.send_control("SUBSCRIBE", streams)
       }
-      return(invisible(self))
+      return(invisible(assert_return_BinanceWsBase__subscribe(self)))
     },
 
     #' @description
     #' Unsubscribe from Streams
-    #' @param streams Character vector; stream names to drop.
-    #' @return Invisible self.
+    #' @param streams (character) stream names to drop.
+    #' @return (class<BinanceWsBase>) invisibly, self.
     unsubscribe = function(streams) {
+      assert_args_BinanceWsBase__unsubscribe(streams)
       streams <- tolower(streams)
       private$.streams <- setdiff(private$.streams, streams)
       private$.stream_handlers[streams] <- NULL
       if (private$.is_open()) {
         private$.send_control("UNSUBSCRIBE", streams)
       }
-      return(invisible(self))
+      return(invisible(assert_return_BinanceWsBase__unsubscribe(self)))
     },
 
     #' @description
     #' Send a Raw Control Message
-    #' @param message Character; a JSON string to send on the socket.
-    #' @return Invisible self.
+    #' @param message (scalar<character>) a JSON string to send on the socket.
+    #' @return (class<BinanceWsBase>) invisibly, self.
     send = function(message) {
+      assert_args_BinanceWsBase__send(message)
       if (!private$.is_open()) {
         rlang::abort("Cannot send: socket is not open.")
       }
       private$.ws$send(message)
-      return(invisible(self))
+      return(invisible(assert_return_BinanceWsBase__send(self)))
     },
 
     #' @description
@@ -171,10 +171,16 @@ BinanceWsBase <- R6::R6Class(
     #' `on.exit()`), so you never leave a half-open connection. An interrupt is
     #' caught and returns quietly; any other error still propagates after cleanup.
     #'
-    #' @param timeout Numeric; seconds each `later::run_now()` tick waits for work
-    #'   before looping (keeps CPU near zero between messages). Default `0.1`.
-    #' @return Invisible self.
+    #' `$run()` is convenience for a standalone client; when you embed the client in
+    #' a program that already drives a `later` loop, use `$connect()` and let that
+    #' loop pump instead (see `$connect()`).
+    #'
+    #' @param timeout (scalar<numeric in ]0, Inf[>) seconds each `later::run_now()`
+    #'   tick waits for work before looping (keeps CPU near zero between messages).
+    #'   Default `0.1`.
+    #' @return (class<BinanceWsBase>) invisibly, self.
     run = function(timeout = 0.1) {
+      assert_args_BinanceWsBase__run(timeout)
       if (!private$.is_connecting_or_open()) {
         self$connect()
       }
@@ -187,7 +193,7 @@ BinanceWsBase <- R6::R6Class(
           return(invisible(NULL))
         }
       )
-      return(invisible(self))
+      return(invisible(assert_return_BinanceWsBase__run(self)))
     },
 
     #' @description
@@ -195,28 +201,28 @@ BinanceWsBase <- R6::R6Class(
     #'
     #' Stops auto-reconnect, cancels timers, and closes the socket. After this,
     #' `$run()` returns.
-    #' @return Invisible self.
+    #' @return (class<BinanceWsBase>) invisibly, self.
     close = function() {
       private$.running <- FALSE
       private$.cancel_timers()
       if (!is.null(private$.ws)) {
         try(private$.ws$close(), silent = TRUE)
       }
-      return(invisible(self))
+      return(invisible(assert_return_BinanceWsBase__close(self)))
     },
 
     #' @description
     #' Currently Tracked Subscriptions
-    #' @return Character vector of subscribed stream names.
+    #' @return (character) subscribed stream names (possibly length 0).
     subscriptions = function() {
-      return(private$.streams)
+      return(assert_return_BinanceWsBase__subscriptions(private$.streams))
     },
 
     #' @description
     #' Is the Socket Open?
-    #' @return Logical scalar.
+    #' @return (scalar<logical>) `TRUE` if the socket is open.
     is_open = function() {
-      return(private$.is_open())
+      return(assert_return_BinanceWsBase__is_open(private$.is_open()))
     }
   ),
   private = list(

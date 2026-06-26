@@ -94,21 +94,22 @@ Initialise a BinanceMarketStream Object
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{base_url}}{Character; WebSocket base URL. Defaults to the spot
+\item{\code{base_url}}{(scalar<character>) WebSocket base URL. Defaults to the spot
 combined-stream endpoint.}
 
-\item{\code{auto_reconnect}}{Logical; auto-reconnect with backoff. Default \code{TRUE}.}
+\item{\code{auto_reconnect}}{(scalar<logical>) auto-reconnect with backoff. Default
+\code{TRUE}.}
 
-\item{\code{max_reconnects}}{Integer; give up after this many failed reconnects.
-Default \code{10}.}
+\item{\code{max_reconnects}}{(ReconnectLimit) give up after this many failed
+reconnects. Default \code{10}.}
 
-\item{\code{proactive_reconnect}}{Logical; reconnect at 23h to beat the 24h cutoff.
-Default \code{TRUE}.}
+\item{\code{proactive_reconnect}}{(scalar<logical>) reconnect at 23h to beat the 24h
+cutoff. Default \code{TRUE}.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Invisible self.
+(class<BinanceMarketStream>) invisibly, self.
 }
 }
 \if{html}{\out{<hr>}}
@@ -141,25 +142,25 @@ it must be streamed live.
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketStream$depth(symbol, speed = c("1000ms", "100ms"), handler = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketStream$depth(symbol, speed = "1000ms", handler = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g. \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g. \code{"BTCUSDT"}).}
 
-\item{\code{speed}}{Character; update cadence, \code{"1000ms"} (Binance default) or
+\item{\code{speed}}{(Speed) update cadence, \code{"1000ms"} (Binance default) or
 \code{"100ms"} (full fidelity). Default \code{"1000ms"}.}
 
-\item{\code{handler}}{Function or NULL; if supplied, called with the raw JSON
-string for \strong{this} stream only. If NULL, use a global \verb{$on("message")}
-handler instead. Default NULL.}
+\item{\code{handler}}{(function?) if supplied, called with the raw JSON string for
+\strong{this} stream only. If \code{NULL}, use a global \verb{$on("message")} handler
+instead. Default \code{NULL}.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Invisible self (chainable).
+(class<BinanceMarketStream>) invisibly, self (chainable).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

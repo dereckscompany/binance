@@ -23,11 +23,20 @@
   `jsonlite::fromJSON()` or write straight to disk for faithful archival. Unlike
   the REST classes there is no `async` flag: a socket is an endless push stream
   with no single result, so it is always event-driven (the one thing R adds over
-  Node is `$run()` to keep the loop alive). Requires the `websocket` and `later`
-  packages (`Suggests`, checked at construction).
+  Node is `$run()` to keep the loop alive). Built on the `websocket` and `later`
+  packages, now hard `Imports`.
 
 * **New `vignette("websocket-streams", package = "binance")`** — the event API,
-  the order-book recorder pattern, reconnection, and the event-loop note.
+  the two ways to drive the event loop (your own `later` loop, or `$run()`), the
+  order-book recorder pattern, and reconnection.
+
+* **Typed contracts via `roxyassert`.** The new WebSocket classes adopt
+  [`roxyassert`](https://github.com/dereckscompany/roxyassert): every
+  `@param`/`@return` is a typed annotation, and the argument/return checks are
+  generated from it into `R/contracts-generated.R` (committed, like `NAMESPACE`)
+  so the documented contract and the runtime check come from one source. This is
+  the first use of roxyassert in the package; the rest migrates incrementally
+  (untyped tags are untouched). Adds `assert` to `Imports`.
 
 # binance 0.2.4
 

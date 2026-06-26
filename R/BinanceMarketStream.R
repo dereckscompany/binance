@@ -42,14 +42,16 @@ BinanceMarketStream <- R6::R6Class(
     #' @description
     #' Initialise a BinanceMarketStream Object
     #'
-    #' @param base_url Character; WebSocket base URL. Defaults to the spot
+    #' @param base_url (scalar<character>) WebSocket base URL. Defaults to the spot
     #'   combined-stream endpoint.
-    #' @param auto_reconnect Logical; auto-reconnect with backoff. Default `TRUE`.
-    #' @param max_reconnects Integer; give up after this many failed reconnects.
-    #'   Default `10`.
-    #' @param proactive_reconnect Logical; reconnect at 23h to beat the 24h cutoff.
-    #'   Default `TRUE`.
-    #' @return Invisible self.
+    #' @param auto_reconnect (scalar<logical>) auto-reconnect with backoff. Default
+    #'   `TRUE`.
+    #' @param max_reconnects (ReconnectLimit) give up after this many failed
+    #'   reconnects. Default `10`.
+    #' @param proactive_reconnect (scalar<logical>) reconnect at 23h to beat the 24h
+    #'   cutoff. Default `TRUE`.
+    #' @return (class<BinanceMarketStream>) invisibly, self.
+    #' @noassert
     initialize = function(
       base_url = "wss://stream.binance.com:9443/stream",
       auto_reconnect = TRUE,
@@ -90,13 +92,13 @@ BinanceMarketStream <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g. `"BTCUSDT"`).
-    #' @param speed Character; update cadence, `"1000ms"` (Binance default) or
+    #' @param symbol (scalar<character>) trading pair (e.g. `"BTCUSDT"`).
+    #' @param speed (Speed) update cadence, `"1000ms"` (Binance default) or
     #'   `"100ms"` (full fidelity). Default `"1000ms"`.
-    #' @param handler Function or NULL; if supplied, called with the raw JSON
-    #'   string for **this** stream only. If NULL, use a global `$on("message")`
-    #'   handler instead. Default NULL.
-    #' @return Invisible self (chainable).
+    #' @param handler (function?) if supplied, called with the raw JSON string for
+    #'   **this** stream only. If `NULL`, use a global `$on("message")` handler
+    #'   instead. Default `NULL`.
+    #' @return (class<BinanceMarketStream>) invisibly, self (chainable).
     #'
     #' @examples
     #' \dontrun{
@@ -104,12 +106,12 @@ BinanceMarketStream <- R6::R6Class(
     #' stream$depth("BTCUSDT", speed = "100ms", handler = function(msg) print(msg))
     #' stream$run()
     #' }
-    depth = function(symbol, speed = c("1000ms", "100ms"), handler = NULL) {
-      speed <- match.arg(speed)
+    depth = function(symbol, speed = "1000ms", handler = NULL) {
+      assert_args_BinanceMarketStream__depth(symbol, speed, handler)
       stream <- ws_depth_stream(symbol, speed)
       private$.add_stream_handler(stream, handler)
       self$subscribe(stream)
-      return(invisible(self))
+      return(invisible(assert_return_BinanceMarketStream__depth(self)))
     }
   )
 )

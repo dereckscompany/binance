@@ -25,7 +25,8 @@ record it.
 handler and the library calls it as messages arrive. This is the same shape as
 JavaScript's `ws.on("message", ...)` and as Binance's own official connectors.
 
-> Requires the `websocket` and `later` packages: `install.packages(c("websocket", "later"))`.
+> Built on the `websocket` (the client) and `later` (R's libuv event loop)
+> packages — both hard dependencies of `binance`, so they are already installed.
 
 ## The event API
 
@@ -41,8 +42,9 @@ stream$depth("BTCUSDT", speed = "100ms") # subscribe to the order-book diff stre
 stream$run()                             # keep the process alive; interrupt to stop
 ```
 
-`$run()` is the only thing R needs that Node gives for free — see the event-loop
-note below.
+`$run()` is the only thing R needs that Node gives for free — see
+**Driving the event loop** below for what it does and when to drive the loop
+yourself instead.
 
 ## No `async` flag (unlike the REST classes)
 
@@ -51,12 +53,44 @@ asynchronous (returns a promise). A socket is an **endless push stream** with no
 single result — so the only sensible shape is a callback, and there is nothing
 to dualise. Streams are always event-driven.
 
-> **Event loop.** R has no always-on event loop like Node.js. Handlers only fire
-> when the loop ticks via `later::run_now()`. `$run()` does this for you — it
-> connects, then pumps `later::run_now()` until you close the client, so the
-> process stays alive while the socket is open (exactly how Node keeps a process
-> alive). Inside **Shiny** or another running loop, you do not call `$run()` —
-> register your handlers and the existing loop fires them.
+## Driving the event loop: two ways
+
+The class never owns the loop — `$on()`, `$connect()`, and `$depth()` just register
+callbacks on `later` and return immediately. *Something* has to pump `later` so
+those callbacks fire (R has no always-on loop like Node.js). You have two options.
+
+### 1. Drive the loop yourself — recommended when embedding
+
+Register your handlers, `$connect()` (non-blocking), then pump `later::run_now()`:
+
+```{r external}
+stream <- BinanceMarketStream$new()
+stream$on("message", function(msg) record(msg))
+stream$depth("BTCUSDT", speed = "100ms")
+stream$connect() # non-blocking: wires up + starts connecting, returns immediately
+
+while (!later::loop_empty()) later::run_now() # you own the loop
+```
+
+This is the right approach when the client lives **inside a program that already
+runs a `later` loop** — a Shiny app, or a trading engine that also drives REST
+promises, timers, and other components on the same loop. There you don't even
+write the loop: just `$connect()`, and the host loop fires your handlers alongside
+everything else. Driving the loop yourself also lets you do your own work each
+tick, add other tasks, or set your own stop condition.
+
+### 2. `$run()` — syntactic sugar for a standalone recorder
+
+When the client is the *only* thing running, `$run()` connects, pumps the loop, and
+tears down cleanly for you:
+
+```{r helper}
+stream$run() # = connect() + pump later::run_now() + clean close on Ctrl-C / error
+```
+
+`$run()` is approach 1 wrapped up, plus guaranteed teardown: a normal close, an
+error, or an **interrupt (Ctrl-C)** all close the socket and cancel timers on the
+way out (via `on.exit()`), so you never leave a half-open connection.
 
 ## Recording the order book to disk
 
