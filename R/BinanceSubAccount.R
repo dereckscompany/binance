@@ -106,6 +106,7 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     add_sub_account = function(subAccountString, recvWindow = NULL) {
       assert_args_BinanceSubAccount__add_sub_account(subAccountString, recvWindow)
+      assert::assert_nonempty_strings(subAccountString)
       res <- private$.request(
         endpoint = "/sapi/v1/sub-account/virtualSubAccount",
         method = "POST",
@@ -179,6 +180,7 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     get_sub_accounts = function(email = NULL, isFreeze = NULL, page = NULL, limit = NULL, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_sub_accounts(email, isFreeze, page, limit, recvWindow)
+      assert::assert_nonempty_strings(email, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/sub-account/list",
         query = list(
@@ -249,6 +251,7 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     get_balances = function(email, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_balances(email, recvWindow)
+      assert::assert_nonempty_strings(email)
       res <- private$.request(
         endpoint = "/sapi/v3/sub-account/assets",
         query = list(
@@ -331,6 +334,7 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     get_spot_summary = function(email = NULL, page = NULL, size = NULL, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_spot_summary(email, page, size, recvWindow)
+      assert::assert_nonempty_strings(email, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/sub-account/spotSummary",
         query = list(
@@ -458,6 +462,9 @@ BinanceSubAccount <- R6::R6Class(
         clientTranId,
         recvWindow
       )
+      assert::assert_nonempty_strings(fromEmail, null_ok = TRUE)
+      assert::assert_nonempty_strings(toEmail, null_ok = TRUE)
+      assert::assert_nonempty_strings(asset)
       valid_types <- c("SPOT", "USDT_FUTURE", "COIN_FUTURE", "MARGIN", "ISOLATED_MARGIN")
       if (!fromAccountType %in% valid_types) {
         rlang::abort(paste0(
@@ -590,6 +597,8 @@ BinanceSubAccount <- R6::R6Class(
         limit,
         recvWindow
       )
+      assert::assert_nonempty_strings(fromEmail, null_ok = TRUE)
+      assert::assert_nonempty_strings(toEmail, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/sub-account/universalTransfer",
         query = list(
@@ -697,6 +706,7 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     get_futures_account = function(email, futuresType, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_futures_account(email, futuresType, recvWindow)
+      assert::assert_nonempty_strings(email)
       res <- private$.request(
         endpoint = "/sapi/v2/sub-account/futures/account",
         query = list(
@@ -786,6 +796,7 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     get_margin_account = function(email, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_margin_account(email, recvWindow)
+      assert::assert_nonempty_strings(email)
       res <- private$.request(
         endpoint = "/sapi/v1/sub-account/margin/account",
         query = list(
@@ -857,6 +868,7 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     get_status = function(email = NULL, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_status(email, recvWindow)
+      assert::assert_nonempty_strings(email, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/sub-account/status",
         query = list(

@@ -202,6 +202,8 @@ BinanceTrading <- R6::R6Class(
         selfTradePreventionMode,
         recvWindow
       )
+      assert::assert_nonempty_strings(symbol)
+      assert::assert_nonempty_strings(newClientOrderId, null_ok = TRUE)
       body <- validate_order_params(
         type = type,
         symbol = symbol,
@@ -372,6 +374,8 @@ BinanceTrading <- R6::R6Class(
         selfTradePreventionMode,
         recvWindow
       )
+      assert::assert_nonempty_strings(symbol)
+      assert::assert_nonempty_strings(newClientOrderId, null_ok = TRUE)
       body <- validate_order_params(
         type = type,
         symbol = symbol,
@@ -482,6 +486,8 @@ BinanceTrading <- R6::R6Class(
     #' }
     cancel_order = function(symbol, orderId = NULL, origClientOrderId = NULL, recvWindow = NULL) {
       assert_args_BinanceTrading__cancel_order(symbol, orderId, origClientOrderId, recvWindow)
+      assert::assert_nonempty_strings(symbol)
+      assert::assert_nonempty_strings(origClientOrderId, null_ok = TRUE)
       if (is.null(orderId) && is.null(origClientOrderId)) {
         rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
       }
@@ -598,6 +604,7 @@ BinanceTrading <- R6::R6Class(
     #' }
     cancel_all_orders = function(symbol, recvWindow = NULL) {
       assert_args_BinanceTrading__cancel_all_orders(symbol, recvWindow)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/api/v3/openOrders",
         method = "DELETE",
@@ -686,6 +693,8 @@ BinanceTrading <- R6::R6Class(
     #' }
     get_order = function(symbol, orderId = NULL, origClientOrderId = NULL, recvWindow = NULL) {
       assert_args_BinanceTrading__get_order(symbol, orderId, origClientOrderId, recvWindow)
+      assert::assert_nonempty_strings(symbol)
+      assert::assert_nonempty_strings(origClientOrderId, null_ok = TRUE)
       if (is.null(orderId) && is.null(origClientOrderId)) {
         rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
       }
@@ -792,6 +801,7 @@ BinanceTrading <- R6::R6Class(
     #' }
     get_open_orders = function(symbol = NULL, recvWindow = NULL) {
       assert_args_BinanceTrading__get_open_orders(symbol, recvWindow)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/api/v3/openOrders",
         query = list(symbol = symbol, recvWindow = recvWindow),
@@ -926,6 +936,7 @@ BinanceTrading <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceTrading__get_all_orders(symbol, orderId, startTime, endTime, limit, recvWindow)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/api/v3/allOrders",
         query = list(

@@ -265,6 +265,7 @@ BinanceMarginData <- R6::R6Class(
     #' }
     get_price_index = function(symbol) {
       assert_args_BinanceMarginData__get_price_index(symbol)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/priceIndex",
         query = list(symbol = symbol),
@@ -340,6 +341,7 @@ BinanceMarginData <- R6::R6Class(
     #' }
     get_interest_rate_history = function(asset, vipLevel = NULL, startTime = NULL, endTime = NULL, recvWindow = NULL) {
       assert_args_BinanceMarginData__get_interest_rate_history(asset, vipLevel, startTime, endTime, recvWindow)
+      assert::assert_nonempty_strings(asset)
       query <- list(
         asset = asset,
         vipLevel = vipLevel,
@@ -437,6 +439,7 @@ BinanceMarginData <- R6::R6Class(
     #' }
     get_cross_margin_data = function(vipLevel = NULL, coin = NULL, recvWindow = NULL) {
       assert_args_BinanceMarginData__get_cross_margin_data(vipLevel, coin, recvWindow)
+      assert::assert_nonempty_strings(coin, null_ok = TRUE)
       query <- list(
         vipLevel = vipLevel,
         coin = coin,
@@ -550,6 +553,7 @@ BinanceMarginData <- R6::R6Class(
     #' }
     get_isolated_margin_data = function(vipLevel = NULL, symbol = NULL, recvWindow = NULL) {
       assert_args_BinanceMarginData__get_isolated_margin_data(vipLevel, symbol, recvWindow)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       query <- list(
         vipLevel = vipLevel,
         symbol = symbol,

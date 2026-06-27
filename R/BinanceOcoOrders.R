@@ -193,6 +193,10 @@ BinanceOcoOrders <- R6::R6Class(
         selfTradePreventionMode,
         recvWindow
       )
+      assert::assert_nonempty_strings(symbol)
+      assert::assert_nonempty_strings(listClientOrderId, null_ok = TRUE)
+      assert::assert_nonempty_strings(limitClientOrderId, null_ok = TRUE)
+      assert::assert_nonempty_strings(stopClientOrderId, null_ok = TRUE)
       side <- rlang::arg_match0(side, c("BUY", "SELL"))
 
       body <- list(
@@ -374,6 +378,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' }
     cancel_oco_order = function(symbol, orderListId = NULL, listClientOrderId = NULL, recvWindow = NULL) {
       assert_args_BinanceOcoOrders__cancel_oco_order(symbol, orderListId, listClientOrderId, recvWindow)
+      assert::assert_nonempty_strings(symbol)
+      assert::assert_nonempty_strings(listClientOrderId, null_ok = TRUE)
       if (is.null(orderListId) && is.null(listClientOrderId)) {
         rlang::abort("Either 'orderListId' or 'listClientOrderId' must be provided.")
       }
@@ -494,6 +500,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' }
     get_oco_order = function(orderListId = NULL, origClientOrderId = NULL, recvWindow = NULL) {
       assert_args_BinanceOcoOrders__get_oco_order(orderListId, origClientOrderId, recvWindow)
+      assert::assert_nonempty_strings(origClientOrderId, null_ok = TRUE)
       if (is.null(orderListId) && is.null(origClientOrderId)) {
         rlang::abort("Either 'orderListId' or 'origClientOrderId' must be provided.")
       }

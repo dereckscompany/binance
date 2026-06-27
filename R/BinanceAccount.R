@@ -334,6 +334,7 @@ BinanceAccount <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceAccount__get_trades(symbol, orderId, startTime, endTime, fromId, limit, recvWindow)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/api/v3/myTrades",
         query = list(

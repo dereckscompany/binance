@@ -152,6 +152,11 @@ BinanceWithdrawal <- R6::R6Class(
         walletType,
         recvWindow
       )
+      assert::assert_nonempty_strings(coin)
+      assert::assert_nonempty_strings(address)
+      assert::assert_nonempty_strings(network, null_ok = TRUE)
+      assert::assert_nonempty_strings(withdrawOrderId, null_ok = TRUE)
+      assert::assert_nonempty_strings(addressTag, null_ok = TRUE)
       if (!is.character(coin) || !nzchar(coin)) {
         rlang::abort("Parameter 'coin' must be a non-empty string.")
       }
@@ -314,6 +319,8 @@ BinanceWithdrawal <- R6::R6Class(
         limit,
         recvWindow
       )
+      assert::assert_nonempty_strings(coin, null_ok = TRUE)
+      assert::assert_nonempty_strings(withdrawOrderId, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/capital/withdraw/history",
         query = list(

@@ -138,6 +138,7 @@ BinanceEarn <- R6::R6Class(
     #' }
     get_flexible_products = function(asset = NULL, current = NULL, size = NULL, recvWindow = NULL) {
       assert_args_BinanceEarn__get_flexible_products(asset, current, size, recvWindow)
+      assert::assert_nonempty_strings(asset, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/list",
         query = list(
@@ -274,6 +275,7 @@ BinanceEarn <- R6::R6Class(
     #' }
     get_locked_products = function(asset = NULL, current = NULL, size = NULL, recvWindow = NULL) {
       assert_args_BinanceEarn__get_locked_products(asset, current, size, recvWindow)
+      assert::assert_nonempty_strings(asset, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/list",
         query = list(
@@ -376,6 +378,7 @@ BinanceEarn <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceEarn__add_flexible_subscription(productId, amount, autoSubscribe, sourceAccount, recvWindow)
+      assert::assert_nonempty_strings(productId)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/subscribe",
         method = "POST",
@@ -454,6 +457,7 @@ BinanceEarn <- R6::R6Class(
     #' }
     add_locked_subscription = function(projectId, amount, autoSubscribe = NULL, recvWindow = NULL) {
       assert_args_BinanceEarn__add_locked_subscription(projectId, amount, autoSubscribe, recvWindow)
+      assert::assert_nonempty_strings(projectId)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/subscribe",
         method = "POST",
@@ -539,6 +543,7 @@ BinanceEarn <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceEarn__add_flexible_redemption(productId, amount, redeemAll, destAccount, recvWindow)
+      assert::assert_nonempty_strings(productId)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/redeem",
         method = "POST",
@@ -611,6 +616,7 @@ BinanceEarn <- R6::R6Class(
     #' }
     add_locked_redemption = function(positionId, recvWindow = NULL) {
       assert_args_BinanceEarn__add_locked_redemption(positionId, recvWindow)
+      assert::assert_nonempty_strings(positionId)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/redeem",
         method = "POST",
@@ -721,6 +727,8 @@ BinanceEarn <- R6::R6Class(
     #' }
     get_flexible_position = function(asset = NULL, productId = NULL, current = NULL, size = NULL, recvWindow = NULL) {
       assert_args_BinanceEarn__get_flexible_position(asset, productId, current, size, recvWindow)
+      assert::assert_nonempty_strings(asset, null_ok = TRUE)
+      assert::assert_nonempty_strings(productId, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/position",
         query = list(
@@ -863,6 +871,9 @@ BinanceEarn <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceEarn__get_locked_position(asset, positionId, projectId, current, size, recvWindow)
+      assert::assert_nonempty_strings(asset, null_ok = TRUE)
+      assert::assert_nonempty_strings(positionId, null_ok = TRUE)
+      assert::assert_nonempty_strings(projectId, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/position",
         query = list(
@@ -979,6 +990,8 @@ BinanceEarn <- R6::R6Class(
         size,
         recvWindow
       )
+      assert::assert_nonempty_strings(productId, null_ok = TRUE)
+      assert::assert_nonempty_strings(asset, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/history/subscriptionRecord",
         query = list(
@@ -1089,6 +1102,7 @@ BinanceEarn <- R6::R6Class(
         size,
         recvWindow
       )
+      assert::assert_nonempty_strings(asset, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/history/subscriptionRecord",
         query = list(
@@ -1197,6 +1211,8 @@ BinanceEarn <- R6::R6Class(
         size,
         recvWindow
       )
+      assert::assert_nonempty_strings(productId, null_ok = TRUE)
+      assert::assert_nonempty_strings(asset, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/history/redemptionRecord",
         query = list(
@@ -1306,6 +1322,8 @@ BinanceEarn <- R6::R6Class(
         size,
         recvWindow
       )
+      assert::assert_nonempty_strings(positionId, null_ok = TRUE)
+      assert::assert_nonempty_strings(asset, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/history/redemptionRecord",
         query = list(

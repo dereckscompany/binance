@@ -261,6 +261,7 @@ BinanceMarketData <- R6::R6Class(
     #' }
     get_exchange_info = function(symbol = NULL, symbols = NULL) {
       assert_args_BinanceMarketData__get_exchange_info(symbol, symbols)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       query <- list()
       if (!is.null(symbol)) {
         query$symbol <- symbol
@@ -498,6 +499,7 @@ BinanceMarketData <- R6::R6Class(
     #' }
     get_ticker = function(symbol) {
       assert_args_BinanceMarketData__get_ticker(symbol)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/api/v3/ticker/price",
         query = list(symbol = symbol),
@@ -604,6 +606,7 @@ BinanceMarketData <- R6::R6Class(
     #' }
     get_book_ticker = function(symbol) {
       assert_args_BinanceMarketData__get_book_ticker(symbol)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/api/v3/ticker/bookTicker",
         query = list(symbol = symbol),
@@ -695,6 +698,7 @@ BinanceMarketData <- R6::R6Class(
     #' }
     get_24hr_stats = function(symbol) {
       assert_args_BinanceMarketData__get_24hr_stats(symbol)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/api/v3/ticker/24hr",
         query = list(symbol = symbol),
@@ -792,6 +796,7 @@ BinanceMarketData <- R6::R6Class(
     #' }
     get_avg_price = function(symbol) {
       assert_args_BinanceMarketData__get_avg_price(symbol)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/api/v3/avgPrice",
         query = list(symbol = symbol),
@@ -857,6 +862,7 @@ BinanceMarketData <- R6::R6Class(
     #' }
     get_depth = function(symbol, limit = NULL) {
       assert_args_BinanceMarketData__get_depth(symbol, limit)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/api/v3/depth",
         query = list(symbol = symbol, limit = limit),
@@ -916,6 +922,7 @@ BinanceMarketData <- R6::R6Class(
     #' }
     get_trades = function(symbol, limit = NULL) {
       assert_args_BinanceMarketData__get_trades(symbol, limit)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/api/v3/trades",
         query = list(symbol = symbol, limit = limit),
@@ -1036,6 +1043,7 @@ BinanceMarketData <- R6::R6Class(
       on_page = NULL
     ) {
       assert_args_BinanceMarketData__get_klines(symbol, interval, startTime, endTime, limit, fetch_all, sleep, on_page)
+      assert::assert_nonempty_strings(symbol)
       valid_intervals <- c(
         "1s",
         "1m",

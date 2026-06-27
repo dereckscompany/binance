@@ -113,6 +113,8 @@ BinanceDeposit <- R6::R6Class(
     #' }
     get_deposit_address = function(coin, network = NULL, recvWindow = NULL) {
       assert_args_BinanceDeposit__get_deposit_address(coin, network, recvWindow)
+      assert::assert_nonempty_strings(coin)
+      assert::assert_nonempty_strings(network, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/capital/deposit/address",
         query = list(
@@ -238,6 +240,7 @@ BinanceDeposit <- R6::R6Class(
         txId,
         recvWindow
       )
+      assert::assert_nonempty_strings(coin, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/capital/deposit/hisrec",
         query = list(

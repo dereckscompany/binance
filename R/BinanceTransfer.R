@@ -143,6 +143,9 @@ BinanceTransfer <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceTransfer__add_transfer(type, asset, amount, fromSymbol, toSymbol, recvWindow)
+      assert::assert_nonempty_strings(asset)
+      assert::assert_nonempty_strings(fromSymbol, null_ok = TRUE)
+      assert::assert_nonempty_strings(toSymbol, null_ok = TRUE)
       rlang::arg_match0(
         type,
         c(
@@ -275,6 +278,8 @@ BinanceTransfer <- R6::R6Class(
         toSymbol,
         recvWindow
       )
+      assert::assert_nonempty_strings(fromSymbol, null_ok = TRUE)
+      assert::assert_nonempty_strings(toSymbol, null_ok = TRUE)
       rlang::arg_match0(
         type,
         c(

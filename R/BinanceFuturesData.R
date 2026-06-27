@@ -93,6 +93,7 @@ BinanceFuturesData <- R6::R6Class(
     ) {
       time_source <- match.arg(time_source)
       assert_args_BinanceFuturesData__initialize(keys, base_url, async, time_source)
+      assert::assert_nonempty_strings(base_url)
       super$initialize(keys = keys, base_url = base_url, async = async, time_source = time_source)
 
       if (time_source == "server") {
@@ -485,6 +486,7 @@ BinanceFuturesData <- R6::R6Class(
       on_page = NULL
     ) {
       assert_args_BinanceFuturesData__get_klines(symbol, interval, startTime, endTime, limit, fetch_all, sleep, on_page)
+      assert::assert_nonempty_strings(symbol)
       valid_intervals <- c(
         "1s",
         "1m",
@@ -618,6 +620,7 @@ BinanceFuturesData <- R6::R6Class(
     #' }
     get_mark_price = function(symbol = NULL) {
       assert_args_BinanceFuturesData__get_mark_price(symbol)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       query <- list()
       if (!is.null(symbol)) {
         query$symbol <- symbol
@@ -703,6 +706,7 @@ BinanceFuturesData <- R6::R6Class(
     #' }
     get_funding_rate = function(symbol, startTime = NULL, endTime = NULL, limit = NULL) {
       assert_args_BinanceFuturesData__get_funding_rate(symbol, startTime, endTime, limit)
+      assert::assert_nonempty_strings(symbol)
       # Convert POSIXct to milliseconds
       if (inherits(startTime, "POSIXct")) {
         startTime <- format(floor(as.numeric(startTime) * 1000), scientific = FALSE)
@@ -800,6 +804,7 @@ BinanceFuturesData <- R6::R6Class(
     #' }
     get_24hr_stats = function(symbol = NULL) {
       assert_args_BinanceFuturesData__get_24hr_stats(symbol)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       query <- list()
       if (!is.null(symbol)) {
         query$symbol <- symbol
@@ -873,6 +878,7 @@ BinanceFuturesData <- R6::R6Class(
     #' }
     get_ticker = function(symbol = NULL) {
       assert_args_BinanceFuturesData__get_ticker(symbol)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       query <- list()
       if (!is.null(symbol)) {
         query$symbol <- symbol
@@ -952,6 +958,7 @@ BinanceFuturesData <- R6::R6Class(
     #' }
     get_book_ticker = function(symbol = NULL) {
       assert_args_BinanceFuturesData__get_book_ticker(symbol)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       query <- list()
       if (!is.null(symbol)) {
         query$symbol <- symbol
@@ -1023,6 +1030,7 @@ BinanceFuturesData <- R6::R6Class(
     #' }
     get_open_interest = function(symbol) {
       assert_args_BinanceFuturesData__get_open_interest(symbol)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/fapi/v1/openInterest",
         query = list(symbol = symbol),
@@ -1092,6 +1100,7 @@ BinanceFuturesData <- R6::R6Class(
     #' }
     get_depth = function(symbol, limit = NULL) {
       assert_args_BinanceFuturesData__get_depth(symbol, limit)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/fapi/v1/depth",
         query = list(symbol = symbol, limit = limit),
@@ -1165,6 +1174,7 @@ BinanceFuturesData <- R6::R6Class(
     #' }
     get_trades = function(symbol, limit = NULL) {
       assert_args_BinanceFuturesData__get_trades(symbol, limit)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/fapi/v1/trades",
         query = list(symbol = symbol, limit = limit),
@@ -1250,6 +1260,7 @@ BinanceFuturesData <- R6::R6Class(
       limit = NULL
     ) {
       assert_args_BinanceFuturesData__get_index_price_klines(pair, interval, startTime, endTime, limit)
+      assert::assert_nonempty_strings(pair)
       valid_intervals <- c(
         "1s",
         "1m",
@@ -1360,6 +1371,7 @@ BinanceFuturesData <- R6::R6Class(
       limit = NULL
     ) {
       assert_args_BinanceFuturesData__get_mark_price_klines(symbol, interval, startTime, endTime, limit)
+      assert::assert_nonempty_strings(symbol)
       valid_intervals <- c(
         "1s",
         "1m",

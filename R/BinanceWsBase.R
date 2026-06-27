@@ -81,6 +81,7 @@ BinanceWsBase <- R6::R6Class(
       proactive_reconnect = TRUE
     ) {
       assert_args_BinanceWsBase__initialize(base_url, auto_reconnect, max_reconnects, proactive_reconnect)
+      assert::assert_nonempty_strings(base_url)
       super$initialize(
         url = base_url,
         auto_reconnect = auto_reconnect,

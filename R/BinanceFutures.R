@@ -101,6 +101,7 @@ BinanceFutures <- R6::R6Class(
     ) {
       time_source <- match.arg(time_source)
       assert_args_BinanceFutures__initialize(keys, base_url, async, time_source)
+      assert::assert_nonempty_strings(base_url)
       if (time_source == "server") {
         super$initialize(keys = keys, base_url = base_url, async = async, time_source = "local")
         url <- base_url
@@ -247,6 +248,8 @@ BinanceFutures <- R6::R6Class(
         newOrderRespType,
         recvWindow
       )
+      assert::assert_nonempty_strings(symbol)
+      assert::assert_nonempty_strings(newClientOrderId, null_ok = TRUE)
       side <- toupper(side)
       type <- toupper(type)
       rlang::arg_match0(side, c("BUY", "SELL"))
@@ -418,6 +421,8 @@ BinanceFutures <- R6::R6Class(
         newOrderRespType,
         recvWindow
       )
+      assert::assert_nonempty_strings(symbol)
+      assert::assert_nonempty_strings(newClientOrderId, null_ok = TRUE)
       side <- toupper(side)
       type <- toupper(type)
       rlang::arg_match0(side, c("BUY", "SELL"))
@@ -570,6 +575,8 @@ BinanceFutures <- R6::R6Class(
     #' }
     cancel_order = function(symbol, orderId = NULL, origClientOrderId = NULL, recvWindow = NULL) {
       assert_args_BinanceFutures__cancel_order(symbol, orderId, origClientOrderId, recvWindow)
+      assert::assert_nonempty_strings(symbol)
+      assert::assert_nonempty_strings(origClientOrderId, null_ok = TRUE)
       if (is.null(orderId) && is.null(origClientOrderId)) {
         rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
       }
@@ -649,6 +656,7 @@ BinanceFutures <- R6::R6Class(
     #' }
     cancel_all_orders = function(symbol, recvWindow = NULL) {
       assert_args_BinanceFutures__cancel_all_orders(symbol, recvWindow)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/fapi/v1/allOpenOrders",
         method = "DELETE",
@@ -739,6 +747,8 @@ BinanceFutures <- R6::R6Class(
     #' }
     get_order = function(symbol, orderId = NULL, origClientOrderId = NULL, recvWindow = NULL) {
       assert_args_BinanceFutures__get_order(symbol, orderId, origClientOrderId, recvWindow)
+      assert::assert_nonempty_strings(symbol)
+      assert::assert_nonempty_strings(origClientOrderId, null_ok = TRUE)
       if (is.null(orderId) && is.null(origClientOrderId)) {
         rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
       }
@@ -838,6 +848,7 @@ BinanceFutures <- R6::R6Class(
     #' }
     get_open_orders = function(symbol = NULL, recvWindow = NULL) {
       assert_args_BinanceFutures__get_open_orders(symbol, recvWindow)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/fapi/v1/openOrders",
         query = list(symbol = symbol, recvWindow = recvWindow),
@@ -942,6 +953,7 @@ BinanceFutures <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceFutures__get_all_orders(symbol, orderId, startTime, endTime, limit, recvWindow)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/fapi/v1/allOrders",
         query = list(
@@ -1279,6 +1291,7 @@ BinanceFutures <- R6::R6Class(
     #' }
     get_positions = function(symbol = NULL, recvWindow = NULL) {
       assert_args_BinanceFutures__get_positions(symbol, recvWindow)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/fapi/v2/positionRisk",
         query = list(symbol = symbol, recvWindow = recvWindow),
@@ -1355,6 +1368,7 @@ BinanceFutures <- R6::R6Class(
     #' }
     set_leverage = function(symbol, leverage, recvWindow = NULL) {
       assert_args_BinanceFutures__set_leverage(symbol, leverage, recvWindow)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/fapi/v1/leverage",
         method = "POST",
@@ -1427,6 +1441,7 @@ BinanceFutures <- R6::R6Class(
     #' }
     set_margin_type = function(symbol, marginType, recvWindow = NULL) {
       assert_args_BinanceFutures__set_margin_type(symbol, marginType, recvWindow)
+      assert::assert_nonempty_strings(symbol)
       marginType <- toupper(marginType)
       rlang::arg_match0(marginType, c("ISOLATED", "CROSSED"))
 
@@ -1510,6 +1525,7 @@ BinanceFutures <- R6::R6Class(
     #' }
     modify_position_margin = function(symbol, amount, type, positionSide = NULL, recvWindow = NULL) {
       assert_args_BinanceFutures__modify_position_margin(symbol, amount, type, positionSide, recvWindow)
+      assert::assert_nonempty_strings(symbol)
       amount <- as.character(amount)
 
       body <- list(
@@ -1605,6 +1621,7 @@ BinanceFutures <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceFutures__get_position_margin_history(symbol, type, startTime, endTime, limit, recvWindow)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/fapi/v1/positionMargin/history",
         query = list(
@@ -1715,6 +1732,7 @@ BinanceFutures <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceFutures__get_trades(symbol, orderId, startTime, endTime, fromId, limit, recvWindow)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/fapi/v1/userTrades",
         query = list(
@@ -1830,6 +1848,7 @@ BinanceFutures <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceFutures__get_income_history(symbol, incomeType, startTime, endTime, limit, recvWindow)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       if (!is.null(incomeType)) {
         incomeType <- toupper(incomeType)
         rlang::arg_match0(

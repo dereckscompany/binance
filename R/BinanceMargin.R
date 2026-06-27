@@ -131,6 +131,8 @@ BinanceMargin <- R6::R6Class(
     #' }
     add_borrow = function(asset, amount, isIsolated = "FALSE", symbol = NULL, recvWindow = NULL) {
       assert_args_BinanceMargin__add_borrow(asset, amount, isIsolated, symbol, recvWindow)
+      assert::assert_nonempty_strings(asset)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/borrow-repay",
         method = "POST",
@@ -209,6 +211,8 @@ BinanceMargin <- R6::R6Class(
     #' }
     add_repay = function(asset, amount, isIsolated = "FALSE", symbol = NULL, recvWindow = NULL) {
       assert_args_BinanceMargin__add_repay(asset, amount, isIsolated, symbol, recvWindow)
+      assert::assert_nonempty_strings(asset)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/borrow-repay",
         method = "POST",
@@ -352,6 +356,8 @@ BinanceMargin <- R6::R6Class(
         isIsolated,
         recvWindow
       )
+      assert::assert_nonempty_strings(symbol)
+      assert::assert_nonempty_strings(newClientOrderId, null_ok = TRUE)
       side <- toupper(side)
       type <- toupper(type)
       rlang::arg_match0(side, c("BUY", "SELL"))
@@ -480,6 +486,8 @@ BinanceMargin <- R6::R6Class(
     #' }
     cancel_order = function(symbol, orderId = NULL, origClientOrderId = NULL, isIsolated = NULL, recvWindow = NULL) {
       assert_args_BinanceMargin__cancel_order(symbol, orderId, origClientOrderId, isIsolated, recvWindow)
+      assert::assert_nonempty_strings(symbol)
+      assert::assert_nonempty_strings(origClientOrderId, null_ok = TRUE)
       if (is.null(orderId) && is.null(origClientOrderId)) {
         rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
       }
@@ -579,6 +587,7 @@ BinanceMargin <- R6::R6Class(
     #' }
     cancel_all_orders = function(symbol, isIsolated = NULL, recvWindow = NULL) {
       assert_args_BinanceMargin__cancel_all_orders(symbol, isIsolated, recvWindow)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/openOrders",
         method = "DELETE",
@@ -677,6 +686,8 @@ BinanceMargin <- R6::R6Class(
     #' }
     get_order = function(symbol, orderId = NULL, origClientOrderId = NULL, isIsolated = NULL, recvWindow = NULL) {
       assert_args_BinanceMargin__get_order(symbol, orderId, origClientOrderId, isIsolated, recvWindow)
+      assert::assert_nonempty_strings(symbol)
+      assert::assert_nonempty_strings(origClientOrderId, null_ok = TRUE)
       if (is.null(orderId) && is.null(origClientOrderId)) {
         rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
       }
@@ -774,6 +785,7 @@ BinanceMargin <- R6::R6Class(
     #' }
     get_open_orders = function(symbol = NULL, isIsolated = NULL, recvWindow = NULL) {
       assert_args_BinanceMargin__get_open_orders(symbol, isIsolated, recvWindow)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/openOrders",
         query = list(
@@ -898,6 +910,7 @@ BinanceMargin <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceMargin__get_all_orders(symbol, orderId, startTime, endTime, limit, isIsolated, recvWindow)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/allOrders",
         query = list(
@@ -1069,6 +1082,8 @@ BinanceMargin <- R6::R6Class(
     #' }
     get_max_borrowable = function(asset, isolatedSymbol = NULL, recvWindow = NULL) {
       assert_args_BinanceMargin__get_max_borrowable(asset, isolatedSymbol, recvWindow)
+      assert::assert_nonempty_strings(asset)
+      assert::assert_nonempty_strings(isolatedSymbol, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/maxBorrowable",
         query = list(
@@ -1129,6 +1144,8 @@ BinanceMargin <- R6::R6Class(
     #' }
     get_max_transferable = function(asset, isolatedSymbol = NULL, recvWindow = NULL) {
       assert_args_BinanceMargin__get_max_transferable(asset, isolatedSymbol, recvWindow)
+      assert::assert_nonempty_strings(asset)
+      assert::assert_nonempty_strings(isolatedSymbol, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/maxTransferable",
         query = list(
@@ -1228,6 +1245,7 @@ BinanceMargin <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceMargin__get_interest_history(asset, startTime, endTime, current, size, archived, recvWindow)
+      assert::assert_nonempty_strings(asset, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/interestHistory",
         query = list(
@@ -1336,6 +1354,7 @@ BinanceMargin <- R6::R6Class(
         size,
         recvWindow
       )
+      assert::assert_nonempty_strings(isolatedSymbol, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/forceLiquidationRec",
         query = list(
@@ -1443,6 +1462,7 @@ BinanceMargin <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceMargin__get_trades(symbol, orderId, startTime, endTime, fromId, limit, isIsolated, recvWindow)
+      assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/myTrades",
         query = list(
@@ -1563,6 +1583,7 @@ BinanceMargin <- R6::R6Class(
     #' }
     get_isolated_account = function(symbols = NULL, recvWindow = NULL) {
       assert_args_BinanceMargin__get_isolated_account(symbols, recvWindow)
+      assert::assert_nonempty_strings(symbols, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/isolated/account",
         query = list(
@@ -1659,6 +1680,8 @@ BinanceMargin <- R6::R6Class(
     #' }
     add_isolated_transfer = function(asset, symbol, transFrom, transTo, amount, recvWindow = NULL) {
       assert_args_BinanceMargin__add_isolated_transfer(asset, symbol, transFrom, transTo, amount, recvWindow)
+      assert::assert_nonempty_strings(asset)
+      assert::assert_nonempty_strings(symbol)
       transFrom <- toupper(transFrom)
       transTo <- toupper(transTo)
       rlang::arg_match0(transFrom, c("SPOT", "ISOLATED_MARGIN"))
