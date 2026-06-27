@@ -13,6 +13,18 @@ Provides shared infrastructure for all Binance R6 classes, including API
 credential management, sync/async execution mode, timestamp source
 configuration, and a standardised method for calling implementation
 functions.
+\subsection{Transport}{
+
+This class is a thin Binance specialisation of \link[connectcore:RestClient]{connectcore::RestClient}, the
+shared transport base. The request funnel, sync/async branching, retry, and
+throttle all live in \code{connectcore}; \code{BinanceBase} only supplies the two
+venue-specific seams — how Binance authenticates a request (\code{.sign()},
+delegating to \code{\link[connectcore:hmac_query_sign]{connectcore::hmac_query_sign()}} with the \code{X-MBX-APIKEY} header)
+and how it reports an error (\code{.parse_envelope()}, which honours Binance's
+negative-\code{code} error body). Binance carries signed parameters in the query
+string, so the body is configured as \code{body_format = "query"}.
+}
+
 \subsection{Sync vs Async}{
 
 The \code{async} parameter controls execution mode for all API methods:
@@ -30,7 +42,7 @@ The \code{promises} package must be installed for async mode (\code{Suggests} de
 The \code{time_source} parameter controls which clock is used for HMAC request
 signing:
 \itemize{
-\item \code{"local"} (default): uses \code{Sys.time()} from the local machine.
+\item \code{"local"} (default): uses the local UTC clock.
 \item \code{"server"}: fetches the Binance server time via \code{GET /api/v3/time}
 before each authenticated request. This is slower (one extra HTTP round
 trip) but ensures signing works even when the local clock is out of sync.
@@ -44,19 +56,6 @@ This class is not meant to be instantiated directly. Subclasses (e.g.,
 own public methods that delegate to \code{private$.request()}.
 }
 }
-\section{Fields}{
-
-All fields are private:
-\itemize{
-\item \code{.keys}: List; API credentials from \code{\link[=get_api_keys]{get_api_keys()}}.
-\item \code{.base_url}: Character; API base URL from \code{\link[=get_base_url]{get_base_url()}}.
-\item \code{.perform}: Function; either \link[httr2:req_perform]{httr2::req_perform} or \link[httr2:req_perform_promise]{httr2::req_perform_promise}.
-\item \code{.is_async}: Logical; whether the instance is in async mode.
-\item \code{.time_source}: Character; \code{"local"} or \code{"server"}.
-\item \code{.get_timestamp_ms}: Function; returns epoch milliseconds for HMAC signing.
-}
-}
-
 \examples{
 \dontrun{
 # Not instantiated directly; use subclasses:
@@ -68,16 +67,8 @@ trading <- BinanceTrading$new(time_source = "server")
 }
 
 }
-\section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{is_async}}{Logical; read-only flag indicating whether this instance
-operates in async mode.}
-
-\item{\code{time_source}}{Character; read-only flag indicating the timestamp
-source used for HMAC signing (\code{"local"} or \code{"server"}).}
-}
-\if{html}{\out{</div>}}
+\section{Super class}{
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{BinanceBase}
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -103,22 +94,24 @@ Initialise a BinanceBase Object
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{keys}}{List; API credentials from \code{\link[=get_api_keys]{get_api_keys()}}.
+\item{\code{keys}}{(list) API credentials from \code{\link[=get_api_keys]{get_api_keys()}}.
 Defaults to \code{get_api_keys()}.}
 
-\item{\code{base_url}}{Character; API base URL. Defaults to \code{get_base_url()}.}
+\item{\code{base_url}}{(scalar<character>) API base URL. Defaults to
+\code{get_base_url()}.}
 
-\item{\code{async}}{Logical; if \code{TRUE}, methods return promises. Default \code{FALSE}.}
+\item{\code{async}}{(scalar<logical>) if \code{TRUE}, methods return promises. Default
+\code{FALSE}.}
 
-\item{\code{time_source}}{Character; clock source for HMAC request signing.
-\code{"local"} (default) uses \code{Sys.time()}. \code{"server"} fetches the Binance
-server time before each authenticated request, which adds latency but
-avoids clock-drift issues.}
+\item{\code{time_source}}{(scalar<character in c("local", "server")>) clock source
+for HMAC request signing. \code{"local"} (default) uses the local UTC clock.
+\code{"server"} fetches the Binance server time before each authenticated
+request, which adds latency but avoids clock-drift issues.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Invisible self.
+(class<BinanceBase>) invisibly, self.
 }
 }
 \if{html}{\out{<hr>}}

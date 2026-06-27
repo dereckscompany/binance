@@ -14,6 +14,17 @@ streams. You register handlers with \verb{$on(event, handler)} — exactly like
 \code{ws.on("message", ...)} in JavaScript — and the library calls them as messages
 arrive on R's event loop (the \code{later} package, which, like Node, is built on
 libuv). Subclasses such as \link{BinanceMarketStream} add typed stream methods.
+\subsection{Transport}{
+
+This class is a thin Binance specialisation of \link[connectcore:StreamClient]{connectcore::StreamClient}, the
+shared WebSocket transport base. Auto-reconnect (full-jitter backoff), the
+keepalive tick, the silence watchdog, proactive reconnect, and the event loop
+all live in \code{connectcore}; \code{BinanceWsBase} only supplies the two stream-specific
+seams — how a raw frame becomes events (\code{.dispatch()}, which filters Binance's
+control acks and routes per-stream) and what to re-send after a (re)connect
+(\code{.resubscribe()}) — plus Binance's \code{SUBSCRIBE} / \code{UNSUBSCRIBE} control protocol.
+}
+
 \subsection{Why no \code{async} flag (unlike the REST classes)}{
 
 A REST call has a single result, so it can return a value (sync) or a promise
@@ -46,9 +57,8 @@ close (so a reconnect storm can never trip Binance's connection rate limit).
 
 \subsection{Dependencies}{
 
-Built on the \code{websocket} (the client) and \code{later} (R's libuv event loop)
-packages, both hard \code{Imports} — no optional-dependency dance, they are always
-present.
+Built on \link[connectcore:StreamClient]{connectcore::StreamClient}, itself built on the \code{websocket} (the
+client) and \code{later} (R's libuv event loop) packages.
 }
 }
 \examples{
@@ -61,22 +71,31 @@ ws$run() # keeps the process alive and pumps the event loop
 }
 
 }
+\section{Super class}{
+\code{\link[connectcore:StreamClient]{connectcore::StreamClient}} -> \code{BinanceWsBase}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-BinanceWsBase-new}{\code{BinanceWsBase$new()}}
 \item \href{#method-BinanceWsBase-on}{\code{BinanceWsBase$on()}}
-\item \href{#method-BinanceWsBase-connect}{\code{BinanceWsBase$connect()}}
 \item \href{#method-BinanceWsBase-subscribe}{\code{BinanceWsBase$subscribe()}}
 \item \href{#method-BinanceWsBase-unsubscribe}{\code{BinanceWsBase$unsubscribe()}}
-\item \href{#method-BinanceWsBase-send}{\code{BinanceWsBase$send()}}
-\item \href{#method-BinanceWsBase-run}{\code{BinanceWsBase$run()}}
-\item \href{#method-BinanceWsBase-close}{\code{BinanceWsBase$close()}}
 \item \href{#method-BinanceWsBase-subscriptions}{\code{BinanceWsBase$subscriptions()}}
-\item \href{#method-BinanceWsBase-is_open}{\code{BinanceWsBase$is_open()}}
 \item \href{#method-BinanceWsBase-clone}{\code{BinanceWsBase$clone()}}
 }
 }
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="close"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-close'><code>connectcore::StreamClient$close()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="connect"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-connect'><code>connectcore::StreamClient$connect()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="is_open"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-is_open'><code>connectcore::StreamClient$is_open()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="run"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-run'><code>connectcore::StreamClient$run()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="send"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-send'><code>connectcore::StreamClient$send()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceWsBase-new"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceWsBase-new}{}}}
@@ -140,28 +159,6 @@ receives the raw JSON string; for the others it receives the socket event.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BinanceWsBase-connect"></a>}}
-\if{latex}{\out{\hypertarget{method-BinanceWsBase-connect}{}}}
-\subsection{Method \code{connect()}}{
-Open the Connection
-
-Wires the socket callbacks and starts connecting, then returns immediately
-(non-blocking) — handlers only fire once something pumps \code{later}. Idempotent:
-a no-op if already open. With \verb{$run()} you do not call this directly (it
-connects for you); call it yourself when you drive the loop, i.e.
-\verb{$connect()} then \code{while (!later::loop_empty()) later::run_now(0.1)}, or when
-the client lives inside an app (Shiny, a trading engine) that already runs a
-\code{later} loop — there the host loop fires your handlers. (The \code{0.1} timeout
-makes each tick wait for work instead of busy-spinning.)
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceWsBase$connect()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-(class<BinanceWsBase>) invisibly, self.
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceWsBase-subscribe"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceWsBase-subscribe}{}}}
 \subsection{Method \code{subscribe()}}{
@@ -205,78 +202,6 @@ Unsubscribe from Streams
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BinanceWsBase-send"></a>}}
-\if{latex}{\out{\hypertarget{method-BinanceWsBase-send}{}}}
-\subsection{Method \code{send()}}{
-Send a Raw Control Message
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceWsBase$send(message)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{message}}{(scalar<character>) a JSON string to send on the socket.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(class<BinanceWsBase>) invisibly, self.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BinanceWsBase-run"></a>}}
-\if{latex}{\out{\hypertarget{method-BinanceWsBase-run}{}}}
-\subsection{Method \code{run()}}{
-Run the Event Loop (keep the process alive)
-
-Connects if needed, then blocks and pumps R's \code{later} event loop so handlers
-keep firing — the equivalent of Node keeping a process alive while a socket
-is open. It runs until the client is closed: either \verb{$close()} is called
-(e.g. from a handler) or reconnects are exhausted.
-
-Teardown is clean and guaranteed: a normal close, an \strong{interrupt} (Ctrl-C),
-or an error all close the socket and cancel timers on the way out (via
-\code{on.exit()}), so you never leave a half-open connection. An interrupt is
-caught and returns quietly; any other error still propagates after cleanup.
-
-\verb{$run()} is convenience for a standalone client; when you embed the client in
-a program that already drives a \code{later} loop, use \verb{$connect()} and let that
-loop pump instead (see \verb{$connect()}).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceWsBase$run(timeout = 0.1)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{timeout}}{(scalar<numeric in ]0, Inf[>) seconds each \code{later::run_now()}
-tick waits for work before looping (keeps CPU near zero between messages).
-Default \code{0.1}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(class<BinanceWsBase>) invisibly, self.
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BinanceWsBase-close"></a>}}
-\if{latex}{\out{\hypertarget{method-BinanceWsBase-close}{}}}
-\subsection{Method \code{close()}}{
-Close the Connection
-
-Stops auto-reconnect, cancels timers, and closes the socket. After this,
-\verb{$run()} returns.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceWsBase$close()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-(class<BinanceWsBase>) invisibly, self.
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceWsBase-subscriptions"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceWsBase-subscriptions}{}}}
 \subsection{Method \code{subscriptions()}}{
@@ -287,19 +212,6 @@ Currently Tracked Subscriptions
 
 \subsection{Returns}{
 (character) subscribed stream names (possibly length 0).
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BinanceWsBase-is_open"></a>}}
-\if{latex}{\out{\hypertarget{method-BinanceWsBase-is_open}{}}}
-\subsection{Method \code{is_open()}}{
-Is the Socket Open?
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceWsBase$is_open()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-(scalar<logical>) \code{TRUE} if the socket is open.
 }
 }
 \if{html}{\out{<hr>}}

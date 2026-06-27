@@ -105,8 +105,8 @@ history <- transfer$get_transfer_history(type = "MAIN_UMFUTURE")
 print(history)
 }
 }
-\section{Super class}{
-\code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceTransfer}
+\section{Super classes}{
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceTransfer}
 }
 \section{Methods}{
 \subsection{Public methods}{

@@ -88,8 +88,8 @@ trades <- account$get_trades("BTCUSDT", limit = 50)
 print(trades[, .(id, price, qty, commission, time)])
 }
 }
-\section{Super class}{
-\code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceAccount}
+\section{Super classes}{
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceAccount}
 }
 \section{Methods}{
 \subsection{Public methods}{

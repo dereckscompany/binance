@@ -51,8 +51,8 @@ stream$depth("BTCUSDT", speed = "100ms", handler = function(msg) print(msg))
 stream$run()
 }
 }
-\section{Super class}{
-\code{\link[binance:BinanceWsBase]{binance::BinanceWsBase}} -> \code{BinanceMarketStream}
+\section{Super classes}{
+\code{\link[connectcore:StreamClient]{connectcore::StreamClient}} -> \code{\link[binance:BinanceWsBase]{binance::BinanceWsBase}} -> \code{BinanceMarketStream}
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -65,12 +65,12 @@ stream$run()
 \if{html}{\out{
 <details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceWsBase" data-id="close"><a href='../../binance/html/BinanceWsBase.html#method-BinanceWsBase-close'><code>binance::BinanceWsBase$close()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceWsBase" data-id="connect"><a href='../../binance/html/BinanceWsBase.html#method-BinanceWsBase-connect'><code>binance::BinanceWsBase$connect()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceWsBase" data-id="is_open"><a href='../../binance/html/BinanceWsBase.html#method-BinanceWsBase-is_open'><code>binance::BinanceWsBase$is_open()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="close"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-close'><code>connectcore::StreamClient$close()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="connect"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-connect'><code>connectcore::StreamClient$connect()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="is_open"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-is_open'><code>connectcore::StreamClient$is_open()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="run"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-run'><code>connectcore::StreamClient$run()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="send"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-send'><code>connectcore::StreamClient$send()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceWsBase" data-id="on"><a href='../../binance/html/BinanceWsBase.html#method-BinanceWsBase-on'><code>binance::BinanceWsBase$on()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceWsBase" data-id="run"><a href='../../binance/html/BinanceWsBase.html#method-BinanceWsBase-run'><code>binance::BinanceWsBase$run()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceWsBase" data-id="send"><a href='../../binance/html/BinanceWsBase.html#method-BinanceWsBase-send'><code>binance::BinanceWsBase$send()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceWsBase" data-id="subscribe"><a href='../../binance/html/BinanceWsBase.html#method-BinanceWsBase-subscribe'><code>binance::BinanceWsBase$subscribe()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceWsBase" data-id="subscriptions"><a href='../../binance/html/BinanceWsBase.html#method-BinanceWsBase-subscriptions'><code>binance::BinanceWsBase$subscriptions()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceWsBase" data-id="unsubscribe"><a href='../../binance/html/BinanceWsBase.html#method-BinanceWsBase-unsubscribe'><code>binance::BinanceWsBase$unsubscribe()</code></a></span></li>

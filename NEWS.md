@@ -1,3 +1,29 @@
+# binance 0.4.0
+
+## Internal
+
+* **Transport migrated onto `connectcore`.** The package's hand-rolled transport
+  layer now sits on [`connectcore`](https://github.com/dereckscompany/connectcore),
+  the shared transport base extracted from these connectors' common patterns.
+  This is a purely internal swap — **the public API is unchanged** (the same
+  exported classes, methods, signatures, and return shapes; all tests pass
+  untouched).
+  - **`BinanceBase`** now inherits `connectcore::RestClient` and supplies only the
+    two venue-specific seams: `.sign()` (delegating to
+    `connectcore::hmac_query_sign()` with Binance's `X-MBX-APIKEY` header) and
+    `.parse_envelope()` (Binance's negative-`code` error body). The request
+    funnel, sync/async branching, retry, and throttle now live in `connectcore`.
+  - **`BinanceWsBase`** now inherits `connectcore::StreamClient` and supplies only
+    `.dispatch()` (control-ack filtering + per-stream routing) and `.resubscribe()`
+    plus Binance's `SUBSCRIBE`/`UNSUBSCRIBE` control protocol. Auto-reconnect,
+    keepalive, the silence watchdog, proactive reconnect, and the event loop now
+    live in `connectcore`.
+  - Deleted the now-duplicated transport machinery (`then_or_now()`, the
+    request-building/signing internals, and the reconnect/keepalive/dispatch
+    internals), routing the retained wrappers (`binance_build_request()`,
+    `sign_request()`, `fetch_server_time_ms()`) through `connectcore` instead.
+  - Adds `connectcore` to `Imports`.
+
 # binance 0.3.0
 
 ## New features

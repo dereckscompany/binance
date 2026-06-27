@@ -192,8 +192,8 @@ history <- earn$get_locked_redemption_history(asset = "BTC")
 print(history)
 }
 }
-\section{Super class}{
-\code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceEarn}
+\section{Super classes}{
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceEarn}
 }
 \section{Methods}{
 \subsection{Public methods}{

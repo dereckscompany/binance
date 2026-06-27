@@ -172,8 +172,8 @@ status <- sub$get_status()
 print(status)
 }
 }
-\section{Super class}{
-\code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceSubAccount}
+\section{Super classes}{
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceSubAccount}
 }
 \section{Methods}{
 \subsection{Public methods}{

@@ -130,8 +130,8 @@ data <- margin$get_isolated_margin_data()
 print(data)
 }
 }
-\section{Super class}{
-\code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceMarginData}
+\section{Super classes}{
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceMarginData}
 }
 \section{Methods}{
 \subsection{Public methods}{

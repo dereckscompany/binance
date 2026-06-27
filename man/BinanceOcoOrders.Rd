@@ -116,8 +116,8 @@ all <- oco$get_all_oco_orders(limit = 50)
 print(all)
 }
 }
-\section{Super class}{
-\code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceOcoOrders}
+\section{Super classes}{
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceOcoOrders}
 }
 \section{Methods}{
 \subsection{Public methods}{

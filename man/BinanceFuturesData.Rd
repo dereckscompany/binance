@@ -244,8 +244,8 @@ klines <- futures$get_mark_price_klines("BTCUSDT", "1h", limit = 24)
 print(klines)
 }
 }
-\section{Super class}{
-\code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceFuturesData}
+\section{Super classes}{
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceFuturesData}
 }
 \section{Methods}{
 \subsection{Public methods}{
