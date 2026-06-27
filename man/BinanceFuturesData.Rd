@@ -371,8 +371,9 @@ Verified: 2026-05-22
 }
 
 \subsection{Returns}{
-(promise<data.table>) with all symbol
-fields returned by the API, converted to snake_case. Key columns include:
+(data.table | promise<data.table>) one row per symbol, with all
+symbol fields returned by the API, converted to snake_case (empty when
+Binance returns no symbols). Key columns include:
 \itemize{
 \item symbol (character) Trading pair identifier (e.g., \code{"BTCUSDT"}).
 \item pair (character) Underlying pair.
@@ -447,10 +448,9 @@ pattern as \code{BinanceMarketData$get_rate_limits()}.
 }
 
 \subsection{Returns}{
-(promise<data.table>)
-with one row per rate-limit rule. Columns: \code{rate_limit_type},
-\code{interval}, \code{interval_num}, \code{limit}. Empty \code{data.table} if
-Binance returned no \code{rateLimits} block.
+(data.table | promise<data.table>) one row per rate-limit rule,
+with columns \code{rate_limit_type}, \code{interval}, \code{interval_num}, \code{limit}
+(schemaless empty when Binance returned no \code{rateLimits} block).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -481,8 +481,8 @@ Sibling to \code{get_exchange_info()}.
 }
 
 \subsection{Returns}{
-(promise<data.table>)
-with one row per exchange-wide filter rule. Empty when none.
+(data.table | promise<data.table>) one row per exchange-wide
+filter rule (schemaless empty when none, the common case).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -514,15 +514,13 @@ usable as margin — USDT, BNFCR, etc.).
 }
 
 \subsection{Returns}{
-(promise<data.table>)
-with one row per margin asset. Typical columns:
+(data.table | promise<data.table>) one row per margin asset
+(empty when Binance returned no \code{assets} block):
 \itemize{
 \item asset (character) Asset symbol (e.g., \code{"USDT"}).
 \item margin_available (logical) Whether the asset can be used as margin.
 \item auto_asset_exchange (character) Auto-exchange threshold.
 }
-
-Empty \code{data.table} if Binance returned no \code{assets} block.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -631,21 +629,10 @@ memory. Ignored in single-call mode (\code{fetch_all = FALSE}). Default \code{NU
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
-\itemize{
-\item open_time (POSIXct) Candle open time.
-\item open (numeric) Opening price.
-\item high (numeric) Highest price during the interval.
-\item low (numeric) Lowest price during the interval.
-\item close (numeric) Closing price.
-\item volume (numeric) Base asset volume traded.
-\item close_time (POSIXct) Candle close time.
-\item quote_volume (numeric) Quote asset volume traded.
-\item trades (integer) Number of trades during the interval.
-\item taker_buy_base_volume (numeric) Base asset volume bought by takers.
-\item taker_buy_quote_volume (numeric) Quote asset volume bought by takers.
-\item ignore (character) Unused field from Binance API.
-}
+(Ohlcv | promise<Ohlcv>) one row per candle. When
+\code{fetch_all = TRUE} with an \code{on_page} callback the pages are streamed to
+the callback and the method returns invisibly (\code{NULL}); the contract
+describes the buffered (returned) case.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -719,7 +706,8 @@ If NULL, returns data for all symbols.}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
+(data.table | promise<data.table>) one row per symbol (a single
+row when \code{symbol} is given):
 \itemize{
 \item symbol (character) Trading pair identifier.
 \item mark_price (character) Current mark price.
@@ -813,7 +801,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
+(data.table | promise<data.table>) one row per funding event
+(empty when there are none):
 \itemize{
 \item symbol (character) Trading pair identifier.
 \item funding_rate (character) Funding rate value.
@@ -894,7 +883,8 @@ If NULL, returns data for all symbols.}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
+(data.table | promise<data.table>) one row per symbol (a single
+row when \code{symbol} is given):
 \itemize{
 \item symbol (character) Trading pair identifier.
 \item price_change (character) Absolute price change over 24h.
@@ -966,7 +956,8 @@ If NULL, returns data for all symbols.}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
+(data.table | promise<data.table>) one row per symbol (a single
+row when \code{symbol} is given):
 \itemize{
 \item symbol (character) Trading pair identifier.
 \item price (character) Latest traded price as string.
@@ -1036,7 +1027,8 @@ If NULL, returns data for all symbols.}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
+(data.table | promise<data.table>) one row per symbol (a single
+row when \code{symbol} is given):
 \itemize{
 \item symbol (character) Trading pair identifier.
 \item bid_price (character) Best bid price.
@@ -1104,7 +1096,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair identifier.
 \item open_interest (character) Current open interest.
@@ -1182,13 +1174,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
-\itemize{
-\item last_update_id (character) Sequence ID for orderbook synchronisation.
-\item side (character) \code{"bid"} or \code{"ask"}.
-\item price (numeric) Price level.
-\item size (numeric) Available size at this price level.
-}
+(OrderBook | promise<OrderBook>) one row per price level
+(bids first, then asks).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -1263,7 +1250,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
+(data.table | promise<data.table>) one row per public trade
+(empty when there are none):
 \itemize{
 \item id (integer) Unique trade identifier.
 \item price (character) Trade execution price.
@@ -1359,21 +1347,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
-\itemize{
-\item open_time (POSIXct) Candle open time.
-\item open (numeric) Opening price.
-\item high (numeric) Highest price.
-\item low (numeric) Lowest price.
-\item close (numeric) Closing price.
-\item volume (numeric) Trading volume.
-\item close_time (POSIXct) Candle close time.
-\item quote_volume (numeric) Quote asset volume.
-\item trades (integer) Number of trades.
-\item taker_buy_base_volume (numeric) Taker buy base asset volume.
-\item taker_buy_quote_volume (numeric) Taker buy quote asset volume.
-\item ignore (character) Unused field.
-}
+(Ohlcv | promise<Ohlcv>) one row per candle.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -1461,21 +1435,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
-\itemize{
-\item open_time (POSIXct) Candle open time.
-\item open (numeric) Opening price.
-\item high (numeric) Highest price.
-\item low (numeric) Lowest price.
-\item close (numeric) Closing price.
-\item volume (numeric) Trading volume.
-\item close_time (POSIXct) Candle close time.
-\item quote_volume (numeric) Quote asset volume.
-\item trades (integer) Number of trades.
-\item taker_buy_base_volume (numeric) Taker buy base asset volume.
-\item taker_buy_quote_volume (numeric) Taker buy quote asset volume.
-\item ignore (character) Unused field.
-}
+(Ohlcv | promise<Ohlcv>) one row per candle.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

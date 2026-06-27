@@ -1246,6 +1246,130 @@ empty_dt_futures_income <- function() {
 #' @keywords internal
 #' @noRd
 #' @noassert
+empty_dt_futures_exchange_info <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    pair = character(0),
+    contract_type = character(0),
+    status = character(0),
+    base_asset = character(0),
+    quote_asset = character(0),
+    margin_asset = character(0),
+    price_precision = integer(0),
+    quantity_precision = integer(0),
+    order_types = character(0),
+    time_in_force = character(0),
+    underlying_sub_type = character(0),
+    permission_sets = character(0),
+    lot_min_qty = numeric(0),
+    lot_max_qty = numeric(0),
+    lot_step_size = numeric(0),
+    price_min = numeric(0),
+    price_max = numeric(0),
+    price_tick_size = numeric(0),
+    min_notional = numeric(0),
+    filters_raw = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_futures_assets <- function() {
+  return(data.table::data.table(
+    asset = character(0),
+    margin_available = logical(0),
+    auto_asset_exchange = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_futures_funding_rate <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    funding_rate = character(0),
+    funding_time = ms_to_datetime(numeric(0)),
+    mark_price = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_futures_mark_price <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    mark_price = character(0),
+    index_price = character(0),
+    estimated_settle_price = character(0),
+    last_funding_rate = character(0),
+    next_funding_time = ms_to_datetime(numeric(0)),
+    interest_rate = character(0),
+    time = ms_to_datetime(numeric(0))
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_futures_24hr_stats <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    price_change = character(0),
+    price_change_percent = character(0),
+    weighted_avg_price = character(0),
+    last_price = character(0),
+    volume = character(0),
+    quote_volume = character(0),
+    open_time = ms_to_datetime(numeric(0)),
+    close_time = ms_to_datetime(numeric(0))
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_futures_ticker <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    price = character(0),
+    time = ms_to_datetime(numeric(0))
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_futures_book_ticker <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    bid_price = character(0),
+    bid_qty = character(0),
+    ask_price = character(0),
+    ask_qty = character(0),
+    time = ms_to_datetime(numeric(0))
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_futures_trade_public <- function() {
+  return(data.table::data.table(
+    id = integer(0),
+    price = character(0),
+    qty = character(0),
+    quote_qty = character(0),
+    time = ms_to_datetime(numeric(0)),
+    is_buyer_maker = logical(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
 empty_dt_ticker_price <- function() {
   return(data.table::data.table(
     symbol = character(0),
