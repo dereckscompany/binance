@@ -50,5 +50,5 @@ Suggests:
 Remotes:
     dereckscompany/assert,
     dereckscompany/roxyassert@v0.9.1,
-    dereckscompany/connectcore@v0.0.1
+    dereckscompany/connectcore@v0.1.0
 Config/testthat/edition: 3
