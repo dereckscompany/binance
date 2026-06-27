@@ -182,8 +182,7 @@ the address on the correct chain.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) \code{data.table} (or a promise of one if
-\code{async = TRUE}) with columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item address (character) the deposit wallet address.
 \item coin (character) coin symbol (e.g., \code{"BTC"}).
@@ -304,8 +303,8 @@ specific period. Max range is 90 days.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) \code{data.table} (or a promise of one if
-\code{async = TRUE}) with columns:
+(data.table | promise<data.table>) one row per deposit
+(empty when there are no matching deposits):
 \itemize{
 \item id (character) unique deposit identifier.
 \item amount (character) deposit amount.

@@ -93,8 +93,7 @@ BinanceDeposit <- R6::R6Class(
     #' @param network (scalar<character>?) blockchain network (e.g., `"ETH"`,
     #'   `"TRX"`, `"BSC"`). If NULL, uses the coin's default network.
     #' @param recvWindow (scalar<count in [1, Inf[>?) max 60000.
-    #' @return (promise<data.table>) `data.table` (or a promise of one if
-    #'   `async = TRUE`) with columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - address (character) the deposit wallet address.
     #' - coin (character) coin symbol (e.g., `"BTC"`).
     #' - tag (character) address tag/memo (empty string if not applicable).
@@ -114,7 +113,7 @@ BinanceDeposit <- R6::R6Class(
     #' }
     get_deposit_address = function(coin, network = NULL, recvWindow = NULL) {
       assert_args_BinanceDeposit__get_deposit_address(coin, network, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/capital/deposit/address",
         query = list(
           coin = coin,
@@ -122,6 +121,11 @@ BinanceDeposit <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = as_dt_row
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceDeposit__get_deposit_address,
+        is_async = private$.is_async
       ))
     },
 
@@ -182,8 +186,8 @@ BinanceDeposit <- R6::R6Class(
     #' @param limit (scalar<count>?) max results (default 1000, max 1000).
     #' @param txId (scalar<character>?) filter by transaction ID.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) `data.table` (or a promise of one if
-    #'   `async = TRUE`) with columns:
+    #' @return (data.table | promise<data.table>) one row per deposit
+    #'   (empty when there are no matching deposits):
     #' - id (character) unique deposit identifier.
     #' - amount (character) deposit amount.
     #' - coin (character) deposited coin symbol.
@@ -234,7 +238,7 @@ BinanceDeposit <- R6::R6Class(
         txId,
         recvWindow
       )
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/capital/deposit/hisrec",
         query = list(
           coin = coin,
@@ -248,12 +252,17 @@ BinanceDeposit <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_deposit_history())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, c("insert_time", "complete_time"), ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceDeposit__get_deposit_history,
+        is_async = private$.is_async
       ))
     }
   )

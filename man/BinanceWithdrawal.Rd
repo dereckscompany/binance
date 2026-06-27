@@ -221,7 +221,7 @@ fee to destination, \code{FALSE} to origin.}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item id (character) Unique withdrawal identifier assigned by Binance.
 }
@@ -342,7 +342,8 @@ left the exchange.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
+(data.table | promise<data.table>) one row per withdrawal
+(empty when there are no matching withdrawals):
 \itemize{
 \item id (character) Unique withdrawal identifier.
 \item amount (character) Withdrawal amount.
@@ -359,7 +360,9 @@ left the exchange.
 \item confirm_no (integer) Number of on-chain confirmations.
 \item wallet_type (integer) 0=spot, 1=funding.
 \item tx_key (character) Transaction key.
-\item complete_time (POSIXct) Completion time (parsed from the UTC string Binance returns).
+\item complete_time (POSIXct | NA) Completion time (parsed from the UTC string
+Binance returns; \code{NA} for in-progress withdrawals, which Binance sends as
+an empty string).
 }
 }
 \subsection{Examples}{

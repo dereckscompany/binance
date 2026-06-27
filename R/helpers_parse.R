@@ -642,6 +642,66 @@ empty_dt_oco_query <- function() {
 #' @keywords internal
 #' @noRd
 #' @noassert
+empty_dt_deposit_history <- function() {
+  return(data.table::data.table(
+    id = character(0),
+    amount = character(0),
+    coin = character(0),
+    network = character(0),
+    status = integer(0),
+    address = character(0),
+    address_tag = character(0),
+    tx_id = character(0),
+    transfer_type = integer(0),
+    confirm_times = character(0),
+    unlock_confirm = integer(0),
+    wallet_type = integer(0),
+    insert_time = ms_to_datetime(numeric(0)),
+    complete_time = ms_to_datetime(numeric(0))
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_withdrawal_history <- function() {
+  return(data.table::data.table(
+    id = character(0),
+    amount = character(0),
+    transaction_fee = character(0),
+    coin = character(0),
+    status = integer(0),
+    address = character(0),
+    tx_id = character(0),
+    apply_time = utc_string_to_datetime(character(0)),
+    network = character(0),
+    transfer_type = integer(0),
+    withdraw_order_id = character(0),
+    info = character(0),
+    confirm_no = integer(0),
+    wallet_type = integer(0),
+    tx_key = character(0),
+    complete_time = utc_string_to_datetime(character(0))
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_transfer_history <- function() {
+  return(data.table::data.table(
+    asset = character(0),
+    amount = character(0),
+    type = character(0),
+    status = character(0),
+    tran_id = numeric(0),
+    timestamp = ms_to_datetime(numeric(0))
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
 empty_dt_ticker_price <- function() {
   return(data.table::data.table(
     symbol = character(0),

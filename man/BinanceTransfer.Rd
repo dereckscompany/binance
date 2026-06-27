@@ -205,7 +205,7 @@ isolated margin (e.g., \code{"BNBUSDT"}).}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item tran_id (numeric) Unique transfer identifier assigned by Binance.
 }
@@ -305,7 +305,8 @@ isolated margin.}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per transfer and the following columns:
+(data.table | promise<data.table>) one row per transfer
+(empty when there are no matching transfers):
 \itemize{
 \item asset (character) Transferred asset (e.g., \code{"USDT"}).
 \item amount (character) Amount transferred.

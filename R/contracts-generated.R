@@ -4145,7 +4145,6 @@ assert_return_BinanceWithdrawal__get_withdrawal_history <- function(value) {
   assert_character(value[["tx_key"]])
   assert_no_missing_values(value[["tx_key"]])
   assert_datetime(value[["complete_time"]])
-  assert_no_missing_values(value[["complete_time"]])
   return(value)
 }
 
