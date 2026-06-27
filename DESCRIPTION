@@ -37,7 +37,7 @@ Imports:
     later,
     websocket,
     promises,
-    connectcore
+    connectcore (>= 0.1.0)
 Suggests:
     coro,
     box,
@@ -49,6 +49,6 @@ Suggests:
     roxyassert (>= 0.9.1)
 Remotes:
     dereckscompany/assert,
-    dereckscompany/roxyassert@v0.9.1,
-    dereckscompany/connectcore@v0.1.0
+    dereckscompany/roxyassert,
+    dereckscompany/connectcore
 Config/testthat/edition: 3
