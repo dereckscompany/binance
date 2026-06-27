@@ -119,7 +119,7 @@ BinanceMargin <- R6::R6Class(
     #' @param isIsolated (scalar<character>) `"TRUE"` or `"FALSE"` for isolated margin. Default `"FALSE"`.
     #' @param symbol (scalar<character>?) required when `isIsolated = "TRUE"`.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - tran_id (integer) Transaction identifier.
     #'
     #' @examples
@@ -194,7 +194,7 @@ BinanceMargin <- R6::R6Class(
     #' @param isIsolated (scalar<character>) `"TRUE"` or `"FALSE"` for isolated margin. Default `"FALSE"`.
     #' @param symbol (scalar<character>?) required when `isIsolated = "TRUE"`.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - tran_id (integer) Transaction identifier.
     #'
     #' @examples
@@ -643,7 +643,7 @@ BinanceMargin <- R6::R6Class(
     #' @param origClientOrderId (scalar<character>?) the client order ID.
     #' @param isIsolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and columns including:
+    #' @return (data.table | promise<data.table>) one row:
     #' - symbol (character) Trading pair.
     #' - order_id (integer) Unique order identifier.
     #' - client_order_id (character) Client-assigned order ID.

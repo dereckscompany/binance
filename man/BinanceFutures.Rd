@@ -481,7 +481,6 @@ Verified: 2026-05-22
 \item price (character) Order price.
 \item orig_qty (character) Original requested quantity.
 \item executed_qty (character) Quantity filled so far.
-\item cum_qty (character) Cumulative filled quantity.
 \item cum_quote (character) Cumulative quote asset transacted.
 \item status (character) Order status (\code{"NEW"}, \code{"FILLED"}, \code{"CANCELED"}, etc.).
 \item time_in_force (character) Time-in-force policy.
@@ -1713,7 +1712,8 @@ Verified: 2026-05-22
 \itemize{
 \item code (integer) Response code (\code{200} on success).
 \item msg (character) Response message.
-\item amount (numeric) Margin amount modified.
+\item amount (integer) Margin amount modified (Binance returns it as a
+whole-number JSON number).
 \item type (integer) Margin change type (1 = add, 2 = reduce).
 }
 }

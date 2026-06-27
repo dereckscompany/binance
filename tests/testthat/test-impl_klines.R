@@ -144,8 +144,18 @@ test_that("binance_fetch_klines pages forward through large ranges (multiple cal
     data <- lapply(seq_len(n), function(i) {
       ts <- start_ms + (i - 1) * interval_ms
       return(list(
-        ts, "67000", "67100", "66900", "67050", "100",
-        ts + interval_ms - 1, "6700000", 500L, "50", "3350000", "0"
+        ts,
+        "67000",
+        "67100",
+        "66900",
+        "67050",
+        "100",
+        ts + interval_ms - 1,
+        "6700000",
+        500L,
+        "50",
+        "3350000",
+        "0"
       ))
     })
     return(.parser(data))
@@ -374,8 +384,18 @@ test_that("binance_fetch_klines streams pages to on_page and returns invisibly",
     data <- lapply(seq_len(n), function(i) {
       ts <- start_ms + (i - 1) * interval_ms
       return(list(
-        ts, "67000", "67100", "66900", "67050", "100",
-        ts + interval_ms - 1, "6700000", 500L, "50", "3350000", "0"
+        ts,
+        "67000",
+        "67100",
+        "66900",
+        "67050",
+        "100",
+        ts + interval_ms - 1,
+        "6700000",
+        500L,
+        "50",
+        "3350000",
+        "0"
       ))
     })
     return(.parser(data))

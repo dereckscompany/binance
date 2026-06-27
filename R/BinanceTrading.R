@@ -146,15 +146,15 @@ BinanceTrading <- R6::R6Class(
     #' - working_time (POSIXct) Time when the order started working.
     #' - self_trade_prevention_mode (character) STP mode applied.
     #' - transact_time (POSIXct) Transaction time converted from `transactTime`.
-    #' - fill_index (integer) 1-indexed fill position (`NA` when the order
+    #' - fill_index (integer | NA) 1-indexed fill position (`NA` when the order
     #'   had no fills).
-    #' - fill_price (character) Fill execution price (`NA` when no fills).
-    #' - fill_qty (character) Fill quantity (`NA` when no fills).
-    #' - fill_commission (character) Commission charged for this fill
+    #' - fill_price (character | NA) Fill execution price (`NA` when no fills).
+    #' - fill_qty (character | NA) Fill quantity (`NA` when no fills).
+    #' - fill_commission (character | NA) Commission charged for this fill
     #'   (`NA` when no fills).
-    #' - fill_commission_asset (character) Asset used for commission
+    #' - fill_commission_asset (character | NA) Asset used for commission
     #'   (e.g., `"BNB"`; `NA` when no fills).
-    #' - fill_trade_id (integer) Fill trade ID (`NA` when no fills).
+    #' - fill_trade_id (integer | NA) Fill trade ID (`NA` when no fills).
     #'
     #' When the order has N fills, the parent order fields are replicated on
     #' each of the N rows and `fill_index` runs `1..N`. When the order has
@@ -752,8 +752,27 @@ BinanceTrading <- R6::R6Class(
     #' @param symbol (scalar<character>?) trading pair (e.g., `"BTCUSDT"`).
     #'   If NULL, returns open orders for all symbols (weight 80).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (SpotOrderQuery | promise<SpotOrderQuery>) one row per open order
-    #'   (empty when there are no open orders).
+    #' @return (data.table | promise<data.table>) one row per open order
+    #'   (empty when there are none):
+    #' - symbol (character) Trading pair.
+    #' - order_id (integer) Exchange-assigned order id.
+    #' - order_list_id (integer) OCO list id, or `-1` for a non-OCO order.
+    #' - client_order_id (character) Client-assigned order id.
+    #' - price (character) Order price.
+    #' - orig_qty (character) Original requested quantity.
+    #' - executed_qty (character) Quantity filled so far.
+    #' - cummulative_quote_qty (character) Cumulative quote quantity filled.
+    #' - status (character) Order status.
+    #' - time_in_force (character) Time-in-force policy.
+    #' - type (character) Order type.
+    #' - side (character) `"BUY"` or `"SELL"`.
+    #' - stop_price (character) Stop trigger price.
+    #' - iceberg_qty (character) Iceberg quantity.
+    #' - time (POSIXct) Order creation time.
+    #' - is_working (logical) Whether the order is on the book.
+    #' - orig_quote_order_qty (character) Original quote order quantity.
+    #' - working_time (POSIXct) Time the order started working.
+    #' - self_trade_prevention_mode (character) Self-trade-prevention mode.
     #'
     #' @examples
     #' \dontrun{
@@ -768,7 +787,7 @@ BinanceTrading <- R6::R6Class(
         query = list(symbol = symbol, recvWindow = recvWindow),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(empty_dt_spot_order_query())
+            return(empty_dt_spot_order_list())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, c("time", "update_time", "working_time"), ms_to_datetime)
@@ -858,8 +877,27 @@ BinanceTrading <- R6::R6Class(
     #' @param endTime (scalar<count>?) end timestamp in milliseconds.
     #' @param limit (scalar<count>?) max results (default 500, max 1000).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (SpotOrderQuery | promise<SpotOrderQuery>) one row per order
-    #'   (empty when there are no matching orders).
+    #' @return (data.table | promise<data.table>) one row per order
+    #'   (empty when there are no matching orders):
+    #' - symbol (character) Trading pair.
+    #' - order_id (integer) Exchange-assigned order id.
+    #' - order_list_id (integer) OCO list id, or `-1` for a non-OCO order.
+    #' - client_order_id (character) Client-assigned order id.
+    #' - price (character) Order price.
+    #' - orig_qty (character) Original requested quantity.
+    #' - executed_qty (character) Quantity filled so far.
+    #' - cummulative_quote_qty (character) Cumulative quote quantity filled.
+    #' - status (character) Order status.
+    #' - time_in_force (character) Time-in-force policy.
+    #' - type (character) Order type.
+    #' - side (character) `"BUY"` or `"SELL"`.
+    #' - stop_price (character) Stop trigger price.
+    #' - iceberg_qty (character) Iceberg quantity.
+    #' - time (POSIXct) Order creation time.
+    #' - is_working (logical) Whether the order is on the book.
+    #' - orig_quote_order_qty (character) Original quote order quantity.
+    #' - working_time (POSIXct) Time the order started working.
+    #' - self_trade_prevention_mode (character) Self-trade-prevention mode.
     #'
     #' @examples
     #' \dontrun{
@@ -888,7 +926,7 @@ BinanceTrading <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(empty_dt_spot_order_query())
+            return(empty_dt_spot_order_list())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, c("time", "update_time", "working_time"), ms_to_datetime)

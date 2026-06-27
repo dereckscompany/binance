@@ -600,7 +600,8 @@ Verified: 2026-05-22
 \subsection{Returns}{
 (data.table | promise<data.table>) one row:
 \itemize{
-\item tran_id (integer) Binance-assigned transfer ID.
+\item tran_id (numeric) Binance-assigned transfer ID (a large integer that
+overflows R's 32-bit \code{integer}, so it arrives as a double).
 \item client_tran_id (character) Client-defined transfer ID.
 }
 }
@@ -704,7 +705,8 @@ Verified: 2026-05-22
 (data.table | promise<data.table>) one row per transfer
 (empty when there are none):
 \itemize{
-\item tran_id (integer) Binance-assigned transfer ID.
+\item tran_id (numeric) Binance-assigned transfer ID (a large integer that
+overflows R's 32-bit \code{integer}, so it arrives as a double).
 \item from_email (character) Sender email.
 \item to_email (character) Recipient email.
 \item asset (character) Transferred asset.
@@ -803,28 +805,18 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(data.table | promise<data.table>) one row per asset (long format):
-\itemize{
-\item email (character) Sub-account email (repeated per asset).
-\item asset (character) Margin asset (e.g., \code{"USDT"}).
-\item can_deposit (logical) Whether deposits are permitted.
-\item can_trade (logical) Whether trading is permitted.
-\item can_withdraw (logical) Whether withdrawals are permitted.
-\item fee_tier (integer) Fee tier level.
-\item max_withdraw_amount (character) Maximum withdrawable amount.
-\item total_initial_margin (character) Total initial margin.
-\item total_margin_balance (character) Total margin balance.
-\item total_wallet_balance (character) Total wallet balance.
-\item total_unrealized_profit (character) Total unrealised PnL.
-\item update_time (POSIXct) Last update time.
-\item asset_asset (character) Per-asset name.
-\item asset_wallet_balance (character) Per-asset wallet balance.
-\item asset_margin_balance (character) Per-asset margin balance.
-}
-
-When the response contains an \code{assets} list, it is expanded to long format
-with parent account fields repeated. When there are no assets, returns a
-single row without asset-level columns.
+(data.table | promise<data.table>) one row per asset (long
+format). Account-level fields (\code{email}, \code{asset}, \code{can_deposit},
+\code{can_trade}, \code{can_withdraw}, \code{fee_tier}, \code{max_withdraw_amount},
+\code{total_initial_margin}, \code{total_margin_balance}, \code{total_wallet_balance},
+\code{total_unrealized_profit}, \code{update_time}) are whichever Binance returns,
+replicated per asset row; the per-asset fields are wide-prefixed
+\verb{asset_*} (e.g. \code{asset_asset}, \code{asset_wallet_balance},
+\code{asset_margin_balance}). The exact column set follows the payload, so
+the return is typed only as a \code{data.table} (no fixed-column contract).
+When the response contains an \code{assets} list, it is expanded to long
+format with parent account fields repeated; when there are no assets, a
+single row without asset-level columns is returned.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -894,15 +886,12 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(data.table | promise<data.table>) one row:
-\itemize{
-\item email (character) Sub-account email.
-\item margin_level (character) Current margin level.
-\item total_asset_of_btc (character) Total asset value in BTC.
-\item total_liability_of_btc (character) Total liability in BTC.
-\item total_net_asset_of_btc (character) Net asset value in BTC.
-\item margin_trade_coeff_vo (list) Nested margin trading coefficient details.
-}
+(data.table | promise<data.table>) one row, whichever margin
+account fields Binance returns (\code{email}, \code{margin_level},
+\code{total_asset_of_btc}, \code{total_liability_of_btc},
+\code{total_net_asset_of_btc}, and a \code{margin_trade_coeff_vo} list-column of
+nested coefficients). The exact column set follows the payload, so the
+return is typed only as a \code{data.table} (no fixed-column contract).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

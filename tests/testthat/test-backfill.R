@@ -114,15 +114,31 @@ test_that("backfill drops the still-forming candle at the live edge", {
   kline_data <- list(
     list(
       closed_open_ms,
-      "100.0", "110.0", "90.0", "105.0", "1000.0",
+      "100.0",
+      "110.0",
+      "90.0",
+      "105.0",
+      "1000.0",
       closed_close_ms,
-      "105000.0", 500L, "600.0", "63000.0", "0"
+      "105000.0",
+      500L,
+      "600.0",
+      "63000.0",
+      "0"
     ),
     list(
       forming_open_ms,
-      "105.0", "115.0", "95.0", "108.0", "800.0",
+      "105.0",
+      "115.0",
+      "95.0",
+      "108.0",
+      "800.0",
       forming_close_ms,
-      "86400.0", 400L, "500.0", "54000.0", "0"
+      "86400.0",
+      400L,
+      "500.0",
+      "54000.0",
+      "0"
     )
   )
   resp <- mock_response(kline_data)
@@ -154,9 +170,17 @@ test_that("backfill with only a forming candle writes nothing", {
   kline_data <- list(
     list(
       now_ms - day_ms,
-      "105.0", "115.0", "95.0", "108.0", "800.0",
+      "105.0",
+      "115.0",
+      "95.0",
+      "108.0",
+      "800.0",
       now_ms + day_ms, # close_time in the future
-      "86400.0", 400L, "500.0", "54000.0", "0"
+      "86400.0",
+      400L,
+      "500.0",
+      "54000.0",
+      "0"
     )
   )
   resp <- mock_response(kline_data)

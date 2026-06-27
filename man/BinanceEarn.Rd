@@ -299,12 +299,10 @@ Verified: 2026-05-22
 \itemize{
 \item asset (character) Asset symbol (e.g., \code{"USDT"}).
 \item latest_annual_percentage_rate (character) Current annual yield rate.
-\item tier_annual_percentage_rate (character) JSON-encoded
+\item tier_annual_percentage_rate (character | NA) JSON-encoded
 per-tier APR map (dynamic keys like \code{"0-5BTC"}, \code{"5-10BTC"}).
 Recover via \code{jsonlite::fromJSON(dt$tier_annual_percentage_rate[1])}.
 \code{NA} when the field is absent.
-\item air_drop_percentage_rate (character) Air-drop APR if the
-product currently carries one.
 \item can_purchase (logical) Whether new subscriptions are accepted.
 \item can_redeem (logical) Whether redemptions are allowed.
 \item is_sold_out (logical) Whether the product is sold out.
@@ -1024,50 +1022,20 @@ converter lowers it to \code{apy} in the data.table.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(data.table | promise<data.table>) one row per position
-(empty when there are none;
-snake-case names; Binance's uppercase \code{APY} lowers to \code{apy}):
-\itemize{
-\item position_id (numeric) Locked position identifier.
-\item parent_position_id (numeric) Parent position identifier
-(cross-reference for auto-renewed positions).
-\item project_id (character) Locked project identifier.
-\item asset (character) Locked asset symbol.
-\item amount (character) Locked amount.
-\item purchase_time (POSIXct) Subscription time.
-\item duration (character) Lock duration in days.
-\item accrual_days (character) Days interest has accrued.
-\item reward_asset (character) Earned asset symbol.
-\item apy (character) Annual percentage yield (snake_case of \code{APY}).
-\item reward_amt (character) Earned amount so far.
-\item extra_reward_asset (character) Asset for the extra staking
-reward, if any.
-\item extra_reward_apr (character) APR of the extra staking reward.
-\item est_extra_reward_amt (character) Estimated extra reward
-distributed at maturity.
-\item boost_reward_asset (character) Boost reward asset.
-\item boost_apr (character) Boost APR.
-\item total_boost_reward_amt (character) Total boost reward earned.
-\item next_pay (character) Next estimated reward payment.
-\item next_pay_date (POSIXct) Next reward payment time.
-\item pay_period (character) Payment cycle in days.
-\item redeem_amount_early (character) Amount available for early
-redemption.
-\item rewards_end_date (POSIXct) Rewards accrual end time.
-\item deliver_date (POSIXct) Redemption arrival time.
-\item redeem_period (character) Redemption interval in days.
-\item redeeming_amt (character) Amount currently being redeemed.
-\item redeem_to (character) Destination on redemption
-(\code{"FLEXIBLE"} or \code{"SPOT"}).
-\item partial_amt_deliver_date (POSIXct) Arrival time of partial
-redemption.
-\item can_redeem_early (logical) Whether early redemption is allowed.
-\item can_fast_redemption (logical) Whether fast redemption is allowed.
-\item auto_subscribe (logical) Whether auto-subscription is enabled.
-\item type (character) Order type (\code{"AUTO"} or \code{"NORMAL"}).
-\item status (character) Position status (e.g., \code{"HOLDING"}).
-\item can_re_stake (logical) Whether re-staking is available.
-}
+(data.table | promise<data.table>) one row per locked position
+(empty when there are none), with whichever fields Binance returns,
+snake-cased (Binance's uppercase \code{APY} lowers to \code{apy}). Common
+columns: \code{position_id}, \code{parent_position_id}, \code{project_id}, \code{asset},
+\code{amount}, \code{purchase_time} (POSIXct), \code{duration}, \code{accrual_days},
+\code{reward_asset}, \code{apy}, \code{reward_amt}, \code{extra_reward_asset},
+\code{extra_reward_apr}, \code{est_extra_reward_amt}, \code{boost_reward_asset},
+\code{boost_apr}, \code{total_boost_reward_amt}, \code{next_pay}, \code{next_pay_date}
+(POSIXct), \code{pay_period}, \code{redeem_amount_early}, \code{rewards_end_date}
+(POSIXct), \code{deliver_date} (POSIXct), \code{redeem_period}, \code{redeeming_amt},
+\code{redeem_to}, \code{partial_amt_deliver_date} (POSIXct), \code{can_redeem_early},
+\code{can_fast_redemption}, \code{auto_subscribe}, \code{type}, \code{status},
+\code{can_re_stake}. The exact column set follows the payload, so the return
+is typed only as a \code{data.table} (no fixed-column contract).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

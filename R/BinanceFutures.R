@@ -198,7 +198,6 @@ BinanceFutures <- R6::R6Class(
     #' - price (character) Order price.
     #' - orig_qty (character) Original requested quantity.
     #' - executed_qty (character) Quantity filled so far.
-    #' - cum_qty (character) Cumulative filled quantity.
     #' - cum_quote (character) Cumulative quote asset transacted.
     #' - status (character) Order status (`"NEW"`, `"FILLED"`, `"CANCELED"`, etc.).
     #' - time_in_force (character) Time-in-force policy.
@@ -1487,7 +1486,8 @@ BinanceFutures <- R6::R6Class(
     #' @return (data.table | promise<data.table>) one row:
     #' - code (integer) Response code (`200` on success).
     #' - msg (character) Response message.
-    #' - amount (numeric) Margin amount modified.
+    #' - amount (integer) Margin amount modified (Binance returns it as a
+    #'   whole-number JSON number).
     #' - type (integer) Margin change type (1 = add, 2 = reduce).
     #'
     #' @examples

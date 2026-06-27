@@ -312,15 +312,15 @@ Verified: 2026-05-22
 \item working_time (POSIXct) Time when the order started working.
 \item self_trade_prevention_mode (character) STP mode applied.
 \item transact_time (POSIXct) Transaction time converted from \code{transactTime}.
-\item fill_index (integer) 1-indexed fill position (\code{NA} when the order
+\item fill_index (integer | NA) 1-indexed fill position (\code{NA} when the order
 had no fills).
-\item fill_price (character) Fill execution price (\code{NA} when no fills).
-\item fill_qty (character) Fill quantity (\code{NA} when no fills).
-\item fill_commission (character) Commission charged for this fill
+\item fill_price (character | NA) Fill execution price (\code{NA} when no fills).
+\item fill_qty (character | NA) Fill quantity (\code{NA} when no fills).
+\item fill_commission (character | NA) Commission charged for this fill
 (\code{NA} when no fills).
-\item fill_commission_asset (character) Asset used for commission
+\item fill_commission_asset (character | NA) Asset used for commission
 (e.g., \code{"BNB"}; \code{NA} when no fills).
-\item fill_trade_id (integer) Fill trade ID (\code{NA} when no fills).
+\item fill_trade_id (integer | NA) Fill trade ID (\code{NA} when no fills).
 }
 
 When the order has N fills, the parent order fields are replicated on
@@ -846,8 +846,29 @@ If NULL, returns open orders for all symbols (weight 80).}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(SpotOrderQuery | promise<SpotOrderQuery>) one row per open order
-(empty when there are no open orders).
+(data.table | promise<data.table>) one row per open order
+(empty when there are none):
+\itemize{
+\item symbol (character) Trading pair.
+\item order_id (integer) Exchange-assigned order id.
+\item order_list_id (integer) OCO list id, or \code{-1} for a non-OCO order.
+\item client_order_id (character) Client-assigned order id.
+\item price (character) Order price.
+\item orig_qty (character) Original requested quantity.
+\item executed_qty (character) Quantity filled so far.
+\item cummulative_quote_qty (character) Cumulative quote quantity filled.
+\item status (character) Order status.
+\item time_in_force (character) Time-in-force policy.
+\item type (character) Order type.
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item stop_price (character) Stop trigger price.
+\item iceberg_qty (character) Iceberg quantity.
+\item time (POSIXct) Order creation time.
+\item is_working (logical) Whether the order is on the book.
+\item orig_quote_order_qty (character) Original quote order quantity.
+\item working_time (POSIXct) Time the order started working.
+\item self_trade_prevention_mode (character) Self-trade-prevention mode.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -968,8 +989,29 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(SpotOrderQuery | promise<SpotOrderQuery>) one row per order
-(empty when there are no matching orders).
+(data.table | promise<data.table>) one row per order
+(empty when there are no matching orders):
+\itemize{
+\item symbol (character) Trading pair.
+\item order_id (integer) Exchange-assigned order id.
+\item order_list_id (integer) OCO list id, or \code{-1} for a non-OCO order.
+\item client_order_id (character) Client-assigned order id.
+\item price (character) Order price.
+\item orig_qty (character) Original requested quantity.
+\item executed_qty (character) Quantity filled so far.
+\item cummulative_quote_qty (character) Cumulative quote quantity filled.
+\item status (character) Order status.
+\item time_in_force (character) Time-in-force policy.
+\item type (character) Order type.
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item stop_price (character) Stop trigger price.
+\item iceberg_qty (character) Iceberg quantity.
+\item time (POSIXct) Order creation time.
+\item is_working (logical) Whether the order is on the book.
+\item orig_quote_order_qty (character) Original quote order quantity.
+\item working_time (POSIXct) Time the order started working.
+\item self_trade_prevention_mode (character) Self-trade-prevention mode.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

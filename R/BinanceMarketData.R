@@ -206,13 +206,15 @@ BinanceMarketData <- R6::R6Class(
     #'   - cancel_replace_allowed (logical) Whether cancel-replace is allowed.
     #'   - is_spot_trading_allowed (logical) Whether spot trading is enabled.
     #'   - is_margin_trading_allowed (logical) Whether margin trading is enabled.
-    #'   - lot_min_qty (numeric) Minimum order quantity from LOT_SIZE filter.
-    #'   - lot_max_qty (numeric) Maximum order quantity from LOT_SIZE filter.
-    #'   - lot_step_size (numeric) Quantity step size from LOT_SIZE filter.
+    #'   - lot_min_qty (numeric | NA) Minimum order quantity from LOT_SIZE filter
+    #'     (`NA` when the symbol carries no LOT_SIZE filter).
+    #'   - lot_max_qty (numeric | NA) Maximum order quantity from LOT_SIZE filter.
+    #'   - lot_step_size (numeric | NA) Quantity step size from LOT_SIZE filter.
     #'   - price_min (numeric) Minimum price from PRICE_FILTER.
     #'   - price_max (numeric) Maximum price from PRICE_FILTER.
     #'   - price_tick_size (numeric) Price tick size from PRICE_FILTER.
-    #'   - min_notional (numeric) Minimum notional value from MIN_NOTIONAL filter.
+    #'   - min_notional (numeric | NA) Minimum notional value from MIN_NOTIONAL
+    #'     filter (`NA` when the symbol carries no NOTIONAL filter).
     #'   - filters_raw (character) JSON-encoded copy of the full per-symbol
     #'     `filters` array. Preserves filter types not pulled into curated
     #'     columns (`PERCENT_PRICE`, `PERCENT_PRICE_BY_SIDE`, `MARKET_LOT_SIZE`,
@@ -226,7 +228,7 @@ BinanceMarketData <- R6::R6Class(
     #'     on newer symbols Binance often returns `permissions = []` and
     #'     populates `permission_sets` instead. Prefer `permission_sets`
     #'     for new code.
-    #'   - permission_sets (character) JSON string preserving
+    #'   - permission_sets (character | NA) JSON string preserving
     #'     Binance's array-of-arrays structure (e.g.
     #'     `'[["SPOT","MARGIN"],["TRD_GRP_004"]]'`). Inner groupings
     #'     carry semantic meaning — each inner array is an alternative

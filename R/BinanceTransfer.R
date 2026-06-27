@@ -179,7 +179,12 @@ BinanceTransfer <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data)[])
+          dt <- as_dt_row(data)
+          # Binance's `tranId` is an integer in JSON, but large ids overflow
+          # R's 32-bit integer and arrive as a double; coerce to numeric so
+          # the column type is stable regardless of id magnitude.
+          coerce_cols(dt, "tran_id", as.numeric)
+          return(dt[])
         }
       )
       return(connectcore::then_or_now(
@@ -308,6 +313,7 @@ BinanceTransfer <- R6::R6Class(
         ),
         .parser = function(data) {
           dt <- parse_paginated(data, time_cols = "timestamp")
+          coerce_cols(dt, "tran_id", as.numeric)
           if (nrow(dt) == 0L) {
             return(empty_dt_transfer_history())
           }

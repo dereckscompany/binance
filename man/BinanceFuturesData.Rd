@@ -390,14 +390,17 @@ Recover via \code{strsplit(dt$order_types[1], ";", fixed = TRUE)[[1]]}.
 time-in-force values.
 \item underlying_sub_type (character) Semicolon-separated underlying
 sub-types.
-\item permission_sets (character) Semicolon-separated permission sets.
-\item lot_min_qty (numeric) Minimum order quantity (from LOT_SIZE filter).
-\item lot_max_qty (numeric) Maximum order quantity (from LOT_SIZE filter).
-\item lot_step_size (numeric) Quantity step size (from LOT_SIZE filter).
+\item permission_sets (character | NA) Semicolon-separated permission sets
+(\code{NA} when the symbol omits the field).
+\item lot_min_qty (numeric | NA) Minimum order quantity (from LOT_SIZE
+filter; \code{NA} when the symbol carries no LOT_SIZE filter).
+\item lot_max_qty (numeric | NA) Maximum order quantity (from LOT_SIZE filter).
+\item lot_step_size (numeric | NA) Quantity step size (from LOT_SIZE filter).
 \item price_min (numeric) Minimum price (from PRICE_FILTER).
 \item price_max (numeric) Maximum price (from PRICE_FILTER).
 \item price_tick_size (numeric) Price tick size (from PRICE_FILTER).
-\item min_notional (numeric) Minimum notional value (from MIN_NOTIONAL filter).
+\item min_notional (numeric | NA) Minimum notional value (from MIN_NOTIONAL
+filter; \code{NA} when the symbol carries no MIN_NOTIONAL filter).
 \item filters_raw (character) JSON-encoded copy of the full per-symbol
 \code{filters} array. Preserves filter types not pulled into curated
 columns (\code{PERCENT_PRICE}, \code{MARKET_LOT_SIZE}, \code{MAX_NUM_ORDERS},
@@ -1035,7 +1038,6 @@ row when \code{symbol} is given):
 \item bid_qty (character) Quantity available at best bid.
 \item ask_price (character) Best ask price.
 \item ask_qty (character) Quantity available at best ask.
-\item time (POSIXct) Timestamp (if present in response).
 }
 }
 \subsection{Examples}{

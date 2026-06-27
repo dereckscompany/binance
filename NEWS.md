@@ -15,14 +15,31 @@
   top of the call.
   - This is **purely additive validation** — no public signature or behaviour
     changes for valid inputs; the full test suite passes untouched.
-  - Endpoint methods that resolve sync-or-async are typed `(promise<data.table>)`
-    (the resolved-type collapse), so the contract describes the data the caller
-    receives whether the client is synchronous or returns a promise.
+  - Endpoint methods that resolve sync-or-async are typed
+    `(data.table | promise<data.table>)` (or `(Shape | promise<Shape>)` for the
+    shared shapes), so the contract describes the data the caller receives
+    whether the client is synchronous or returns a promise.
   - A handful of polymorphic / hand-guarded inputs (e.g. `ms_to_datetime()`'s
     coercion-dispatched argument, `binance_backfill_klines()`'s emptiness-checked
     `symbols`, the thin transport delegators) are typed for documentation but
     exempted from the generated check with `@noassert`, leaving their existing
     bespoke guards in place.
+* **Return contracts now enforced at every call site.** Each table-returning
+  REST method wires its generated `assert_return_*()` through
+  [connectcore::then_or_now()], so the documented row-and-column contract runs
+  in both sync and async modes (previously the helpers were generated but never
+  invoked). Eight reusable `@type` shapes (`Ohlcv`, `OrderBook`, `Trade`,
+  `BookTicker`, `SpotOrderAck`, `SpotOrderQuery`, `FuturesOrder`, `AccountTrade`)
+  are declared once and shared across the methods that return them.
+  - Each list-returning method's empty path now returns a fully-typed zero-row
+    `data.table` (the `empty_dt_*()` helpers in `helpers_parse.R`), so a method's
+    column contract holds even when the API returns nothing.
+  - A few JSON-number columns whose R type depends on the value's magnitude
+    (`tran_id`, sub-account `free`/`locked`) are coerced to a stable `numeric`
+    so the schema no longer flips between `integer` and `double`. Columns that
+    can legitimately be absent in the payload are typed `| NA`, and the handful
+    of methods whose payload shape varies per call (sub-account futures/margin
+    account, locked-earn position) are typed as a plain `data.table`.
 
 # binance 0.4.0
 

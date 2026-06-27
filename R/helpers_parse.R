@@ -521,6 +521,33 @@ empty_dt_spot_order_query <- function() {
 #' @keywords internal
 #' @noRd
 #' @noassert
+empty_dt_spot_order_list <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    order_id = integer(0),
+    order_list_id = integer(0),
+    client_order_id = character(0),
+    price = character(0),
+    orig_qty = character(0),
+    executed_qty = character(0),
+    cummulative_quote_qty = character(0),
+    status = character(0),
+    time_in_force = character(0),
+    type = character(0),
+    side = character(0),
+    stop_price = character(0),
+    iceberg_qty = character(0),
+    time = ms_to_datetime(numeric(0)),
+    is_working = logical(0),
+    orig_quote_order_qty = character(0),
+    working_time = ms_to_datetime(numeric(0)),
+    self_trade_prevention_mode = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
 empty_dt_spot_cancel <- function() {
   return(data.table::data.table(
     symbol = character(0),
@@ -584,15 +611,19 @@ empty_dt_oco_add <- function() {
     symbol = character(0),
     order_report_symbol = character(0),
     order_report_order_id = integer(0),
+    order_report_order_list_id = integer(0),
     order_report_client_order_id = character(0),
     order_report_transact_time = ms_to_datetime(numeric(0)),
     order_report_price = character(0),
     order_report_orig_qty = character(0),
     order_report_executed_qty = character(0),
+    order_report_cummulative_quote_qty = character(0),
     order_report_status = character(0),
+    order_report_time_in_force = character(0),
     order_report_type = character(0),
     order_report_side = character(0),
-    order_report_stop_price = character(0)
+    order_report_stop_price = character(0),
+    order_report_self_trade_prevention_mode = character(0)
   ))
 }
 
@@ -600,25 +631,7 @@ empty_dt_oco_add <- function() {
 #' @noRd
 #' @noassert
 empty_dt_oco_cancel <- function() {
-  return(data.table::data.table(
-    order_list_id = integer(0),
-    contingency_type = character(0),
-    list_status_type = character(0),
-    list_order_status = character(0),
-    list_client_order_id = character(0),
-    transact_time = ms_to_datetime(numeric(0)),
-    symbol = character(0),
-    order_report_symbol = character(0),
-    order_report_order_id = integer(0),
-    order_report_client_order_id = character(0),
-    order_report_price = character(0),
-    order_report_orig_qty = character(0),
-    order_report_executed_qty = character(0),
-    order_report_status = character(0),
-    order_report_type = character(0),
-    order_report_side = character(0),
-    order_report_stop_price = character(0)
-  ))
+  return(empty_dt_oco_add())
 }
 
 #' @keywords internal
@@ -634,8 +647,8 @@ empty_dt_oco_query <- function() {
     transaction_time = ms_to_datetime(numeric(0)),
     symbol = character(0),
     order_symbol = character(0),
-    order_id = integer(0),
-    client_order_id = character(0)
+    order_order_id = integer(0),
+    order_client_order_id = character(0)
   ))
 }
 
@@ -809,7 +822,7 @@ empty_dt_sub_spot_summary <- function() {
 #' @noassert
 empty_dt_sub_transfer_history <- function() {
   return(data.table::data.table(
-    tran_id = integer(0),
+    tran_id = numeric(0),
     from_email = character(0),
     to_email = character(0),
     asset = character(0),
@@ -972,7 +985,6 @@ empty_dt_earn_flexible_products <- function() {
     asset = character(0),
     latest_annual_percentage_rate = character(0),
     tier_annual_percentage_rate = character(0),
-    air_drop_percentage_rate = character(0),
     can_purchase = logical(0),
     can_redeem = logical(0),
     is_sold_out = logical(0),
@@ -1348,8 +1360,7 @@ empty_dt_futures_book_ticker <- function() {
     bid_price = character(0),
     bid_qty = character(0),
     ask_price = character(0),
-    ask_qty = character(0),
-    time = ms_to_datetime(numeric(0))
+    ask_qty = character(0)
   ))
 }
 

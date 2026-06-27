@@ -361,7 +361,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item tran_id (integer) Transaction identifier.
 }
@@ -450,7 +450,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item tran_id (integer) Transaction identifier.
 }
@@ -885,7 +885,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and columns including:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair.
 \item order_id (integer) Unique order identifier.

@@ -260,7 +260,11 @@ BinanceSubAccount <- R6::R6Class(
           if (is.null(items) || length(items) == 0) {
             return(empty_dt_sub_balances())
           }
-          return(as_dt_list(items)[])
+          dt <- as_dt_list(items)
+          # `free` / `locked` are JSON numbers; an all-whole-number column
+          # parses as integer, so coerce to numeric for a stable double schema.
+          coerce_cols(dt, c("free", "locked"), as.numeric)
+          return(dt[])
         }
       )
       return(connectcore::then_or_now(
@@ -420,7 +424,8 @@ BinanceSubAccount <- R6::R6Class(
     #' @param clientTranId (scalar<character>?) client-defined transfer ID.
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
-    #' - tran_id (integer) Binance-assigned transfer ID.
+    #' - tran_id (numeric) Binance-assigned transfer ID (a large integer that
+    #'   overflows R's 32-bit `integer`, so it arrives as a double).
     #' - client_tran_id (character) Client-defined transfer ID.
     #'
     #' @examples
@@ -543,7 +548,8 @@ BinanceSubAccount <- R6::R6Class(
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per transfer
     #'   (empty when there are none):
-    #' - tran_id (integer) Binance-assigned transfer ID.
+    #' - tran_id (numeric) Binance-assigned transfer ID (a large integer that
+    #'   overflows R's 32-bit `integer`, so it arrives as a double).
     #' - from_email (character) Sender email.
     #' - to_email (character) Recipient email.
     #' - asset (character) Transferred asset.
@@ -665,26 +671,18 @@ BinanceSubAccount <- R6::R6Class(
     #' @param email (scalar<character>) the sub-account email.
     #' @param futuresType (scalar<count>) `1` for USDT-margined futures, `2` for COIN-margined futures.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (data.table | promise<data.table>) one row per asset (long format):
-    #' - email (character) Sub-account email (repeated per asset).
-    #' - asset (character) Margin asset (e.g., `"USDT"`).
-    #' - can_deposit (logical) Whether deposits are permitted.
-    #' - can_trade (logical) Whether trading is permitted.
-    #' - can_withdraw (logical) Whether withdrawals are permitted.
-    #' - fee_tier (integer) Fee tier level.
-    #' - max_withdraw_amount (character) Maximum withdrawable amount.
-    #' - total_initial_margin (character) Total initial margin.
-    #' - total_margin_balance (character) Total margin balance.
-    #' - total_wallet_balance (character) Total wallet balance.
-    #' - total_unrealized_profit (character) Total unrealised PnL.
-    #' - update_time (POSIXct) Last update time.
-    #' - asset_asset (character) Per-asset name.
-    #' - asset_wallet_balance (character) Per-asset wallet balance.
-    #' - asset_margin_balance (character) Per-asset margin balance.
-    #'
-    #' When the response contains an `assets` list, it is expanded to long format
-    #' with parent account fields repeated. When there are no assets, returns a
-    #' single row without asset-level columns.
+    #' @return (data.table | promise<data.table>) one row per asset (long
+    #'   format). Account-level fields (`email`, `asset`, `can_deposit`,
+    #'   `can_trade`, `can_withdraw`, `fee_tier`, `max_withdraw_amount`,
+    #'   `total_initial_margin`, `total_margin_balance`, `total_wallet_balance`,
+    #'   `total_unrealized_profit`, `update_time`) are whichever Binance returns,
+    #'   replicated per asset row; the per-asset fields are wide-prefixed
+    #'   `asset_*` (e.g. `asset_asset`, `asset_wallet_balance`,
+    #'   `asset_margin_balance`). The exact column set follows the payload, so
+    #'   the return is typed only as a `data.table` (no fixed-column contract).
+    #'   When the response contains an `assets` list, it is expanded to long
+    #'   format with parent account fields repeated; when there are no assets, a
+    #'   single row without asset-level columns is returned.
     #'
     #' @examples
     #' \dontrun{
@@ -768,13 +766,12 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' @param email (scalar<character>) the sub-account email.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (data.table | promise<data.table>) one row:
-    #' - email (character) Sub-account email.
-    #' - margin_level (character) Current margin level.
-    #' - total_asset_of_btc (character) Total asset value in BTC.
-    #' - total_liability_of_btc (character) Total liability in BTC.
-    #' - total_net_asset_of_btc (character) Net asset value in BTC.
-    #' - margin_trade_coeff_vo (list) Nested margin trading coefficient details.
+    #' @return (data.table | promise<data.table>) one row, whichever margin
+    #'   account fields Binance returns (`email`, `margin_level`,
+    #'   `total_asset_of_btc`, `total_liability_of_btc`,
+    #'   `total_net_asset_of_btc`, and a `margin_trade_coeff_vo` list-column of
+    #'   nested coefficients). The exact column set follows the payload, so the
+    #'   return is typed only as a `data.table` (no fixed-column contract).
     #'
     #' @examples
     #' \dontrun{

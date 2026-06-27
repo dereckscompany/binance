@@ -117,12 +117,10 @@ BinanceEarn <- R6::R6Class(
     #'   (empty when there are none):
     #' - asset (character) Asset symbol (e.g., `"USDT"`).
     #' - latest_annual_percentage_rate (character) Current annual yield rate.
-    #' - tier_annual_percentage_rate (character) JSON-encoded
+    #' - tier_annual_percentage_rate (character | NA) JSON-encoded
     #'   per-tier APR map (dynamic keys like `"0-5BTC"`, `"5-10BTC"`).
     #'   Recover via `jsonlite::fromJSON(dt$tier_annual_percentage_rate[1])`.
     #'   `NA` when the field is absent.
-    #' - air_drop_percentage_rate (character) Air-drop APR if the
-    #'   product currently carries one.
     #' - can_purchase (logical) Whether new subscriptions are accepted.
     #' - can_redeem (logical) Whether redemptions are allowed.
     #' - is_sold_out (logical) Whether the product is sold out.
@@ -823,48 +821,20 @@ BinanceEarn <- R6::R6Class(
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (data.table | promise<data.table>) one row per position
-    #'   (empty when there are none;
-    #'   snake-case names; Binance's uppercase `APY` lowers to `apy`):
-    #' - position_id (numeric) Locked position identifier.
-    #' - parent_position_id (numeric) Parent position identifier
-    #'   (cross-reference for auto-renewed positions).
-    #' - project_id (character) Locked project identifier.
-    #' - asset (character) Locked asset symbol.
-    #' - amount (character) Locked amount.
-    #' - purchase_time (POSIXct) Subscription time.
-    #' - duration (character) Lock duration in days.
-    #' - accrual_days (character) Days interest has accrued.
-    #' - reward_asset (character) Earned asset symbol.
-    #' - apy (character) Annual percentage yield (snake_case of `APY`).
-    #' - reward_amt (character) Earned amount so far.
-    #' - extra_reward_asset (character) Asset for the extra staking
-    #'   reward, if any.
-    #' - extra_reward_apr (character) APR of the extra staking reward.
-    #' - est_extra_reward_amt (character) Estimated extra reward
-    #'   distributed at maturity.
-    #' - boost_reward_asset (character) Boost reward asset.
-    #' - boost_apr (character) Boost APR.
-    #' - total_boost_reward_amt (character) Total boost reward earned.
-    #' - next_pay (character) Next estimated reward payment.
-    #' - next_pay_date (POSIXct) Next reward payment time.
-    #' - pay_period (character) Payment cycle in days.
-    #' - redeem_amount_early (character) Amount available for early
-    #'   redemption.
-    #' - rewards_end_date (POSIXct) Rewards accrual end time.
-    #' - deliver_date (POSIXct) Redemption arrival time.
-    #' - redeem_period (character) Redemption interval in days.
-    #' - redeeming_amt (character) Amount currently being redeemed.
-    #' - redeem_to (character) Destination on redemption
-    #'   (`"FLEXIBLE"` or `"SPOT"`).
-    #' - partial_amt_deliver_date (POSIXct) Arrival time of partial
-    #'   redemption.
-    #' - can_redeem_early (logical) Whether early redemption is allowed.
-    #' - can_fast_redemption (logical) Whether fast redemption is allowed.
-    #' - auto_subscribe (logical) Whether auto-subscription is enabled.
-    #' - type (character) Order type (`"AUTO"` or `"NORMAL"`).
-    #' - status (character) Position status (e.g., `"HOLDING"`).
-    #' - can_re_stake (logical) Whether re-staking is available.
+    #' @return (data.table | promise<data.table>) one row per locked position
+    #'   (empty when there are none), with whichever fields Binance returns,
+    #'   snake-cased (Binance's uppercase `APY` lowers to `apy`). Common
+    #'   columns: `position_id`, `parent_position_id`, `project_id`, `asset`,
+    #'   `amount`, `purchase_time` (POSIXct), `duration`, `accrual_days`,
+    #'   `reward_asset`, `apy`, `reward_amt`, `extra_reward_asset`,
+    #'   `extra_reward_apr`, `est_extra_reward_amt`, `boost_reward_asset`,
+    #'   `boost_apr`, `total_boost_reward_amt`, `next_pay`, `next_pay_date`
+    #'   (POSIXct), `pay_period`, `redeem_amount_early`, `rewards_end_date`
+    #'   (POSIXct), `deliver_date` (POSIXct), `redeem_period`, `redeeming_amt`,
+    #'   `redeem_to`, `partial_amt_deliver_date` (POSIXct), `can_redeem_early`,
+    #'   `can_fast_redemption`, `auto_subscribe`, `type`, `status`,
+    #'   `can_re_stake`. The exact column set follows the payload, so the return
+    #'   is typed only as a `data.table` (no fixed-column contract).
     #'
     #' @examples
     #' \dontrun{

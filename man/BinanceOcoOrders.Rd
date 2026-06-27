@@ -264,15 +264,22 @@ Verified: 2026-05-22
 \item symbol (character) Trading pair from parent OCO.
 \item order_report_symbol (character) Trading pair from child order report.
 \item order_report_order_id (integer) Child order ID.
+\item order_report_order_list_id (integer) Child order's OCO list ID.
 \item order_report_client_order_id (character) Child order client ID.
 \item order_report_transact_time (POSIXct) Child order transaction time.
 \item order_report_price (character) Child order price.
 \item order_report_orig_qty (character) Child order original quantity.
 \item order_report_executed_qty (character) Child order executed quantity.
+\item order_report_cummulative_quote_qty (character) Child order cumulative
+quote quantity filled.
 \item order_report_status (character) Child order status (e.g., \code{"NEW"}).
+\item order_report_time_in_force (character) Child order time-in-force policy.
 \item order_report_type (character) Child order type (e.g., \code{"STOP_LOSS_LIMIT"}, \code{"LIMIT_MAKER"}).
 \item order_report_side (character) Child order side.
-\item order_report_stop_price (character) Stop price (if applicable).
+\item order_report_stop_price (character | NA) Stop price (\code{NA} for the
+non-stop leg, e.g. the \code{LIMIT_MAKER} order).
+\item order_report_self_trade_prevention_mode (character) Self-trade-prevention
+mode.
 }
 }
 \subsection{Examples}{
@@ -414,14 +421,22 @@ each child order:
 \item symbol (character) Trading pair from parent OCO.
 \item order_report_symbol (character) Trading pair from child order.
 \item order_report_order_id (integer) Child order ID.
+\item order_report_order_list_id (integer) Child order's OCO list ID.
 \item order_report_client_order_id (character) Child order client ID.
+\item order_report_transact_time (POSIXct) Child order transaction time.
 \item order_report_price (character) Child order price.
 \item order_report_orig_qty (character) Child order original quantity.
 \item order_report_executed_qty (character) Child order executed quantity.
+\item order_report_cummulative_quote_qty (character) Child order cumulative
+quote quantity filled.
 \item order_report_status (character) Child order status (e.g., \code{"CANCELED"}).
+\item order_report_time_in_force (character) Child order time-in-force policy.
 \item order_report_type (character) Child order type.
 \item order_report_side (character) Child order side.
-\item order_report_stop_price (character) Stop price (if applicable).
+\item order_report_stop_price (character | NA) Stop price (\code{NA} for the
+non-stop leg).
+\item order_report_self_trade_prevention_mode (character) Self-trade-prevention
+mode.
 }
 }
 \subsection{Examples}{
@@ -519,8 +534,8 @@ Verified: 2026-05-22
 \item transaction_time (POSIXct) Transaction time (if present).
 \item symbol (character) Trading pair from parent OCO.
 \item order_symbol (character) Trading pair from child order.
-\item order_id (integer) Child order ID.
-\item client_order_id (character) Child order client ID.
+\item order_order_id (integer) Child order ID.
+\item order_client_order_id (character) Child order client ID.
 }
 }
 \subsection{Examples}{
@@ -611,8 +626,8 @@ all open OCOs (long format; empty when there are no open OCOs):
 \item transaction_time (POSIXct) Transaction time.
 \item symbol (character) Trading pair from parent OCO.
 \item order_symbol (character) Trading pair from child order.
-\item order_id (integer) Child order ID.
-\item client_order_id (character) Child order client ID.
+\item order_order_id (integer) Child order ID.
+\item order_client_order_id (character) Child order client ID.
 }
 }
 \subsection{Examples}{
@@ -740,8 +755,8 @@ all OCOs (long format; empty when there are no matching OCOs):
 \item transaction_time (POSIXct) Transaction time.
 \item symbol (character) Trading pair from parent OCO.
 \item order_symbol (character) Trading pair from child order.
-\item order_id (integer) Child order ID.
-\item client_order_id (character) Child order client ID.
+\item order_order_id (integer) Child order ID.
+\item order_client_order_id (character) Child order client ID.
 }
 }
 \subsection{Examples}{

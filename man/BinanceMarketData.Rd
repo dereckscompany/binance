@@ -412,13 +412,15 @@ Binance returns no symbols). Key columns include:
 \item cancel_replace_allowed (logical) Whether cancel-replace is allowed.
 \item is_spot_trading_allowed (logical) Whether spot trading is enabled.
 \item is_margin_trading_allowed (logical) Whether margin trading is enabled.
-\item lot_min_qty (numeric) Minimum order quantity from LOT_SIZE filter.
-\item lot_max_qty (numeric) Maximum order quantity from LOT_SIZE filter.
-\item lot_step_size (numeric) Quantity step size from LOT_SIZE filter.
+\item lot_min_qty (numeric | NA) Minimum order quantity from LOT_SIZE filter
+(\code{NA} when the symbol carries no LOT_SIZE filter).
+\item lot_max_qty (numeric | NA) Maximum order quantity from LOT_SIZE filter.
+\item lot_step_size (numeric | NA) Quantity step size from LOT_SIZE filter.
 \item price_min (numeric) Minimum price from PRICE_FILTER.
 \item price_max (numeric) Maximum price from PRICE_FILTER.
 \item price_tick_size (numeric) Price tick size from PRICE_FILTER.
-\item min_notional (numeric) Minimum notional value from MIN_NOTIONAL filter.
+\item min_notional (numeric | NA) Minimum notional value from MIN_NOTIONAL
+filter (\code{NA} when the symbol carries no NOTIONAL filter).
 \item filters_raw (character) JSON-encoded copy of the full per-symbol
 \code{filters} array. Preserves filter types not pulled into curated
 columns (\code{PERCENT_PRICE}, \code{PERCENT_PRICE_BY_SIDE}, \code{MARKET_LOT_SIZE},
@@ -432,7 +434,7 @@ returned no filters for the symbol.
 on newer symbols Binance often returns \verb{permissions = []} and
 populates \code{permission_sets} instead. Prefer \code{permission_sets}
 for new code.
-\item permission_sets (character) JSON string preserving
+\item permission_sets (character | NA) JSON string preserving
 Binance's array-of-arrays structure (e.g.
 \code{'[["SPOT","MARGIN"],["TRD_GRP_004"]]'}). Inner groupings
 carry semantic meaning — each inner array is an alternative

@@ -132,15 +132,22 @@ BinanceOcoOrders <- R6::R6Class(
     #' - symbol (character) Trading pair from parent OCO.
     #' - order_report_symbol (character) Trading pair from child order report.
     #' - order_report_order_id (integer) Child order ID.
+    #' - order_report_order_list_id (integer) Child order's OCO list ID.
     #' - order_report_client_order_id (character) Child order client ID.
     #' - order_report_transact_time (POSIXct) Child order transaction time.
     #' - order_report_price (character) Child order price.
     #' - order_report_orig_qty (character) Child order original quantity.
     #' - order_report_executed_qty (character) Child order executed quantity.
+    #' - order_report_cummulative_quote_qty (character) Child order cumulative
+    #'   quote quantity filled.
     #' - order_report_status (character) Child order status (e.g., `"NEW"`).
+    #' - order_report_time_in_force (character) Child order time-in-force policy.
     #' - order_report_type (character) Child order type (e.g., `"STOP_LOSS_LIMIT"`, `"LIMIT_MAKER"`).
     #' - order_report_side (character) Child order side.
-    #' - order_report_stop_price (character) Stop price (if applicable).
+    #' - order_report_stop_price (character | NA) Stop price (`NA` for the
+    #'   non-stop leg, e.g. the `LIMIT_MAKER` order).
+    #' - order_report_self_trade_prevention_mode (character) Self-trade-prevention
+    #'   mode.
     #'
     #' @examples
     #' \dontrun{
@@ -336,14 +343,22 @@ BinanceOcoOrders <- R6::R6Class(
     #' - symbol (character) Trading pair from parent OCO.
     #' - order_report_symbol (character) Trading pair from child order.
     #' - order_report_order_id (integer) Child order ID.
+    #' - order_report_order_list_id (integer) Child order's OCO list ID.
     #' - order_report_client_order_id (character) Child order client ID.
+    #' - order_report_transact_time (POSIXct) Child order transaction time.
     #' - order_report_price (character) Child order price.
     #' - order_report_orig_qty (character) Child order original quantity.
     #' - order_report_executed_qty (character) Child order executed quantity.
+    #' - order_report_cummulative_quote_qty (character) Child order cumulative
+    #'   quote quantity filled.
     #' - order_report_status (character) Child order status (e.g., `"CANCELED"`).
+    #' - order_report_time_in_force (character) Child order time-in-force policy.
     #' - order_report_type (character) Child order type.
     #' - order_report_side (character) Child order side.
-    #' - order_report_stop_price (character) Stop price (if applicable).
+    #' - order_report_stop_price (character | NA) Stop price (`NA` for the
+    #'   non-stop leg).
+    #' - order_report_self_trade_prevention_mode (character) Self-trade-prevention
+    #'   mode.
     #'
     #' @examples
     #' \dontrun{
@@ -456,8 +471,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' - transaction_time (POSIXct) Transaction time (if present).
     #' - symbol (character) Trading pair from parent OCO.
     #' - order_symbol (character) Trading pair from child order.
-    #' - order_id (integer) Child order ID.
-    #' - client_order_id (character) Child order client ID.
+    #' - order_order_id (integer) Child order ID.
+    #' - order_client_order_id (character) Child order client ID.
     #'
     #' @examples
     #' \dontrun{
@@ -560,8 +575,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' - transaction_time (POSIXct) Transaction time.
     #' - symbol (character) Trading pair from parent OCO.
     #' - order_symbol (character) Trading pair from child order.
-    #' - order_id (integer) Child order ID.
-    #' - client_order_id (character) Child order client ID.
+    #' - order_order_id (integer) Child order ID.
+    #' - order_client_order_id (character) Child order client ID.
     #'
     #' @examples
     #' \dontrun{
@@ -686,8 +701,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' - transaction_time (POSIXct) Transaction time.
     #' - symbol (character) Trading pair from parent OCO.
     #' - order_symbol (character) Trading pair from child order.
-    #' - order_id (integer) Child order ID.
-    #' - client_order_id (character) Child order client ID.
+    #' - order_order_id (integer) Child order ID.
+    #' - order_client_order_id (character) Child order client ID.
     #'
     #' @examples
     #' \dontrun{

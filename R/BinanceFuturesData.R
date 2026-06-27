@@ -176,14 +176,17 @@ BinanceFuturesData <- R6::R6Class(
     #'     time-in-force values.
     #'   - underlying_sub_type (character) Semicolon-separated underlying
     #'     sub-types.
-    #'   - permission_sets (character) Semicolon-separated permission sets.
-    #'   - lot_min_qty (numeric) Minimum order quantity (from LOT_SIZE filter).
-    #'   - lot_max_qty (numeric) Maximum order quantity (from LOT_SIZE filter).
-    #'   - lot_step_size (numeric) Quantity step size (from LOT_SIZE filter).
+    #'   - permission_sets (character | NA) Semicolon-separated permission sets
+    #'     (`NA` when the symbol omits the field).
+    #'   - lot_min_qty (numeric | NA) Minimum order quantity (from LOT_SIZE
+    #'     filter; `NA` when the symbol carries no LOT_SIZE filter).
+    #'   - lot_max_qty (numeric | NA) Maximum order quantity (from LOT_SIZE filter).
+    #'   - lot_step_size (numeric | NA) Quantity step size (from LOT_SIZE filter).
     #'   - price_min (numeric) Minimum price (from PRICE_FILTER).
     #'   - price_max (numeric) Maximum price (from PRICE_FILTER).
     #'   - price_tick_size (numeric) Price tick size (from PRICE_FILTER).
-    #'   - min_notional (numeric) Minimum notional value (from MIN_NOTIONAL filter).
+    #'   - min_notional (numeric | NA) Minimum notional value (from MIN_NOTIONAL
+    #'     filter; `NA` when the symbol carries no MIN_NOTIONAL filter).
     #'   - filters_raw (character) JSON-encoded copy of the full per-symbol
     #'     `filters` array. Preserves filter types not pulled into curated
     #'     columns (`PERCENT_PRICE`, `MARKET_LOT_SIZE`, `MAX_NUM_ORDERS`,
@@ -940,7 +943,6 @@ BinanceFuturesData <- R6::R6Class(
     #'   - bid_qty (character) Quantity available at best bid.
     #'   - ask_price (character) Best ask price.
     #'   - ask_qty (character) Quantity available at best ask.
-    #'   - time (POSIXct) Timestamp (if present in response).
     #'
     #' @examples
     #' \dontrun{
