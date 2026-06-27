@@ -573,6 +573,75 @@ empty_dt_spot_order_ack_fills <- function() {
 #' @keywords internal
 #' @noRd
 #' @noassert
+empty_dt_oco_add <- function() {
+  return(data.table::data.table(
+    order_list_id = integer(0),
+    contingency_type = character(0),
+    list_status_type = character(0),
+    list_order_status = character(0),
+    list_client_order_id = character(0),
+    transact_time = ms_to_datetime(numeric(0)),
+    symbol = character(0),
+    order_report_symbol = character(0),
+    order_report_order_id = integer(0),
+    order_report_client_order_id = character(0),
+    order_report_transact_time = ms_to_datetime(numeric(0)),
+    order_report_price = character(0),
+    order_report_orig_qty = character(0),
+    order_report_executed_qty = character(0),
+    order_report_status = character(0),
+    order_report_type = character(0),
+    order_report_side = character(0),
+    order_report_stop_price = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_oco_cancel <- function() {
+  return(data.table::data.table(
+    order_list_id = integer(0),
+    contingency_type = character(0),
+    list_status_type = character(0),
+    list_order_status = character(0),
+    list_client_order_id = character(0),
+    transact_time = ms_to_datetime(numeric(0)),
+    symbol = character(0),
+    order_report_symbol = character(0),
+    order_report_order_id = integer(0),
+    order_report_client_order_id = character(0),
+    order_report_price = character(0),
+    order_report_orig_qty = character(0),
+    order_report_executed_qty = character(0),
+    order_report_status = character(0),
+    order_report_type = character(0),
+    order_report_side = character(0),
+    order_report_stop_price = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_oco_query <- function() {
+  return(data.table::data.table(
+    order_list_id = integer(0),
+    contingency_type = character(0),
+    list_status_type = character(0),
+    list_order_status = character(0),
+    list_client_order_id = character(0),
+    transaction_time = ms_to_datetime(numeric(0)),
+    symbol = character(0),
+    order_symbol = character(0),
+    order_id = integer(0),
+    client_order_id = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
 empty_dt_ticker_price <- function() {
   return(data.table::data.table(
     symbol = character(0),

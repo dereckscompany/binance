@@ -252,7 +252,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per child order report (long format) and the following columns:
+(data.table | promise<data.table>) one row per child order report
+(long format):
 \itemize{
 \item order_list_id (integer) OCO order list identifier (repeated per child order).
 \item contingency_type (character) Always \code{"OCO"}.
@@ -397,12 +398,12 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per child order report (long
-format), matching the shape returned by \code{add_oco_order()}. The
+(data.table | promise<data.table>) one row per child order report
+(long format), matching the shape returned by \code{add_oco_order()}. The
 thinner \code{orders} array Binance returns is dropped in favour of
 the richer \code{orderReports} payload, which includes the
 cancellation status, prices, quantities, and stop price for
-each child order. Columns:
+each child order:
 \itemize{
 \item order_list_id (integer) OCO order list identifier (repeated per child order).
 \item contingency_type (character) Always \code{"OCO"}.
@@ -507,7 +508,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per child order (long format) and the following columns:
+(data.table | promise<data.table>) one row per child order
+(long format):
 \itemize{
 \item order_list_id (integer) OCO order list identifier (repeated per child order).
 \item contingency_type (character) Always \code{"OCO"}.
@@ -598,8 +600,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per child order across all open OCOs (long format).
-Columns include:
+(data.table | promise<data.table>) one row per child order across
+all open OCOs (long format; empty when there are no open OCOs):
 \itemize{
 \item order_list_id (integer) OCO order list identifier (repeated per child order).
 \item contingency_type (character) Always \code{"OCO"}.
@@ -727,8 +729,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per child order across all OCOs (long format).
-Columns include:
+(data.table | promise<data.table>) one row per child order across
+all OCOs (long format; empty when there are no matching OCOs):
 \itemize{
 \item order_list_id (integer) OCO order list identifier (repeated per child order).
 \item contingency_type (character) Always \code{"OCO"}.

@@ -121,7 +121,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' @param newOrderRespType (scalar<character>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
     #' @param selfTradePreventionMode (scalar<character>?)
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per child order report (long format) and the following columns:
+    #' @return (data.table | promise<data.table>) one row per child order report
+    #'   (long format):
     #' - order_list_id (integer) OCO order list identifier (repeated per child order).
     #' - contingency_type (character) Always `"OCO"`.
     #' - list_status_type (character) Status type (e.g., `"EXEC_STARTED"`).
@@ -205,11 +206,14 @@ BinanceOcoOrders <- R6::R6Class(
         recvWindow = recvWindow
       )
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/order/oco",
         method = "POST",
         body = body,
         .parser = function(data) {
+          if (is.null(data) || length(data) == 0) {
+            return(empty_dt_oco_add())
+          }
           order_reports <- data$orderReports
           data$orderReports <- NULL
           data$orders <- NULL
@@ -227,6 +231,11 @@ BinanceOcoOrders <- R6::R6Class(
           }
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceOcoOrders__add_oco_order,
+        is_async = private$.is_async
       ))
     },
 
@@ -312,12 +321,12 @@ BinanceOcoOrders <- R6::R6Class(
     #' @param orderListId (scalar<count>?) the OCO order list ID.
     #' @param listClientOrderId (scalar<character>?) the client order list ID.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per child order report (long
-    #'   format), matching the shape returned by `add_oco_order()`. The
+    #' @return (data.table | promise<data.table>) one row per child order report
+    #'   (long format), matching the shape returned by `add_oco_order()`. The
     #'   thinner `orders` array Binance returns is dropped in favour of
     #'   the richer `orderReports` payload, which includes the
     #'   cancellation status, prices, quantities, and stop price for
-    #'   each child order. Columns:
+    #'   each child order:
     #' - order_list_id (integer) OCO order list identifier (repeated per child order).
     #' - contingency_type (character) Always `"OCO"`.
     #' - list_status_type (character) Status type (e.g., `"ALL_DONE"`).
@@ -348,7 +357,7 @@ BinanceOcoOrders <- R6::R6Class(
         rlang::abort("Either 'orderListId' or 'listClientOrderId' must be provided.")
       }
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/orderList",
         method = "DELETE",
         query = list(
@@ -358,6 +367,9 @@ BinanceOcoOrders <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
+          if (is.null(data) || length(data) == 0) {
+            return(empty_dt_oco_cancel())
+          }
           # Mirror `add_oco_order`: expand `orderReports` to long format
           # (it's the richer payload, including cancellation status,
           # prices, quantities, stop price). The thinner `orders`
@@ -377,6 +389,11 @@ BinanceOcoOrders <- R6::R6Class(
           }
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceOcoOrders__cancel_oco_order,
+        is_async = private$.is_async
       ))
     },
 
@@ -429,7 +446,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' @param orderListId (scalar<count>?) the OCO order list ID.
     #' @param origClientOrderId (scalar<character>?) the original client order list ID.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per child order (long format) and the following columns:
+    #' @return (data.table | promise<data.table>) one row per child order
+    #'   (long format):
     #' - order_list_id (integer) OCO order list identifier (repeated per child order).
     #' - contingency_type (character) Always `"OCO"`.
     #' - list_status_type (character) Status type (e.g., `"ALL_DONE"`).
@@ -453,7 +471,7 @@ BinanceOcoOrders <- R6::R6Class(
         rlang::abort("Either 'orderListId' or 'origClientOrderId' must be provided.")
       }
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/orderList",
         query = list(
           orderListId = orderListId,
@@ -461,6 +479,9 @@ BinanceOcoOrders <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
+          if (is.null(data) || length(data) == 0) {
+            return(empty_dt_oco_query())
+          }
           orders <- data$orders
           data$orders <- NULL
           dt <- as_dt_row(data)
@@ -475,6 +496,11 @@ BinanceOcoOrders <- R6::R6Class(
           }
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceOcoOrders__get_oco_order,
+        is_async = private$.is_async
       ))
     },
 
@@ -524,8 +550,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' ```
     #'
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per child order across all open OCOs (long format).
-    #'   Columns include:
+    #' @return (data.table | promise<data.table>) one row per child order across
+    #'   all open OCOs (long format; empty when there are no open OCOs):
     #' - order_list_id (integer) OCO order list identifier (repeated per child order).
     #' - contingency_type (character) Always `"OCO"`.
     #' - list_status_type (character) Status type.
@@ -545,12 +571,12 @@ BinanceOcoOrders <- R6::R6Class(
     #' }
     get_open_oco_orders = function(recvWindow = NULL) {
       assert_args_BinanceOcoOrders__get_open_oco_orders(recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/openOrderList",
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_oco_query())
           }
           # Expand each OCO's orders to long format
           rows <- lapply(data, function(oco) {
@@ -569,6 +595,11 @@ BinanceOcoOrders <- R6::R6Class(
           })
           return(data.table::rbindlist(rows, fill = TRUE)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceOcoOrders__get_open_oco_orders,
+        is_async = private$.is_async
       ))
     },
 
@@ -645,8 +676,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' @param endTime (scalar<count>?) end timestamp in milliseconds.
     #' @param limit (scalar<count>?) max results (default 500, max 1000).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per child order across all OCOs (long format).
-    #'   Columns include:
+    #' @return (data.table | promise<data.table>) one row per child order across
+    #'   all OCOs (long format; empty when there are no matching OCOs):
     #' - order_list_id (integer) OCO order list identifier (repeated per child order).
     #' - contingency_type (character) Always `"OCO"`.
     #' - list_status_type (character) Status type.
@@ -672,7 +703,7 @@ BinanceOcoOrders <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceOcoOrders__get_all_oco_orders(fromId, startTime, endTime, limit, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/allOrderList",
         query = list(
           fromId = fromId,
@@ -683,7 +714,7 @@ BinanceOcoOrders <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_oco_query())
           }
           # Expand each OCO's orders to long format
           rows <- lapply(data, function(oco) {
@@ -702,6 +733,11 @@ BinanceOcoOrders <- R6::R6Class(
           })
           return(data.table::rbindlist(rows, fill = TRUE)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceOcoOrders__get_all_oco_orders,
+        is_async = private$.is_async
       ))
     }
   )
