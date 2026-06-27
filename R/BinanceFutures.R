@@ -191,7 +191,7 @@ BinanceFutures <- R6::R6Class(
     #' @param workingType (scalar<character>?) `"MARK_PRICE"` or `"CONTRACT_PRICE"`.
     #' @param newOrderRespType (scalar<character>?) `"ACK"`, `"RESULT"`.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - symbol (character) Trading pair (e.g., `"BTCUSDT"`).
     #' - order_id (integer) Unique order identifier.
     #' - client_order_id (character) Client-assigned order ID.
@@ -299,7 +299,7 @@ BinanceFutures <- R6::R6Class(
       )
       body <- body[!vapply(body, is.null, logical(1))]
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/order",
         method = "POST",
         body = body,
@@ -308,6 +308,11 @@ BinanceFutures <- R6::R6Class(
           coerce_cols(dt, "update_time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__add_order,
+        is_async = private$.is_async
       ))
     },
 
@@ -365,8 +370,8 @@ BinanceFutures <- R6::R6Class(
     #' @param workingType (scalar<character>?) `"MARK_PRICE"` or `"CONTRACT_PRICE"`.
     #' @param newOrderRespType (scalar<character>?) `"ACK"`, `"RESULT"`.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>)
-    #'   with a single row and a single `validated` (logical) column,
+    #' @return (data.table | promise<data.table>) a single row with a single
+    #'   `validated` (logical) column,
     #'   set to `TRUE` on success. Binance returns `{}` on a successful
     #'   test order; the absence of an error is the validation signal.
     #'
@@ -462,7 +467,7 @@ BinanceFutures <- R6::R6Class(
       )
       body <- body[!vapply(body, is.null, logical(1))]
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/order/test",
         method = "POST",
         body = body,
@@ -476,6 +481,11 @@ BinanceFutures <- R6::R6Class(
           }
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__add_order_test,
+        is_async = private$.is_async
       ))
     },
 
@@ -539,7 +549,7 @@ BinanceFutures <- R6::R6Class(
     #' @param orderId (scalar<count>?) the order ID to cancel.
     #' @param origClientOrderId (scalar<character>?) the client order ID to cancel.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - symbol (character) Trading pair.
     #' - order_id (integer) Unique order identifier.
     #' - client_order_id (character) Client-assigned order ID.
@@ -562,7 +572,7 @@ BinanceFutures <- R6::R6Class(
         rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
       }
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/order",
         method = "DELETE",
         query = list(
@@ -576,6 +586,11 @@ BinanceFutures <- R6::R6Class(
           coerce_cols(dt, "update_time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__cancel_order,
+        is_async = private$.is_async
       ))
     },
 
@@ -617,7 +632,7 @@ BinanceFutures <- R6::R6Class(
     #'
     #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - code (integer) Response code (`200` on success).
     #' - msg (character) Response message.
     #'
@@ -629,13 +644,18 @@ BinanceFutures <- R6::R6Class(
     #' }
     cancel_all_orders = function(symbol, recvWindow = NULL) {
       assert_args_BinanceFutures__cancel_all_orders(symbol, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/allOpenOrders",
         method = "DELETE",
         query = list(symbol = symbol, recvWindow = recvWindow),
         .parser = function(data) {
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__cancel_all_orders,
+        is_async = private$.is_async
       ))
     },
 
@@ -690,7 +710,7 @@ BinanceFutures <- R6::R6Class(
     #' @param orderId (scalar<count>?) the order ID.
     #' @param origClientOrderId (scalar<character>?) the client order ID.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - symbol (character) Trading pair.
     #' - order_id (integer) Unique order identifier.
     #' - client_order_id (character) Client-assigned order ID.
@@ -718,7 +738,7 @@ BinanceFutures <- R6::R6Class(
         rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
       }
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/order",
         query = list(
           symbol = symbol,
@@ -731,6 +751,11 @@ BinanceFutures <- R6::R6Class(
           coerce_cols(dt, c("time", "update_time"), ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_order,
+        is_async = private$.is_async
       ))
     },
 
@@ -783,7 +808,8 @@ BinanceFutures <- R6::R6Class(
     #'
     #' @param symbol (scalar<character>?) trading pair (e.g., `"BTCUSDT"`).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per open order and the following columns:
+    #' @return (data.table | promise<data.table>) one row per open order
+    #'   (empty when there are none):
     #' - symbol (character) Trading pair.
     #' - order_id (integer) Unique order identifier.
     #' - client_order_id (character) Client-assigned order ID.
@@ -805,17 +831,22 @@ BinanceFutures <- R6::R6Class(
     #' }
     get_open_orders = function(symbol = NULL, recvWindow = NULL) {
       assert_args_BinanceFutures__get_open_orders(symbol, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/openOrders",
         query = list(symbol = symbol, recvWindow = recvWindow),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_futures_order_query())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, c("time", "update_time"), ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_open_orders,
+        is_async = private$.is_async
       ))
     },
 
@@ -872,7 +903,8 @@ BinanceFutures <- R6::R6Class(
     #' @param endTime (scalar<count>?) end timestamp in milliseconds.
     #' @param limit (scalar<count>?) max results (default 500, max 1000).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per order and the following columns:
+    #' @return (data.table | promise<data.table>) one row per order
+    #'   (empty when there are no matching orders):
     #' - symbol (character) Trading pair.
     #' - order_id (integer) Unique order identifier.
     #' - client_order_id (character) Client-assigned order ID.
@@ -901,7 +933,7 @@ BinanceFutures <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceFutures__get_all_orders(symbol, orderId, startTime, endTime, limit, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/allOrders",
         query = list(
           symbol = symbol,
@@ -913,12 +945,17 @@ BinanceFutures <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_futures_order_query())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, c("time", "update_time"), ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_all_orders,
+        is_async = private$.is_async
       ))
     },
 
@@ -1005,8 +1042,8 @@ BinanceFutures <- R6::R6Class(
     #' ```
     #'
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) one row per asset balance in the
-    #'   account; account-level fields are replicated on each row. The
+    #' @return (data.table | promise<data.table>) one row per asset balance in
+    #'   the account; account-level fields are replicated on each row. The
     #'   companion `positions` array Binance returns is intentionally
     #'   dropped — see the long note below. Columns:
     #' - fee_tier (integer) Commission fee tier.
@@ -1049,7 +1086,7 @@ BinanceFutures <- R6::R6Class(
     #' }
     get_account = function(recvWindow = NULL) {
       assert_args_BinanceFutures__get_account(recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v2/account",
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
@@ -1069,6 +1106,11 @@ BinanceFutures <- R6::R6Class(
           }
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_account,
+        is_async = private$.is_async
       ))
     },
 
@@ -1120,7 +1162,8 @@ BinanceFutures <- R6::R6Class(
     #' ```
     #'
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per asset and the following columns:
+    #' @return (data.table | promise<data.table>) one row per asset
+    #'   (empty when there are none):
     #' - account_alias (character) Account alias (e.g., `"SgsR"`).
     #' - asset (character) Asset symbol (e.g., `"USDT"`).
     #' - balance (character) Wallet balance.
@@ -1139,17 +1182,22 @@ BinanceFutures <- R6::R6Class(
     #' }
     get_balances = function(recvWindow = NULL) {
       assert_args_BinanceFutures__get_balances(recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v2/balance",
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_futures_balances())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "update_time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_balances,
+        is_async = private$.is_async
       ))
     },
 
@@ -1197,7 +1245,8 @@ BinanceFutures <- R6::R6Class(
     #'
     #' @param symbol (scalar<character>?) trading pair (e.g., `"BTCUSDT"`).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per position and the following columns:
+    #' @return (data.table | promise<data.table>) one row per position
+    #'   (empty when there are none):
     #' - symbol (character) Trading pair.
     #' - position_side (character) `"BOTH"`, `"LONG"`, or `"SHORT"`.
     #' - position_amt (character) Position quantity.
@@ -1219,17 +1268,22 @@ BinanceFutures <- R6::R6Class(
     #' }
     get_positions = function(symbol = NULL, recvWindow = NULL) {
       assert_args_BinanceFutures__get_positions(symbol, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v2/positionRisk",
         query = list(symbol = symbol, recvWindow = recvWindow),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_futures_positions())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "update_time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_positions,
+        is_async = private$.is_async
       ))
     },
 
@@ -1277,7 +1331,7 @@ BinanceFutures <- R6::R6Class(
     #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
     #' @param leverage (scalar<count>) target leverage (1-125).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - leverage (integer) New leverage setting.
     #' - max_notional_value (character) Maximum notional value for this leverage.
     #' - symbol (character) Trading pair.
@@ -1290,7 +1344,7 @@ BinanceFutures <- R6::R6Class(
     #' }
     set_leverage = function(symbol, leverage, recvWindow = NULL) {
       assert_args_BinanceFutures__set_leverage(symbol, leverage, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/leverage",
         method = "POST",
         body = list(
@@ -1301,6 +1355,11 @@ BinanceFutures <- R6::R6Class(
         .parser = function(data) {
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__set_leverage,
+        is_async = private$.is_async
       ))
     },
 
@@ -1345,7 +1404,7 @@ BinanceFutures <- R6::R6Class(
     #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
     #' @param marginType (scalar<character>) `"ISOLATED"` or `"CROSSED"`.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - code (integer) Response code (`200` on success).
     #' - msg (character) Response message.
     #'
@@ -1360,7 +1419,7 @@ BinanceFutures <- R6::R6Class(
       marginType <- toupper(marginType)
       rlang::arg_match0(marginType, c("ISOLATED", "CROSSED"))
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/marginType",
         method = "POST",
         body = list(
@@ -1371,6 +1430,11 @@ BinanceFutures <- R6::R6Class(
         .parser = function(data) {
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__set_margin_type,
+        is_async = private$.is_async
       ))
     },
 
@@ -1420,7 +1484,7 @@ BinanceFutures <- R6::R6Class(
     #' @param type (scalar<count>) 1 = add margin, 2 = reduce margin.
     #' @param positionSide (scalar<character>?) `"BOTH"`, `"LONG"`, `"SHORT"`.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - code (integer) Response code (`200` on success).
     #' - msg (character) Response message.
     #' - amount (numeric) Margin amount modified.
@@ -1445,13 +1509,18 @@ BinanceFutures <- R6::R6Class(
       )
       body <- body[!vapply(body, is.null, logical(1))]
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/positionMargin",
         method = "POST",
         body = body,
         .parser = function(data) {
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__modify_position_margin,
+        is_async = private$.is_async
       ))
     },
 
@@ -1495,7 +1564,8 @@ BinanceFutures <- R6::R6Class(
     #' @param endTime (scalar<count>?) end timestamp in milliseconds.
     #' @param limit (scalar<count>?) max results (default 500).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per margin change and the following columns:
+    #' @return (data.table | promise<data.table>) one row per margin change
+    #'   (empty when there are none):
     #' - symbol (character) Trading pair.
     #' - type (integer) Margin change type (1 = add, 2 = reduce).
     #' - delta_type (character) Type of margin change.
@@ -1519,7 +1589,7 @@ BinanceFutures <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceFutures__get_position_margin_history(symbol, type, startTime, endTime, limit, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/positionMargin/history",
         query = list(
           symbol = symbol,
@@ -1531,12 +1601,17 @@ BinanceFutures <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_futures_margin_history())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_position_margin_history,
+        is_async = private$.is_async
       ))
     },
 
@@ -1591,7 +1666,8 @@ BinanceFutures <- R6::R6Class(
     #' @param fromId (scalar<count>?) trade ID to fetch from.
     #' @param limit (scalar<count>?) max results (default 500, max 1000).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per trade and the following columns:
+    #' @return (data.table | promise<data.table>) one row per trade
+    #'   (empty when there are none):
     #' - symbol (character) Trading pair.
     #' - id (integer) Trade identifier.
     #' - order_id (integer) Order identifier.
@@ -1623,7 +1699,7 @@ BinanceFutures <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceFutures__get_trades(symbol, orderId, startTime, endTime, fromId, limit, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/userTrades",
         query = list(
           symbol = symbol,
@@ -1636,12 +1712,17 @@ BinanceFutures <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_futures_trade())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_trades,
+        is_async = private$.is_async
       ))
     },
 
@@ -1704,7 +1785,8 @@ BinanceFutures <- R6::R6Class(
     #' @param endTime (scalar<count>?) end timestamp in milliseconds.
     #' @param limit (scalar<count>?) max results (default 100, max 1000).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per income entry and the following columns:
+    #' @return (data.table | promise<data.table>) one row per income entry
+    #'   (empty when there are none):
     #' - symbol (character) Trading pair (may be empty for some income types).
     #' - income_type (character) Type of income (e.g., `"FUNDING_FEE"`, `"REALIZED_PNL"`).
     #' - income (character) Income amount (negative for fees paid).
@@ -1757,7 +1839,7 @@ BinanceFutures <- R6::R6Class(
         )
       }
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/income",
         query = list(
           symbol = symbol,
@@ -1769,12 +1851,17 @@ BinanceFutures <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_futures_income())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_income_history,
+        is_async = private$.is_async
       ))
     },
 
@@ -1819,7 +1906,7 @@ BinanceFutures <- R6::R6Class(
     #'
     #' @param dualSidePosition (scalar<logical>) `TRUE` for hedge mode, `FALSE` for one-way.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - code (integer) Response code (`200` on success).
     #' - msg (character) Response message.
     #'
@@ -1833,7 +1920,7 @@ BinanceFutures <- R6::R6Class(
       assert_args_BinanceFutures__set_position_mode(dualSidePosition, recvWindow)
       dualSidePosition <- tolower(as.character(dualSidePosition))
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/positionSide/dual",
         method = "POST",
         body = list(
@@ -1843,6 +1930,11 @@ BinanceFutures <- R6::R6Class(
         .parser = function(data) {
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__set_position_mode,
+        is_async = private$.is_async
       ))
     },
 
@@ -1873,7 +1965,7 @@ BinanceFutures <- R6::R6Class(
     #' ```
     #'
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - dual_side_position (logical) `TRUE` if hedge mode, `FALSE` if one-way mode.
     #'
     #' @examples
@@ -1884,12 +1976,17 @@ BinanceFutures <- R6::R6Class(
     #' }
     get_position_mode = function(recvWindow = NULL) {
       assert_args_BinanceFutures__get_position_mode(recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/positionSide/dual",
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_position_mode,
+        is_async = private$.is_async
       ))
     }
   )

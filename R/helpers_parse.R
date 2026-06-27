@@ -1136,6 +1136,116 @@ empty_dt_earn_locked_redemption_history <- function() {
 #' @keywords internal
 #' @noRd
 #' @noassert
+empty_dt_futures_order_query <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    order_id = integer(0),
+    client_order_id = character(0),
+    price = character(0),
+    orig_qty = character(0),
+    executed_qty = character(0),
+    status = character(0),
+    type = character(0),
+    side = character(0),
+    position_side = character(0),
+    time = ms_to_datetime(numeric(0)),
+    update_time = ms_to_datetime(numeric(0))
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_futures_balances <- function() {
+  return(data.table::data.table(
+    account_alias = character(0),
+    asset = character(0),
+    balance = character(0),
+    cross_wallet_balance = character(0),
+    cross_un_pnl = character(0),
+    available_balance = character(0),
+    max_withdraw_amount = character(0),
+    margin_available = logical(0),
+    update_time = ms_to_datetime(numeric(0))
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_futures_positions <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    position_side = character(0),
+    position_amt = character(0),
+    entry_price = character(0),
+    mark_price = character(0),
+    un_realized_profit = character(0),
+    liquidation_price = character(0),
+    leverage = character(0),
+    margin_type = character(0),
+    isolated_margin = character(0),
+    notional = character(0),
+    update_time = ms_to_datetime(numeric(0))
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_futures_margin_history <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    type = integer(0),
+    delta_type = character(0),
+    amount = character(0),
+    asset = character(0),
+    time = ms_to_datetime(numeric(0)),
+    position_side = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_futures_trade <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    id = integer(0),
+    order_id = integer(0),
+    price = character(0),
+    qty = character(0),
+    quote_qty = character(0),
+    commission = character(0),
+    commission_asset = character(0),
+    realized_pnl = character(0),
+    side = character(0),
+    position_side = character(0),
+    buyer = logical(0),
+    maker = logical(0),
+    time = ms_to_datetime(numeric(0))
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_futures_income <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    income_type = character(0),
+    income = character(0),
+    asset = character(0),
+    info = character(0),
+    time = ms_to_datetime(numeric(0)),
+    tran_id = integer(0),
+    trade_id = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
 empty_dt_ticker_price <- function() {
   return(data.table::data.table(
     symbol = character(0),

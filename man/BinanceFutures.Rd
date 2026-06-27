@@ -473,7 +473,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair (e.g., \code{"BTCUSDT"}).
 \item order_id (integer) Unique order identifier.
@@ -608,8 +608,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>)
-with a single row and a single \code{validated} (logical) column,
+(data.table | promise<data.table>) a single row with a single
+\code{validated} (logical) column,
 set to \code{TRUE} on success. Binance returns \code{{}} on a successful
 test order; the absence of an error is the validation signal.
 }
@@ -714,7 +714,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair.
 \item order_id (integer) Unique order identifier.
@@ -798,7 +798,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item code (integer) Response code (\code{200} on success).
 \item msg (character) Response message.
@@ -892,7 +892,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair.
 \item order_id (integer) Unique order identifier.
@@ -991,7 +991,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per open order and the following columns:
+(data.table | promise<data.table>) one row per open order
+(empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
 \item order_id (integer) Unique order identifier.
@@ -1103,7 +1104,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per order and the following columns:
+(data.table | promise<data.table>) one row per order
+(empty when there are no matching orders):
 \itemize{
 \item symbol (character) Trading pair.
 \item order_id (integer) Unique order identifier.
@@ -1231,8 +1233,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) one row per asset balance in the
-account; account-level fields are replicated on each row. The
+(data.table | promise<data.table>) one row per asset balance in
+the account; account-level fields are replicated on each row. The
 companion \code{positions} array Binance returns is intentionally
 dropped — see the long note below. Columns:
 \itemize{
@@ -1348,7 +1350,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per asset and the following columns:
+(data.table | promise<data.table>) one row per asset
+(empty when there are none):
 \itemize{
 \item account_alias (character) Account alias (e.g., \code{"SgsR"}).
 \item asset (character) Asset symbol (e.g., \code{"USDT"}).
@@ -1437,7 +1440,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per position and the following columns:
+(data.table | promise<data.table>) one row per position
+(empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
 \item position_side (character) \code{"BOTH"}, \code{"LONG"}, or \code{"SHORT"}.
@@ -1529,7 +1533,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item leverage (integer) New leverage setting.
 \item max_notional_value (character) Maximum notional value for this leverage.
@@ -1611,7 +1615,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item code (integer) Response code (\code{200} on success).
 \item msg (character) Response message.
@@ -1705,7 +1709,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item code (integer) Response code (\code{200} on success).
 \item msg (character) Response message.
@@ -1796,7 +1800,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per margin change and the following columns:
+(data.table | promise<data.table>) one row per margin change
+(empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
 \item type (integer) Margin change type (1 = add, 2 = reduce).
@@ -1901,7 +1906,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per trade and the following columns:
+(data.table | promise<data.table>) one row per trade
+(empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
 \item id (integer) Trade identifier.
@@ -2021,7 +2027,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per income entry and the following columns:
+(data.table | promise<data.table>) one row per income entry
+(empty when there are none):
 \itemize{
 \item symbol (character) Trading pair (may be empty for some income types).
 \item income_type (character) Type of income (e.g., \code{"FUNDING_FEE"}, \code{"REALIZED_PNL"}).
@@ -2105,7 +2112,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item code (integer) Response code (\code{200} on success).
 \item msg (character) Response message.
@@ -2169,7 +2176,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item dual_side_position (logical) \code{TRUE} if hedge mode, \code{FALSE} if one-way mode.
 }
