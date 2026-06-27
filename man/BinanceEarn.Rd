@@ -294,7 +294,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per product and the following columns:
+(data.table | promise<data.table>) one row per product
+(empty when there are none):
 \itemize{
 \item asset (character) Asset symbol (e.g., \code{"USDT"}).
 \item latest_annual_percentage_rate (character) Current annual yield rate.
@@ -410,8 +411,9 @@ fields; older internal examples that still show \code{apy} are stale.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per product and the following
-columns. Nested \code{detail} and \code{quota} objects are wide-prefixed
+(data.table | promise<data.table>) one row per product (empty when
+there are none).
+Nested \code{detail} and \code{quota} objects are wide-prefixed
 (\verb{detail_*} and \verb{quota_*}) per the package's "no list columns"
 policy. Field names mirror the current Binance API
 (verified 2026-05-22):
@@ -524,7 +526,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item purchase_id (integer) Unique purchase identifier.
 \item success (logical) Whether the subscription was successful.
@@ -611,7 +613,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item purchase_id (integer) Unique purchase identifier.
 \item position_id (character) Position identifier for the locked subscription.
@@ -702,7 +704,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item redeem_id (integer) Unique redemption identifier.
 \item success (logical) Whether the redemption was successful.
@@ -777,7 +779,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item redeem_id (integer) Unique redemption identifier.
 \item success (logical) Whether the redemption was successful.
@@ -877,7 +879,8 @@ Shape captured 2026-05-22 from the live docs.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per position and the following columns:
+(data.table | promise<data.table>) one row per position
+(empty when there are none):
 \itemize{
 \item total_amount (character) Total amount in the position.
 \item latest_annual_percentage_rate (character) Current annual yield rate.
@@ -1021,8 +1024,9 @@ converter lowers it to \code{apy} in the data.table.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per position and the following columns
-(snake-case names; Binance's uppercase \code{APY} lowers to \code{apy}):
+(data.table | promise<data.table>) one row per position
+(empty when there are none;
+snake-case names; Binance's uppercase \code{APY} lowers to \code{apy}):
 \itemize{
 \item position_id (numeric) Locked position identifier.
 \item parent_position_id (numeric) Parent position identifier
@@ -1156,7 +1160,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per subscription record and the following columns:
+(data.table | promise<data.table>) one row per subscription record
+(empty when there are none):
 \itemize{
 \item amount (character) Subscription amount.
 \item asset (character) Asset symbol.
@@ -1257,7 +1262,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per subscription record and the following columns:
+(data.table | promise<data.table>) one row per subscription record
+(empty when there are none):
 \itemize{
 \item amount (character) Subscription amount.
 \item asset (character) Asset symbol.
@@ -1361,7 +1367,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per redemption record and the following columns:
+(data.table | promise<data.table>) one row per redemption record
+(empty when there are none):
 \itemize{
 \item amount (character) Redemption amount.
 \item asset (character) Asset symbol.
@@ -1463,7 +1470,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per redemption record and the following columns:
+(data.table | promise<data.table>) one row per redemption record
+(empty when there are none):
 \itemize{
 \item amount (character) Redemption amount.
 \item asset (character) Asset symbol.

@@ -113,7 +113,8 @@ BinanceEarn <- R6::R6Class(
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per product and the following columns:
+    #' @return (data.table | promise<data.table>) one row per product
+    #'   (empty when there are none):
     #' - asset (character) Asset symbol (e.g., `"USDT"`).
     #' - latest_annual_percentage_rate (character) Current annual yield rate.
     #' - tier_annual_percentage_rate (character) JSON-encoded
@@ -139,7 +140,7 @@ BinanceEarn <- R6::R6Class(
     #' }
     get_flexible_products = function(asset = NULL, current = NULL, size = NULL, recvWindow = NULL) {
       assert_args_BinanceEarn__get_flexible_products(asset, current, size, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/list",
         query = list(
           asset = asset,
@@ -150,7 +151,7 @@ BinanceEarn <- R6::R6Class(
         .parser = function(data) {
           rows <- data$rows
           if (is.null(rows) || length(rows) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_earn_flexible_products())
           }
           # `tierAnnualPercentageRate` is a nested object with DYNAMIC
           # keys (e.g. `"0-5BTC": 0.05, "5-10BTC": 0.03`) — different
@@ -174,6 +175,11 @@ BinanceEarn <- R6::R6Class(
           coerce_cols(dt, "subscription_start_time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceEarn__get_flexible_products,
+        is_async = private$.is_async
       ))
     },
 
@@ -233,8 +239,9 @@ BinanceEarn <- R6::R6Class(
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per product and the following
-    #'   columns. Nested `detail` and `quota` objects are wide-prefixed
+    #' @return (data.table | promise<data.table>) one row per product (empty when
+    #'   there are none).
+    #'   Nested `detail` and `quota` objects are wide-prefixed
     #'   (`detail_*` and `quota_*`) per the package's "no list columns"
     #'   policy. Field names mirror the current Binance API
     #'   (verified 2026-05-22):
@@ -269,7 +276,7 @@ BinanceEarn <- R6::R6Class(
     #' }
     get_locked_products = function(asset = NULL, current = NULL, size = NULL, recvWindow = NULL) {
       assert_args_BinanceEarn__get_locked_products(asset, current, size, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/list",
         query = list(
           asset = asset,
@@ -280,7 +287,7 @@ BinanceEarn <- R6::R6Class(
         .parser = function(data) {
           rows <- data$rows
           if (is.null(rows) || length(rows) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_earn_locked_products())
           }
           # Wide-prefix the nested `detail` and `quota` fixed-schema
           # objects so the returned table has no list columns. Mirrors
@@ -301,6 +308,11 @@ BinanceEarn <- R6::R6Class(
           coerce_cols(dt, c("detail_subscription_start_time", "detail_boost_end_time"), ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceEarn__get_locked_products,
+        is_async = private$.is_async
       ))
     },
 
@@ -348,7 +360,7 @@ BinanceEarn <- R6::R6Class(
     #' @param autoSubscribe (scalar<logical>?) whether to enable auto-subscription.
     #' @param sourceAccount (scalar<character>?) source wallet: `"SPOT"`, `"FUND"`, or `"ALL"`. Default `"SPOT"`.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - purchase_id (integer) Unique purchase identifier.
     #' - success (logical) Whether the subscription was successful.
     #'
@@ -366,7 +378,7 @@ BinanceEarn <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceEarn__add_flexible_subscription(productId, amount, autoSubscribe, sourceAccount, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/subscribe",
         method = "POST",
         query = list(
@@ -379,6 +391,11 @@ BinanceEarn <- R6::R6Class(
         .parser = function(data) {
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceEarn__add_flexible_subscription,
+        is_async = private$.is_async
       ))
     },
 
@@ -423,7 +440,7 @@ BinanceEarn <- R6::R6Class(
     #' @param amount (scalar<numeric>) amount to subscribe.
     #' @param autoSubscribe (scalar<logical>?) whether to enable auto-subscription.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - purchase_id (integer) Unique purchase identifier.
     #' - position_id (character) Position identifier for the locked subscription.
     #' - success (logical) Whether the subscription was successful.
@@ -436,7 +453,7 @@ BinanceEarn <- R6::R6Class(
     #' }
     add_locked_subscription = function(projectId, amount, autoSubscribe = NULL, recvWindow = NULL) {
       assert_args_BinanceEarn__add_locked_subscription(projectId, amount, autoSubscribe, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/subscribe",
         method = "POST",
         query = list(
@@ -448,6 +465,11 @@ BinanceEarn <- R6::R6Class(
         .parser = function(data) {
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceEarn__add_locked_subscription,
+        is_async = private$.is_async
       ))
     },
 
@@ -495,7 +517,7 @@ BinanceEarn <- R6::R6Class(
     #' @param redeemAll (scalar<logical>?) if TRUE, redeem entire position.
     #' @param destAccount (scalar<character>?) destination wallet: `"SPOT"` or `"FUND"`. Default `"SPOT"`.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - redeem_id (integer) Unique redemption identifier.
     #' - success (logical) Whether the redemption was successful.
     #'
@@ -513,7 +535,7 @@ BinanceEarn <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceEarn__add_flexible_redemption(productId, amount, redeemAll, destAccount, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/redeem",
         method = "POST",
         query = list(
@@ -526,6 +548,11 @@ BinanceEarn <- R6::R6Class(
         .parser = function(data) {
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceEarn__add_flexible_redemption,
+        is_async = private$.is_async
       ))
     },
 
@@ -565,7 +592,7 @@ BinanceEarn <- R6::R6Class(
     #'
     #' @param positionId (scalar<character>) the position ID to redeem.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - redeem_id (integer) Unique redemption identifier.
     #' - success (logical) Whether the redemption was successful.
     #'
@@ -577,7 +604,7 @@ BinanceEarn <- R6::R6Class(
     #' }
     add_locked_redemption = function(positionId, recvWindow = NULL) {
       assert_args_BinanceEarn__add_locked_redemption(positionId, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/redeem",
         method = "POST",
         query = list(
@@ -587,6 +614,11 @@ BinanceEarn <- R6::R6Class(
         .parser = function(data) {
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceEarn__add_locked_redemption,
+        is_async = private$.is_async
       ))
     },
 
@@ -644,7 +676,8 @@ BinanceEarn <- R6::R6Class(
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per position and the following columns:
+    #' @return (data.table | promise<data.table>) one row per position
+    #'   (empty when there are none):
     #' - total_amount (character) Total amount in the position.
     #' - latest_annual_percentage_rate (character) Current annual yield rate.
     #' - tier_annual_percentage_rate (character | NA) optional;
@@ -678,7 +711,7 @@ BinanceEarn <- R6::R6Class(
     #' }
     get_flexible_position = function(asset = NULL, productId = NULL, current = NULL, size = NULL, recvWindow = NULL) {
       assert_args_BinanceEarn__get_flexible_position(asset, productId, current, size, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/position",
         query = list(
           asset = asset,
@@ -690,7 +723,7 @@ BinanceEarn <- R6::R6Class(
         .parser = function(data) {
           rows <- data$rows
           if (is.null(rows) || length(rows) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_earn_flexible_position())
           }
           # `tierAnnualPercentageRate` can appear on position rows too;
           # same treatment as `get_flexible_products` — JSON-encode so
@@ -710,6 +743,11 @@ BinanceEarn <- R6::R6Class(
           coerce_cols(dt, "subscription_start_time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceEarn__get_flexible_position,
+        is_async = private$.is_async
       ))
     },
 
@@ -785,8 +823,9 @@ BinanceEarn <- R6::R6Class(
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per position and the following columns
-    #'   (snake-case names; Binance's uppercase `APY` lowers to `apy`):
+    #' @return (data.table | promise<data.table>) one row per position
+    #'   (empty when there are none;
+    #'   snake-case names; Binance's uppercase `APY` lowers to `apy`):
     #' - position_id (numeric) Locked position identifier.
     #' - parent_position_id (numeric) Parent position identifier
     #'   (cross-reference for auto-renewed positions).
@@ -842,7 +881,7 @@ BinanceEarn <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceEarn__get_locked_position(asset, positionId, projectId, current, size, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/position",
         query = list(
           asset = asset,
@@ -853,7 +892,7 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(
+          dt <- parse_paginated(
             data,
             time_cols = c(
               "purchase_time",
@@ -862,8 +901,17 @@ BinanceEarn <- R6::R6Class(
               "deliver_date",
               "partial_amt_deliver_date"
             )
-          )[])
+          )
+          if (nrow(dt) == 0L) {
+            return(empty_dt_earn_locked_position())
+          }
+          return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceEarn__get_locked_position,
+        is_async = private$.is_async
       ))
     },
 
@@ -913,7 +961,8 @@ BinanceEarn <- R6::R6Class(
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per subscription record and the following columns:
+    #' @return (data.table | promise<data.table>) one row per subscription record
+    #'   (empty when there are none):
     #' - amount (character) Subscription amount.
     #' - asset (character) Asset symbol.
     #' - time (POSIXct) Subscription time.
@@ -948,7 +997,7 @@ BinanceEarn <- R6::R6Class(
         size,
         recvWindow
       )
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/history/subscriptionRecord",
         query = list(
           productId = productId,
@@ -961,8 +1010,17 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data, time_cols = "time")[])
+          dt <- parse_paginated(data, time_cols = "time")
+          if (nrow(dt) == 0L) {
+            return(empty_dt_earn_flexible_subscription_history())
+          }
+          return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceEarn__get_flexible_subscription_history,
+        is_async = private$.is_async
       ))
     },
 
@@ -1011,7 +1069,8 @@ BinanceEarn <- R6::R6Class(
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per subscription record and the following columns:
+    #' @return (data.table | promise<data.table>) one row per subscription record
+    #'   (empty when there are none):
     #' - amount (character) Subscription amount.
     #' - asset (character) Asset symbol.
     #' - time (POSIXct) Subscription time.
@@ -1046,7 +1105,7 @@ BinanceEarn <- R6::R6Class(
         size,
         recvWindow
       )
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/history/subscriptionRecord",
         query = list(
           purchaseId = purchaseId,
@@ -1058,8 +1117,17 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data, time_cols = "time")[])
+          dt <- parse_paginated(data, time_cols = "time")
+          if (nrow(dt) == 0L) {
+            return(empty_dt_earn_locked_subscription_history())
+          }
+          return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceEarn__get_locked_subscription_history,
+        is_async = private$.is_async
       ))
     },
 
@@ -1107,7 +1175,8 @@ BinanceEarn <- R6::R6Class(
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per redemption record and the following columns:
+    #' @return (data.table | promise<data.table>) one row per redemption record
+    #'   (empty when there are none):
     #' - amount (character) Redemption amount.
     #' - asset (character) Asset symbol.
     #' - time (POSIXct) Redemption time.
@@ -1142,7 +1211,7 @@ BinanceEarn <- R6::R6Class(
         size,
         recvWindow
       )
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/history/redemptionRecord",
         query = list(
           productId = productId,
@@ -1155,8 +1224,17 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data, time_cols = "time")[])
+          dt <- parse_paginated(data, time_cols = "time")
+          if (nrow(dt) == 0L) {
+            return(empty_dt_earn_flexible_redemption_history())
+          }
+          return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceEarn__get_flexible_redemption_history,
+        is_async = private$.is_async
       ))
     },
 
@@ -1204,7 +1282,8 @@ BinanceEarn <- R6::R6Class(
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per redemption record and the following columns:
+    #' @return (data.table | promise<data.table>) one row per redemption record
+    #'   (empty when there are none):
     #' - amount (character) Redemption amount.
     #' - asset (character) Asset symbol.
     #' - time (POSIXct) Redemption time.
@@ -1239,7 +1318,7 @@ BinanceEarn <- R6::R6Class(
         size,
         recvWindow
       )
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/history/redemptionRecord",
         query = list(
           positionId = positionId,
@@ -1252,8 +1331,17 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data, time_cols = c("time", "deliver_date"))[])
+          dt <- parse_paginated(data, time_cols = c("time", "deliver_date"))
+          if (nrow(dt) == 0L) {
+            return(empty_dt_earn_locked_redemption_history())
+          }
+          return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceEarn__get_locked_redemption_history,
+        is_async = private$.is_async
       ))
     }
   )

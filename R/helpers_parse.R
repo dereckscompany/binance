@@ -967,6 +967,175 @@ empty_dt_margin_isolated_account <- function() {
 #' @keywords internal
 #' @noRd
 #' @noassert
+empty_dt_earn_flexible_products <- function() {
+  return(data.table::data.table(
+    asset = character(0),
+    latest_annual_percentage_rate = character(0),
+    tier_annual_percentage_rate = character(0),
+    air_drop_percentage_rate = character(0),
+    can_purchase = logical(0),
+    can_redeem = logical(0),
+    is_sold_out = logical(0),
+    hot = logical(0),
+    min_purchase_amount = character(0),
+    product_id = character(0),
+    subscription_start_time = ms_to_datetime(numeric(0)),
+    status = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_earn_locked_products <- function() {
+  return(data.table::data.table(
+    project_id = character(0),
+    detail_asset = character(0),
+    detail_reward_asset = character(0),
+    detail_duration = integer(0),
+    detail_renewable = logical(0),
+    detail_is_sold_out = logical(0),
+    detail_apr = character(0),
+    detail_status = character(0),
+    detail_subscription_start_time = ms_to_datetime(numeric(0)),
+    detail_extra_reward_asset = character(0),
+    detail_extra_reward_apr = character(0),
+    detail_boost_reward_asset = character(0),
+    detail_boost_apr = character(0),
+    detail_boost_end_time = ms_to_datetime(numeric(0)),
+    quota_total_personal_quota = character(0),
+    quota_minimum = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_earn_flexible_position <- function() {
+  return(data.table::data.table(
+    total_amount = character(0),
+    latest_annual_percentage_rate = character(0),
+    tier_annual_percentage_rate = character(0),
+    yesterday_airdrop_percentage_rate = character(0),
+    asset = character(0),
+    air_drop_asset = character(0),
+    can_redeem = logical(0),
+    collateral_amount = character(0),
+    product_id = character(0),
+    yesterday_real_time_rewards = character(0),
+    cumulative_bonus_rewards = character(0),
+    cumulative_real_time_rewards = character(0),
+    cumulative_total_rewards = character(0),
+    auto_subscribe = logical(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_earn_locked_position <- function() {
+  return(data.table::data.table(
+    position_id = numeric(0),
+    parent_position_id = numeric(0),
+    project_id = character(0),
+    asset = character(0),
+    amount = character(0),
+    purchase_time = ms_to_datetime(numeric(0)),
+    duration = character(0),
+    accrual_days = character(0),
+    reward_asset = character(0),
+    apy = character(0),
+    reward_amt = character(0),
+    extra_reward_asset = character(0),
+    extra_reward_apr = character(0),
+    est_extra_reward_amt = character(0),
+    boost_reward_asset = character(0),
+    boost_apr = character(0),
+    total_boost_reward_amt = character(0),
+    next_pay = character(0),
+    next_pay_date = ms_to_datetime(numeric(0)),
+    pay_period = character(0),
+    redeem_amount_early = character(0),
+    rewards_end_date = ms_to_datetime(numeric(0)),
+    deliver_date = ms_to_datetime(numeric(0)),
+    redeem_period = character(0),
+    redeeming_amt = character(0),
+    redeem_to = character(0),
+    partial_amt_deliver_date = ms_to_datetime(numeric(0)),
+    can_redeem_early = logical(0),
+    can_fast_redemption = logical(0),
+    auto_subscribe = logical(0),
+    type = character(0),
+    status = character(0),
+    can_re_stake = logical(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_earn_flexible_subscription_history <- function() {
+  return(data.table::data.table(
+    amount = character(0),
+    asset = character(0),
+    time = ms_to_datetime(numeric(0)),
+    purchase_id = integer(0),
+    type = character(0),
+    source_account = character(0),
+    status = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_earn_locked_subscription_history <- function() {
+  return(data.table::data.table(
+    amount = character(0),
+    asset = character(0),
+    time = ms_to_datetime(numeric(0)),
+    purchase_id = integer(0),
+    position_id = character(0),
+    lock_period = integer(0),
+    type = character(0),
+    source_account = character(0),
+    status = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_earn_flexible_redemption_history <- function() {
+  return(data.table::data.table(
+    amount = character(0),
+    asset = character(0),
+    time = ms_to_datetime(numeric(0)),
+    project_id = character(0),
+    redeem_id = integer(0),
+    dest_account = character(0),
+    status = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_earn_locked_redemption_history <- function() {
+  return(data.table::data.table(
+    amount = character(0),
+    asset = character(0),
+    time = ms_to_datetime(numeric(0)),
+    position_id = character(0),
+    redeem_id = integer(0),
+    deliver_date = ms_to_datetime(numeric(0)),
+    status = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
 empty_dt_ticker_price <- function() {
   return(data.table::data.table(
     symbol = character(0),
