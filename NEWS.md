@@ -30,15 +30,23 @@
   in both sync and async modes (previously the helpers were generated but never
   invoked). Eight reusable `@type` shapes (`Ohlcv`, `OrderBook`, `Trade`,
   `BookTicker`, `SpotOrderAck`, `SpotOrderQuery`, `FuturesOrder`, `AccountTrade`)
-  are declared once and shared across the methods that return them.
+  are declared once and shared across the methods that return them. Each shape
+  expands inline into the referencing method's `assert_return_*`; binance is a
+  leaf connector, so no standalone `assert_type_<Shape>()` validators are
+  generated or exported (the `@type` block carries no `@genassert` /
+  `@exportassert`).
   - Each list-returning method's empty path now returns a fully-typed zero-row
     `data.table` (the `empty_dt_*()` helpers in `helpers_parse.R`), so a method's
     column contract holds even when the API returns nothing.
-  - A few JSON-number columns whose R type depends on the value's magnitude
-    (`tran_id`, sub-account `free`/`locked`) are coerced to a stable `numeric`
-    so the schema no longer flips between `integer` and `double`. Columns that
-    can legitimately be absent in the payload are typed `| NA`, and the handful
-    of methods whose payload shape varies per call (sub-account futures/margin
+  - JSON-number columns whose R type depends on the value's magnitude are coerced
+    to a stable `numeric` so the schema no longer flips between `integer` and
+    `double`: every `tran_id` (spot/sub-account transfers, margin borrow / repay /
+    isolated transfer, futures income) and sub-account `free`/`locked`. A
+    transaction id is a large identifier that overflows R's 32-bit `integer`, so
+    `numeric` is the correct, uniform type. Genuine whole-number counters (trade
+    counts, IDs that stay in range) remain `integer`. Columns that can
+    legitimately be absent in the payload are typed `| NA`, and the handful of
+    methods whose payload shape varies per call (sub-account futures/margin
     account, locked-earn position) are typed as a plain `data.table`.
 
 # binance 0.4.0
