@@ -123,7 +123,7 @@ BinanceTransfer <- R6::R6Class(
     #' @param toSymbol (scalar<character>?) mandatory when `type` involves
     #'   isolated margin (e.g., `"BNBUSDT"`).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - tran_id (numeric) Unique transfer identifier assigned by Binance.
     #'
     #' @examples
@@ -167,7 +167,7 @@ BinanceTransfer <- R6::R6Class(
         )
       )
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/asset/transfer",
         method = "POST",
         query = list(
@@ -181,6 +181,11 @@ BinanceTransfer <- R6::R6Class(
         .parser = function(data) {
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceTransfer__add_transfer,
+        is_async = private$.is_async
       ))
     },
 
@@ -230,7 +235,8 @@ BinanceTransfer <- R6::R6Class(
     #' @param toSymbol (scalar<character>?) must be sent when `type` involves
     #'   isolated margin.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per transfer and the following columns:
+    #' @return (data.table | promise<data.table>) one row per transfer
+    #'   (empty when there are no matching transfers):
     #' - asset (character) Transferred asset (e.g., `"USDT"`).
     #' - amount (character) Amount transferred.
     #' - type (character) Transfer type (e.g., `"MAIN_UMFUTURE"`).
@@ -288,7 +294,7 @@ BinanceTransfer <- R6::R6Class(
         )
       )
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/asset/transfer",
         query = list(
           type = type,
@@ -301,8 +307,17 @@ BinanceTransfer <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data, time_cols = "timestamp")[])
+          dt <- parse_paginated(data, time_cols = "timestamp")
+          if (nrow(dt) == 0L) {
+            return(empty_dt_transfer_history())
+          }
+          return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceTransfer__get_transfer_history,
+        is_async = private$.is_async
       ))
     }
   )
