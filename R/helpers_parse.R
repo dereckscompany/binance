@@ -702,6 +702,75 @@ empty_dt_transfer_history <- function() {
 #' @keywords internal
 #' @noRd
 #' @noassert
+empty_dt_margin_all_pairs <- function() {
+  return(data.table::data.table(
+    base = character(0),
+    id = integer(0),
+    is_buy_allowed = logical(0),
+    is_margin_trade = logical(0),
+    is_sell_allowed = logical(0),
+    quote = character(0),
+    symbol = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_margin_isolated_pairs <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    base = character(0),
+    quote = character(0),
+    is_margin_trade = logical(0),
+    is_buy_allowed = logical(0),
+    is_sell_allowed = logical(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_margin_interest_rate <- function() {
+  return(data.table::data.table(
+    asset = character(0),
+    daily_interest_rate = character(0),
+    timestamp = ms_to_datetime(numeric(0)),
+    vip_level = integer(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_cross_margin_data <- function() {
+  return(data.table::data.table(
+    vip_level = integer(0),
+    coin = character(0),
+    transfer_in = logical(0),
+    transfer_out = logical(0),
+    borrowable = logical(0),
+    daily_interest = character(0),
+    yearly_interest = character(0),
+    marginable_pair = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_isolated_margin_data <- function() {
+  return(data.table::data.table(
+    vip_level = integer(0),
+    symbol = character(0),
+    leverage = character(0),
+    data = list()
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
 empty_dt_ticker_price <- function() {
   return(data.table::data.table(
     symbol = character(0),

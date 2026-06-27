@@ -214,7 +214,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
+(data.table | promise<data.table>) one row per pair:
 \itemize{
 \item base (character) Base asset code (e.g., \code{"BTC"}).
 \item id (integer) Pair identifier.
@@ -298,7 +298,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
+(data.table | promise<data.table>) one row per pair:
 \itemize{
 \item symbol (character) Trading pair identifier (e.g., \code{"BTCUSDT"}).
 \item base (character) Base asset code (e.g., \code{"BTC"}).
@@ -364,7 +364,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item calc_time (POSIXct) Calculation time as UTC datetime.
 \item price (character) Margin price index value.
@@ -454,7 +454,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
+(data.table | promise<data.table>) one row per rate record:
 \itemize{
 \item asset (character) Asset code (e.g., \code{"BTC"}).
 \item daily_interest_rate (character) Daily interest rate as string.
@@ -547,7 +547,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
+(data.table | promise<data.table>) one row per coin-pair combination:
 \itemize{
 \item vip_level (integer) VIP level tier.
 \item coin (character) Coin code (e.g., \code{"BTC"}).
@@ -660,7 +660,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
+(data.table | promise<data.table>) one row per symbol:
 \itemize{
 \item vip_level (integer) VIP level tier.
 \item symbol (character) Trading pair identifier.
