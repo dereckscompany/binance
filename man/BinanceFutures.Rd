@@ -285,8 +285,8 @@ mode <- futures$get_position_mode()
 print(mode$dual_side_position)
 }
 }
-\section{Super class}{
-\code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceFutures}
+\section{Super classes}{
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceFutures}
 }
 \section{Methods}{
 \subsection{Public methods}{

@@ -102,8 +102,8 @@ recent <- deposit$get_deposit_history(
 )
 }
 }
-\section{Super class}{
-\code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceDeposit}
+\section{Super classes}{
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceDeposit}
 }
 \section{Methods}{
 \subsection{Public methods}{

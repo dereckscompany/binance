@@ -1,107 +1,60 @@
 # File: R/helpers_request.R
-# Core HTTP request infrastructure for the binance package.
-# Provides sign_request(), binance_build_request().
-
-#' Apply Continuation to a Value or Promise
-#'
-#' Routes a value through `fn` either synchronously or asynchronously depending on
-#' whether the caller is in async mode. This is the single sync/async branching
-#' point in the package.
-#'
-#' @param x A value or a [promises::promise].
-#' @param fn A function to apply to the resolved value of `x`.
-#' @param is_async Logical; whether the caller is in async mode.
-#' @return If `is_async`, returns `promises::then(x, fn)`. Otherwise returns `fn(x)`.
-#' @keywords internal
-#' @noRd
-then_or_now <- function(x, fn, is_async = FALSE) {
-  if (is_async) {
-    return(promises::then(x, fn))
-  }
-  return(fn(x))
-}
+# Binance-specific request helpers layered over the connectcore transport base.
+# The request funnel, sync/async branching, retry, and throttle all live in
+# connectcore; this file keeps only what is genuinely Binance-specific — the
+# HMAC-query signer (X-MBX-APIKEY) and the negative-code error envelope — plus
+# thin compatibility wrappers (`fetch_server_time_ms`, `binance_build_request`)
+# that preserve the package's historical signatures.
 
 #' Fetch Binance Server Time (Milliseconds)
 #'
 #' Makes a lightweight synchronous `GET /api/v3/time` request and returns
 #' the server's epoch time in milliseconds. Used internally when
 #' `time_source = "server"` to avoid clock-drift issues with HMAC signing.
+#' Thin wrapper over [connectcore::fetch_server_time_ms()] that defaults the
+#' endpoint to the spot one (subclasses pass the futures endpoint).
 #'
 #' @param base_url Character; the API base URL.
+#' @param time_endpoint Character; the server-time endpoint path. Default
+#'   `"/api/v3/time"`.
 #' @return Numeric; server time in epoch milliseconds.
 #' @keywords internal
 #' @noRd
 fetch_server_time_ms <- function(base_url, time_endpoint = "/api/v3/time") {
-  req <- httr2::request(base_url)
-  req <- httr2::req_url_path_append(req, time_endpoint)
-  req <- httr2::req_method(req, "GET")
-  req <- httr2::req_timeout(req, 5)
-  resp <- httr2::req_perform(req)
-  parsed <- httr2::resp_body_json(resp, simplifyVector = FALSE)
-  if (is.null(parsed$serverTime)) {
-    rlang::abort("Failed to fetch Binance server time: unexpected response format.")
-  }
-  return(as.numeric(parsed$serverTime))
+  return(connectcore::fetch_server_time_ms(base_url, time_endpoint, field = "serverTime"))
 }
 
 #' Sign an httr2 Request for Binance Authentication
 #'
 #' Adds the `X-MBX-APIKEY` header and appends `timestamp` and `signature`
-#' query parameters to an [httr2::request] object using HMAC-SHA256.
+#' query parameters to an [httr2::request] object using HMAC-SHA256. A thin
+#' wrapper over [connectcore::hmac_query_sign()] fixing Binance's header name.
 #'
 #' @param req An [httr2::request] object to sign.
 #' @param keys List of API credentials containing `api_key` and `api_secret`.
 #' @param .get_timestamp_ms Function or NULL; zero-argument function returning
-#'   epoch milliseconds. When `NULL` (default), falls back to `Sys.time()`.
+#'   epoch milliseconds. When `NULL` (default), falls back to the local UTC clock.
 #' @return The signed [httr2::request] object with authentication applied.
 #'
-#' @importFrom digest hmac
-#' @importFrom httr2 req_headers req_url_query url_parse
 #' @keywords internal
 #' @noRd
 sign_request <- function(req, keys, .get_timestamp_ms = NULL) {
-  if (is.null(.get_timestamp_ms)) {
-    .get_timestamp_ms <- function() floor(as.numeric(lubridate::now("UTC")) * 1000)
-  }
-  timestamp <- format(.get_timestamp_ms(), scientific = FALSE)
-
-  # Add timestamp to query
-  req <- httr2::req_url_query(req, timestamp = timestamp)
-
-  # Extract full query string for signing (must match URL-encoded form httr2 sends)
-  parsed_url <- httr2::url_parse(req$url)
-  query_string <- ""
-  if (length(parsed_url$query) > 0) {
-    encoded_vals <- vapply(
-      parsed_url$query,
-      function(v) {
-        return(utils::URLencode(v, reserved = TRUE))
-      },
-      character(1)
-    )
-    query_string <- paste0(names(parsed_url$query), "=", encoded_vals, collapse = "&")
-  }
-
-  # Compute HMAC-SHA256 signature (hex-encoded)
-  signature <- digest::hmac(
-    key = keys$api_secret,
-    object = query_string,
-    algo = "sha256",
-    serialize = FALSE
-  )
-
-  # Add signature and API key header
-  req <- httr2::req_url_query(req, signature = signature)
-  req <- httr2::req_headers(req, `X-MBX-APIKEY` = keys$api_key)
-
-  return(req)
+  return(connectcore::hmac_query_sign(
+    req,
+    keys,
+    get_timestamp_ms = .get_timestamp_ms,
+    api_key_header = "X-MBX-APIKEY"
+  ))
 }
 
 #' Build and Execute a Binance API Request
 #'
 #' Constructs an [httr2::request], optionally signs it, performs it via the supplied
 #' `.perform` function, and parses the JSON response. This is the single
-#' point through which all Binance API calls flow.
+#' point through which all Binance API calls flow. A thin wrapper over
+#' [connectcore::build_request()] that injects Binance's signer and error
+#' envelope and carries signed parameters in the query string
+#' (`body_format = "query"`).
 #'
 #' @param base_url Character; the API base URL.
 #' @param endpoint Character; the API path.
@@ -118,9 +71,6 @@ sign_request <- function(req, keys, .get_timestamp_ms = NULL) {
 #'   epoch milliseconds for HMAC signing.
 #' @return Parsed and post-processed API response data, or a promise thereof.
 #'
-#' @importFrom httr2 request req_method req_url_path_append req_url_query req_body_form
-#'   req_timeout req_perform url_parse
-#' @importFrom jsonlite toJSON
 #' @export
 binance_build_request <- function(
   base_url,
@@ -135,51 +85,30 @@ binance_build_request <- function(
   timeout = 10,
   .get_timestamp_ms = NULL
 ) {
-  req <- httr2::request(base_url)
-  req <- httr2::req_url_path_append(req, endpoint)
-  req <- httr2::req_method(req, method)
-  req <- httr2::req_timeout(req, timeout)
-
-  # Add query parameters (drop NULLs)
-  query <- query[!vapply(query, is.null, logical(1))]
-  if (length(query) > 0) {
-    req <- httr2::req_url_query(req, !!!query)
-  }
-
-  # For POST with body, add as form-encoded query parameters
-  # Binance uses query string parameters for signed endpoints, not JSON body
-  if (!is.null(body)) {
-    body <- body[!vapply(body, is.null, logical(1))]
-    if (length(body) > 0) {
-      req <- httr2::req_url_query(req, !!!body)
-    }
-  }
-
-  # Suppress httr2 auto-error so parse_binance_response handles errors
-  req <- httr2::req_error(req, is_error = function(resp) FALSE)
-
-  # Sign if authenticated
-  if (!is.null(keys)) {
-    req <- sign_request(req, keys, .get_timestamp_ms = .get_timestamp_ms)
-  }
-
-  result <- .perform(req)
-
-  # Single branching point: parse response then apply .parser
-  return(then_or_now(
-    result,
-    function(resp) {
-      data <- parse_binance_response(resp)
-      return(.parser(data))
-    },
-    is_async = is_async
+  return(connectcore::build_request(
+    base_url = base_url,
+    endpoint = endpoint,
+    method = method,
+    query = query,
+    body = body,
+    keys = keys,
+    sign = function(req, keys, ctx) sign_request(req, keys, ctx$get_timestamp_ms),
+    parse_envelope = parse_binance_response,
+    body_format = "query",
+    .perform = .perform,
+    .parser = .parser,
+    is_async = is_async,
+    timeout = timeout,
+    ctx = list(get_timestamp_ms = .get_timestamp_ms)
   ))
 }
 
 #' Parse and Validate a Binance API Response
 #'
 #' Extracts JSON from an [httr2::response], validates the HTTP status and checks
-#' for Binance error codes, and returns the parsed data.
+#' for Binance error codes, and returns the parsed data. This is Binance's
+#' venue-specific error envelope: a negative `code` in the JSON body signals an
+#' API error even on a non-200 status.
 #'
 #' @param resp An [httr2::response] object.
 #' @return The parsed JSON response data.

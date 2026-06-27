@@ -9,6 +9,15 @@
 #' arrive on R's event loop (the `later` package, which, like Node, is built on
 #' libuv). Subclasses such as [BinanceMarketStream] add typed stream methods.
 #'
+#' ### Transport
+#' This class is a thin Binance specialisation of [connectcore::StreamClient], the
+#' shared WebSocket transport base. Auto-reconnect (full-jitter backoff), the
+#' keepalive tick, the silence watchdog, proactive reconnect, and the event loop
+#' all live in `connectcore`; `BinanceWsBase` only supplies the two stream-specific
+#' seams — how a raw frame becomes events (`.dispatch()`, which filters Binance's
+#' control acks and routes per-stream) and what to re-send after a (re)connect
+#' (`.resubscribe()`) — plus Binance's `SUBSCRIBE` / `UNSUBSCRIBE` control protocol.
+#'
 #' ### Why no `async` flag (unlike the REST classes)
 #' A REST call has a single result, so it can return a value (sync) or a promise
 #' (async). A socket is an endless push stream with no single result, so the only
@@ -32,9 +41,8 @@
 #' - **Ping/pong** keepalive is answered automatically by the `websocket` package.
 #'
 #' ### Dependencies
-#' Built on the `websocket` (the client) and `later` (R's libuv event loop)
-#' packages, both hard `Imports` — no optional-dependency dance, they are always
-#' present.
+#' Built on [connectcore::StreamClient], itself built on the `websocket` (the
+#' client) and `later` (R's libuv event loop) packages.
 #'
 #' @examples
 #' \dontrun{
@@ -49,6 +57,7 @@
 #' @export
 BinanceWsBase <- R6::R6Class(
   "BinanceWsBase",
+  inherit = connectcore::StreamClient,
   public = list(
     #' @description
     #' Initialise a BinanceWsBase Object
@@ -72,11 +81,15 @@ BinanceWsBase <- R6::R6Class(
       proactive_reconnect = TRUE
     ) {
       assert_args_BinanceWsBase__initialize(base_url, auto_reconnect, max_reconnects, proactive_reconnect)
-      private$.base_url <- base_url
-      private$.auto_reconnect <- isTRUE(auto_reconnect)
-      private$.max_reconnects <- as.integer(max_reconnects)
-      private$.proactive_reconnect <- isTRUE(proactive_reconnect)
-      private$.handlers <- list(open = list(), message = list(), close = list(), error = list())
+      super$initialize(
+        url = base_url,
+        auto_reconnect = auto_reconnect,
+        # connectcore's StreamClient types max_reconnects as a double (it accepts
+        # Inf); Binance's own contract counts it, so coerce to numeric here.
+        max_reconnects = as.numeric(max_reconnects),
+        # Binance forces a disconnect at 24h; refresh proactively at 23h.
+        proactive_reconnect = if (isTRUE(proactive_reconnect)) 23 * 3600 else NULL
+      )
       return(invisible(assert_return_BinanceWsBase__initialize(self)))
     },
 
@@ -90,30 +103,8 @@ BinanceWsBase <- R6::R6Class(
     #' @return (class<BinanceWsBase>) invisibly, self (chainable).
     on = function(event, handler) {
       assert_args_BinanceWsBase__on(event, handler)
-      private$.handlers[[event]] <- c(private$.handlers[[event]], handler)
+      super$on(event, handler)
       return(invisible(assert_return_BinanceWsBase__on(self)))
-    },
-
-    #' @description
-    #' Open the Connection
-    #'
-    #' Wires the socket callbacks and starts connecting, then returns immediately
-    #' (non-blocking) — handlers only fire once something pumps `later`. Idempotent:
-    #' a no-op if already open. With `$run()` you do not call this directly (it
-    #' connects for you); call it yourself when you drive the loop, i.e.
-    #' `$connect()` then `while (!later::loop_empty()) later::run_now(0.1)`, or when
-    #' the client lives inside an app (Shiny, a trading engine) that already runs a
-    #' `later` loop — there the host loop fires your handlers. (The `0.1` timeout
-    #' makes each tick wait for work instead of busy-spinning.)
-    #' @return (class<BinanceWsBase>) invisibly, self.
-    connect = function() {
-      if (private$.is_connecting_or_open()) {
-        return(invisible(self))
-      }
-      private$.running <- TRUE
-      private$.schedule_keepalive()
-      private$.open_socket()
-      return(invisible(assert_return_BinanceWsBase__connect(self)))
     },
 
     #' @description
@@ -127,7 +118,7 @@ BinanceWsBase <- R6::R6Class(
       assert_args_BinanceWsBase__subscribe(streams)
       streams <- tolower(streams)
       private$.streams <- union(private$.streams, streams)
-      if (private$.is_open()) {
+      if (self$is_open()) {
         private$.send_control("SUBSCRIBE", streams)
       }
       return(invisible(assert_return_BinanceWsBase__subscribe(self)))
@@ -142,77 +133,10 @@ BinanceWsBase <- R6::R6Class(
       streams <- tolower(streams)
       private$.streams <- setdiff(private$.streams, streams)
       private$.stream_handlers[streams] <- NULL
-      if (private$.is_open()) {
+      if (self$is_open()) {
         private$.send_control("UNSUBSCRIBE", streams)
       }
       return(invisible(assert_return_BinanceWsBase__unsubscribe(self)))
-    },
-
-    #' @description
-    #' Send a Raw Control Message
-    #' @param message (scalar<character>) a JSON string to send on the socket.
-    #' @return (class<BinanceWsBase>) invisibly, self.
-    send = function(message) {
-      assert_args_BinanceWsBase__send(message)
-      if (!private$.is_open()) {
-        rlang::abort("Cannot send: socket is not open.")
-      }
-      private$.ws$send(message)
-      return(invisible(assert_return_BinanceWsBase__send(self)))
-    },
-
-    #' @description
-    #' Run the Event Loop (keep the process alive)
-    #'
-    #' Connects if needed, then blocks and pumps R's `later` event loop so handlers
-    #' keep firing — the equivalent of Node keeping a process alive while a socket
-    #' is open. It runs until the client is closed: either `$close()` is called
-    #' (e.g. from a handler) or reconnects are exhausted.
-    #'
-    #' Teardown is clean and guaranteed: a normal close, an **interrupt** (Ctrl-C),
-    #' or an error all close the socket and cancel timers on the way out (via
-    #' `on.exit()`), so you never leave a half-open connection. An interrupt is
-    #' caught and returns quietly; any other error still propagates after cleanup.
-    #'
-    #' `$run()` is convenience for a standalone client; when you embed the client in
-    #' a program that already drives a `later` loop, use `$connect()` and let that
-    #' loop pump instead (see `$connect()`).
-    #'
-    #' @param timeout (scalar<numeric in ]0, Inf[>) seconds each `later::run_now()`
-    #'   tick waits for work before looping (keeps CPU near zero between messages).
-    #'   Default `0.1`.
-    #' @return (class<BinanceWsBase>) invisibly, self.
-    run = function(timeout = 0.1) {
-      assert_args_BinanceWsBase__run(timeout)
-      if (!private$.is_connecting_or_open()) {
-        self$connect()
-      }
-      on.exit(self$close(), add = TRUE)
-      tryCatch(
-        while (isTRUE(private$.running)) {
-          later::run_now(timeout)
-        },
-        interrupt = function(cnd) {
-          return(invisible(NULL))
-        }
-      )
-      return(invisible(assert_return_BinanceWsBase__run(self)))
-    },
-
-    #' @description
-    #' Close the Connection
-    #'
-    #' Stops auto-reconnect, cancels timers, and closes the socket. After this,
-    #' `$run()` returns.
-    #' @return (class<BinanceWsBase>) invisibly, self.
-    close = function() {
-      private$.running <- FALSE
-      private$.cancel_keepalive()
-      private$.cancel_timers()
-      if (!is.null(private$.ws)) {
-        try(private$.ws$close(), silent = TRUE)
-      }
-      return(invisible(assert_return_BinanceWsBase__close(self)))
     },
 
     #' @description
@@ -220,76 +144,12 @@ BinanceWsBase <- R6::R6Class(
     #' @return (character) subscribed stream names (possibly length 0).
     subscriptions = function() {
       return(assert_return_BinanceWsBase__subscriptions(private$.streams))
-    },
-
-    #' @description
-    #' Is the Socket Open?
-    #' @return (scalar<logical>) `TRUE` if the socket is open.
-    is_open = function() {
-      return(assert_return_BinanceWsBase__is_open(private$.is_open()))
     }
   ),
   private = list(
-    .base_url = NULL,
-    .auto_reconnect = TRUE,
-    .max_reconnects = 10L,
-    .proactive_reconnect = TRUE,
-    .ws = NULL,
     .streams = character(0),
-    .handlers = NULL,
     .stream_handlers = list(),
-    .running = FALSE,
-    .reconnect_attempts = 0L,
     .next_id = 0L,
-    .reconnect_timer = NULL,
-    .proactive_timer = NULL,
-    .keepalive_timer = NULL,
-    .proactive_closing = FALSE,
-
-    # ---- Connection ----
-
-    .open_socket = function() {
-      ws <- websocket::WebSocket$new(private$.base_url, autoConnect = FALSE)
-      ws$onOpen(function(event) {
-        private$.reconnect_attempts <- 0L
-        private$.resubscribe()
-        private$.schedule_proactive_reconnect()
-        private$.emit("open", event)
-        return(invisible(NULL))
-      })
-      ws$onMessage(function(event) {
-        private$.dispatch(event$data)
-        return(invisible(NULL))
-      })
-      ws$onClose(function(event) {
-        private$.cancel_timers()
-        private$.emit("close", event)
-        if (isTRUE(private$.running)) {
-          if (isTRUE(private$.proactive_closing)) {
-            private$.proactive_closing <- FALSE
-            private$.open_socket() # planned 23h refresh: reconnect now, no backoff
-          } else if (private$.auto_reconnect) {
-            private$.schedule_reconnect()
-          }
-        }
-        return(invisible(NULL))
-      })
-      ws$onError(function(event) {
-        private$.emit("error", event)
-        return(invisible(NULL))
-      })
-      private$.ws <- ws
-      ws$connect()
-      return(invisible(NULL))
-    },
-
-    .is_open = function() {
-      return(!is.null(private$.ws) && identical(private$.ws$readyState(), 1L))
-    },
-
-    .is_connecting_or_open = function() {
-      return(!is.null(private$.ws) && private$.ws$readyState() %in% c(0L, 1L))
-    },
 
     # ---- Dispatch ----
 
@@ -307,9 +167,7 @@ BinanceWsBase <- R6::R6Class(
         private$.emit("error", jsonlite::fromJSON(raw, simplifyVector = FALSE))
         return(invisible(NULL))
       }
-      for (h in private$.handlers$message) {
-        private$.safe_call(h, raw)
-      }
+      private$.emit("message", raw)
       if (length(private$.stream_handlers) > 0L) {
         parsed <- tryCatch(jsonlite::fromJSON(raw, simplifyVector = FALSE), error = function(e) NULL)
         stream <- parsed$stream
@@ -319,22 +177,6 @@ BinanceWsBase <- R6::R6Class(
           }
         }
       }
-      return(invisible(NULL))
-    },
-
-    .emit = function(event, payload) {
-      for (h in private$.handlers[[event]]) {
-        private$.safe_call(h, payload)
-      }
-      return(invisible(NULL))
-    },
-
-    # A throwing handler warns but never kills the loop.
-    .safe_call = function(handler, payload) {
-      tryCatch(
-        handler(payload),
-        error = function(e) rlang::warn(sprintf("WebSocket handler error: %s", conditionMessage(e)))
-      )
       return(invisible(NULL))
     },
 
@@ -355,88 +197,15 @@ BinanceWsBase <- R6::R6Class(
         return(invisible(NULL))
       }
       private$.next_id <- private$.next_id + 1L
-      private$.ws$send(ws_control_message(method, streams, private$.next_id))
+      self$send(ws_control_message(method, streams, private$.next_id))
       return(invisible(NULL))
     },
 
+    # Replay tracked subscriptions after every (re)connect (the StreamClient hook).
     .resubscribe = function() {
       if (length(private$.streams) > 0L) {
         private$.send_control("SUBSCRIBE", private$.streams)
       }
-      return(invisible(NULL))
-    },
-
-    # ---- Reconnection ----
-
-    .schedule_reconnect = function() {
-      private$.reconnect_attempts <- private$.reconnect_attempts + 1L
-      if (private$.reconnect_attempts > private$.max_reconnects) {
-        rlang::warn(sprintf(
-          "WebSocket: giving up after %d failed reconnects.", private$.max_reconnects
-        ))
-        private$.running <- FALSE
-        private$.cancel_keepalive()
-        return(invisible(NULL))
-      }
-      delay <- ws_backoff_delay(private$.reconnect_attempts)
-      private$.reconnect_timer <- later::later(function() {
-        if (isTRUE(private$.running)) {
-          private$.open_socket()
-        }
-        return(invisible(NULL))
-      }, delay)
-      return(invisible(NULL))
-    },
-
-    .schedule_proactive_reconnect = function() {
-      if (!private$.proactive_reconnect) {
-        return(invisible(NULL))
-      }
-      private$.proactive_timer <- later::later(function() {
-        if (isTRUE(private$.running) && !is.null(private$.ws)) {
-          private$.proactive_closing <- TRUE # tell onClose this is a planned refresh
-          try(private$.ws$close(), silent = TRUE)
-        }
-        return(invisible(NULL))
-      }, 23 * 3600)
-      return(invisible(NULL))
-    },
-
-    .cancel_timers = function() {
-      # later::later() returns a function that cancels the callback when called.
-      for (t in list(private$.reconnect_timer, private$.proactive_timer)) {
-        if (is.function(t)) {
-          try(t(), silent = TRUE)
-        }
-      }
-      private$.reconnect_timer <- NULL
-      private$.proactive_timer <- NULL
-      return(invisible(NULL))
-    },
-
-    # ---- Keepalive ----
-
-    # Keep one task on the `later` queue for the whole active lifetime, so a caller
-    # driving the loop with `while (!later::loop_empty()) later::run_now()` never
-    # sees an empty queue during the async connect handshake (or between messages)
-    # and exits early. The *pending* heartbeat is what matters, not its firing, so a
-    # long interval costs nothing; it re-arms while running and spans reconnects, so
-    # it is cancelled only on a real stop — not in `.cancel_timers()`.
-    .schedule_keepalive = function() {
-      private$.keepalive_timer <- later::later(function() {
-        if (isTRUE(private$.running)) {
-          private$.schedule_keepalive()
-        }
-        return(invisible(NULL))
-      }, 30)
-      return(invisible(NULL))
-    },
-
-    .cancel_keepalive = function() {
-      if (is.function(private$.keepalive_timer)) {
-        try(private$.keepalive_timer(), silent = TRUE)
-      }
-      private$.keepalive_timer <- NULL
       return(invisible(NULL))
     }
   )

@@ -49,5 +49,8 @@ Parsed and post-processed API response data, or a promise thereof.
 \description{
 Constructs an \link[httr2:request]{httr2::request}, optionally signs it, performs it via the supplied
 \code{.perform} function, and parses the JSON response. This is the single
-point through which all Binance API calls flow.
+point through which all Binance API calls flow. A thin wrapper over
+\code{\link[connectcore:build_request]{connectcore::build_request()}} that injects Binance's signer and error
+envelope and carries signed parameters in the query string
+(\code{body_format = "query"}).
 }

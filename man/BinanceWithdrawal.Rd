@@ -105,8 +105,8 @@ recent <- withdrawal$get_withdrawal_history(
 )
 }
 }
-\section{Super class}{
-\code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceWithdrawal}
+\section{Super classes}{
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceWithdrawal}
 }
 \section{Methods}{
 \subsection{Public methods}{

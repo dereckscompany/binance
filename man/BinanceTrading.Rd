@@ -167,8 +167,8 @@ all <- trading$get_all_orders("BTCUSDT", limit = 50)
 print(all[, .(order_id, side, price, status, time)])
 }
 }
-\section{Super class}{
-\code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceTrading}
+\section{Super classes}{
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceTrading}
 }
 \section{Methods}{
 \subsection{Public methods}{

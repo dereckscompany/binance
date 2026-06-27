@@ -258,8 +258,8 @@ result <- margin$add_isolated_transfer(
 print(result)
 }
 }
-\section{Super class}{
-\code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceMargin}
+\section{Super classes}{
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceMargin}
 }
 \section{Methods}{
 \subsection{Public methods}{

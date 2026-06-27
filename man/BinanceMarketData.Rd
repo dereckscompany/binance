@@ -216,8 +216,8 @@ all_klines <- market$get_klines(
 )
 }
 }
-\section{Super class}{
-\code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceMarketData}
+\section{Super classes}{
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceMarketData}
 }
 \section{Methods}{
 \subsection{Public methods}{
