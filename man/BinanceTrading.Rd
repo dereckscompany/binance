@@ -294,7 +294,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row per fill (one row with
+\code{NA} \verb{fill_*} columns when the order had no fills):
 \itemize{
 \item symbol (character) Trading pair (e.g., \code{"BTCUSDT"}).
 \item order_id (integer) Unique order identifier assigned by Binance.
@@ -450,8 +451,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>)
-with a single row and a single \code{validated} (logical) column,
+(data.table | promise<data.table>) a single row with a single
+\code{validated} (logical) column,
 set to \code{TRUE} on success. Binance returns \code{{}} on a successful
 test order — the absence of an error is the validation
 signal, so we don't fabricate a stub row echoing the request
@@ -542,7 +543,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair.
 \item orig_client_order_id (character) Original client order ID.
@@ -653,8 +654,10 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) .
-When orders are cancelled, one row per order with columns:
+(data.table | promise<data.table>) one row per cancelled order
+(empty when there were no open orders to cancel, per the cross-package
+"no stub rows" convention — the absence of an error is the success
+signal):
 \itemize{
 \item symbol (character) Trading pair.
 \item orig_client_order_id (character) Original client order ID.
@@ -672,10 +675,6 @@ When orders are cancelled, one row per order with columns:
 \item self_trade_prevention_mode (character) STP mode applied.
 \item transact_time (POSIXct) Cancellation time.
 }
-
-When there were no open orders to cancel, the return is an
-empty \code{data.table} (per the cross-package "no stub rows"
-convention — the absence of an error is the success signal).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -764,29 +763,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
-\itemize{
-\item symbol (character) Trading pair.
-\item order_id (integer) Unique order identifier.
-\item order_list_id (integer) OCO order list ID; \code{-1} if not an OCO.
-\item client_order_id (character) Client-assigned order ID.
-\item price (character) Order price.
-\item orig_qty (character) Original requested quantity.
-\item executed_qty (character) Quantity filled so far.
-\item cummulative_quote_qty (character) Cumulative quote asset transacted.
-\item status (character) Order status (\code{"NEW"}, \code{"FILLED"}, \code{"CANCELED"}, etc.).
-\item time_in_force (character) Time-in-force policy.
-\item type (character) Order type.
-\item side (character) \code{"BUY"} or \code{"SELL"}.
-\item stop_price (character) Trigger price for stop orders.
-\item iceberg_qty (character) Iceberg quantity.
-\item is_working (logical) Whether the order is on the order book.
-\item orig_quote_order_qty (character) Original quote order quantity.
-\item working_time (POSIXct) Time when the order started working.
-\item self_trade_prevention_mode (character) STP mode applied.
-\item time (POSIXct) Order creation time converted from \code{time}.
-\item update_time (POSIXct) Last update time converted from \code{updateTime}.
-}
+(SpotOrderQuery | promise<SpotOrderQuery>) one row, the order.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -869,29 +846,8 @@ If NULL, returns open orders for all symbols (weight 80).}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per open order and the following columns:
-\itemize{
-\item symbol (character) Trading pair.
-\item order_id (integer) Unique order identifier.
-\item order_list_id (integer) OCO order list ID; \code{-1} if not an OCO.
-\item client_order_id (character) Client-assigned order ID.
-\item price (character) Order price.
-\item orig_qty (character) Original requested quantity.
-\item executed_qty (character) Quantity filled so far.
-\item cummulative_quote_qty (character) Cumulative quote asset transacted.
-\item status (character) Order status (typically \code{"NEW"} or \code{"PARTIALLY_FILLED"}).
-\item time_in_force (character) Time-in-force policy.
-\item type (character) Order type.
-\item side (character) \code{"BUY"} or \code{"SELL"}.
-\item stop_price (character) Trigger price for stop orders.
-\item iceberg_qty (character) Iceberg quantity.
-\item is_working (logical) Whether the order is on the order book.
-\item orig_quote_order_qty (character) Original quote order quantity.
-\item working_time (POSIXct) Time when the order started working.
-\item self_trade_prevention_mode (character) STP mode applied.
-\item time (POSIXct) Order creation time converted from \code{time}.
-\item update_time (POSIXct) Last update time converted from \code{updateTime}.
-}
+(SpotOrderQuery | promise<SpotOrderQuery>) one row per open order
+(empty when there are no open orders).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -1012,29 +968,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per order and the following columns:
-\itemize{
-\item symbol (character) Trading pair.
-\item order_id (integer) Unique order identifier.
-\item order_list_id (integer) OCO order list ID; \code{-1} if not an OCO.
-\item client_order_id (character) Client-assigned order ID.
-\item price (character) Order price.
-\item orig_qty (character) Original requested quantity.
-\item executed_qty (character) Quantity filled so far.
-\item cummulative_quote_qty (character) Cumulative quote asset transacted.
-\item status (character) Order status (\code{"NEW"}, \code{"FILLED"}, \code{"CANCELED"}, etc.).
-\item time_in_force (character) Time-in-force policy.
-\item type (character) Order type.
-\item side (character) \code{"BUY"} or \code{"SELL"}.
-\item stop_price (character) Trigger price for stop orders.
-\item iceberg_qty (character) Iceberg quantity.
-\item is_working (logical) Whether the order is on the order book.
-\item orig_quote_order_qty (character) Original quote order quantity.
-\item working_time (POSIXct) Time when the order started working.
-\item self_trade_prevention_mode (character) STP mode applied.
-\item time (POSIXct) Order creation time converted from \code{time}.
-\item update_time (POSIXct) Last update time converted from \code{updateTime}.
-}
+(SpotOrderQuery | promise<SpotOrderQuery>) one row per order
+(empty when there are no matching orders).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

@@ -493,6 +493,86 @@ empty_dt_rate_limit <- function() {
 #' @keywords internal
 #' @noRd
 #' @noassert
+empty_dt_spot_order_query <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    order_id = integer(0),
+    order_list_id = integer(0),
+    client_order_id = character(0),
+    price = character(0),
+    orig_qty = character(0),
+    executed_qty = character(0),
+    cummulative_quote_qty = character(0),
+    status = character(0),
+    time_in_force = character(0),
+    type = character(0),
+    side = character(0),
+    stop_price = character(0),
+    iceberg_qty = character(0),
+    is_working = logical(0),
+    orig_quote_order_qty = character(0),
+    working_time = ms_to_datetime(numeric(0)),
+    self_trade_prevention_mode = character(0),
+    time = ms_to_datetime(numeric(0)),
+    update_time = ms_to_datetime(numeric(0))
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_spot_cancel <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    orig_client_order_id = character(0),
+    order_id = integer(0),
+    order_list_id = integer(0),
+    client_order_id = character(0),
+    price = character(0),
+    orig_qty = character(0),
+    executed_qty = character(0),
+    cummulative_quote_qty = character(0),
+    status = character(0),
+    time_in_force = character(0),
+    type = character(0),
+    side = character(0),
+    self_trade_prevention_mode = character(0),
+    transact_time = ms_to_datetime(numeric(0))
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_spot_order_ack_fills <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    order_id = integer(0),
+    order_list_id = integer(0),
+    client_order_id = character(0),
+    price = character(0),
+    orig_qty = character(0),
+    executed_qty = character(0),
+    cummulative_quote_qty = character(0),
+    status = character(0),
+    time_in_force = character(0),
+    type = character(0),
+    side = character(0),
+    working_time = ms_to_datetime(numeric(0)),
+    self_trade_prevention_mode = character(0),
+    transact_time = ms_to_datetime(numeric(0)),
+    fill_index = integer(0),
+    fill_price = character(0),
+    fill_qty = character(0),
+    fill_commission = character(0),
+    fill_commission_asset = character(0),
+    fill_trade_id = integer(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
 empty_dt_ticker_price <- function() {
   return(data.table::data.table(
     symbol = character(0),

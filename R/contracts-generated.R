@@ -3805,7 +3805,7 @@ assert_args_BinanceTrading__get_order <- function(symbol, orderId, origClientOrd
 
 assert_return_BinanceTrading__get_order <- function(value) {
   assert_data_table(value)
-  assert_has_columns(value, c("symbol", "order_id", "order_list_id", "client_order_id", "price", "orig_qty", "executed_qty", "cummulative_quote_qty", "status", "time_in_force", "type", "side", "stop_price", "iceberg_qty", "is_working", "orig_quote_order_qty", "working_time", "self_trade_prevention_mode", "time", "update_time"))
+  assert_has_columns(value, c("symbol", "order_id", "order_list_id", "client_order_id", "price", "orig_qty", "executed_qty", "cummulative_quote_qty", "status", "time_in_force", "type", "side", "stop_price", "iceberg_qty", "time", "update_time", "is_working", "orig_quote_order_qty", "working_time", "self_trade_prevention_mode"))
   assert_character(value[["symbol"]])
   assert_no_missing_values(value[["symbol"]])
   assert_integer(value[["order_id"]])
@@ -3834,6 +3834,10 @@ assert_return_BinanceTrading__get_order <- function(value) {
   assert_no_missing_values(value[["stop_price"]])
   assert_character(value[["iceberg_qty"]])
   assert_no_missing_values(value[["iceberg_qty"]])
+  assert_datetime(value[["time"]])
+  assert_no_missing_values(value[["time"]])
+  assert_datetime(value[["update_time"]])
+  assert_no_missing_values(value[["update_time"]])
   assert_logical(value[["is_working"]])
   assert_no_missing_values(value[["is_working"]])
   assert_character(value[["orig_quote_order_qty"]])
@@ -3842,10 +3846,6 @@ assert_return_BinanceTrading__get_order <- function(value) {
   assert_no_missing_values(value[["working_time"]])
   assert_character(value[["self_trade_prevention_mode"]])
   assert_no_missing_values(value[["self_trade_prevention_mode"]])
-  assert_datetime(value[["time"]])
-  assert_no_missing_values(value[["time"]])
-  assert_datetime(value[["update_time"]])
-  assert_no_missing_values(value[["update_time"]])
   return(value)
 }
 
@@ -3861,7 +3861,7 @@ assert_args_BinanceTrading__get_open_orders <- function(symbol, recvWindow) {
 
 assert_return_BinanceTrading__get_open_orders <- function(value) {
   assert_data_table(value)
-  assert_has_columns(value, c("symbol", "order_id", "order_list_id", "client_order_id", "price", "orig_qty", "executed_qty", "cummulative_quote_qty", "status", "time_in_force", "type", "side", "stop_price", "iceberg_qty", "is_working", "orig_quote_order_qty", "working_time", "self_trade_prevention_mode", "time", "update_time"))
+  assert_has_columns(value, c("symbol", "order_id", "order_list_id", "client_order_id", "price", "orig_qty", "executed_qty", "cummulative_quote_qty", "status", "time_in_force", "type", "side", "stop_price", "iceberg_qty", "time", "update_time", "is_working", "orig_quote_order_qty", "working_time", "self_trade_prevention_mode"))
   assert_character(value[["symbol"]])
   assert_no_missing_values(value[["symbol"]])
   assert_integer(value[["order_id"]])
@@ -3890,6 +3890,10 @@ assert_return_BinanceTrading__get_open_orders <- function(value) {
   assert_no_missing_values(value[["stop_price"]])
   assert_character(value[["iceberg_qty"]])
   assert_no_missing_values(value[["iceberg_qty"]])
+  assert_datetime(value[["time"]])
+  assert_no_missing_values(value[["time"]])
+  assert_datetime(value[["update_time"]])
+  assert_no_missing_values(value[["update_time"]])
   assert_logical(value[["is_working"]])
   assert_no_missing_values(value[["is_working"]])
   assert_character(value[["orig_quote_order_qty"]])
@@ -3898,10 +3902,6 @@ assert_return_BinanceTrading__get_open_orders <- function(value) {
   assert_no_missing_values(value[["working_time"]])
   assert_character(value[["self_trade_prevention_mode"]])
   assert_no_missing_values(value[["self_trade_prevention_mode"]])
-  assert_datetime(value[["time"]])
-  assert_no_missing_values(value[["time"]])
-  assert_datetime(value[["update_time"]])
-  assert_no_missing_values(value[["update_time"]])
   return(value)
 }
 
@@ -3927,7 +3927,7 @@ assert_args_BinanceTrading__get_all_orders <- function(symbol, orderId, startTim
 
 assert_return_BinanceTrading__get_all_orders <- function(value) {
   assert_data_table(value)
-  assert_has_columns(value, c("symbol", "order_id", "order_list_id", "client_order_id", "price", "orig_qty", "executed_qty", "cummulative_quote_qty", "status", "time_in_force", "type", "side", "stop_price", "iceberg_qty", "is_working", "orig_quote_order_qty", "working_time", "self_trade_prevention_mode", "time", "update_time"))
+  assert_has_columns(value, c("symbol", "order_id", "order_list_id", "client_order_id", "price", "orig_qty", "executed_qty", "cummulative_quote_qty", "status", "time_in_force", "type", "side", "stop_price", "iceberg_qty", "time", "update_time", "is_working", "orig_quote_order_qty", "working_time", "self_trade_prevention_mode"))
   assert_character(value[["symbol"]])
   assert_no_missing_values(value[["symbol"]])
   assert_integer(value[["order_id"]])
@@ -3956,6 +3956,10 @@ assert_return_BinanceTrading__get_all_orders <- function(value) {
   assert_no_missing_values(value[["stop_price"]])
   assert_character(value[["iceberg_qty"]])
   assert_no_missing_values(value[["iceberg_qty"]])
+  assert_datetime(value[["time"]])
+  assert_no_missing_values(value[["time"]])
+  assert_datetime(value[["update_time"]])
+  assert_no_missing_values(value[["update_time"]])
   assert_logical(value[["is_working"]])
   assert_no_missing_values(value[["is_working"]])
   assert_character(value[["orig_quote_order_qty"]])
@@ -3964,10 +3968,6 @@ assert_return_BinanceTrading__get_all_orders <- function(value) {
   assert_no_missing_values(value[["working_time"]])
   assert_character(value[["self_trade_prevention_mode"]])
   assert_no_missing_values(value[["self_trade_prevention_mode"]])
-  assert_datetime(value[["time"]])
-  assert_no_missing_values(value[["time"]])
-  assert_datetime(value[["update_time"]])
-  assert_no_missing_values(value[["update_time"]])
   return(value)
 }
 

@@ -129,7 +129,8 @@ BinanceTrading <- R6::R6Class(
     #' @param newOrderRespType (scalar<character>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
     #' @param selfTradePreventionMode (scalar<character>?)
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row per fill (one row with
+    #'   `NA` `fill_*` columns when the order had no fills):
     #' - symbol (character) Trading pair (e.g., `"BTCUSDT"`).
     #' - order_id (integer) Unique order identifier assigned by Binance.
     #' - order_list_id (integer) OCO order list ID; `-1` if not an OCO.
@@ -216,7 +217,7 @@ BinanceTrading <- R6::R6Class(
         recvWindow = recvWindow
       )
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/order",
         method = "POST",
         body = body,
@@ -225,7 +226,7 @@ BinanceTrading <- R6::R6Class(
           # Without this the `data$fills` access below would throw
           # "$ operator applied to NULL".
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_spot_order_ack_fills())
           }
           fills <- data$fills
           data$fills <- NULL
@@ -255,6 +256,11 @@ BinanceTrading <- R6::R6Class(
           }
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceTrading__add_order,
+        is_async = private$.is_async
       ))
     },
 
@@ -316,8 +322,8 @@ BinanceTrading <- R6::R6Class(
     #' @param newOrderRespType (scalar<character>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
     #' @param selfTradePreventionMode (scalar<character>?)
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>)
-    #'   with a single row and a single `validated` (logical) column,
+    #' @return (data.table | promise<data.table>) a single row with a single
+    #'   `validated` (logical) column,
     #'   set to `TRUE` on success. Binance returns `{}` on a successful
     #'   test order — the absence of an error is the validation
     #'   signal, so we don't fabricate a stub row echoing the request
@@ -378,7 +384,7 @@ BinanceTrading <- R6::R6Class(
         recvWindow = recvWindow
       )
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/order/test",
         method = "POST",
         body = body,
@@ -394,6 +400,11 @@ BinanceTrading <- R6::R6Class(
           }
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceTrading__add_order_test,
+        is_async = private$.is_async
       ))
     },
 
@@ -442,7 +453,7 @@ BinanceTrading <- R6::R6Class(
     #' @param orderId (scalar<count>?) the order ID to cancel.
     #' @param origClientOrderId (scalar<character>?) the client order ID to cancel.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - symbol (character) Trading pair.
     #' - orig_client_order_id (character) Original client order ID.
     #' - order_id (integer) Unique order identifier.
@@ -471,7 +482,7 @@ BinanceTrading <- R6::R6Class(
         rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
       }
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/order",
         method = "DELETE",
         query = list(
@@ -485,6 +496,11 @@ BinanceTrading <- R6::R6Class(
           coerce_cols(dt, "transact_time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceTrading__cancel_order,
+        is_async = private$.is_async
       ))
     },
 
@@ -548,8 +564,10 @@ BinanceTrading <- R6::R6Class(
     #'
     #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) .
-    #'   When orders are cancelled, one row per order with columns:
+    #' @return (data.table | promise<data.table>) one row per cancelled order
+    #'   (empty when there were no open orders to cancel, per the cross-package
+    #'   "no stub rows" convention — the absence of an error is the success
+    #'   signal):
     #'   - symbol (character) Trading pair.
     #'   - orig_client_order_id (character) Original client order ID.
     #'   - order_id (integer) Unique order identifier.
@@ -566,10 +584,6 @@ BinanceTrading <- R6::R6Class(
     #'   - self_trade_prevention_mode (character) STP mode applied.
     #'   - transact_time (POSIXct) Cancellation time.
     #'
-    #'   When there were no open orders to cancel, the return is an
-    #'   empty `data.table` (per the cross-package "no stub rows"
-    #'   convention — the absence of an error is the success signal).
-    #'
     #' @examples
     #' \dontrun{
     #' trading <- BinanceTrading$new()
@@ -578,24 +592,29 @@ BinanceTrading <- R6::R6Class(
     #' }
     cancel_all_orders = function(symbol, recvWindow = NULL) {
       assert_args_BinanceTrading__cancel_all_orders(symbol, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/openOrders",
         method = "DELETE",
         query = list(symbol = symbol, recvWindow = recvWindow),
         .parser = function(data) {
           # Per the cross-package "empty response → empty data.table,
           # no stub rows" convention: when there were no orders to
-          # cancel, return an empty table rather than fabricate a
+          # cancel, return the typed empty table rather than fabricate a
           # synthetic `(symbol, status = "cancelled")` row that pretends
           # to be a cancelled order. The absence of an error is the
           # success signal.
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_spot_cancel())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "transact_time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceTrading__cancel_all_orders,
+        is_async = private$.is_async
       ))
     },
 
@@ -649,27 +668,7 @@ BinanceTrading <- R6::R6Class(
     #' @param orderId (scalar<count>?) the order ID.
     #' @param origClientOrderId (scalar<character>?) the client order ID.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
-    #' - symbol (character) Trading pair.
-    #' - order_id (integer) Unique order identifier.
-    #' - order_list_id (integer) OCO order list ID; `-1` if not an OCO.
-    #' - client_order_id (character) Client-assigned order ID.
-    #' - price (character) Order price.
-    #' - orig_qty (character) Original requested quantity.
-    #' - executed_qty (character) Quantity filled so far.
-    #' - cummulative_quote_qty (character) Cumulative quote asset transacted.
-    #' - status (character) Order status (`"NEW"`, `"FILLED"`, `"CANCELED"`, etc.).
-    #' - time_in_force (character) Time-in-force policy.
-    #' - type (character) Order type.
-    #' - side (character) `"BUY"` or `"SELL"`.
-    #' - stop_price (character) Trigger price for stop orders.
-    #' - iceberg_qty (character) Iceberg quantity.
-    #' - is_working (logical) Whether the order is on the order book.
-    #' - orig_quote_order_qty (character) Original quote order quantity.
-    #' - working_time (POSIXct) Time when the order started working.
-    #' - self_trade_prevention_mode (character) STP mode applied.
-    #' - time (POSIXct) Order creation time converted from `time`.
-    #' - update_time (POSIXct) Last update time converted from `updateTime`.
+    #' @return (SpotOrderQuery | promise<SpotOrderQuery>) one row, the order.
     #'
     #' @examples
     #' \dontrun{
@@ -683,7 +682,7 @@ BinanceTrading <- R6::R6Class(
         rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
       }
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/order",
         query = list(
           symbol = symbol,
@@ -696,6 +695,11 @@ BinanceTrading <- R6::R6Class(
           coerce_cols(dt, c("time", "update_time", "working_time"), ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceTrading__get_order,
+        is_async = private$.is_async
       ))
     },
 
@@ -748,27 +752,8 @@ BinanceTrading <- R6::R6Class(
     #' @param symbol (scalar<character>?) trading pair (e.g., `"BTCUSDT"`).
     #'   If NULL, returns open orders for all symbols (weight 80).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per open order and the following columns:
-    #' - symbol (character) Trading pair.
-    #' - order_id (integer) Unique order identifier.
-    #' - order_list_id (integer) OCO order list ID; `-1` if not an OCO.
-    #' - client_order_id (character) Client-assigned order ID.
-    #' - price (character) Order price.
-    #' - orig_qty (character) Original requested quantity.
-    #' - executed_qty (character) Quantity filled so far.
-    #' - cummulative_quote_qty (character) Cumulative quote asset transacted.
-    #' - status (character) Order status (typically `"NEW"` or `"PARTIALLY_FILLED"`).
-    #' - time_in_force (character) Time-in-force policy.
-    #' - type (character) Order type.
-    #' - side (character) `"BUY"` or `"SELL"`.
-    #' - stop_price (character) Trigger price for stop orders.
-    #' - iceberg_qty (character) Iceberg quantity.
-    #' - is_working (logical) Whether the order is on the order book.
-    #' - orig_quote_order_qty (character) Original quote order quantity.
-    #' - working_time (POSIXct) Time when the order started working.
-    #' - self_trade_prevention_mode (character) STP mode applied.
-    #' - time (POSIXct) Order creation time converted from `time`.
-    #' - update_time (POSIXct) Last update time converted from `updateTime`.
+    #' @return (SpotOrderQuery | promise<SpotOrderQuery>) one row per open order
+    #'   (empty when there are no open orders).
     #'
     #' @examples
     #' \dontrun{
@@ -778,17 +763,22 @@ BinanceTrading <- R6::R6Class(
     #' }
     get_open_orders = function(symbol = NULL, recvWindow = NULL) {
       assert_args_BinanceTrading__get_open_orders(symbol, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/openOrders",
         query = list(symbol = symbol, recvWindow = recvWindow),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_spot_order_query())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, c("time", "update_time", "working_time"), ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceTrading__get_open_orders,
+        is_async = private$.is_async
       ))
     },
 
@@ -868,27 +858,8 @@ BinanceTrading <- R6::R6Class(
     #' @param endTime (scalar<count>?) end timestamp in milliseconds.
     #' @param limit (scalar<count>?) max results (default 500, max 1000).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per order and the following columns:
-    #' - symbol (character) Trading pair.
-    #' - order_id (integer) Unique order identifier.
-    #' - order_list_id (integer) OCO order list ID; `-1` if not an OCO.
-    #' - client_order_id (character) Client-assigned order ID.
-    #' - price (character) Order price.
-    #' - orig_qty (character) Original requested quantity.
-    #' - executed_qty (character) Quantity filled so far.
-    #' - cummulative_quote_qty (character) Cumulative quote asset transacted.
-    #' - status (character) Order status (`"NEW"`, `"FILLED"`, `"CANCELED"`, etc.).
-    #' - time_in_force (character) Time-in-force policy.
-    #' - type (character) Order type.
-    #' - side (character) `"BUY"` or `"SELL"`.
-    #' - stop_price (character) Trigger price for stop orders.
-    #' - iceberg_qty (character) Iceberg quantity.
-    #' - is_working (logical) Whether the order is on the order book.
-    #' - orig_quote_order_qty (character) Original quote order quantity.
-    #' - working_time (POSIXct) Time when the order started working.
-    #' - self_trade_prevention_mode (character) STP mode applied.
-    #' - time (POSIXct) Order creation time converted from `time`.
-    #' - update_time (POSIXct) Last update time converted from `updateTime`.
+    #' @return (SpotOrderQuery | promise<SpotOrderQuery>) one row per order
+    #'   (empty when there are no matching orders).
     #'
     #' @examples
     #' \dontrun{
@@ -905,7 +876,7 @@ BinanceTrading <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceTrading__get_all_orders(symbol, orderId, startTime, endTime, limit, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/allOrders",
         query = list(
           symbol = symbol,
@@ -917,12 +888,17 @@ BinanceTrading <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_spot_order_query())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, c("time", "update_time", "working_time"), ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceTrading__get_all_orders,
+        is_async = private$.is_async
       ))
     }
   )
