@@ -109,7 +109,7 @@ BinanceAccount <- R6::R6Class(
     #' so the return is always one row per account.
     #'
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with columns:
+    #' @return (data.table | promise<data.table>) one row per account:
     #' - maker_commission (integer) Maker commission rate (basis points).
     #' - taker_commission (integer) Taker commission rate (basis points).
     #' - buyer_commission (integer) Buyer commission rate (basis points).
@@ -142,7 +142,7 @@ BinanceAccount <- R6::R6Class(
     #' }
     get_account_info = function(recvWindow = NULL) {
       assert_args_BinanceAccount__get_account_info(recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/account",
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
@@ -165,6 +165,11 @@ BinanceAccount <- R6::R6Class(
           coerce_cols(dt, "update_time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceAccount__get_account_info,
+        is_async = private$.is_async
       ))
     },
 
@@ -209,7 +214,7 @@ BinanceAccount <- R6::R6Class(
     #'
     #' @param omitZeroBalances (scalar<logical>?) if TRUE, omit assets with zero balance.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with columns:
+    #' @return (data.table | promise<data.table>) one row per asset:
     #' - asset (character) Asset ticker (e.g., `"BTC"`, `"USDT"`).
     #' - free (character) Available balance for trading.
     #' - locked (character) Balance locked in open orders.
@@ -227,16 +232,21 @@ BinanceAccount <- R6::R6Class(
         query$omitZeroBalances <- "true"
       }
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/account",
         query = query,
         .parser = function(data) {
           balances <- data$balances
           if (is.null(balances) || length(balances) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_balances())
           }
           return(as_dt_list(balances)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceAccount__get_balances,
+        is_async = private$.is_async
       ))
     },
 
@@ -291,7 +301,7 @@ BinanceAccount <- R6::R6Class(
     #' @param fromId (scalar<count>?) trade ID to fetch from.
     #' @param limit (scalar<count>?) max results (default 500, max 1000).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per trade and the following columns:
+    #' @return (data.table | promise<data.table>) one row per trade:
     #' - symbol (character) Trading pair (e.g., `"BTCUSDT"`).
     #' - id (integer) Unique trade identifier.
     #' - order_id (integer) Order that generated this trade.
@@ -322,7 +332,7 @@ BinanceAccount <- R6::R6Class(
       recvWindow = NULL
     ) {
       assert_args_BinanceAccount__get_trades(symbol, orderId, startTime, endTime, fromId, limit, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/myTrades",
         query = list(
           symbol = symbol,
@@ -335,12 +345,17 @@ BinanceAccount <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_account_trade())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceAccount__get_trades,
+        is_async = private$.is_async
       ))
     }
   )

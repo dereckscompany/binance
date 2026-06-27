@@ -367,6 +367,46 @@ parse_paginated <- function(data, time_cols = character(0)) {
   return(assert_return_parse_paginated(dt[]))
 }
 
+# ---- Typed zero-row empties ------------------------------------------------
+# A list-returning endpoint's empty path returns the fully-typed zero-row table
+# for its documented shape (columns and types EXACTLY matching the method's
+# `@return` contract and the parser's non-empty branch) so the method's column
+# contract still holds on an empty result. Datetime columns are built with the
+# same `ms_to_datetime()` helper the parser uses so class and tz match the
+# populated case. These mirror their shape; they are deliberately not asserted.
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_balances <- function() {
+  return(data.table::data.table(
+    asset = character(0),
+    free = character(0),
+    locked = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_account_trade <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    id = integer(0),
+    order_id = integer(0),
+    order_list_id = integer(0),
+    price = character(0),
+    qty = character(0),
+    quote_qty = character(0),
+    commission = character(0),
+    commission_asset = character(0),
+    is_buyer = logical(0),
+    is_maker = logical(0),
+    is_best_match = logical(0),
+    time = ms_to_datetime(numeric(0))
+  ))
+}
+
 #' Parse a Binance Klines Array into a data.table
 #'
 #' @param data (list?) the parsed Binance klines response: a list of 12-element

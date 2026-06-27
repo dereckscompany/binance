@@ -189,7 +189,7 @@ so the return is always one row per account.
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
+(data.table | promise<data.table>) one row per account:
 \itemize{
 \item maker_commission (integer) Maker commission rate (basis points).
 \item taker_commission (integer) Taker commission rate (basis points).
@@ -292,7 +292,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with columns:
+(data.table | promise<data.table>) one row per asset:
 \itemize{
 \item asset (character) Asset ticker (e.g., \code{"BTC"}, \code{"USDT"}).
 \item free (character) Available balance for trading.
@@ -398,7 +398,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per trade and the following columns:
+(data.table | promise<data.table>) one row per trade:
 \itemize{
 \item symbol (character) Trading pair (e.g., \code{"BTCUSDT"}).
 \item id (integer) Unique trade identifier.
