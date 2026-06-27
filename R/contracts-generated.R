@@ -2914,6 +2914,7 @@ assert_return_BinanceMarketData__get_depth <- function(value) {
   assert_no_missing_values(value[["last_update_id"]])
   assert_character(value[["side"]])
   assert_no_missing_values(value[["side"]])
+  assert_values_in_set(value[["side"]], c("bid", "ask"))
   assert_double(value[["price"]])
   assert_no_missing_values(value[["price"]])
   assert_double(value[["size"]])

@@ -407,6 +407,128 @@ empty_dt_account_trade <- function() {
   ))
 }
 
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_ohlcv <- function() {
+  return(data.table::data.table(
+    open_time = ms_to_datetime(numeric(0)),
+    open = numeric(0),
+    high = numeric(0),
+    low = numeric(0),
+    close = numeric(0),
+    volume = numeric(0),
+    close_time = ms_to_datetime(numeric(0)),
+    quote_volume = numeric(0),
+    trades = integer(0),
+    taker_buy_base_volume = numeric(0),
+    taker_buy_quote_volume = numeric(0),
+    ignore = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_trade <- function() {
+  return(data.table::data.table(
+    id = integer(0),
+    price = character(0),
+    qty = character(0),
+    quote_qty = character(0),
+    time = ms_to_datetime(numeric(0)),
+    is_buyer_maker = logical(0),
+    is_best_match = logical(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_exchange_info <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    status = character(0),
+    base_asset = character(0),
+    base_asset_precision = integer(0),
+    quote_asset = character(0),
+    quote_asset_precision = integer(0),
+    quote_precision = integer(0),
+    order_types = character(0),
+    iceberg_allowed = logical(0),
+    oco_allowed = logical(0),
+    oto_allowed = logical(0),
+    quote_order_qty_market_allowed = logical(0),
+    allow_trailing_stop = logical(0),
+    cancel_replace_allowed = logical(0),
+    is_spot_trading_allowed = logical(0),
+    is_margin_trading_allowed = logical(0),
+    lot_min_qty = numeric(0),
+    lot_max_qty = numeric(0),
+    lot_step_size = numeric(0),
+    price_min = numeric(0),
+    price_max = numeric(0),
+    price_tick_size = numeric(0),
+    min_notional = numeric(0),
+    filters_raw = character(0),
+    permissions = character(0),
+    permission_sets = character(0),
+    default_self_trade_prevention_mode = character(0),
+    allowed_self_trade_prevention_modes = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_rate_limit <- function() {
+  return(data.table::data.table(
+    rate_limit_type = character(0),
+    interval = character(0),
+    interval_num = integer(0),
+    limit = integer(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_ticker_price <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    price = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_ticker_24hr <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    price_change = character(0),
+    price_change_percent = character(0),
+    weighted_avg_price = character(0),
+    prev_close_price = character(0),
+    last_price = character(0),
+    last_qty = character(0),
+    bid_price = character(0),
+    bid_qty = character(0),
+    ask_price = character(0),
+    ask_qty = character(0),
+    open_price = character(0),
+    high_price = character(0),
+    low_price = character(0),
+    volume = character(0),
+    quote_volume = character(0),
+    open_time = ms_to_datetime(numeric(0)),
+    close_time = ms_to_datetime(numeric(0)),
+    first_id = integer(0),
+    last_id = integer(0),
+    count = integer(0)
+  ))
+}
+
 #' Parse a Binance Klines Array into a data.table
 #'
 #' @param data (list?) the parsed Binance klines response: a list of 12-element
@@ -421,7 +543,7 @@ empty_dt_account_trade <- function() {
 parse_klines <- function(data) {
   assert_args_parse_klines(data)
   if (is.null(data) || length(data) == 0) {
-    return(assert_return_parse_klines(data.table::data.table()[]))
+    return(assert_return_parse_klines(empty_dt_ohlcv()))
   }
   # Binance kline fields (0-indexed):
   # [0] Open time, [1] Open, [2] High, [3] Low, [4] Close, [5] Volume,
