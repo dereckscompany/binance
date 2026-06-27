@@ -25,12 +25,14 @@
 #' (`extends` / `pick` / `omit`), are declared here; a one-off return is written
 #' inline at its method with the same column-bullet grammar.
 #'
-#' `@genassert` emits a standalone `assert_type_<Shape>()` for every shape, and
-#' `@exportassert` exports them so a downstream package can validate against
-#' Binance's shapes.
+#' Each shape is referenced by a table-returning method's `@return`, so the
+#' contract roclet expands it inline into that method's generated
+#' `assert_return_*` -- no standalone `assert_type_<Shape>()` is emitted. binance
+#' is a leaf connector: nothing internal calls a per-shape validator and no
+#' downstream package validates against these shapes, so there is no `@genassert`
+#' (no callable validators to generate) and no `@exportassert` (nothing to
+#' export).
 #' @name binance_shapes
-#' @genassert
-#' @exportassert
 #'
 #' @type Ohlcv (data.table) one row per candle, as parsed by `parse_klines()`
 #'   (shared by spot `get_klines()` and the futures kline endpoints):

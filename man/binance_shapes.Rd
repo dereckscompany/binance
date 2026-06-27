@@ -26,7 +26,11 @@ Only shapes returned by three or more methods, or that derive from one another
 (\code{extends} / \code{pick} / \code{omit}), are declared here; a one-off return is written
 inline at its method with the same column-bullet grammar.
 
-\verb{@genassert} emits a standalone \verb{assert_type_<Shape>()} for every shape, and
-\verb{@exportassert} exports them so a downstream package can validate against
-Binance's shapes.
+Each shape is referenced by a table-returning method's \verb{@return}, so the
+contract roclet expands it inline into that method's generated
+\verb{assert_return_*} -- no standalone \verb{assert_type_<Shape>()} is emitted. binance
+is a leaf connector: nothing internal calls a per-shape validator and no
+downstream package validates against these shapes, so there is no \verb{@genassert}
+(no callable validators to generate) and no \verb{@exportassert} (nothing to
+export).
 }
