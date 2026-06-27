@@ -244,7 +244,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item email (character) The email of the newly created sub-account.
 }
@@ -329,7 +329,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per sub-account and the following columns:
+(data.table | promise<data.table>) one row per sub-account
+(empty when there are none):
 \itemize{
 \item email (character) Sub-account email.
 \item is_freeze (logical) Whether the sub-account is frozen.
@@ -400,7 +401,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per asset and the following columns:
+(data.table | promise<data.table>) one row per asset
+(empty when there are none):
 \itemize{
 \item asset (character) Asset symbol (e.g., \code{"BTC"}).
 \item free (numeric) Available balance.
@@ -486,8 +488,9 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per sub-account; the
-master-level summary fields are replicated on each row. Columns:
+(data.table | promise<data.table>) one row per sub-account
+(empty when there are none); the master-level summary fields are
+replicated on each row:
 \itemize{
 \item total_count (integer) Total number of sub-accounts (repeated per row).
 \item master_account_total_asset (character) Master account total
@@ -595,7 +598,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item tran_id (integer) Binance-assigned transfer ID.
 \item client_tran_id (character) Client-defined transfer ID.
@@ -698,7 +701,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per transfer and the following columns:
+(data.table | promise<data.table>) one row per transfer
+(empty when there are none):
 \itemize{
 \item tran_id (integer) Binance-assigned transfer ID.
 \item from_email (character) Sender email.
@@ -799,7 +803,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per asset (long format) and the following columns:
+(data.table | promise<data.table>) one row per asset (long format):
 \itemize{
 \item email (character) Sub-account email (repeated per asset).
 \item asset (character) Margin asset (e.g., \code{"USDT"}).
@@ -890,7 +894,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item email (character) Sub-account email.
 \item margin_level (character) Current margin level.
@@ -968,7 +972,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per sub-account and the following columns:
+(data.table | promise<data.table>) one row per sub-account
+(empty when there are none):
 \itemize{
 \item email (character) Sub-account email.
 \item is_sub_user_enabled (logical) Whether the sub-user is enabled.

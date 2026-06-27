@@ -771,6 +771,98 @@ empty_dt_isolated_margin_data <- function() {
 #' @keywords internal
 #' @noRd
 #' @noassert
+empty_dt_sub_accounts <- function() {
+  return(data.table::data.table(
+    email = character(0),
+    is_freeze = logical(0),
+    create_time = ms_to_datetime(numeric(0)),
+    is_managed_sub_account = logical(0),
+    is_asset_management_sub_account = logical(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_sub_balances <- function() {
+  return(data.table::data.table(
+    asset = character(0),
+    free = numeric(0),
+    locked = numeric(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_sub_spot_summary <- function() {
+  return(data.table::data.table(
+    total_count = integer(0),
+    master_account_total_asset = character(0),
+    sub_user_email = character(0),
+    sub_user_total_asset = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_sub_transfer_history <- function() {
+  return(data.table::data.table(
+    tran_id = integer(0),
+    from_email = character(0),
+    to_email = character(0),
+    asset = character(0),
+    amount = character(0),
+    create_time_stamp = ms_to_datetime(numeric(0)),
+    from_account_type = character(0),
+    to_account_type = character(0),
+    status = character(0),
+    client_tran_id = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_sub_futures_account <- function() {
+  return(data.table::data.table(
+    email = character(0),
+    asset = character(0),
+    can_deposit = logical(0),
+    can_trade = logical(0),
+    can_withdraw = logical(0),
+    fee_tier = integer(0),
+    max_withdraw_amount = character(0),
+    total_initial_margin = character(0),
+    total_margin_balance = character(0),
+    total_wallet_balance = character(0),
+    total_unrealized_profit = character(0),
+    update_time = ms_to_datetime(numeric(0)),
+    asset_asset = character(0),
+    asset_wallet_balance = character(0),
+    asset_margin_balance = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_sub_status <- function() {
+  return(data.table::data.table(
+    email = character(0),
+    is_sub_user_enabled = logical(0),
+    is_user_active = logical(0),
+    insert_time = ms_to_datetime(numeric(0)),
+    is_margin_enabled = logical(0),
+    is_future_enabled = logical(0),
+    mobile = integer(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
 empty_dt_ticker_price <- function() {
   return(data.table::data.table(
     symbol = character(0),

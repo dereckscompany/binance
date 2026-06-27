@@ -95,7 +95,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' @param subAccountString (scalar<character>) the sub-account name/string identifier.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - email (character) The email of the newly created sub-account.
     #'
     #' @examples
@@ -106,7 +106,7 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     add_sub_account = function(subAccountString, recvWindow = NULL) {
       assert_args_BinanceSubAccount__add_sub_account(subAccountString, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/sub-account/virtualSubAccount",
         method = "POST",
         body = list(
@@ -114,6 +114,11 @@ BinanceSubAccount <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = as_dt_row
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceSubAccount__add_sub_account,
+        is_async = private$.is_async
       ))
     },
 
@@ -158,7 +163,8 @@ BinanceSubAccount <- R6::R6Class(
     #' @param page (scalar<count>?) page number (default 1).
     #' @param limit (scalar<count>?) results per page (default 1, max 200).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per sub-account and the following columns:
+    #' @return (data.table | promise<data.table>) one row per sub-account
+    #'   (empty when there are none):
     #' - email (character) Sub-account email.
     #' - is_freeze (logical) Whether the sub-account is frozen.
     #' - create_time (POSIXct) Account creation time converted from `createTime`.
@@ -173,7 +179,7 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     get_sub_accounts = function(email = NULL, isFreeze = NULL, page = NULL, limit = NULL, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_sub_accounts(email, isFreeze, page, limit, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/sub-account/list",
         query = list(
           email = email,
@@ -185,12 +191,17 @@ BinanceSubAccount <- R6::R6Class(
         .parser = function(data) {
           items <- data$subAccounts
           if (is.null(items) || length(items) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_sub_accounts())
           }
           dt <- as_dt_list(items)
           coerce_cols(dt, "create_time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceSubAccount__get_sub_accounts,
+        is_async = private$.is_async
       ))
     },
 
@@ -224,7 +235,8 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' @param email (scalar<character>) the sub-account email.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per asset and the following columns:
+    #' @return (data.table | promise<data.table>) one row per asset
+    #'   (empty when there are none):
     #' - asset (character) Asset symbol (e.g., `"BTC"`).
     #' - free (numeric) Available balance.
     #' - locked (numeric) Locked balance.
@@ -237,7 +249,7 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     get_balances = function(email, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_balances(email, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v3/sub-account/assets",
         query = list(
           email = email,
@@ -246,10 +258,15 @@ BinanceSubAccount <- R6::R6Class(
         .parser = function(data) {
           items <- data$balances
           if (is.null(items) || length(items) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_sub_balances())
           }
           return(as_dt_list(items)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceSubAccount__get_balances,
+        is_async = private$.is_async
       ))
     },
 
@@ -293,8 +310,9 @@ BinanceSubAccount <- R6::R6Class(
     #' @param page (scalar<count>?) page number (default 1).
     #' @param size (scalar<count>?) results per page (default 10, max 20).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per sub-account; the
-    #'   master-level summary fields are replicated on each row. Columns:
+    #' @return (data.table | promise<data.table>) one row per sub-account
+    #'   (empty when there are none); the master-level summary fields are
+    #'   replicated on each row:
     #' - total_count (integer) Total number of sub-accounts (repeated per row).
     #' - master_account_total_asset (character) Master account total
     #'   asset value in BTC (repeated per row).
@@ -309,7 +327,7 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     get_spot_summary = function(email = NULL, page = NULL, size = NULL, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_spot_summary(email, page, size, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/sub-account/spotSummary",
         query = list(
           email = email,
@@ -319,18 +337,18 @@ BinanceSubAccount <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_sub_spot_summary())
           }
           sub_users <- data$spotSubUserAssetBtcVoList
           data$spotSubUserAssetBtcVoList <- NULL
-          # If there are no sub-accounts return an empty data.table. The
-          # `@return` says "one row per sub-account", so zero
+          # If there are no sub-accounts return the typed empty data.table.
+          # The `@return` says "one row per sub-account", so zero
           # sub-accounts is zero rows — fabricating a 1-row table of
           # just master-level fields would violate the cross-package
           # "no stub rows" convention (the master-level scalars are
           # also available without calling this method).
           if (is.null(sub_users) || length(sub_users) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_sub_spot_summary())
           }
           dt <- as_dt_row(data)
           sub_dt <- as_dt_list(sub_users)
@@ -340,6 +358,11 @@ BinanceSubAccount <- R6::R6Class(
           dt <- cbind(dt, sub_dt)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceSubAccount__get_spot_summary,
+        is_async = private$.is_async
       ))
     },
 
@@ -396,7 +419,7 @@ BinanceSubAccount <- R6::R6Class(
     #' @param amount (scalar<numeric>) amount to transfer.
     #' @param clientTranId (scalar<character>?) client-defined transfer ID.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - tran_id (integer) Binance-assigned transfer ID.
     #' - client_tran_id (character) Client-defined transfer ID.
     #'
@@ -450,7 +473,7 @@ BinanceSubAccount <- R6::R6Class(
         ))
       }
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/sub-account/universalTransfer",
         method = "POST",
         body = list(
@@ -464,6 +487,11 @@ BinanceSubAccount <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = as_dt_row
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceSubAccount__add_transfer,
+        is_async = private$.is_async
       ))
     },
 
@@ -513,7 +541,8 @@ BinanceSubAccount <- R6::R6Class(
     #' @param page (scalar<count>?) page number (default 1).
     #' @param limit (scalar<count>?) results per page (default 500, max 500).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per transfer and the following columns:
+    #' @return (data.table | promise<data.table>) one row per transfer
+    #'   (empty when there are none):
     #' - tran_id (integer) Binance-assigned transfer ID.
     #' - from_email (character) Sender email.
     #' - to_email (character) Recipient email.
@@ -551,7 +580,7 @@ BinanceSubAccount <- R6::R6Class(
         limit,
         recvWindow
       )
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/sub-account/universalTransfer",
         query = list(
           fromEmail = fromEmail,
@@ -566,12 +595,17 @@ BinanceSubAccount <- R6::R6Class(
         .parser = function(data) {
           items <- data$result
           if (is.null(items) || length(items) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_sub_transfer_history())
           }
           dt <- as_dt_list(items)
           coerce_cols(dt, "create_time_stamp", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceSubAccount__get_transfer_history,
+        is_async = private$.is_async
       ))
     },
 
@@ -631,7 +665,7 @@ BinanceSubAccount <- R6::R6Class(
     #' @param email (scalar<character>) the sub-account email.
     #' @param futuresType (scalar<count>) `1` for USDT-margined futures, `2` for COIN-margined futures.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per asset (long format) and the following columns:
+    #' @return (data.table | promise<data.table>) one row per asset (long format):
     #' - email (character) Sub-account email (repeated per asset).
     #' - asset (character) Margin asset (e.g., `"USDT"`).
     #' - can_deposit (logical) Whether deposits are permitted.
@@ -660,7 +694,7 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     get_futures_account = function(email, futuresType, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_futures_account(email, futuresType, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v2/sub-account/futures/account",
         query = list(
           email = email,
@@ -668,6 +702,9 @@ BinanceSubAccount <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
+          if (is.null(data) || length(data) == 0) {
+            return(empty_dt_sub_futures_account())
+          }
           # The response may be wrapped in futureAccountResp
           inner <- data
           if (!is.null(data$futureAccountResp)) {
@@ -687,6 +724,11 @@ BinanceSubAccount <- R6::R6Class(
           coerce_cols(dt, "update_time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceSubAccount__get_futures_account,
+        is_async = private$.is_async
       ))
     },
 
@@ -726,7 +768,7 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' @param email (scalar<character>) the sub-account email.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row and the following columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - email (character) Sub-account email.
     #' - margin_level (character) Current margin level.
     #' - total_asset_of_btc (character) Total asset value in BTC.
@@ -742,13 +784,18 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     get_margin_account = function(email, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_margin_account(email, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/sub-account/margin/account",
         query = list(
           email = email,
           recvWindow = recvWindow
         ),
         .parser = as_dt_row
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceSubAccount__get_margin_account,
+        is_async = private$.is_async
       ))
     },
 
@@ -790,7 +837,8 @@ BinanceSubAccount <- R6::R6Class(
     #'
     #' @param email (scalar<character>?) filter by sub-account email.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with one row per sub-account and the following columns:
+    #' @return (data.table | promise<data.table>) one row per sub-account
+    #'   (empty when there are none):
     #' - email (character) Sub-account email.
     #' - is_sub_user_enabled (logical) Whether the sub-user is enabled.
     #' - is_user_active (logical) Whether the user is active.
@@ -807,7 +855,7 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     get_status = function(email = NULL, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_status(email, recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/sub-account/status",
         query = list(
           email = email,
@@ -815,12 +863,17 @@ BinanceSubAccount <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_sub_status())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "insert_time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceSubAccount__get_status,
+        is_async = private$.is_async
       ))
     }
   )
