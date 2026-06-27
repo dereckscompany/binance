@@ -14,10 +14,11 @@
 #' Thin wrapper over [connectcore::fetch_server_time_ms()] that defaults the
 #' endpoint to the spot one (subclasses pass the futures endpoint).
 #'
-#' @param base_url Character; the API base URL.
-#' @param time_endpoint Character; the server-time endpoint path. Default
+#' @param base_url (scalar<character>) the API base URL.
+#' @param time_endpoint (scalar<character>) the server-time endpoint path. Default
 #'   `"/api/v3/time"`.
-#' @return Numeric; server time in epoch milliseconds.
+#' @return (scalar<numeric>) server time in epoch milliseconds.
+#' @noassert
 #' @keywords internal
 #' @noRd
 fetch_server_time_ms <- function(base_url, time_endpoint = "/api/v3/time") {
@@ -30,12 +31,16 @@ fetch_server_time_ms <- function(base_url, time_endpoint = "/api/v3/time") {
 #' query parameters to an [httr2::request] object using HMAC-SHA256. A thin
 #' wrapper over [connectcore::hmac_query_sign()] fixing Binance's header name.
 #'
-#' @param req An [httr2::request] object to sign.
-#' @param keys List of API credentials containing `api_key` and `api_secret`.
-#' @param .get_timestamp_ms Function or NULL; zero-argument function returning
-#'   epoch milliseconds. When `NULL` (default), falls back to the local UTC clock.
-#' @return The signed [httr2::request] object with authentication applied.
+#' @param req (class<httr2_request>) an [httr2::request] object to sign.
+#' @param keys (list) API credentials containing `api_key` and `api_secret`:
+#' - api_key (scalar<character>) the API key.
+#' - api_secret (scalar<character>) the API secret.
+#' @param .get_timestamp_ms (function?) zero-argument function returning epoch
+#'   milliseconds. When `NULL` (default), falls back to the local UTC clock.
+#' @return (class<httr2_request>) the signed [httr2::request] object with
+#'   authentication applied.
 #'
+#' @noassert
 #' @keywords internal
 #' @noRd
 sign_request <- function(req, keys, .get_timestamp_ms = NULL) {
@@ -56,21 +61,23 @@ sign_request <- function(req, keys, .get_timestamp_ms = NULL) {
 #' envelope and carries signed parameters in the query string
 #' (`body_format = "query"`).
 #'
-#' @param base_url Character; the API base URL.
-#' @param endpoint Character; the API path.
-#' @param method Character; HTTP method. Default `"GET"`.
-#' @param query Named list; query parameters. Default `list()`.
-#' @param body Named list or NULL; request body (for POST). Default `NULL`.
-#' @param keys List or NULL; API credentials. Default `NULL`.
-#' @param .perform Function; the httr2 perform function. Default `httr2::req_perform`.
-#' @param .parser Function; post-processing function applied to parsed response.
+#' @param base_url (scalar<character>) the API base URL.
+#' @param endpoint (scalar<character>) the API path.
+#' @param method (scalar<character>) HTTP method. Default `"GET"`.
+#' @param query (list) query parameters. Default `list()`.
+#' @param body (list | NULL) request body (for POST). Default `NULL`.
+#' @param keys (list | NULL) API credentials. Default `NULL`.
+#' @param .perform (function) the httr2 perform function. Default `httr2::req_perform`.
+#' @param .parser (function) post-processing function applied to parsed response.
 #'   Default `identity`.
-#' @param is_async Logical; whether `.perform` returns promises. Default `FALSE`.
-#' @param timeout Numeric; request timeout in seconds. Default `10`.
-#' @param .get_timestamp_ms Function or NULL; zero-argument function returning
-#'   epoch milliseconds for HMAC signing.
-#' @return Parsed and post-processed API response data, or a promise thereof.
+#' @param is_async (scalar<logical>) whether `.perform` returns promises. Default `FALSE`.
+#' @param timeout (scalar<numeric in ]0, Inf[>) request timeout in seconds. Default `10`.
+#' @param .get_timestamp_ms (function?) zero-argument function returning epoch
+#'   milliseconds for HMAC signing.
+#' @return (promise<any>) parsed and post-processed API response data, or a
+#'   promise thereof.
 #'
+#' @noassert
 #' @export
 binance_build_request <- function(
   base_url,
@@ -110,11 +117,12 @@ binance_build_request <- function(
 #' venue-specific error envelope: a negative `code` in the JSON body signals an
 #' API error even on a non-200 status.
 #'
-#' @param resp An [httr2::response] object.
-#' @return The parsed JSON response data.
+#' @param resp (class<httr2_response>) an [httr2::response] object.
+#' @return (any) the parsed JSON response data.
 #'
 #' @importFrom httr2 resp_status resp_body_json resp_body_string
 #' @importFrom rlang abort
+#' @noassert
 #' @keywords internal
 #' @noRd
 parse_binance_response <- function(resp) {

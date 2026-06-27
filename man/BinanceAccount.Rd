@@ -184,36 +184,36 @@ so the return is always one row per account.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{maker_commission} (integer): Maker commission rate (basis points).
-\item \code{taker_commission} (integer): Taker commission rate (basis points).
-\item \code{buyer_commission} (integer): Buyer commission rate (basis points).
-\item \code{seller_commission} (integer): Seller commission rate (basis points).
-\item \code{commission_rates_maker} (character): Maker commission rate as decimal string.
-\item \code{commission_rates_taker} (character): Taker commission rate as decimal string.
-\item \code{commission_rates_buyer} (character): Buyer commission rate as decimal string.
-\item \code{commission_rates_seller} (character): Seller commission rate as decimal string.
-\item \code{can_trade} (logical): Whether the account can place trades.
-\item \code{can_withdraw} (logical): Whether the account can withdraw.
-\item \code{can_deposit} (logical): Whether the account can deposit.
-\item \code{brokered} (logical): Whether this is a brokered account.
-\item \code{require_self_trade_prevention} (logical): Whether STP is required.
-\item \code{prevent_sor} (logical): Whether smart order routing is prevented.
-\item \code{update_time} (POSIXct): Last account update time.
-\item \code{account_type} (character): Account type (e.g., \code{"SPOT"}).
-\item \code{permissions} (character): \verb{;}-separated account permissions
+\item maker_commission (integer) Maker commission rate (basis points).
+\item taker_commission (integer) Taker commission rate (basis points).
+\item buyer_commission (integer) Buyer commission rate (basis points).
+\item seller_commission (integer) Seller commission rate (basis points).
+\item commission_rates_maker (character) Maker commission rate as decimal string.
+\item commission_rates_taker (character) Taker commission rate as decimal string.
+\item commission_rates_buyer (character) Buyer commission rate as decimal string.
+\item commission_rates_seller (character) Seller commission rate as decimal string.
+\item can_trade (logical) Whether the account can place trades.
+\item can_withdraw (logical) Whether the account can withdraw.
+\item can_deposit (logical) Whether the account can deposit.
+\item brokered (logical) Whether this is a brokered account.
+\item require_self_trade_prevention (logical) Whether STP is required.
+\item prevent_sor (logical) Whether smart order routing is prevented.
+\item update_time (POSIXct) Last account update time.
+\item account_type (character) Account type (e.g., \code{"SPOT"}).
+\item permissions (character) \verb{;}-separated account permissions
 (e.g., \code{"SPOT;MARGIN"}). Recover the vector with
 \code{strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]}. Single
 row per account — collapsed via the shared
 \code{collapse_string_array_fields()} helper for cross-package
 consistency.
-\item \code{uid} (integer): Unique account identifier.
+\item uid (integer) Unique account identifier.
 }
 }
 \subsection{Examples}{
@@ -285,18 +285,18 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{omitZeroBalances}}{Logical or NULL; if TRUE, omit assets with zero balance.}
+\item{\code{omitZeroBalances}}{(scalar<logical>?) if TRUE, omit assets with zero balance.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{asset} (character): Asset ticker (e.g., \code{"BTC"}, \code{"USDT"}).
-\item \code{free} (character): Available balance for trading.
-\item \code{locked} (character): Balance locked in open orders.
+\item asset (character) Asset ticker (e.g., \code{"BTC"}, \code{"USDT"}).
+\item free (character) Available balance for trading.
+\item locked (character) Balance locked in open orders.
 }
 }
 \subsection{Examples}{
@@ -381,38 +381,38 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{Integer or NULL; filter by order ID.}
+\item{\code{orderId}}{(scalar<count>?) filter by order ID.}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{fromId}}{Integer or NULL; trade ID to fetch from.}
+\item{\code{fromId}}{(scalar<count>?) trade ID to fetch from.}
 
-\item{\code{limit}}{Integer or NULL; max results (default 500, max 1000).}
+\item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per trade and the following columns:
+(promise<data.table>) with one row per trade and the following columns:
 \itemize{
-\item \code{symbol} (character): Trading pair (e.g., \code{"BTCUSDT"}).
-\item \code{id} (integer): Unique trade identifier.
-\item \code{order_id} (integer): Order that generated this trade.
-\item \code{order_list_id} (integer): OCO order list ID; \code{-1} if not an OCO.
-\item \code{price} (character): Execution price.
-\item \code{qty} (character): Quantity traded.
-\item \code{quote_qty} (character): Quote asset amount transacted.
-\item \code{commission} (character): Commission charged.
-\item \code{commission_asset} (character): Asset used for commission (e.g., \code{"BNB"}).
-\item \code{is_buyer} (logical): \code{TRUE} if you were the buyer.
-\item \code{is_maker} (logical): \code{TRUE} if you were the maker.
-\item \code{is_best_match} (logical): \code{TRUE} if this was the best price match.
-\item \code{time} (POSIXct): Trade execution time converted from \code{time}.
+\item symbol (character) Trading pair (e.g., \code{"BTCUSDT"}).
+\item id (integer) Unique trade identifier.
+\item order_id (integer) Order that generated this trade.
+\item order_list_id (integer) OCO order list ID; \code{-1} if not an OCO.
+\item price (character) Execution price.
+\item qty (character) Quantity traded.
+\item quote_qty (character) Quote asset amount transacted.
+\item commission (character) Commission charged.
+\item commission_asset (character) Asset used for commission (e.g., \code{"BNB"}).
+\item is_buyer (logical) \code{TRUE} if you were the buyer.
+\item is_maker (logical) \code{TRUE} if you were the maker.
+\item is_best_match (logical) \code{TRUE} if this was the best price match.
+\item time (POSIXct) Trade execution time converted from \code{time}.
 }
 }
 \subsection{Examples}{

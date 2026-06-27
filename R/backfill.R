@@ -16,24 +16,25 @@
 #' its final values — dropping it means the next run re-fetches and completes
 #' it. Closed historical candles are unaffected.
 #'
-#' @param symbols Character vector of trading pair symbols (e.g.,
+#' @param symbols (character) trading pair symbols (e.g.,
 #'   `c("BTCUSDT", "ETHUSDT")`). Must not be NULL or empty.
-#' @param timeframes Character vector of candle timeframes (e.g., `c("1d", "1h")`).
+#' @param timeframes (character) candle timeframes (e.g., `c("1d", "1h")`).
 #'   Valid values: `"1s"`, `"1m"`, `"3m"`, `"5m"`, `"15m"`, `"30m"`, `"1h"`,
 #'   `"2h"`, `"4h"`, `"6h"`, `"8h"`, `"12h"`, `"1d"`, `"3d"`, `"1w"`, `"1M"`.
-#' @param from POSIXct or numeric; start of the backfill window. Defaults to one
-#'   year ago. Values before `"2017-07-01"` (or `-Inf`) are clamped to
-#'   `"2017-07-01"` since Binance data does not exist before that date.
-#' @param to POSIXct or numeric; end of the backfill window. Defaults to
-#'   current time. `Inf` is replaced with current time.
-#' @param file Character; path to the output CSV file. Data is appended
+#' @param from (scalar<POSIXct> | scalar<numeric>) start of the backfill window.
+#'   Defaults to one year ago. Values before `"2017-07-01"` (or `-Inf`) are
+#'   clamped to `"2017-07-01"` since Binance data does not exist before that date.
+#' @param to (scalar<POSIXct> | scalar<numeric>) end of the backfill window.
+#'   Defaults to current time. `Inf` is replaced with current time.
+#' @param file (scalar<character>) path to the output CSV file. Data is appended
 #'   incrementally so progress is saved even if the process is interrupted.
-#' @param base_url Character; Binance API base URL.
-#' @param sleep Numeric; seconds to sleep between each symbol-timeframe
-#'   combination to respect rate limits.
-#' @param verbose Logical; if `TRUE`, prints progress messages via [rlang::inform()].
+#' @param base_url (scalar<character>) Binance API base URL.
+#' @param sleep (scalar<numeric in [0, Inf[>) seconds to sleep between each
+#'   symbol-timeframe combination to respect rate limits.
+#' @param verbose (scalar<logical>) if `TRUE`, prints progress messages via [rlang::inform()].
+#' @noassert symbols
 #'
-#' @return The file path (invisibly).
+#' @return (scalar<character>) the file path (invisibly).
 #'
 #'   Per-combo failures are surfaced as warnings during the run (one
 #'   `rlang::warn()` per failed `(symbol, timeframe)` pair, with the
@@ -66,6 +67,15 @@ binance_backfill_klines <- function(
   verbose = TRUE
 ) {
   # --- Input validation ---
+  assert_args_binance_backfill_klines(
+    timeframes,
+    from,
+    to,
+    file,
+    base_url,
+    sleep,
+    verbose
+  )
   if (is.null(symbols) || length(symbols) == 0L) {
     rlang::abort("`symbols` must be a non-empty character vector of trading pairs.")
   }
@@ -227,5 +237,5 @@ binance_backfill_klines <- function(
     ))
   }
 
-  return(invisible(file))
+  return(invisible(assert_return_binance_backfill_klines(file)))
 }

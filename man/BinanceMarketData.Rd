@@ -288,9 +288,9 @@ Verified: 2026-05-22
 }
 
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{server_time} (POSIXct): Server time as UTC datetime.
+\item server_time (POSIXct) Server time as UTC datetime.
 }
 }
 \subsection{Examples}{
@@ -383,63 +383,63 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character or NULL; specific symbol (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>?) specific symbol (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{symbols}}{Character vector or NULL; multiple symbols.}
+\item{\code{symbols}}{(character?) multiple symbols.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with all symbol
+(promise<data.table>) with all symbol
 fields returned by the API, converted to snake_case. Key columns include:
 \itemize{
-\item \code{symbol} (character): Trading pair identifier (e.g., \code{"BTCUSDT"}).
-\item \code{status} (character): Trading status (\code{"TRADING"}, \code{"HALT"}, \code{"BREAK"}).
-\item \code{base_asset} (character): Base asset code (e.g., \code{"BTC"}).
-\item \code{base_asset_precision} (integer): Decimal precision for base asset quantities.
-\item \code{quote_asset} (character): Quote asset code (e.g., \code{"USDT"}).
-\item \code{quote_asset_precision} (integer): Decimal precision for quote asset quantities.
-\item \code{quote_precision} (integer): Decimal precision for quote asset prices.
-\item \code{order_types} (character): Semicolon-separated allowed order types
+\item symbol (character) Trading pair identifier (e.g., \code{"BTCUSDT"}).
+\item status (character) Trading status (\code{"TRADING"}, \code{"HALT"}, \code{"BREAK"}).
+\item base_asset (character) Base asset code (e.g., \code{"BTC"}).
+\item base_asset_precision (integer) Decimal precision for base asset quantities.
+\item quote_asset (character) Quote asset code (e.g., \code{"USDT"}).
+\item quote_asset_precision (integer) Decimal precision for quote asset quantities.
+\item quote_precision (integer) Decimal precision for quote asset prices.
+\item order_types (character) Semicolon-separated allowed order types
 (e.g., \code{"LIMIT;MARKET"}). Recover the vector via
 \code{strsplit(dt$order_types[1], ";", fixed = TRUE)[[1]]}.
-\item \code{iceberg_allowed} (logical): Whether iceberg orders are allowed.
-\item \code{oco_allowed} (logical): Whether OCO orders are allowed.
-\item \code{oto_allowed} (logical): Whether OTO orders are allowed.
-\item \code{quote_order_qty_market_allowed} (logical): Whether quote quantity market orders are allowed.
-\item \code{allow_trailing_stop} (logical): Whether trailing stop orders are allowed.
-\item \code{cancel_replace_allowed} (logical): Whether cancel-replace is allowed.
-\item \code{is_spot_trading_allowed} (logical): Whether spot trading is enabled.
-\item \code{is_margin_trading_allowed} (logical): Whether margin trading is enabled.
-\item \code{lot_min_qty} (numeric): Minimum order quantity from LOT_SIZE filter.
-\item \code{lot_max_qty} (numeric): Maximum order quantity from LOT_SIZE filter.
-\item \code{lot_step_size} (numeric): Quantity step size from LOT_SIZE filter.
-\item \code{price_min} (numeric): Minimum price from PRICE_FILTER.
-\item \code{price_max} (numeric): Maximum price from PRICE_FILTER.
-\item \code{price_tick_size} (numeric): Price tick size from PRICE_FILTER.
-\item \code{min_notional} (numeric): Minimum notional value from MIN_NOTIONAL filter.
-\item \code{filters_raw} (character): JSON-encoded copy of the full per-symbol
+\item iceberg_allowed (logical) Whether iceberg orders are allowed.
+\item oco_allowed (logical) Whether OCO orders are allowed.
+\item oto_allowed (logical) Whether OTO orders are allowed.
+\item quote_order_qty_market_allowed (logical) Whether quote quantity market orders are allowed.
+\item allow_trailing_stop (logical) Whether trailing stop orders are allowed.
+\item cancel_replace_allowed (logical) Whether cancel-replace is allowed.
+\item is_spot_trading_allowed (logical) Whether spot trading is enabled.
+\item is_margin_trading_allowed (logical) Whether margin trading is enabled.
+\item lot_min_qty (numeric) Minimum order quantity from LOT_SIZE filter.
+\item lot_max_qty (numeric) Maximum order quantity from LOT_SIZE filter.
+\item lot_step_size (numeric) Quantity step size from LOT_SIZE filter.
+\item price_min (numeric) Minimum price from PRICE_FILTER.
+\item price_max (numeric) Maximum price from PRICE_FILTER.
+\item price_tick_size (numeric) Price tick size from PRICE_FILTER.
+\item min_notional (numeric) Minimum notional value from MIN_NOTIONAL filter.
+\item filters_raw (character) JSON-encoded copy of the full per-symbol
 \code{filters} array. Preserves filter types not pulled into curated
 columns (\code{PERCENT_PRICE}, \code{PERCENT_PRICE_BY_SIDE}, \code{MARKET_LOT_SIZE},
 \code{MAX_NUM_ORDERS}, \code{MAX_NUM_ALGO_ORDERS}, \code{MAX_NUM_ICEBERG_ORDERS},
 \code{ICEBERG_PARTS}, \code{MAX_POSITION}, \code{TRAILING_DELTA}, ...). Recover
 with \code{jsonlite::fromJSON(dt$filters_raw[1])}. \code{NA} if Binance
 returned no filters for the symbol.
-\item \code{permissions} (character): Semicolon-separated trading permissions
+\item permissions (character) Semicolon-separated trading permissions
 (e.g., \code{"SPOT;MARGIN"}). Recover via
 \code{strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]}. \strong{Note:}
 on newer symbols Binance often returns \verb{permissions = []} and
 populates \code{permission_sets} instead. Prefer \code{permission_sets}
 for new code.
-\item \code{permission_sets} (character): JSON string preserving
+\item permission_sets (character) JSON string preserving
 Binance's array-of-arrays structure (e.g.
 \code{'[["SPOT","MARGIN"],["TRD_GRP_004"]]'}). Inner groupings
 carry semantic meaning — each inner array is an alternative
 permission set — so we don't flatten with \verb{;}. Recover with
 \code{jsonlite::fromJSON(dt$permission_sets[1])}. \code{NA} when the
 symbol omits the field.
-\item \code{default_self_trade_prevention_mode} (character): Default STP mode.
-\item \code{allowed_self_trade_prevention_modes} (character): Semicolon-separated
+\item default_self_trade_prevention_mode (character) Default STP mode.
+\item allowed_self_trade_prevention_modes (character) Semicolon-separated
 allowed STP modes.
 }
 
@@ -498,14 +498,14 @@ Verified: 2026-05-22
 }
 
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
+(promise<data.table>)
 with one row per rate-limit rule. Columns:
 \itemize{
-\item \code{rate_limit_type} (character): \code{"REQUEST_WEIGHT"}, \code{"ORDERS"},
+\item rate_limit_type (character) \code{"REQUEST_WEIGHT"}, \code{"ORDERS"},
 \code{"RAW_REQUESTS"}.
-\item \code{interval} (character): \code{"SECOND"}, \code{"MINUTE"}, \code{"DAY"}.
-\item \code{interval_num} (integer): Multiplier for \code{interval}.
-\item \code{limit} (integer): Maximum requests / orders permitted in the
+\item interval (character) \code{"SECOND"}, \code{"MINUTE"}, \code{"DAY"}.
+\item interval_num (integer) Multiplier for \code{interval}.
+\item limit (integer) Maximum requests / orders permitted in the
 interval.
 }
 
@@ -547,7 +547,7 @@ this method extracts the \code{exchangeFilters} slice.)
 }
 
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
+(promise<data.table>)
 with one row per exchange-wide filter rule. Empty when Binance
 returns no \code{exchangeFilters} (the common case).
 }
@@ -599,15 +599,15 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{symbol} (character): Trading pair identifier.
-\item \code{price} (character): Latest traded price as string.
+\item symbol (character) Trading pair identifier.
+\item price (character) Latest traded price as string.
 }
 }
 \subsection{Examples}{
@@ -661,10 +661,10 @@ Verified: 2026-05-22
 }
 
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{symbol} (character): Trading pair identifier.
-\item \code{price} (character): Latest traded price as string.
+\item symbol (character) Trading pair identifier.
+\item price (character) Latest traded price as string.
 }
 }
 \subsection{Examples}{
@@ -722,18 +722,18 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{symbol} (character): Trading pair identifier.
-\item \code{bid_price} (character): Best bid price.
-\item \code{bid_qty} (character): Quantity available at best bid.
-\item \code{ask_price} (character): Best ask price.
-\item \code{ask_qty} (character): Quantity available at best ask.
+\item symbol (character) Trading pair identifier.
+\item bid_price (character) Best bid price.
+\item bid_qty (character) Quantity available at best bid.
+\item ask_price (character) Best ask price.
+\item ask_qty (character) Quantity available at best ask.
 }
 }
 \subsection{Examples}{
@@ -807,34 +807,34 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{symbol} (character): Trading pair identifier.
-\item \code{price_change} (character): Absolute price change over 24h.
-\item \code{price_change_percent} (character): Percentage price change over 24h.
-\item \code{weighted_avg_price} (character): Volume-weighted average price over 24h.
-\item \code{prev_close_price} (character): Previous day's closing price.
-\item \code{last_price} (character): Most recent trade price.
-\item \code{last_qty} (character): Most recent trade quantity.
-\item \code{bid_price} (character): Current best bid price.
-\item \code{bid_qty} (character): Current best bid quantity.
-\item \code{ask_price} (character): Current best ask price.
-\item \code{ask_qty} (character): Current best ask quantity.
-\item \code{open_price} (character): Price at 24h window open.
-\item \code{high_price} (character): Highest price in 24h.
-\item \code{low_price} (character): Lowest price in 24h.
-\item \code{volume} (character): Total base asset volume in 24h.
-\item \code{quote_volume} (character): Total quote asset volume in 24h.
-\item \code{open_time} (POSIXct): Start of the 24h window.
-\item \code{close_time} (POSIXct): End of the 24h window.
-\item \code{first_id} (integer): First trade ID in the window.
-\item \code{last_id} (integer): Last trade ID in the window.
-\item \code{count} (integer): Total number of trades in 24h.
+\item symbol (character) Trading pair identifier.
+\item price_change (character) Absolute price change over 24h.
+\item price_change_percent (character) Percentage price change over 24h.
+\item weighted_avg_price (character) Volume-weighted average price over 24h.
+\item prev_close_price (character) Previous day's closing price.
+\item last_price (character) Most recent trade price.
+\item last_qty (character) Most recent trade quantity.
+\item bid_price (character) Current best bid price.
+\item bid_qty (character) Current best bid quantity.
+\item ask_price (character) Current best ask price.
+\item ask_qty (character) Current best ask quantity.
+\item open_price (character) Price at 24h window open.
+\item high_price (character) Highest price in 24h.
+\item low_price (character) Lowest price in 24h.
+\item volume (character) Total base asset volume in 24h.
+\item quote_volume (character) Total quote asset volume in 24h.
+\item open_time (POSIXct) Start of the 24h window.
+\item close_time (POSIXct) End of the 24h window.
+\item first_id (integer) First trade ID in the window.
+\item last_id (integer) Last trade ID in the window.
+\item count (integer) Total number of trades in 24h.
 }
 }
 \subsection{Examples}{
@@ -872,7 +872,7 @@ in a single request.
 }
 
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with same
+(promise<data.table>) with same
 columns as \code{get_24hr_stats()}, one row per symbol.
 }
 \subsection{Examples}{
@@ -924,16 +924,16 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{mins} (integer): Number of minutes in the averaging window.
-\item \code{price} (character): Weighted average price over the window.
-\item \code{close_time} (POSIXct): End of the averaging window.
+\item mins (integer) Number of minutes in the averaging window.
+\item price (character) Weighted average price over the window.
+\item close_time (POSIXct) End of the averaging window.
 }
 }
 \subsection{Examples}{
@@ -995,20 +995,20 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{limit}}{Integer or NULL; depth limit. Valid values: 5, 10, 20, 50, 100,
+\item{\code{limit}}{(scalar<count>?) depth limit. Valid values: 5, 10, 20, 50, 100,
 500, 1000, 5000. Default 100.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{last_update_id} (character): Sequence ID for orderbook synchronisation.
-\item \code{side} (character): \code{"bid"} or \code{"ask"}.
-\item \code{price} (numeric): Price level.
-\item \code{size} (numeric): Available size at this price level.
+\item last_update_id (character) Sequence ID for orderbook synchronisation.
+\item side (character) \code{"bid"} or \code{"ask"}.
+\item price (numeric) Price level.
+\item size (numeric) Available size at this price level.
 }
 }
 \subsection{Examples}{
@@ -1070,22 +1070,22 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{limit}}{Integer or NULL; max results (default 500, max 1000).}
+\item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{id} (integer): Unique trade identifier.
-\item \code{price} (character): Trade execution price.
-\item \code{qty} (character): Base asset quantity traded.
-\item \code{quote_qty} (character): Quote asset quantity traded.
-\item \code{time} (POSIXct): Trade execution time.
-\item \code{is_buyer_maker} (logical): \code{TRUE} if the buyer was the maker (passive side).
-\item \code{is_best_match} (logical): \code{TRUE} if this trade was at the best available price.
+\item id (integer) Unique trade identifier.
+\item price (character) Trade execution price.
+\item qty (character) Base asset quantity traded.
+\item quote_qty (character) Quote asset quantity traded.
+\item time (POSIXct) Trade execution time.
+\item is_buyer_maker (logical) \code{TRUE} if the buyer was the maker (passive side).
+\item is_best_match (logical) \code{TRUE} if this trade was at the best available price.
 }
 }
 \subsection{Examples}{
@@ -1169,32 +1169,32 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{interval}}{Character; candle interval. Valid values:
+\item{\code{interval}}{(scalar<character>) candle interval. Valid values:
 \code{"1s"}, \code{"1m"}, \code{"3m"}, \code{"5m"}, \code{"15m"}, \code{"30m"},
 \code{"1h"}, \code{"2h"}, \code{"4h"}, \code{"6h"}, \code{"8h"}, \code{"12h"},
 \code{"1d"}, \code{"3d"}, \code{"1w"}, \code{"1M"}.}
 
-\item{\code{startTime}}{POSIXct or numeric or NULL; start time (ms or POSIXct).}
+\item{\code{startTime}}{(scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).}
 
-\item{\code{endTime}}{POSIXct or numeric or NULL; end time (ms or POSIXct).}
+\item{\code{endTime}}{(scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).}
 
-\item{\code{limit}}{Integer or NULL; max results (default 500, max 1000).}
+\item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
 
-\item{\code{fetch_all}}{Logical; if \code{TRUE}, automatically pages forward through the
+\item{\code{fetch_all}}{(scalar<logical>) if \code{TRUE}, automatically pages forward through the
 time range — following the data and stopping at the first empty or short
 page — and returns the combined result sorted by \code{open_time}. Both
 \code{startTime} and \code{endTime} are required when enabled. \strong{Warning}: large
 date ranges will consume multiple API requests and may impact your
 rate-limit quota. Default \code{FALSE}.}
 
-\item{\code{sleep}}{Numeric; seconds to wait between consecutive API calls when
+\item{\code{sleep}}{(scalar<numeric>) seconds to wait between consecutive API calls when
 \code{fetch_all = TRUE}. Use this to avoid hitting Binance rate limits. Only
 applies in synchronous mode; async mode chains requests sequentially via
 promises. Default \code{0.2}.}
 
-\item{\code{on_page}}{Optional \verb{function(page)} called with each page (a
+\item{\code{on_page}}{(function?) optional \verb{function(page)} called with each page (a
 \code{data.table}) as it is fetched, when \code{fetch_all = TRUE}. When supplied,
 pages are streamed to the callback and \strong{not} accumulated — the method
 returns invisibly, so the callback owns the data (e.g. writes it to disk).
@@ -1205,20 +1205,20 @@ only one page. Default \code{NULL} (buffer and return the combined table).}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{open_time} (POSIXct): Candle open time.
-\item \code{open} (numeric): Opening price.
-\item \code{high} (numeric): Highest price during the interval.
-\item \code{low} (numeric): Lowest price during the interval.
-\item \code{close} (numeric): Closing price.
-\item \code{volume} (numeric): Base asset volume traded.
-\item \code{close_time} (POSIXct): Candle close time.
-\item \code{quote_volume} (numeric): Quote asset volume traded.
-\item \code{trades} (integer): Number of trades during the interval.
-\item \code{taker_buy_base_volume} (numeric): Base asset volume bought by takers.
-\item \code{taker_buy_quote_volume} (numeric): Quote asset volume bought by takers.
-\item \code{ignore} (character): Unused field from Binance API.
+\item open_time (POSIXct) Candle open time.
+\item open (numeric) Opening price.
+\item high (numeric) Highest price during the interval.
+\item low (numeric) Lowest price during the interval.
+\item close (numeric) Closing price.
+\item volume (numeric) Base asset volume traded.
+\item close_time (POSIXct) Candle close time.
+\item quote_volume (numeric) Quote asset volume traded.
+\item trades (integer) Number of trades during the interval.
+\item taker_buy_base_volume (numeric) Base asset volume bought by takers.
+\item taker_buy_quote_volume (numeric) Quote asset volume bought by takers.
+\item ignore (character) Unused field from Binance API.
 }
 }
 \subsection{Examples}{

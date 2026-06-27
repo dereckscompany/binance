@@ -109,27 +109,27 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param asset Character or NULL; filter by asset (e.g., `"USDT"`).
-    #' @param current Integer or NULL; current page (default 1, starting from 1).
-    #' @param size Integer or NULL; page size (default 10, max 100).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per product and the following columns:
-    #' - `asset` (character): Asset symbol (e.g., `"USDT"`).
-    #' - `latest_annual_percentage_rate` (character): Current annual yield rate.
-    #' - `tier_annual_percentage_rate` (character): JSON-encoded
+    #' @param asset (scalar<character>?) filter by asset (e.g., `"USDT"`).
+    #' @param current (scalar<count>?) current page (default 1, starting from 1).
+    #' @param size (scalar<count>?) page size (default 10, max 100).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per product and the following columns:
+    #' - asset (character) Asset symbol (e.g., `"USDT"`).
+    #' - latest_annual_percentage_rate (character) Current annual yield rate.
+    #' - tier_annual_percentage_rate (character) JSON-encoded
     #'   per-tier APR map (dynamic keys like `"0-5BTC"`, `"5-10BTC"`).
     #'   Recover via `jsonlite::fromJSON(dt$tier_annual_percentage_rate[1])`.
     #'   `NA` when the field is absent.
-    #' - `air_drop_percentage_rate` (character): Air-drop APR if the
+    #' - air_drop_percentage_rate (character) Air-drop APR if the
     #'   product currently carries one.
-    #' - `can_purchase` (logical): Whether new subscriptions are accepted.
-    #' - `can_redeem` (logical): Whether redemptions are allowed.
-    #' - `is_sold_out` (logical): Whether the product is sold out.
-    #' - `hot` (logical): Whether the product is marked as popular.
-    #' - `min_purchase_amount` (character): Minimum subscription amount.
-    #' - `product_id` (character): Unique product identifier.
-    #' - `subscription_start_time` (POSIXct): Subscription start time.
-    #' - `status` (character): Product status (e.g., `"PURCHASING"`).
+    #' - can_purchase (logical) Whether new subscriptions are accepted.
+    #' - can_redeem (logical) Whether redemptions are allowed.
+    #' - is_sold_out (logical) Whether the product is sold out.
+    #' - hot (logical) Whether the product is marked as popular.
+    #' - min_purchase_amount (character) Minimum subscription amount.
+    #' - product_id (character) Unique product identifier.
+    #' - subscription_start_time (POSIXct) Subscription start time.
+    #' - status (character) Product status (e.g., `"PURCHASING"`).
     #'
     #' @examples
     #' \dontrun{
@@ -138,6 +138,7 @@ BinanceEarn <- R6::R6Class(
     #' print(products)
     #' }
     get_flexible_products = function(asset = NULL, current = NULL, size = NULL, recvWindow = NULL) {
+      assert_args_BinanceEarn__get_flexible_products(asset, current, size, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/list",
         query = list(
@@ -228,37 +229,37 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param asset Character or NULL; filter by asset (e.g., `"BTC"`).
-    #' @param current Integer or NULL; current page (default 1, starting from 1).
-    #' @param size Integer or NULL; page size (default 10, max 100).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with **one row per product** and the following
+    #' @param asset (scalar<character>?) filter by asset (e.g., `"BTC"`).
+    #' @param current (scalar<count>?) current page (default 1, starting from 1).
+    #' @param size (scalar<count>?) page size (default 10, max 100).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per product and the following
     #'   columns. Nested `detail` and `quota` objects are wide-prefixed
     #'   (`detail_*` and `quota_*`) per the package's "no list columns"
     #'   policy. Field names mirror the current Binance API
     #'   (verified 2026-05-22):
-    #' - `project_id` (character): Unique project identifier.
-    #' - `detail_asset` (character): Subscription asset (e.g. `"BTC"`).
-    #' - `detail_reward_asset` (character): Reward asset.
-    #' - `detail_duration` (integer): Lock-up duration in days.
-    #' - `detail_renewable` (logical): Whether the product auto-renews.
-    #' - `detail_is_sold_out` (logical): Whether the offering is currently
+    #' - project_id (character) Unique project identifier.
+    #' - detail_asset (character) Subscription asset (e.g. `"BTC"`).
+    #' - detail_reward_asset (character) Reward asset.
+    #' - detail_duration (integer) Lock-up duration in days.
+    #' - detail_renewable (logical) Whether the product auto-renews.
+    #' - detail_is_sold_out (logical) Whether the offering is currently
     #'   sold out (no new subscriptions accepted).
-    #' - `detail_apr` (character): Annual percentage rate. NOTE: Binance
+    #' - detail_apr (character) Annual percentage rate. NOTE: Binance
     #'   renamed this from `apy` → `apr` on the live API; older docs
     #'   that show `apy` are stale.
-    #' - `detail_status` (character): Product lifecycle state (e.g.
+    #' - detail_status (character) Product lifecycle state (e.g.
     #'   `"CREATED"`, `"PURCHASING"`).
-    #' - `detail_subscription_start_time` (POSIXct): Subscription open
+    #' - detail_subscription_start_time (POSIXct) Subscription open
     #'   timestamp in milliseconds.
-    #' - `detail_extra_reward_asset` (character): Additional reward
+    #' - detail_extra_reward_asset (character) Additional reward
     #'   asset, if the product carries a boost.
-    #' - `detail_extra_reward_apr` (character): Extra reward APR.
-    #' - `detail_boost_reward_asset` (character): Boost reward asset.
-    #' - `detail_boost_apr` (character): Boost APR.
-    #' - `detail_boost_end_time` (POSIXct): Boost end time.
-    #' - `quota_total_personal_quota` (character): Per-user maximum.
-    #' - `quota_minimum` (character): Per-user minimum.
+    #' - detail_extra_reward_apr (character) Extra reward APR.
+    #' - detail_boost_reward_asset (character) Boost reward asset.
+    #' - detail_boost_apr (character) Boost APR.
+    #' - detail_boost_end_time (POSIXct) Boost end time.
+    #' - quota_total_personal_quota (character) Per-user maximum.
+    #' - quota_minimum (character) Per-user minimum.
     #'
     #' @examples
     #' \dontrun{
@@ -267,6 +268,7 @@ BinanceEarn <- R6::R6Class(
     #' print(products)
     #' }
     get_locked_products = function(asset = NULL, current = NULL, size = NULL, recvWindow = NULL) {
+      assert_args_BinanceEarn__get_locked_products(asset, current, size, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/list",
         query = list(
@@ -341,14 +343,14 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param productId Character; the product ID to subscribe to.
-    #' @param amount Numeric; amount to subscribe.
-    #' @param autoSubscribe Logical or NULL; whether to enable auto-subscription.
-    #' @param sourceAccount Character or NULL; source wallet: `"SPOT"`, `"FUND"`, or `"ALL"`. Default `"SPOT"`.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `purchase_id` (integer): Unique purchase identifier.
-    #' - `success` (logical): Whether the subscription was successful.
+    #' @param productId (scalar<character>) the product ID to subscribe to.
+    #' @param amount (scalar<numeric>) amount to subscribe.
+    #' @param autoSubscribe (scalar<logical>?) whether to enable auto-subscription.
+    #' @param sourceAccount (scalar<character>?) source wallet: `"SPOT"`, `"FUND"`, or `"ALL"`. Default `"SPOT"`.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row and the following columns:
+    #' - purchase_id (integer) Unique purchase identifier.
+    #' - success (logical) Whether the subscription was successful.
     #'
     #' @examples
     #' \dontrun{
@@ -363,6 +365,7 @@ BinanceEarn <- R6::R6Class(
       sourceAccount = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceEarn__add_flexible_subscription(productId, amount, autoSubscribe, sourceAccount, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/subscribe",
         method = "POST",
@@ -416,14 +419,14 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param projectId Character; the project ID to subscribe to.
-    #' @param amount Numeric; amount to subscribe.
-    #' @param autoSubscribe Logical or NULL; whether to enable auto-subscription.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `purchase_id` (integer): Unique purchase identifier.
-    #' - `position_id` (character): Position identifier for the locked subscription.
-    #' - `success` (logical): Whether the subscription was successful.
+    #' @param projectId (scalar<character>) the project ID to subscribe to.
+    #' @param amount (scalar<numeric>) amount to subscribe.
+    #' @param autoSubscribe (scalar<logical>?) whether to enable auto-subscription.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row and the following columns:
+    #' - purchase_id (integer) Unique purchase identifier.
+    #' - position_id (character) Position identifier for the locked subscription.
+    #' - success (logical) Whether the subscription was successful.
     #'
     #' @examples
     #' \dontrun{
@@ -432,6 +435,7 @@ BinanceEarn <- R6::R6Class(
     #' print(result)
     #' }
     add_locked_subscription = function(projectId, amount, autoSubscribe = NULL, recvWindow = NULL) {
+      assert_args_BinanceEarn__add_locked_subscription(projectId, amount, autoSubscribe, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/subscribe",
         method = "POST",
@@ -486,14 +490,14 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param productId Character; the product ID to redeem from.
-    #' @param amount Numeric or NULL; amount to redeem. If NULL, use `redeemAll`.
-    #' @param redeemAll Logical or NULL; if TRUE, redeem entire position.
-    #' @param destAccount Character or NULL; destination wallet: `"SPOT"` or `"FUND"`. Default `"SPOT"`.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `redeem_id` (integer): Unique redemption identifier.
-    #' - `success` (logical): Whether the redemption was successful.
+    #' @param productId (scalar<character>) the product ID to redeem from.
+    #' @param amount (scalar<numeric>?) amount to redeem. If NULL, use `redeemAll`.
+    #' @param redeemAll (scalar<logical>?) if TRUE, redeem entire position.
+    #' @param destAccount (scalar<character>?) destination wallet: `"SPOT"` or `"FUND"`. Default `"SPOT"`.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row and the following columns:
+    #' - redeem_id (integer) Unique redemption identifier.
+    #' - success (logical) Whether the redemption was successful.
     #'
     #' @examples
     #' \dontrun{
@@ -508,6 +512,7 @@ BinanceEarn <- R6::R6Class(
       destAccount = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceEarn__add_flexible_redemption(productId, amount, redeemAll, destAccount, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/redeem",
         method = "POST",
@@ -558,11 +563,11 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param positionId Character; the position ID to redeem.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `redeem_id` (integer): Unique redemption identifier.
-    #' - `success` (logical): Whether the redemption was successful.
+    #' @param positionId (scalar<character>) the position ID to redeem.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row and the following columns:
+    #' - redeem_id (integer) Unique redemption identifier.
+    #' - success (logical) Whether the redemption was successful.
     #'
     #' @examples
     #' \dontrun{
@@ -571,6 +576,7 @@ BinanceEarn <- R6::R6Class(
     #' print(result)
     #' }
     add_locked_redemption = function(positionId, recvWindow = NULL) {
+      assert_args_BinanceEarn__add_locked_redemption(positionId, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/redeem",
         method = "POST",
@@ -633,36 +639,36 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param asset Character or NULL; filter by asset (e.g., `"USDT"`).
-    #' @param productId Character or NULL; filter by product ID.
-    #' @param current Integer or NULL; current page (default 1, starting from 1).
-    #' @param size Integer or NULL; page size (default 10, max 100).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per position and the following columns:
-    #' - `total_amount` (character): Total amount in the position.
-    #' - `latest_annual_percentage_rate` (character): Current annual yield rate.
-    #' - `tier_annual_percentage_rate` (character, optional):
+    #' @param asset (scalar<character>?) filter by asset (e.g., `"USDT"`).
+    #' @param productId (scalar<character>?) filter by product ID.
+    #' @param current (scalar<count>?) current page (default 1, starting from 1).
+    #' @param size (scalar<count>?) page size (default 10, max 100).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per position and the following columns:
+    #' - total_amount (character) Total amount in the position.
+    #' - latest_annual_percentage_rate (character) Current annual yield rate.
+    #' - tier_annual_percentage_rate (character | NA) optional;
     #'   JSON-encoded per-tier APR map when the position carries
     #'   tier-based rates (dynamic keys like `"0-5BTC"`). Recover via
     #'   `jsonlite::fromJSON(dt$tier_annual_percentage_rate[1])`.
-    #' - `yesterday_airdrop_percentage_rate` (character): Air-drop APR
+    #' - yesterday_airdrop_percentage_rate (character) Air-drop APR
     #'   for the previous accrual period.
-    #' - `asset` (character): Asset symbol (e.g., `"USDT"`).
-    #' - `air_drop_asset` (character): Asset paid as an air-drop reward,
+    #' - asset (character) Asset symbol (e.g., `"USDT"`).
+    #' - air_drop_asset (character) Asset paid as an air-drop reward,
     #'   if any.
-    #' - `can_redeem` (logical): Whether redemption is allowed.
-    #' - `collateral_amount` (character): Amount currently locked as
+    #' - can_redeem (logical) Whether redemption is allowed.
+    #' - collateral_amount (character) Amount currently locked as
     #'   collateral, if the position is being used as such.
-    #' - `product_id` (character): Product identifier.
-    #' - `yesterday_real_time_rewards` (character): Real-time rewards
+    #' - product_id (character) Product identifier.
+    #' - yesterday_real_time_rewards (character) Real-time rewards
     #'   accrued in the previous period.
-    #' - `cumulative_bonus_rewards` (character): Cumulative bonus
+    #' - cumulative_bonus_rewards (character) Cumulative bonus
     #'   rewards earned on this position.
-    #' - `cumulative_real_time_rewards` (character): Cumulative
+    #' - cumulative_real_time_rewards (character) Cumulative
     #'   real-time rewards.
-    #' - `cumulative_total_rewards` (character): Cumulative total
+    #' - cumulative_total_rewards (character) Cumulative total
     #'   rewards (bonus + real-time).
-    #' - `auto_subscribe` (logical): Whether auto-subscription is enabled.
+    #' - auto_subscribe (logical) Whether auto-subscription is enabled.
     #'
     #' @examples
     #' \dontrun{
@@ -671,6 +677,7 @@ BinanceEarn <- R6::R6Class(
     #' print(positions)
     #' }
     get_flexible_position = function(asset = NULL, productId = NULL, current = NULL, size = NULL, recvWindow = NULL) {
+      assert_args_BinanceEarn__get_flexible_position(asset, productId, current, size, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/position",
         query = list(
@@ -772,53 +779,53 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param asset Character or NULL; filter by asset (e.g., `"BTC"`).
-    #' @param positionId Character or NULL; filter by position ID.
-    #' @param projectId Character or NULL; filter by project ID.
-    #' @param current Integer or NULL; current page (default 1, starting from 1).
-    #' @param size Integer or NULL; page size (default 10, max 100).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per position and the following columns
+    #' @param asset (scalar<character>?) filter by asset (e.g., `"BTC"`).
+    #' @param positionId (scalar<character>?) filter by position ID.
+    #' @param projectId (scalar<character>?) filter by project ID.
+    #' @param current (scalar<count>?) current page (default 1, starting from 1).
+    #' @param size (scalar<count>?) page size (default 10, max 100).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per position and the following columns
     #'   (snake-case names; Binance's uppercase `APY` lowers to `apy`):
-    #' - `position_id` (numeric): Locked position identifier.
-    #' - `parent_position_id` (numeric): Parent position identifier
+    #' - position_id (numeric) Locked position identifier.
+    #' - parent_position_id (numeric) Parent position identifier
     #'   (cross-reference for auto-renewed positions).
-    #' - `project_id` (character): Locked project identifier.
-    #' - `asset` (character): Locked asset symbol.
-    #' - `amount` (character): Locked amount.
-    #' - `purchase_time` (POSIXct): Subscription time.
-    #' - `duration` (character): Lock duration in days.
-    #' - `accrual_days` (character): Days interest has accrued.
-    #' - `reward_asset` (character): Earned asset symbol.
-    #' - `apy` (character): Annual percentage yield (snake_case of `APY`).
-    #' - `reward_amt` (character): Earned amount so far.
-    #' - `extra_reward_asset` (character): Asset for the extra staking
+    #' - project_id (character) Locked project identifier.
+    #' - asset (character) Locked asset symbol.
+    #' - amount (character) Locked amount.
+    #' - purchase_time (POSIXct) Subscription time.
+    #' - duration (character) Lock duration in days.
+    #' - accrual_days (character) Days interest has accrued.
+    #' - reward_asset (character) Earned asset symbol.
+    #' - apy (character) Annual percentage yield (snake_case of `APY`).
+    #' - reward_amt (character) Earned amount so far.
+    #' - extra_reward_asset (character) Asset for the extra staking
     #'   reward, if any.
-    #' - `extra_reward_apr` (character): APR of the extra staking reward.
-    #' - `est_extra_reward_amt` (character): Estimated extra reward
+    #' - extra_reward_apr (character) APR of the extra staking reward.
+    #' - est_extra_reward_amt (character) Estimated extra reward
     #'   distributed at maturity.
-    #' - `boost_reward_asset` (character): Boost reward asset.
-    #' - `boost_apr` (character): Boost APR.
-    #' - `total_boost_reward_amt` (character): Total boost reward earned.
-    #' - `next_pay` (character): Next estimated reward payment.
-    #' - `next_pay_date` (POSIXct): Next reward payment time.
-    #' - `pay_period` (character): Payment cycle in days.
-    #' - `redeem_amount_early` (character): Amount available for early
+    #' - boost_reward_asset (character) Boost reward asset.
+    #' - boost_apr (character) Boost APR.
+    #' - total_boost_reward_amt (character) Total boost reward earned.
+    #' - next_pay (character) Next estimated reward payment.
+    #' - next_pay_date (POSIXct) Next reward payment time.
+    #' - pay_period (character) Payment cycle in days.
+    #' - redeem_amount_early (character) Amount available for early
     #'   redemption.
-    #' - `rewards_end_date` (POSIXct): Rewards accrual end time.
-    #' - `deliver_date` (POSIXct): Redemption arrival time.
-    #' - `redeem_period` (character): Redemption interval in days.
-    #' - `redeeming_amt` (character): Amount currently being redeemed.
-    #' - `redeem_to` (character): Destination on redemption
+    #' - rewards_end_date (POSIXct) Rewards accrual end time.
+    #' - deliver_date (POSIXct) Redemption arrival time.
+    #' - redeem_period (character) Redemption interval in days.
+    #' - redeeming_amt (character) Amount currently being redeemed.
+    #' - redeem_to (character) Destination on redemption
     #'   (`"FLEXIBLE"` or `"SPOT"`).
-    #' - `partial_amt_deliver_date` (POSIXct): Arrival time of partial
+    #' - partial_amt_deliver_date (POSIXct) Arrival time of partial
     #'   redemption.
-    #' - `can_redeem_early` (logical): Whether early redemption is allowed.
-    #' - `can_fast_redemption` (logical): Whether fast redemption is allowed.
-    #' - `auto_subscribe` (logical): Whether auto-subscription is enabled.
-    #' - `type` (character): Order type (`"AUTO"` or `"NORMAL"`).
-    #' - `status` (character): Position status (e.g., `"HOLDING"`).
-    #' - `can_re_stake` (logical): Whether re-staking is available.
+    #' - can_redeem_early (logical) Whether early redemption is allowed.
+    #' - can_fast_redemption (logical) Whether fast redemption is allowed.
+    #' - auto_subscribe (logical) Whether auto-subscription is enabled.
+    #' - type (character) Order type (`"AUTO"` or `"NORMAL"`).
+    #' - status (character) Position status (e.g., `"HOLDING"`).
+    #' - can_re_stake (logical) Whether re-staking is available.
     #'
     #' @examples
     #' \dontrun{
@@ -834,6 +841,7 @@ BinanceEarn <- R6::R6Class(
       size = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceEarn__get_locked_position(asset, positionId, projectId, current, size, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/position",
         query = list(
@@ -897,22 +905,22 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param productId Character or NULL; filter by product ID.
-    #' @param purchaseId Integer or NULL; filter by purchase ID.
-    #' @param asset Character or NULL; filter by asset (e.g., `"USDT"`).
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param current Integer or NULL; current page (default 1, starting from 1).
-    #' @param size Integer or NULL; page size (default 10, max 100).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per subscription record and the following columns:
-    #' - `amount` (character): Subscription amount.
-    #' - `asset` (character): Asset symbol.
-    #' - `time` (POSIXct): Subscription time.
-    #' - `purchase_id` (integer): Purchase identifier.
-    #' - `type` (character): Subscription type (e.g., `"AUTO"`, `"NORMAL"`).
-    #' - `source_account` (character): Source account (e.g., `"SPOT"`).
-    #' - `status` (character): Subscription status (e.g., `"SUCCESS"`).
+    #' @param productId (scalar<character>?) filter by product ID.
+    #' @param purchaseId (scalar<count>?) filter by purchase ID.
+    #' @param asset (scalar<character>?) filter by asset (e.g., `"USDT"`).
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param current (scalar<count>?) current page (default 1, starting from 1).
+    #' @param size (scalar<count>?) page size (default 10, max 100).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per subscription record and the following columns:
+    #' - amount (character) Subscription amount.
+    #' - asset (character) Asset symbol.
+    #' - time (POSIXct) Subscription time.
+    #' - purchase_id (integer) Purchase identifier.
+    #' - type (character) Subscription type (e.g., `"AUTO"`, `"NORMAL"`).
+    #' - source_account (character) Source account (e.g., `"SPOT"`).
+    #' - status (character) Subscription status (e.g., `"SUCCESS"`).
     #'
     #' @examples
     #' \dontrun{
@@ -930,6 +938,16 @@ BinanceEarn <- R6::R6Class(
       size = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceEarn__get_flexible_subscription_history(
+        productId,
+        purchaseId,
+        asset,
+        startTime,
+        endTime,
+        current,
+        size,
+        recvWindow
+      )
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/history/subscriptionRecord",
         query = list(
@@ -986,23 +1004,23 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param purchaseId Integer or NULL; filter by purchase ID.
-    #' @param asset Character or NULL; filter by asset (e.g., `"BTC"`).
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param current Integer or NULL; current page (default 1, starting from 1).
-    #' @param size Integer or NULL; page size (default 10, max 100).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per subscription record and the following columns:
-    #' - `amount` (character): Subscription amount.
-    #' - `asset` (character): Asset symbol.
-    #' - `time` (POSIXct): Subscription time.
-    #' - `purchase_id` (integer): Purchase identifier.
-    #' - `position_id` (character): Position identifier.
-    #' - `lock_period` (integer): Lock duration in days.
-    #' - `type` (character): Subscription type.
-    #' - `source_account` (character): Source account.
-    #' - `status` (character): Subscription status.
+    #' @param purchaseId (scalar<count>?) filter by purchase ID.
+    #' @param asset (scalar<character>?) filter by asset (e.g., `"BTC"`).
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param current (scalar<count>?) current page (default 1, starting from 1).
+    #' @param size (scalar<count>?) page size (default 10, max 100).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per subscription record and the following columns:
+    #' - amount (character) Subscription amount.
+    #' - asset (character) Asset symbol.
+    #' - time (POSIXct) Subscription time.
+    #' - purchase_id (integer) Purchase identifier.
+    #' - position_id (character) Position identifier.
+    #' - lock_period (integer) Lock duration in days.
+    #' - type (character) Subscription type.
+    #' - source_account (character) Source account.
+    #' - status (character) Subscription status.
     #'
     #' @examples
     #' \dontrun{
@@ -1019,6 +1037,15 @@ BinanceEarn <- R6::R6Class(
       size = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceEarn__get_locked_subscription_history(
+        purchaseId,
+        asset,
+        startTime,
+        endTime,
+        current,
+        size,
+        recvWindow
+      )
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/history/subscriptionRecord",
         query = list(
@@ -1072,22 +1099,22 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param productId Character or NULL; filter by product ID.
-    #' @param redeemId Integer or NULL; filter by redeem ID.
-    #' @param asset Character or NULL; filter by asset (e.g., `"USDT"`).
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param current Integer or NULL; current page (default 1, starting from 1).
-    #' @param size Integer or NULL; page size (default 10, max 100).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per redemption record and the following columns:
-    #' - `amount` (character): Redemption amount.
-    #' - `asset` (character): Asset symbol.
-    #' - `time` (POSIXct): Redemption time.
-    #' - `project_id` (character): Product identifier.
-    #' - `redeem_id` (integer): Redemption identifier.
-    #' - `dest_account` (character): Destination account.
-    #' - `status` (character): Redemption status (e.g., `"PAID"`).
+    #' @param productId (scalar<character>?) filter by product ID.
+    #' @param redeemId (scalar<count>?) filter by redeem ID.
+    #' @param asset (scalar<character>?) filter by asset (e.g., `"USDT"`).
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param current (scalar<count>?) current page (default 1, starting from 1).
+    #' @param size (scalar<count>?) page size (default 10, max 100).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per redemption record and the following columns:
+    #' - amount (character) Redemption amount.
+    #' - asset (character) Asset symbol.
+    #' - time (POSIXct) Redemption time.
+    #' - project_id (character) Product identifier.
+    #' - redeem_id (integer) Redemption identifier.
+    #' - dest_account (character) Destination account.
+    #' - status (character) Redemption status (e.g., `"PAID"`).
     #'
     #' @examples
     #' \dontrun{
@@ -1105,6 +1132,16 @@ BinanceEarn <- R6::R6Class(
       size = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceEarn__get_flexible_redemption_history(
+        productId,
+        redeemId,
+        asset,
+        startTime,
+        endTime,
+        current,
+        size,
+        recvWindow
+      )
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/history/redemptionRecord",
         query = list(
@@ -1159,22 +1196,22 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param positionId Character or NULL; filter by position ID.
-    #' @param redeemId Integer or NULL; filter by redeem ID.
-    #' @param asset Character or NULL; filter by asset (e.g., `"BTC"`).
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param current Integer or NULL; current page (default 1, starting from 1).
-    #' @param size Integer or NULL; page size (default 10, max 100).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per redemption record and the following columns:
-    #' - `amount` (character): Redemption amount.
-    #' - `asset` (character): Asset symbol.
-    #' - `time` (POSIXct): Redemption time.
-    #' - `position_id` (character): Position identifier.
-    #' - `redeem_id` (integer): Redemption identifier.
-    #' - `deliver_date` (POSIXct): Expected delivery time.
-    #' - `status` (character): Redemption status.
+    #' @param positionId (scalar<character>?) filter by position ID.
+    #' @param redeemId (scalar<count>?) filter by redeem ID.
+    #' @param asset (scalar<character>?) filter by asset (e.g., `"BTC"`).
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param current (scalar<count>?) current page (default 1, starting from 1).
+    #' @param size (scalar<count>?) page size (default 10, max 100).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per redemption record and the following columns:
+    #' - amount (character) Redemption amount.
+    #' - asset (character) Asset symbol.
+    #' - time (POSIXct) Redemption time.
+    #' - position_id (character) Position identifier.
+    #' - redeem_id (integer) Redemption identifier.
+    #' - deliver_date (POSIXct) Expected delivery time.
+    #' - status (character) Redemption status.
     #'
     #' @examples
     #' \dontrun{
@@ -1192,6 +1229,16 @@ BinanceEarn <- R6::R6Class(
       size = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceEarn__get_locked_redemption_history(
+        positionId,
+        redeemId,
+        asset,
+        startTime,
+        endTime,
+        current,
+        size,
+        recvWindow
+      )
       return(private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/history/redemptionRecord",
         query = list(

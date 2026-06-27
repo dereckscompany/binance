@@ -5,10 +5,11 @@
 #'
 #' Converts a UNIX timestamp from Binance's API into a POSIXct object in UTC.
 #'
-#' @param time_value Numeric; the UNIX timestamp.
-#' @param unit Character; input unit: `"ms"` (milliseconds, default),
-#'   `"ns"` (nanoseconds), or `"s"` (seconds).
-#' @return POSIXct object in UTC.
+#' @param time_value (scalar<numeric>) the UNIX timestamp.
+#' @param unit (scalar<character in c("ms", "ns", "s")>) input unit: `"ms"`
+#'   (milliseconds, default), `"ns"` (nanoseconds), or `"s"` (seconds).
+#' @return (scalar<POSIXct>) POSIXct object in UTC.
+#' @noassert time_value
 #'
 #' @examples
 #' \dontrun{
@@ -22,6 +23,7 @@
 #' @export
 time_convert_from_binance <- function(time_value, unit = c("ms", "ns", "s")) {
   unit <- match.arg(unit)
+  assert_args_time_convert_from_binance(unit)
   if (!is.numeric(time_value)) {
     rlang::abort("Input must be a numeric value.")
   }
@@ -33,17 +35,19 @@ time_convert_from_binance <- function(time_value, unit = c("ms", "ns", "s")) {
     s = time_value
   )
 
-  return(lubridate::as_datetime(seconds))
+  return(assert_return_time_convert_from_binance(lubridate::as_datetime(seconds)))
 }
 
 #' Convert POSIXct to Binance Timestamp
 #'
 #' Converts a POSIXct object into a UNIX timestamp in the specified unit.
 #'
-#' @param datetime POSIXct object to convert.
-#' @param unit Character; output unit: `"ms"` (milliseconds, default),
-#'   `"ns"` (nanoseconds), or `"s"` (seconds).
-#' @return Numeric UNIX timestamp in the specified unit.
+#' @param datetime (scalar<POSIXct>) POSIXct object to convert.
+#' @param unit (scalar<character in c("ms", "ns", "s")>) output unit: `"ms"`
+#'   (milliseconds, default), `"ns"` (nanoseconds), or `"s"` (seconds).
+#' @return (scalar<numeric> | scalar<integer>) UNIX timestamp in the specified
+#'   unit (an integer for `"s"`, a double otherwise).
+#' @noassert datetime
 #'
 #' @examples
 #' \dontrun{
@@ -56,6 +60,7 @@ time_convert_from_binance <- function(time_value, unit = c("ms", "ns", "s")) {
 #' @export
 time_convert_to_binance <- function(datetime, unit = c("ms", "ns", "s")) {
   unit <- match.arg(unit)
+  assert_args_time_convert_to_binance(unit)
   if (!inherits(datetime, "POSIXct")) {
     rlang::abort("Input must be a POSIXct object.")
   }
@@ -69,5 +74,5 @@ time_convert_to_binance <- function(datetime, unit = c("ms", "ns", "s")) {
     s = as.integer(seconds)
   )
 
-  return(result)
+  return(assert_return_time_convert_to_binance(result))
 }

@@ -114,13 +114,13 @@ BinanceMargin <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param asset Character; asset to borrow (e.g., `"USDT"`).
-    #' @param amount Numeric; amount to borrow.
-    #' @param isIsolated Character; `"TRUE"` or `"FALSE"` for isolated margin. Default `"FALSE"`.
-    #' @param symbol Character or NULL; required when `isIsolated = "TRUE"`.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `tran_id` (integer): Transaction identifier.
+    #' @param asset (scalar<character>) asset to borrow (e.g., `"USDT"`).
+    #' @param amount (scalar<numeric>) amount to borrow.
+    #' @param isIsolated (scalar<character>) `"TRUE"` or `"FALSE"` for isolated margin. Default `"FALSE"`.
+    #' @param symbol (scalar<character>?) required when `isIsolated = "TRUE"`.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row and the following columns:
+    #' - tran_id (integer) Transaction identifier.
     #'
     #' @examples
     #' \dontrun{
@@ -129,6 +129,7 @@ BinanceMargin <- R6::R6Class(
     #' print(result)
     #' }
     add_borrow = function(asset, amount, isIsolated = "FALSE", symbol = NULL, recvWindow = NULL) {
+      assert_args_BinanceMargin__add_borrow(asset, amount, isIsolated, symbol, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/margin/borrow-repay",
         method = "POST",
@@ -183,13 +184,13 @@ BinanceMargin <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param asset Character; asset to repay (e.g., `"USDT"`).
-    #' @param amount Numeric; amount to repay.
-    #' @param isIsolated Character; `"TRUE"` or `"FALSE"` for isolated margin. Default `"FALSE"`.
-    #' @param symbol Character or NULL; required when `isIsolated = "TRUE"`.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `tran_id` (integer): Transaction identifier.
+    #' @param asset (scalar<character>) asset to repay (e.g., `"USDT"`).
+    #' @param amount (scalar<numeric>) amount to repay.
+    #' @param isIsolated (scalar<character>) `"TRUE"` or `"FALSE"` for isolated margin. Default `"FALSE"`.
+    #' @param symbol (scalar<character>?) required when `isIsolated = "TRUE"`.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row and the following columns:
+    #' - tran_id (integer) Transaction identifier.
     #'
     #' @examples
     #' \dontrun{
@@ -198,6 +199,7 @@ BinanceMargin <- R6::R6Class(
     #' print(result)
     #' }
     add_repay = function(asset, amount, isIsolated = "FALSE", symbol = NULL, recvWindow = NULL) {
+      assert_args_BinanceMargin__add_repay(asset, amount, isIsolated, symbol, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/margin/borrow-repay",
         method = "POST",
@@ -268,32 +270,32 @@ BinanceMargin <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param side Character; `"BUY"` or `"SELL"`.
-    #' @param type Character; order type: `"LIMIT"`, `"MARKET"`, `"STOP_LOSS"`,
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param side (scalar<character>) `"BUY"` or `"SELL"`.
+    #' @param type (scalar<character>) order type: `"LIMIT"`, `"MARKET"`, `"STOP_LOSS"`,
     #'   `"STOP_LOSS_LIMIT"`, `"TAKE_PROFIT"`, `"TAKE_PROFIT_LIMIT"`, `"LIMIT_MAKER"`.
-    #' @param quantity Numeric or NULL; base asset quantity.
-    #' @param quoteOrderQty Numeric or NULL; quote asset quantity (market orders only).
-    #' @param price Numeric or NULL; price for limit orders.
-    #' @param stopPrice Numeric or NULL; trigger price for stop orders.
-    #' @param timeInForce Character or NULL; `"GTC"`, `"IOC"`, `"FOK"`.
-    #' @param newClientOrderId Character or NULL; unique client order ID.
-    #' @param newOrderRespType Character or NULL; `"ACK"`, `"RESULT"`, or `"FULL"`.
-    #' @param sideEffectType Character or NULL; `"NO_SIDE_EFFECT"`, `"MARGIN_BUY"`, `"AUTO_REPAY"`.
-    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and columns including:
-    #' - `symbol` (character): Trading pair.
-    #' - `order_id` (integer): Unique order identifier.
-    #' - `client_order_id` (character): Client-assigned order ID.
-    #' - `transact_time` (POSIXct): Transaction time.
-    #' - `price` (character): Order price.
-    #' - `orig_qty` (character): Original requested quantity.
-    #' - `executed_qty` (character): Quantity filled so far.
-    #' - `status` (character): Order status.
-    #' - `type` (character): Order type.
-    #' - `side` (character): `"BUY"` or `"SELL"`.
-    #' - `is_isolated` (logical): Whether this is an isolated margin order.
+    #' @param quantity (scalar<numeric>?) base asset quantity.
+    #' @param quoteOrderQty (scalar<numeric>?) quote asset quantity (market orders only).
+    #' @param price (scalar<numeric>?) price for limit orders.
+    #' @param stopPrice (scalar<numeric>?) trigger price for stop orders.
+    #' @param timeInForce (scalar<character>?) `"GTC"`, `"IOC"`, `"FOK"`.
+    #' @param newClientOrderId (scalar<character>?) unique client order ID.
+    #' @param newOrderRespType (scalar<character>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
+    #' @param sideEffectType (scalar<character>?) `"NO_SIDE_EFFECT"`, `"MARGIN_BUY"`, `"AUTO_REPAY"`.
+    #' @param isIsolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row and columns including:
+    #' - symbol (character) Trading pair.
+    #' - order_id (integer) Unique order identifier.
+    #' - client_order_id (character) Client-assigned order ID.
+    #' - transact_time (POSIXct) Transaction time.
+    #' - price (character) Order price.
+    #' - orig_qty (character) Original requested quantity.
+    #' - executed_qty (character) Quantity filled so far.
+    #' - status (character) Order status.
+    #' - type (character) Order type.
+    #' - side (character) `"BUY"` or `"SELL"`.
+    #' - is_isolated (logical) Whether this is an isolated margin order.
     #'
     #' @examples
     #' \dontrun{
@@ -319,6 +321,21 @@ BinanceMargin <- R6::R6Class(
       isIsolated = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceMargin__add_order(
+        symbol,
+        side,
+        type,
+        quantity,
+        quoteOrderQty,
+        price,
+        stopPrice,
+        timeInForce,
+        newClientOrderId,
+        newOrderRespType,
+        sideEffectType,
+        isIsolated,
+        recvWindow
+      )
       side <- toupper(side)
       type <- toupper(type)
       rlang::arg_match0(side, c("BUY", "SELL"))
@@ -419,18 +436,18 @@ BinanceMargin <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderId Integer or NULL; the order ID to cancel.
-    #' @param origClientOrderId Character or NULL; the client order ID to cancel.
-    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and columns including:
-    #' - `symbol` (character): Trading pair.
-    #' - `order_id` (integer): Unique order identifier.
-    #' - `orig_client_order_id` (character): Original client order ID.
-    #' - `status` (character): Order status (typically `"CANCELED"`).
-    #' - `transact_time` (POSIXct): Cancellation time.
-    #' - `is_isolated` (logical): Whether this is an isolated margin order.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param orderId (scalar<count>?) the order ID to cancel.
+    #' @param origClientOrderId (scalar<character>?) the client order ID to cancel.
+    #' @param isIsolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row and columns including:
+    #' - symbol (character) Trading pair.
+    #' - order_id (integer) Unique order identifier.
+    #' - orig_client_order_id (character) Original client order ID.
+    #' - status (character) Order status (typically `"CANCELED"`).
+    #' - transact_time (POSIXct) Cancellation time.
+    #' - is_isolated (logical) Whether this is an isolated margin order.
     #'
     #' @examples
     #' \dontrun{
@@ -439,6 +456,7 @@ BinanceMargin <- R6::R6Class(
     #' print(cancelled)
     #' }
     cancel_order = function(symbol, orderId = NULL, origClientOrderId = NULL, isIsolated = NULL, recvWindow = NULL) {
+      assert_args_BinanceMargin__cancel_order(symbol, orderId, origClientOrderId, isIsolated, recvWindow)
       if (is.null(orderId) && is.null(origClientOrderId)) {
         rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
       }
@@ -509,17 +527,17 @@ BinanceMargin <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`).
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param isIsolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) .
     #'   When orders are cancelled, one row per order with columns:
-    #'   - `symbol` (character): Trading pair.
-    #'   - `order_id` (integer): Unique order identifier.
-    #'   - `orig_client_order_id` (character): Original client order ID.
-    #'   - `status` (character): Order status (typically `"CANCELED"`).
-    #'   - `transact_time` (POSIXct): Cancellation time.
-    #'   - `is_isolated` (logical): Whether this is an isolated margin order.
+    #'   - symbol (character) Trading pair.
+    #'   - order_id (integer) Unique order identifier.
+    #'   - orig_client_order_id (character) Original client order ID.
+    #'   - status (character) Order status (typically `"CANCELED"`).
+    #'   - transact_time (POSIXct) Cancellation time.
+    #'   - is_isolated (logical) Whether this is an isolated margin order.
     #'
     #'   When there were no open orders to cancel, the return is an
     #'   empty `data.table` (per the cross-package "no stub rows"
@@ -532,6 +550,7 @@ BinanceMargin <- R6::R6Class(
     #' print(cancelled)
     #' }
     cancel_all_orders = function(symbol, isIsolated = NULL, recvWindow = NULL) {
+      assert_args_BinanceMargin__cancel_all_orders(symbol, isIsolated, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/margin/openOrders",
         method = "DELETE",
@@ -596,24 +615,24 @@ BinanceMargin <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderId Integer or NULL; the order ID.
-    #' @param origClientOrderId Character or NULL; the client order ID.
-    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and columns including:
-    #' - `symbol` (character): Trading pair.
-    #' - `order_id` (integer): Unique order identifier.
-    #' - `client_order_id` (character): Client-assigned order ID.
-    #' - `price` (character): Order price.
-    #' - `orig_qty` (character): Original requested quantity.
-    #' - `executed_qty` (character): Quantity filled so far.
-    #' - `status` (character): Order status.
-    #' - `type` (character): Order type.
-    #' - `side` (character): `"BUY"` or `"SELL"`.
-    #' - `time` (POSIXct): Order creation time.
-    #' - `update_time` (POSIXct): Last update time.
-    #' - `is_isolated` (logical): Whether this is an isolated margin order.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param orderId (scalar<count>?) the order ID.
+    #' @param origClientOrderId (scalar<character>?) the client order ID.
+    #' @param isIsolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row and columns including:
+    #' - symbol (character) Trading pair.
+    #' - order_id (integer) Unique order identifier.
+    #' - client_order_id (character) Client-assigned order ID.
+    #' - price (character) Order price.
+    #' - orig_qty (character) Original requested quantity.
+    #' - executed_qty (character) Quantity filled so far.
+    #' - status (character) Order status.
+    #' - type (character) Order type.
+    #' - side (character) `"BUY"` or `"SELL"`.
+    #' - time (POSIXct) Order creation time.
+    #' - update_time (POSIXct) Last update time.
+    #' - is_isolated (logical) Whether this is an isolated margin order.
     #'
     #' @examples
     #' \dontrun{
@@ -622,6 +641,7 @@ BinanceMargin <- R6::R6Class(
     #' print(order)
     #' }
     get_order = function(symbol, orderId = NULL, origClientOrderId = NULL, isIsolated = NULL, recvWindow = NULL) {
+      assert_args_BinanceMargin__get_order(symbol, orderId, origClientOrderId, isIsolated, recvWindow)
       if (is.null(orderId) && is.null(origClientOrderId)) {
         rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
       }
@@ -686,22 +706,22 @@ BinanceMargin <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
-    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per open order and the following columns:
-    #' - `symbol` (character): Trading pair.
-    #' - `order_id` (integer): Unique order identifier.
-    #' - `client_order_id` (character): Client-assigned order ID.
-    #' - `price` (character): Order price.
-    #' - `orig_qty` (character): Original requested quantity.
-    #' - `executed_qty` (character): Quantity filled so far.
-    #' - `status` (character): Order status.
-    #' - `type` (character): Order type.
-    #' - `side` (character): `"BUY"` or `"SELL"`.
-    #' - `time` (POSIXct): Order creation time.
-    #' - `update_time` (POSIXct): Last update time.
-    #' - `is_isolated` (logical): Whether this is an isolated margin order.
+    #' @param symbol (scalar<character>?) trading pair (e.g., `"BTCUSDT"`).
+    #' @param isIsolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per open order and the following columns:
+    #' - symbol (character) Trading pair.
+    #' - order_id (integer) Unique order identifier.
+    #' - client_order_id (character) Client-assigned order ID.
+    #' - price (character) Order price.
+    #' - orig_qty (character) Original requested quantity.
+    #' - executed_qty (character) Quantity filled so far.
+    #' - status (character) Order status.
+    #' - type (character) Order type.
+    #' - side (character) `"BUY"` or `"SELL"`.
+    #' - time (POSIXct) Order creation time.
+    #' - update_time (POSIXct) Last update time.
+    #' - is_isolated (logical) Whether this is an isolated margin order.
     #'
     #' @examples
     #' \dontrun{
@@ -710,6 +730,7 @@ BinanceMargin <- R6::R6Class(
     #' print(open)
     #' }
     get_open_orders = function(symbol = NULL, isIsolated = NULL, recvWindow = NULL) {
+      assert_args_BinanceMargin__get_open_orders(symbol, isIsolated, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/margin/openOrders",
         query = list(
@@ -789,26 +810,26 @@ BinanceMargin <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderId Integer or NULL; pagination cursor.
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param limit Integer or NULL; max results (default 500, max 500).
-    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per order and the following columns:
-    #' - `symbol` (character): Trading pair.
-    #' - `order_id` (integer): Unique order identifier.
-    #' - `client_order_id` (character): Client-assigned order ID.
-    #' - `price` (character): Order price.
-    #' - `orig_qty` (character): Original requested quantity.
-    #' - `executed_qty` (character): Quantity filled so far.
-    #' - `status` (character): Order status.
-    #' - `type` (character): Order type.
-    #' - `side` (character): `"BUY"` or `"SELL"`.
-    #' - `time` (POSIXct): Order creation time.
-    #' - `update_time` (POSIXct): Last update time.
-    #' - `is_isolated` (logical): Whether this is an isolated margin order.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param orderId (scalar<count>?) pagination cursor.
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param limit (scalar<count>?) max results (default 500, max 500).
+    #' @param isIsolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per order and the following columns:
+    #' - symbol (character) Trading pair.
+    #' - order_id (integer) Unique order identifier.
+    #' - client_order_id (character) Client-assigned order ID.
+    #' - price (character) Order price.
+    #' - orig_qty (character) Original requested quantity.
+    #' - executed_qty (character) Quantity filled so far.
+    #' - status (character) Order status.
+    #' - type (character) Order type.
+    #' - side (character) `"BUY"` or `"SELL"`.
+    #' - time (POSIXct) Order creation time.
+    #' - update_time (POSIXct) Last update time.
+    #' - is_isolated (logical) Whether this is an isolated margin order.
     #'
     #' @examples
     #' \dontrun{
@@ -825,6 +846,7 @@ BinanceMargin <- R6::R6Class(
       isIsolated = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceMargin__get_all_orders(symbol, orderId, startTime, endTime, limit, isIsolated, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/margin/allOrders",
         query = list(
@@ -900,18 +922,18 @@ BinanceMargin <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and columns including:
-    #' - `borrow_enabled` (logical): Whether borrowing is enabled.
-    #' - `margin_level` (character): Current margin level.
-    #' - `total_asset_of_btc` (character): Total asset value in BTC.
-    #' - `total_liability_of_btc` (character): Total liability in BTC.
-    #' - `total_net_asset_of_btc` (character): Net asset value in BTC.
-    #' - `trade_enabled` (logical): Whether trading is enabled.
-    #' - `transfer_enabled` (logical): Whether transfers are enabled.
-    #' - `account_type` (character): Account type (`"MARGIN"`).
-    #' - `user_asset_*`: Per-asset fields prefixed with `user_asset_` (one row per asset).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row and columns including:
+    #' - borrow_enabled (logical) Whether borrowing is enabled.
+    #' - margin_level (character) Current margin level.
+    #' - total_asset_of_btc (character) Total asset value in BTC.
+    #' - total_liability_of_btc (character) Total liability in BTC.
+    #' - total_net_asset_of_btc (character) Net asset value in BTC.
+    #' - trade_enabled (logical) Whether trading is enabled.
+    #' - transfer_enabled (logical) Whether transfers are enabled.
+    #' - account_type (character) Account type (`"MARGIN"`).
     #'
+    #' Per-asset fields are prefixed with `user_asset_`, one row per asset.
     #' When the account has multiple assets, account-level fields are repeated on each row.
     #'
     #' @examples
@@ -921,6 +943,7 @@ BinanceMargin <- R6::R6Class(
     #' print(account)
     #' }
     get_account = function(recvWindow = NULL) {
+      assert_args_BinanceMargin__get_account(recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/margin/account",
         query = list(recvWindow = recvWindow),
@@ -968,12 +991,12 @@ BinanceMargin <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param asset Character; asset to query (e.g., `"USDT"`).
-    #' @param isolatedSymbol Character or NULL; isolated margin pair (e.g., `"BTCUSDT"`).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `amount` (character): Maximum borrowable amount.
-    #' - `borrow_limit` (character): Borrow limit.
+    #' @param asset (scalar<character>) asset to query (e.g., `"USDT"`).
+    #' @param isolatedSymbol (scalar<character>?) isolated margin pair (e.g., `"BTCUSDT"`).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row and the following columns:
+    #' - amount (character) Maximum borrowable amount.
+    #' - borrow_limit (character) Borrow limit.
     #'
     #' @examples
     #' \dontrun{
@@ -982,6 +1005,7 @@ BinanceMargin <- R6::R6Class(
     #' print(max_borrow)
     #' }
     get_max_borrowable = function(asset, isolatedSymbol = NULL, recvWindow = NULL) {
+      assert_args_BinanceMargin__get_max_borrowable(asset, isolatedSymbol, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/margin/maxBorrowable",
         query = list(
@@ -1021,12 +1045,12 @@ BinanceMargin <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param asset Character; asset to query (e.g., `"USDT"`).
-    #' @param isolatedSymbol Character or NULL; isolated margin pair (e.g., `"BTCUSDT"`).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `amount` (character): Maximum transferable-out amount.
-    #' - `borrow_limit` (character): Remaining borrow limit for the
+    #' @param asset (scalar<character>) asset to query (e.g., `"USDT"`).
+    #' @param isolatedSymbol (scalar<character>?) isolated margin pair (e.g., `"BTCUSDT"`).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row and the following columns:
+    #' - amount (character) Maximum transferable-out amount.
+    #' - borrow_limit (character) Remaining borrow limit for the
     #'   account, in the same asset units as `amount`.
     #'
     #' @examples
@@ -1036,6 +1060,7 @@ BinanceMargin <- R6::R6Class(
     #' print(max_transfer)
     #' }
     get_max_transferable = function(asset, isolatedSymbol = NULL, recvWindow = NULL) {
+      assert_args_BinanceMargin__get_max_transferable(asset, isolatedSymbol, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/margin/maxTransferable",
         query = list(
@@ -1097,21 +1122,21 @@ BinanceMargin <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param asset Character or NULL; filter by asset (e.g., `"USDT"`).
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param current Integer or NULL; current page (default 1).
-    #' @param size Integer or NULL; page size (default 10, max 100).
-    #' @param archived Character or NULL; `"true"` to query 6-month archived data.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per interest record and the following columns:
-    #' - `asset` (character): Asset charged interest.
-    #' - `interest` (character): Interest amount accrued.
-    #' - `interest_accured_time` (POSIXct): Time of interest accrual.
-    #' - `interest_rate` (character): Applied interest rate.
-    #' - `principal` (character): Principal amount borrowed.
-    #' - `type` (character): Margin type (`"ON_BORROW"`, `"PERIODIC"`, etc.).
-    #' - `isolated_symbol` (character): Isolated margin pair (if applicable).
+    #' @param asset (scalar<character>?) filter by asset (e.g., `"USDT"`).
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param current (scalar<count>?) current page (default 1).
+    #' @param size (scalar<count>?) page size (default 10, max 100).
+    #' @param archived (scalar<character>?) `"true"` to query 6-month archived data.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per interest record and the following columns:
+    #' - asset (character) Asset charged interest.
+    #' - interest (character) Interest amount accrued.
+    #' - interest_accured_time (POSIXct) Time of interest accrual.
+    #' - interest_rate (character) Applied interest rate.
+    #' - principal (character) Principal amount borrowed.
+    #' - type (character) Margin type (`"ON_BORROW"`, `"PERIODIC"`, etc.).
+    #' - isolated_symbol (character) Isolated margin pair (if applicable).
     #'
     #' @examples
     #' \dontrun{
@@ -1128,6 +1153,7 @@ BinanceMargin <- R6::R6Class(
       archived = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceMargin__get_interest_history(asset, startTime, endTime, current, size, archived, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/margin/interestHistory",
         query = list(
@@ -1186,23 +1212,23 @@ BinanceMargin <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param isolatedSymbol Character or NULL; isolated margin pair.
-    #' @param current Integer or NULL; current page (default 1).
-    #' @param size Integer or NULL; page size (default 10, max 100).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per liquidation record and the following columns:
-    #' - `avg_price` (character): Average liquidation price.
-    #' - `executed_qty` (character): Liquidated quantity.
-    #' - `order_id` (integer): Liquidation order identifier.
-    #' - `price` (character): Liquidation price.
-    #' - `qty` (character): Total quantity.
-    #' - `side` (character): `"BUY"` or `"SELL"`.
-    #' - `symbol` (character): Trading pair.
-    #' - `time` (POSIXct): Liquidation time.
-    #' - `is_isolated` (logical): Whether this was an isolated margin liquidation.
-    #' - `updated_time` (POSIXct): Last update time.
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param isolatedSymbol (scalar<character>?) isolated margin pair.
+    #' @param current (scalar<count>?) current page (default 1).
+    #' @param size (scalar<count>?) page size (default 10, max 100).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per liquidation record and the following columns:
+    #' - avg_price (character) Average liquidation price.
+    #' - executed_qty (character) Liquidated quantity.
+    #' - order_id (integer) Liquidation order identifier.
+    #' - price (character) Liquidation price.
+    #' - qty (character) Total quantity.
+    #' - side (character) `"BUY"` or `"SELL"`.
+    #' - symbol (character) Trading pair.
+    #' - time (POSIXct) Liquidation time.
+    #' - is_isolated (logical) Whether this was an isolated margin liquidation.
+    #' - updated_time (POSIXct) Last update time.
     #'
     #' @examples
     #' \dontrun{
@@ -1218,6 +1244,14 @@ BinanceMargin <- R6::R6Class(
       size = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceMargin__get_force_liquidation_history(
+        startTime,
+        endTime,
+        isolatedSymbol,
+        current,
+        size,
+        recvWindow
+      )
       return(private$.request(
         endpoint = "/sapi/v1/margin/forceLiquidationRec",
         query = list(
@@ -1275,26 +1309,26 @@ BinanceMargin <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderId Integer or NULL; filter by order ID.
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param fromId Integer or NULL; trade ID to fetch from.
-    #' @param limit Integer or NULL; max results (default 500, max 1000).
-    #' @param isIsolated Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per trade and columns including:
-    #' - `symbol` (character): Trading pair.
-    #' - `id` (integer): Trade ID.
-    #' - `order_id` (integer): Order ID.
-    #' - `price` (character): Trade price.
-    #' - `qty` (character): Trade quantity.
-    #' - `commission` (character): Commission paid.
-    #' - `commission_asset` (character): Commission asset.
-    #' - `time` (POSIXct): Trade execution time.
-    #' - `is_buyer` (logical): Whether the trade was a buy.
-    #' - `is_maker` (logical): Whether the trade was a maker.
-    #' - `is_isolated` (logical): Whether this is an isolated margin trade.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param orderId (scalar<count>?) filter by order ID.
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param fromId (scalar<count>?) trade ID to fetch from.
+    #' @param limit (scalar<count>?) max results (default 500, max 1000).
+    #' @param isIsolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per trade and columns including:
+    #' - symbol (character) Trading pair.
+    #' - id (integer) Trade ID.
+    #' - order_id (integer) Order ID.
+    #' - price (character) Trade price.
+    #' - qty (character) Trade quantity.
+    #' - commission (character) Commission paid.
+    #' - commission_asset (character) Commission asset.
+    #' - time (POSIXct) Trade execution time.
+    #' - is_buyer (logical) Whether the trade was a buy.
+    #' - is_maker (logical) Whether the trade was a maker.
+    #' - is_isolated (logical) Whether this is an isolated margin trade.
     #'
     #' @examples
     #' \dontrun{
@@ -1312,6 +1346,7 @@ BinanceMargin <- R6::R6Class(
       isIsolated = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceMargin__get_trades(symbol, orderId, startTime, endTime, fromId, limit, isIsolated, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/margin/myTrades",
         query = list(
@@ -1402,19 +1437,19 @@ BinanceMargin <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbols Character or NULL; comma-separated symbols (max 5, e.g., `"BTCUSDT,ETHUSDT"`).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per isolated margin pair (long format) and columns including:
-    #' - `total_asset_of_btc` (character): Total asset value in BTC (repeated per pair).
-    #' - `total_liability_of_btc` (character): Total liability in BTC (repeated per pair).
-    #' - `total_net_asset_of_btc` (character): Net asset value in BTC (repeated per pair).
-    #' - `base_asset` (list): Base asset details (nested object kept as list-column).
-    #' - `quote_asset` (list): Quote asset details (nested object kept as list-column).
-    #' - `symbol` (character): Isolated margin pair symbol.
-    #' - `isolated_created` (logical): Whether the isolated pair has been created.
-    #' - `enabled` (logical): Whether the pair is enabled.
-    #' - `margin_level` (character): Current margin level.
-    #' - `trade_enabled` (logical): Whether trading is enabled.
+    #' @param symbols (scalar<character>?) comma-separated symbols (max 5, e.g., `"BTCUSDT,ETHUSDT"`).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per isolated margin pair (long format) and columns including:
+    #' - total_asset_of_btc (character) Total asset value in BTC (repeated per pair).
+    #' - total_liability_of_btc (character) Total liability in BTC (repeated per pair).
+    #' - total_net_asset_of_btc (character) Net asset value in BTC (repeated per pair).
+    #' - base_asset (list) Base asset details (nested object kept as list-column).
+    #' - quote_asset (list) Quote asset details (nested object kept as list-column).
+    #' - symbol (character) Isolated margin pair symbol.
+    #' - isolated_created (logical) Whether the isolated pair has been created.
+    #' - enabled (logical) Whether the pair is enabled.
+    #' - margin_level (character) Current margin level.
+    #' - trade_enabled (logical) Whether trading is enabled.
     #'
     #' @examples
     #' \dontrun{
@@ -1423,6 +1458,7 @@ BinanceMargin <- R6::R6Class(
     #' print(isolated)
     #' }
     get_isolated_account = function(symbols = NULL, recvWindow = NULL) {
+      assert_args_BinanceMargin__get_isolated_account(symbols, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/margin/isolated/account",
         query = list(
@@ -1489,14 +1525,14 @@ BinanceMargin <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param asset Character; asset to transfer (e.g., `"USDT"`).
-    #' @param symbol Character; isolated margin pair (e.g., `"BTCUSDT"`).
-    #' @param transFrom Character; source account: `"SPOT"` or `"ISOLATED_MARGIN"`.
-    #' @param transTo Character; destination account: `"SPOT"` or `"ISOLATED_MARGIN"`.
-    #' @param amount Numeric; amount to transfer.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `tran_id` (integer): Transaction identifier.
+    #' @param asset (scalar<character>) asset to transfer (e.g., `"USDT"`).
+    #' @param symbol (scalar<character>) isolated margin pair (e.g., `"BTCUSDT"`).
+    #' @param transFrom (scalar<character>) source account: `"SPOT"` or `"ISOLATED_MARGIN"`.
+    #' @param transTo (scalar<character>) destination account: `"SPOT"` or `"ISOLATED_MARGIN"`.
+    #' @param amount (scalar<numeric>) amount to transfer.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row and the following columns:
+    #' - tran_id (integer) Transaction identifier.
     #'
     #' @examples
     #' \dontrun{
@@ -1509,6 +1545,7 @@ BinanceMargin <- R6::R6Class(
     #' print(result)
     #' }
     add_isolated_transfer = function(asset, symbol, transFrom, transTo, amount, recvWindow = NULL) {
+      assert_args_BinanceMargin__add_isolated_transfer(asset, symbol, transFrom, transTo, amount, recvWindow)
       transFrom <- toupper(transFrom)
       transTo <- toupper(transTo)
       rlang::arg_match0(transFrom, c("SPOT", "ISOLATED_MARGIN"))

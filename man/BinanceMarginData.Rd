@@ -209,20 +209,20 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{recvWindow}}{Integer or NULL; request validity window in milliseconds.}
+\item{\code{recvWindow}}{(scalar<count>?) request validity window in milliseconds.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{base} (character): Base asset code (e.g., \code{"BTC"}).
-\item \code{id} (integer): Pair identifier.
-\item \code{is_buy_allowed} (logical): Whether buying is allowed.
-\item \code{is_margin_trade} (logical): Whether margin trading is enabled.
-\item \code{is_sell_allowed} (logical): Whether selling is allowed.
-\item \code{quote} (character): Quote asset code (e.g., \code{"USDT"}).
-\item \code{symbol} (character): Trading pair identifier (e.g., \code{"BTCUSDT"}).
+\item base (character) Base asset code (e.g., \code{"BTC"}).
+\item id (integer) Pair identifier.
+\item is_buy_allowed (logical) Whether buying is allowed.
+\item is_margin_trade (logical) Whether margin trading is enabled.
+\item is_sell_allowed (logical) Whether selling is allowed.
+\item quote (character) Quote asset code (e.g., \code{"USDT"}).
+\item symbol (character) Trading pair identifier (e.g., \code{"BTCUSDT"}).
 }
 }
 \subsection{Examples}{
@@ -293,19 +293,19 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{recvWindow}}{Integer or NULL; request validity window in milliseconds.}
+\item{\code{recvWindow}}{(scalar<count>?) request validity window in milliseconds.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{symbol} (character): Trading pair identifier (e.g., \code{"BTCUSDT"}).
-\item \code{base} (character): Base asset code (e.g., \code{"BTC"}).
-\item \code{quote} (character): Quote asset code (e.g., \code{"USDT"}).
-\item \code{is_margin_trade} (logical): Whether margin trading is enabled.
-\item \code{is_buy_allowed} (logical): Whether buying is allowed.
-\item \code{is_sell_allowed} (logical): Whether selling is allowed.
+\item symbol (character) Trading pair identifier (e.g., \code{"BTCUSDT"}).
+\item base (character) Base asset code (e.g., \code{"BTC"}).
+\item quote (character) Quote asset code (e.g., \code{"USDT"}).
+\item is_margin_trade (logical) Whether margin trading is enabled.
+\item is_buy_allowed (logical) Whether buying is allowed.
+\item is_sell_allowed (logical) Whether selling is allowed.
 }
 }
 \subsection{Examples}{
@@ -359,16 +359,16 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{calc_time} (POSIXct): Calculation time as UTC datetime.
-\item \code{price} (character): Margin price index value.
-\item \code{symbol} (character): Trading pair identifier.
+\item calc_time (POSIXct) Calculation time as UTC datetime.
+\item price (character) Margin price index value.
+\item symbol (character) Trading pair identifier.
 }
 }
 \subsection{Examples}{
@@ -441,25 +441,25 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{asset}}{Character; asset code (e.g., \code{"BTC"}).}
+\item{\code{asset}}{(scalar<character>) asset code (e.g., \code{"BTC"}).}
 
-\item{\code{vipLevel}}{Integer or NULL; VIP level to query. Defaults to user's VIP level.}
+\item{\code{vipLevel}}{(scalar<count>?) VIP level to query. Defaults to user's VIP level.}
 
-\item{\code{startTime}}{Numeric or NULL; start time in milliseconds.}
+\item{\code{startTime}}{(scalar<numeric>?) start time in milliseconds.}
 
-\item{\code{endTime}}{Numeric or NULL; end time in milliseconds.}
+\item{\code{endTime}}{(scalar<numeric>?) end time in milliseconds.}
 
-\item{\code{recvWindow}}{Integer or NULL; request validity window in milliseconds.}
+\item{\code{recvWindow}}{(scalar<count>?) request validity window in milliseconds.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{asset} (character): Asset code (e.g., \code{"BTC"}).
-\item \code{daily_interest_rate} (character): Daily interest rate as string.
-\item \code{timestamp} (POSIXct): Record timestamp as UTC datetime.
-\item \code{vip_level} (integer): VIP level for this rate.
+\item asset (character) Asset code (e.g., \code{"BTC"}).
+\item daily_interest_rate (character) Daily interest rate as string.
+\item timestamp (POSIXct) Record timestamp as UTC datetime.
+\item vip_level (integer) VIP level for this rate.
 }
 }
 \subsection{Examples}{
@@ -538,25 +538,25 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{vipLevel}}{Integer or NULL; VIP level to query. Defaults to user's VIP level.}
+\item{\code{vipLevel}}{(scalar<count>?) VIP level to query. Defaults to user's VIP level.}
 
-\item{\code{coin}}{Character or NULL; specific coin to query (e.g., \code{"BTC"}).}
+\item{\code{coin}}{(scalar<character>?) specific coin to query (e.g., \code{"BTC"}).}
 
-\item{\code{recvWindow}}{Integer or NULL; request validity window in milliseconds.}
+\item{\code{recvWindow}}{(scalar<count>?) request validity window in milliseconds.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{vip_level} (integer): VIP level tier.
-\item \code{coin} (character): Coin code (e.g., \code{"BTC"}).
-\item \code{transfer_in} (logical): Whether transfer in is allowed.
-\item \code{transfer_out} (logical): Whether transfer out is allowed.
-\item \code{borrowable} (logical): Whether borrowing is allowed.
-\item \code{daily_interest} (character): Daily interest rate as string.
-\item \code{yearly_interest} (character): Yearly interest rate as string.
-\item \code{marginable_pair} (character): Marginable trading pair (one row per coin-pair combination).
+\item vip_level (integer) VIP level tier.
+\item coin (character) Coin code (e.g., \code{"BTC"}).
+\item transfer_in (logical) Whether transfer in is allowed.
+\item transfer_out (logical) Whether transfer out is allowed.
+\item borrowable (logical) Whether borrowing is allowed.
+\item daily_interest (character) Daily interest rate as string.
+\item yearly_interest (character) Yearly interest rate as string.
+\item marginable_pair (character) Marginable trading pair (one row per coin-pair combination).
 }
 
 When a coin has multiple marginable pairs, coin-level fields are repeated on each row.
@@ -651,21 +651,21 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{vipLevel}}{Integer or NULL; VIP level to query. Defaults to user's VIP level.}
+\item{\code{vipLevel}}{(scalar<count>?) VIP level to query. Defaults to user's VIP level.}
 
-\item{\code{symbol}}{Character or NULL; specific symbol to query (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>?) specific symbol to query (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{recvWindow}}{Integer or NULL; request validity window in milliseconds.}
+\item{\code{recvWindow}}{(scalar<count>?) request validity window in milliseconds.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{vip_level} (integer): VIP level tier.
-\item \code{symbol} (character): Trading pair identifier.
-\item \code{leverage} (character): Maximum leverage available.
-\item \code{data} (list): Nested list of coin-level margin details.
+\item vip_level (integer) VIP level tier.
+\item symbol (character) Trading pair identifier.
+\item leverage (character) Maximum leverage available.
+\item data (list) Nested list of coin-level margin details.
 }
 }
 \subsection{Examples}{

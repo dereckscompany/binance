@@ -283,35 +283,35 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{asset}}{Character or NULL; filter by asset (e.g., \code{"USDT"}).}
+\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
 
-\item{\code{current}}{Integer or NULL; current page (default 1, starting from 1).}
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
 
-\item{\code{size}}{Integer or NULL; page size (default 10, max 100).}
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per product and the following columns:
+(promise<data.table>) with one row per product and the following columns:
 \itemize{
-\item \code{asset} (character): Asset symbol (e.g., \code{"USDT"}).
-\item \code{latest_annual_percentage_rate} (character): Current annual yield rate.
-\item \code{tier_annual_percentage_rate} (character): JSON-encoded
+\item asset (character) Asset symbol (e.g., \code{"USDT"}).
+\item latest_annual_percentage_rate (character) Current annual yield rate.
+\item tier_annual_percentage_rate (character) JSON-encoded
 per-tier APR map (dynamic keys like \code{"0-5BTC"}, \code{"5-10BTC"}).
 Recover via \code{jsonlite::fromJSON(dt$tier_annual_percentage_rate[1])}.
 \code{NA} when the field is absent.
-\item \code{air_drop_percentage_rate} (character): Air-drop APR if the
+\item air_drop_percentage_rate (character) Air-drop APR if the
 product currently carries one.
-\item \code{can_purchase} (logical): Whether new subscriptions are accepted.
-\item \code{can_redeem} (logical): Whether redemptions are allowed.
-\item \code{is_sold_out} (logical): Whether the product is sold out.
-\item \code{hot} (logical): Whether the product is marked as popular.
-\item \code{min_purchase_amount} (character): Minimum subscription amount.
-\item \code{product_id} (character): Unique product identifier.
-\item \code{subscription_start_time} (POSIXct): Subscription start time.
-\item \code{status} (character): Product status (e.g., \code{"PURCHASING"}).
+\item can_purchase (logical) Whether new subscriptions are accepted.
+\item can_redeem (logical) Whether redemptions are allowed.
+\item is_sold_out (logical) Whether the product is sold out.
+\item hot (logical) Whether the product is marked as popular.
+\item min_purchase_amount (character) Minimum subscription amount.
+\item product_id (character) Unique product identifier.
+\item subscription_start_time (POSIXct) Subscription start time.
+\item status (character) Product status (e.g., \code{"PURCHASING"}).
 }
 }
 \subsection{Examples}{
@@ -399,45 +399,45 @@ fields; older internal examples that still show \code{apy} are stale.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{asset}}{Character or NULL; filter by asset (e.g., \code{"BTC"}).}
+\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"BTC"}).}
 
-\item{\code{current}}{Integer or NULL; current page (default 1, starting from 1).}
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
 
-\item{\code{size}}{Integer or NULL; page size (default 10, max 100).}
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with \strong{one row per product} and the following
+(promise<data.table>) with one row per product and the following
 columns. Nested \code{detail} and \code{quota} objects are wide-prefixed
 (\verb{detail_*} and \verb{quota_*}) per the package's "no list columns"
 policy. Field names mirror the current Binance API
 (verified 2026-05-22):
 \itemize{
-\item \code{project_id} (character): Unique project identifier.
-\item \code{detail_asset} (character): Subscription asset (e.g. \code{"BTC"}).
-\item \code{detail_reward_asset} (character): Reward asset.
-\item \code{detail_duration} (integer): Lock-up duration in days.
-\item \code{detail_renewable} (logical): Whether the product auto-renews.
-\item \code{detail_is_sold_out} (logical): Whether the offering is currently
+\item project_id (character) Unique project identifier.
+\item detail_asset (character) Subscription asset (e.g. \code{"BTC"}).
+\item detail_reward_asset (character) Reward asset.
+\item detail_duration (integer) Lock-up duration in days.
+\item detail_renewable (logical) Whether the product auto-renews.
+\item detail_is_sold_out (logical) Whether the offering is currently
 sold out (no new subscriptions accepted).
-\item \code{detail_apr} (character): Annual percentage rate. NOTE: Binance
+\item detail_apr (character) Annual percentage rate. NOTE: Binance
 renamed this from \code{apy} → \code{apr} on the live API; older docs
 that show \code{apy} are stale.
-\item \code{detail_status} (character): Product lifecycle state (e.g.
+\item detail_status (character) Product lifecycle state (e.g.
 \code{"CREATED"}, \code{"PURCHASING"}).
-\item \code{detail_subscription_start_time} (POSIXct): Subscription open
+\item detail_subscription_start_time (POSIXct) Subscription open
 timestamp in milliseconds.
-\item \code{detail_extra_reward_asset} (character): Additional reward
+\item detail_extra_reward_asset (character) Additional reward
 asset, if the product carries a boost.
-\item \code{detail_extra_reward_apr} (character): Extra reward APR.
-\item \code{detail_boost_reward_asset} (character): Boost reward asset.
-\item \code{detail_boost_apr} (character): Boost APR.
-\item \code{detail_boost_end_time} (POSIXct): Boost end time.
-\item \code{quota_total_personal_quota} (character): Per-user maximum.
-\item \code{quota_minimum} (character): Per-user minimum.
+\item detail_extra_reward_apr (character) Extra reward APR.
+\item detail_boost_reward_asset (character) Boost reward asset.
+\item detail_boost_apr (character) Boost APR.
+\item detail_boost_end_time (POSIXct) Boost end time.
+\item quota_total_personal_quota (character) Per-user maximum.
+\item quota_minimum (character) Per-user minimum.
 }
 }
 \subsection{Examples}{
@@ -511,23 +511,23 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{productId}}{Character; the product ID to subscribe to.}
+\item{\code{productId}}{(scalar<character>) the product ID to subscribe to.}
 
-\item{\code{amount}}{Numeric; amount to subscribe.}
+\item{\code{amount}}{(scalar<numeric>) amount to subscribe.}
 
-\item{\code{autoSubscribe}}{Logical or NULL; whether to enable auto-subscription.}
+\item{\code{autoSubscribe}}{(scalar<logical>?) whether to enable auto-subscription.}
 
-\item{\code{sourceAccount}}{Character or NULL; source wallet: \code{"SPOT"}, \code{"FUND"}, or \code{"ALL"}. Default \code{"SPOT"}.}
+\item{\code{sourceAccount}}{(scalar<character>?) source wallet: \code{"SPOT"}, \code{"FUND"}, or \code{"ALL"}. Default \code{"SPOT"}.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(promise<data.table>) with one row and the following columns:
 \itemize{
-\item \code{purchase_id} (integer): Unique purchase identifier.
-\item \code{success} (logical): Whether the subscription was successful.
+\item purchase_id (integer) Unique purchase identifier.
+\item success (logical) Whether the subscription was successful.
 }
 }
 \subsection{Examples}{
@@ -600,22 +600,22 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{projectId}}{Character; the project ID to subscribe to.}
+\item{\code{projectId}}{(scalar<character>) the project ID to subscribe to.}
 
-\item{\code{amount}}{Numeric; amount to subscribe.}
+\item{\code{amount}}{(scalar<numeric>) amount to subscribe.}
 
-\item{\code{autoSubscribe}}{Logical or NULL; whether to enable auto-subscription.}
+\item{\code{autoSubscribe}}{(scalar<logical>?) whether to enable auto-subscription.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(promise<data.table>) with one row and the following columns:
 \itemize{
-\item \code{purchase_id} (integer): Unique purchase identifier.
-\item \code{position_id} (character): Position identifier for the locked subscription.
-\item \code{success} (logical): Whether the subscription was successful.
+\item purchase_id (integer) Unique purchase identifier.
+\item position_id (character) Position identifier for the locked subscription.
+\item success (logical) Whether the subscription was successful.
 }
 }
 \subsection{Examples}{
@@ -689,23 +689,23 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{productId}}{Character; the product ID to redeem from.}
+\item{\code{productId}}{(scalar<character>) the product ID to redeem from.}
 
-\item{\code{amount}}{Numeric or NULL; amount to redeem. If NULL, use \code{redeemAll}.}
+\item{\code{amount}}{(scalar<numeric>?) amount to redeem. If NULL, use \code{redeemAll}.}
 
-\item{\code{redeemAll}}{Logical or NULL; if TRUE, redeem entire position.}
+\item{\code{redeemAll}}{(scalar<logical>?) if TRUE, redeem entire position.}
 
-\item{\code{destAccount}}{Character or NULL; destination wallet: \code{"SPOT"} or \code{"FUND"}. Default \code{"SPOT"}.}
+\item{\code{destAccount}}{(scalar<character>?) destination wallet: \code{"SPOT"} or \code{"FUND"}. Default \code{"SPOT"}.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(promise<data.table>) with one row and the following columns:
 \itemize{
-\item \code{redeem_id} (integer): Unique redemption identifier.
-\item \code{success} (logical): Whether the redemption was successful.
+\item redeem_id (integer) Unique redemption identifier.
+\item success (logical) Whether the redemption was successful.
 }
 }
 \subsection{Examples}{
@@ -770,17 +770,17 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{positionId}}{Character; the position ID to redeem.}
+\item{\code{positionId}}{(scalar<character>) the position ID to redeem.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(promise<data.table>) with one row and the following columns:
 \itemize{
-\item \code{redeem_id} (integer): Unique redemption identifier.
-\item \code{success} (logical): Whether the redemption was successful.
+\item redeem_id (integer) Unique redemption identifier.
+\item success (logical) Whether the redemption was successful.
 }
 }
 \subsection{Examples}{
@@ -864,45 +864,45 @@ Shape captured 2026-05-22 from the live docs.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{asset}}{Character or NULL; filter by asset (e.g., \code{"USDT"}).}
+\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
 
-\item{\code{productId}}{Character or NULL; filter by product ID.}
+\item{\code{productId}}{(scalar<character>?) filter by product ID.}
 
-\item{\code{current}}{Integer or NULL; current page (default 1, starting from 1).}
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
 
-\item{\code{size}}{Integer or NULL; page size (default 10, max 100).}
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per position and the following columns:
+(promise<data.table>) with one row per position and the following columns:
 \itemize{
-\item \code{total_amount} (character): Total amount in the position.
-\item \code{latest_annual_percentage_rate} (character): Current annual yield rate.
-\item \code{tier_annual_percentage_rate} (character, optional):
+\item total_amount (character) Total amount in the position.
+\item latest_annual_percentage_rate (character) Current annual yield rate.
+\item tier_annual_percentage_rate (character | NA) optional;
 JSON-encoded per-tier APR map when the position carries
 tier-based rates (dynamic keys like \code{"0-5BTC"}). Recover via
 \code{jsonlite::fromJSON(dt$tier_annual_percentage_rate[1])}.
-\item \code{yesterday_airdrop_percentage_rate} (character): Air-drop APR
+\item yesterday_airdrop_percentage_rate (character) Air-drop APR
 for the previous accrual period.
-\item \code{asset} (character): Asset symbol (e.g., \code{"USDT"}).
-\item \code{air_drop_asset} (character): Asset paid as an air-drop reward,
+\item asset (character) Asset symbol (e.g., \code{"USDT"}).
+\item air_drop_asset (character) Asset paid as an air-drop reward,
 if any.
-\item \code{can_redeem} (logical): Whether redemption is allowed.
-\item \code{collateral_amount} (character): Amount currently locked as
+\item can_redeem (logical) Whether redemption is allowed.
+\item collateral_amount (character) Amount currently locked as
 collateral, if the position is being used as such.
-\item \code{product_id} (character): Product identifier.
-\item \code{yesterday_real_time_rewards} (character): Real-time rewards
+\item product_id (character) Product identifier.
+\item yesterday_real_time_rewards (character) Real-time rewards
 accrued in the previous period.
-\item \code{cumulative_bonus_rewards} (character): Cumulative bonus
+\item cumulative_bonus_rewards (character) Cumulative bonus
 rewards earned on this position.
-\item \code{cumulative_real_time_rewards} (character): Cumulative
+\item cumulative_real_time_rewards (character) Cumulative
 real-time rewards.
-\item \code{cumulative_total_rewards} (character): Cumulative total
+\item cumulative_total_rewards (character) Cumulative total
 rewards (bonus + real-time).
-\item \code{auto_subscribe} (logical): Whether auto-subscription is enabled.
+\item auto_subscribe (logical) Whether auto-subscription is enabled.
 }
 }
 \subsection{Examples}{
@@ -1006,63 +1006,63 @@ converter lowers it to \code{apy} in the data.table.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{asset}}{Character or NULL; filter by asset (e.g., \code{"BTC"}).}
+\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"BTC"}).}
 
-\item{\code{positionId}}{Character or NULL; filter by position ID.}
+\item{\code{positionId}}{(scalar<character>?) filter by position ID.}
 
-\item{\code{projectId}}{Character or NULL; filter by project ID.}
+\item{\code{projectId}}{(scalar<character>?) filter by project ID.}
 
-\item{\code{current}}{Integer or NULL; current page (default 1, starting from 1).}
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
 
-\item{\code{size}}{Integer or NULL; page size (default 10, max 100).}
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per position and the following columns
+(promise<data.table>) with one row per position and the following columns
 (snake-case names; Binance's uppercase \code{APY} lowers to \code{apy}):
 \itemize{
-\item \code{position_id} (numeric): Locked position identifier.
-\item \code{parent_position_id} (numeric): Parent position identifier
+\item position_id (numeric) Locked position identifier.
+\item parent_position_id (numeric) Parent position identifier
 (cross-reference for auto-renewed positions).
-\item \code{project_id} (character): Locked project identifier.
-\item \code{asset} (character): Locked asset symbol.
-\item \code{amount} (character): Locked amount.
-\item \code{purchase_time} (POSIXct): Subscription time.
-\item \code{duration} (character): Lock duration in days.
-\item \code{accrual_days} (character): Days interest has accrued.
-\item \code{reward_asset} (character): Earned asset symbol.
-\item \code{apy} (character): Annual percentage yield (snake_case of \code{APY}).
-\item \code{reward_amt} (character): Earned amount so far.
-\item \code{extra_reward_asset} (character): Asset for the extra staking
+\item project_id (character) Locked project identifier.
+\item asset (character) Locked asset symbol.
+\item amount (character) Locked amount.
+\item purchase_time (POSIXct) Subscription time.
+\item duration (character) Lock duration in days.
+\item accrual_days (character) Days interest has accrued.
+\item reward_asset (character) Earned asset symbol.
+\item apy (character) Annual percentage yield (snake_case of \code{APY}).
+\item reward_amt (character) Earned amount so far.
+\item extra_reward_asset (character) Asset for the extra staking
 reward, if any.
-\item \code{extra_reward_apr} (character): APR of the extra staking reward.
-\item \code{est_extra_reward_amt} (character): Estimated extra reward
+\item extra_reward_apr (character) APR of the extra staking reward.
+\item est_extra_reward_amt (character) Estimated extra reward
 distributed at maturity.
-\item \code{boost_reward_asset} (character): Boost reward asset.
-\item \code{boost_apr} (character): Boost APR.
-\item \code{total_boost_reward_amt} (character): Total boost reward earned.
-\item \code{next_pay} (character): Next estimated reward payment.
-\item \code{next_pay_date} (POSIXct): Next reward payment time.
-\item \code{pay_period} (character): Payment cycle in days.
-\item \code{redeem_amount_early} (character): Amount available for early
+\item boost_reward_asset (character) Boost reward asset.
+\item boost_apr (character) Boost APR.
+\item total_boost_reward_amt (character) Total boost reward earned.
+\item next_pay (character) Next estimated reward payment.
+\item next_pay_date (POSIXct) Next reward payment time.
+\item pay_period (character) Payment cycle in days.
+\item redeem_amount_early (character) Amount available for early
 redemption.
-\item \code{rewards_end_date} (POSIXct): Rewards accrual end time.
-\item \code{deliver_date} (POSIXct): Redemption arrival time.
-\item \code{redeem_period} (character): Redemption interval in days.
-\item \code{redeeming_amt} (character): Amount currently being redeemed.
-\item \code{redeem_to} (character): Destination on redemption
+\item rewards_end_date (POSIXct) Rewards accrual end time.
+\item deliver_date (POSIXct) Redemption arrival time.
+\item redeem_period (character) Redemption interval in days.
+\item redeeming_amt (character) Amount currently being redeemed.
+\item redeem_to (character) Destination on redemption
 (\code{"FLEXIBLE"} or \code{"SPOT"}).
-\item \code{partial_amt_deliver_date} (POSIXct): Arrival time of partial
+\item partial_amt_deliver_date (POSIXct) Arrival time of partial
 redemption.
-\item \code{can_redeem_early} (logical): Whether early redemption is allowed.
-\item \code{can_fast_redemption} (logical): Whether fast redemption is allowed.
-\item \code{auto_subscribe} (logical): Whether auto-subscription is enabled.
-\item \code{type} (character): Order type (\code{"AUTO"} or \code{"NORMAL"}).
-\item \code{status} (character): Position status (e.g., \code{"HOLDING"}).
-\item \code{can_re_stake} (logical): Whether re-staking is available.
+\item can_redeem_early (logical) Whether early redemption is allowed.
+\item can_fast_redemption (logical) Whether fast redemption is allowed.
+\item auto_subscribe (logical) Whether auto-subscription is enabled.
+\item type (character) Order type (\code{"AUTO"} or \code{"NORMAL"}).
+\item status (character) Position status (e.g., \code{"HOLDING"}).
+\item can_re_stake (logical) Whether re-staking is available.
 }
 }
 \subsection{Examples}{
@@ -1137,34 +1137,34 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{productId}}{Character or NULL; filter by product ID.}
+\item{\code{productId}}{(scalar<character>?) filter by product ID.}
 
-\item{\code{purchaseId}}{Integer or NULL; filter by purchase ID.}
+\item{\code{purchaseId}}{(scalar<count>?) filter by purchase ID.}
 
-\item{\code{asset}}{Character or NULL; filter by asset (e.g., \code{"USDT"}).}
+\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{current}}{Integer or NULL; current page (default 1, starting from 1).}
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
 
-\item{\code{size}}{Integer or NULL; page size (default 10, max 100).}
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per subscription record and the following columns:
+(promise<data.table>) with one row per subscription record and the following columns:
 \itemize{
-\item \code{amount} (character): Subscription amount.
-\item \code{asset} (character): Asset symbol.
-\item \code{time} (POSIXct): Subscription time.
-\item \code{purchase_id} (integer): Purchase identifier.
-\item \code{type} (character): Subscription type (e.g., \code{"AUTO"}, \code{"NORMAL"}).
-\item \code{source_account} (character): Source account (e.g., \code{"SPOT"}).
-\item \code{status} (character): Subscription status (e.g., \code{"SUCCESS"}).
+\item amount (character) Subscription amount.
+\item asset (character) Asset symbol.
+\item time (POSIXct) Subscription time.
+\item purchase_id (integer) Purchase identifier.
+\item type (character) Subscription type (e.g., \code{"AUTO"}, \code{"NORMAL"}).
+\item source_account (character) Source account (e.g., \code{"SPOT"}).
+\item status (character) Subscription status (e.g., \code{"SUCCESS"}).
 }
 }
 \subsection{Examples}{
@@ -1240,34 +1240,34 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{purchaseId}}{Integer or NULL; filter by purchase ID.}
+\item{\code{purchaseId}}{(scalar<count>?) filter by purchase ID.}
 
-\item{\code{asset}}{Character or NULL; filter by asset (e.g., \code{"BTC"}).}
+\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"BTC"}).}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{current}}{Integer or NULL; current page (default 1, starting from 1).}
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
 
-\item{\code{size}}{Integer or NULL; page size (default 10, max 100).}
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per subscription record and the following columns:
+(promise<data.table>) with one row per subscription record and the following columns:
 \itemize{
-\item \code{amount} (character): Subscription amount.
-\item \code{asset} (character): Asset symbol.
-\item \code{time} (POSIXct): Subscription time.
-\item \code{purchase_id} (integer): Purchase identifier.
-\item \code{position_id} (character): Position identifier.
-\item \code{lock_period} (integer): Lock duration in days.
-\item \code{type} (character): Subscription type.
-\item \code{source_account} (character): Source account.
-\item \code{status} (character): Subscription status.
+\item amount (character) Subscription amount.
+\item asset (character) Asset symbol.
+\item time (POSIXct) Subscription time.
+\item purchase_id (integer) Purchase identifier.
+\item position_id (character) Position identifier.
+\item lock_period (integer) Lock duration in days.
+\item type (character) Subscription type.
+\item source_account (character) Source account.
+\item status (character) Subscription status.
 }
 }
 \subsection{Examples}{
@@ -1342,34 +1342,34 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{productId}}{Character or NULL; filter by product ID.}
+\item{\code{productId}}{(scalar<character>?) filter by product ID.}
 
-\item{\code{redeemId}}{Integer or NULL; filter by redeem ID.}
+\item{\code{redeemId}}{(scalar<count>?) filter by redeem ID.}
 
-\item{\code{asset}}{Character or NULL; filter by asset (e.g., \code{"USDT"}).}
+\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{current}}{Integer or NULL; current page (default 1, starting from 1).}
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
 
-\item{\code{size}}{Integer or NULL; page size (default 10, max 100).}
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per redemption record and the following columns:
+(promise<data.table>) with one row per redemption record and the following columns:
 \itemize{
-\item \code{amount} (character): Redemption amount.
-\item \code{asset} (character): Asset symbol.
-\item \code{time} (POSIXct): Redemption time.
-\item \code{project_id} (character): Product identifier.
-\item \code{redeem_id} (integer): Redemption identifier.
-\item \code{dest_account} (character): Destination account.
-\item \code{status} (character): Redemption status (e.g., \code{"PAID"}).
+\item amount (character) Redemption amount.
+\item asset (character) Asset symbol.
+\item time (POSIXct) Redemption time.
+\item project_id (character) Product identifier.
+\item redeem_id (integer) Redemption identifier.
+\item dest_account (character) Destination account.
+\item status (character) Redemption status (e.g., \code{"PAID"}).
 }
 }
 \subsection{Examples}{
@@ -1444,34 +1444,34 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{positionId}}{Character or NULL; filter by position ID.}
+\item{\code{positionId}}{(scalar<character>?) filter by position ID.}
 
-\item{\code{redeemId}}{Integer or NULL; filter by redeem ID.}
+\item{\code{redeemId}}{(scalar<count>?) filter by redeem ID.}
 
-\item{\code{asset}}{Character or NULL; filter by asset (e.g., \code{"BTC"}).}
+\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"BTC"}).}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{current}}{Integer or NULL; current page (default 1, starting from 1).}
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
 
-\item{\code{size}}{Integer or NULL; page size (default 10, max 100).}
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per redemption record and the following columns:
+(promise<data.table>) with one row per redemption record and the following columns:
 \itemize{
-\item \code{amount} (character): Redemption amount.
-\item \code{asset} (character): Asset symbol.
-\item \code{time} (POSIXct): Redemption time.
-\item \code{position_id} (character): Position identifier.
-\item \code{redeem_id} (integer): Redemption identifier.
-\item \code{deliver_date} (POSIXct): Expected delivery time.
-\item \code{status} (character): Redemption status.
+\item amount (character) Redemption amount.
+\item asset (character) Asset symbol.
+\item time (POSIXct) Redemption time.
+\item position_id (character) Position identifier.
+\item redeem_id (integer) Redemption identifier.
+\item deliver_date (POSIXct) Expected delivery time.
+\item status (character) Redemption status.
 }
 }
 \subsection{Examples}{

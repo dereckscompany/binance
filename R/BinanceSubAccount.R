@@ -93,10 +93,10 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param subAccountString Character; the sub-account name/string identifier.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `email` (character): The email of the newly created sub-account.
+    #' @param subAccountString (scalar<character>) the sub-account name/string identifier.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row and the following columns:
+    #' - email (character) The email of the newly created sub-account.
     #'
     #' @examples
     #' \dontrun{
@@ -105,6 +105,7 @@ BinanceSubAccount <- R6::R6Class(
     #' print(result$email)
     #' }
     add_sub_account = function(subAccountString, recvWindow = NULL) {
+      assert_args_BinanceSubAccount__add_sub_account(subAccountString, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/sub-account/virtualSubAccount",
         method = "POST",
@@ -152,17 +153,17 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param email Character or NULL; filter by sub-account email.
-    #' @param isFreeze Logical or NULL; filter by freeze status.
-    #' @param page Integer or NULL; page number (default 1).
-    #' @param limit Integer or NULL; results per page (default 1, max 200).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per sub-account and the following columns:
-    #' - `email` (character): Sub-account email.
-    #' - `is_freeze` (logical): Whether the sub-account is frozen.
-    #' - `create_time` (POSIXct): Account creation time converted from `createTime`.
-    #' - `is_managed_sub_account` (logical): Whether it is a managed sub-account.
-    #' - `is_asset_management_sub_account` (logical): Whether it is an asset management sub-account.
+    #' @param email (scalar<character>?) filter by sub-account email.
+    #' @param isFreeze (scalar<logical>?) filter by freeze status.
+    #' @param page (scalar<count>?) page number (default 1).
+    #' @param limit (scalar<count>?) results per page (default 1, max 200).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per sub-account and the following columns:
+    #' - email (character) Sub-account email.
+    #' - is_freeze (logical) Whether the sub-account is frozen.
+    #' - create_time (POSIXct) Account creation time converted from `createTime`.
+    #' - is_managed_sub_account (logical) Whether it is a managed sub-account.
+    #' - is_asset_management_sub_account (logical) Whether it is an asset management sub-account.
     #'
     #' @examples
     #' \dontrun{
@@ -171,6 +172,7 @@ BinanceSubAccount <- R6::R6Class(
     #' print(accounts[, .(email, is_freeze, create_time)])
     #' }
     get_sub_accounts = function(email = NULL, isFreeze = NULL, page = NULL, limit = NULL, recvWindow = NULL) {
+      assert_args_BinanceSubAccount__get_sub_accounts(email, isFreeze, page, limit, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/sub-account/list",
         query = list(
@@ -220,12 +222,12 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param email Character; the sub-account email.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per asset and the following columns:
-    #' - `asset` (character): Asset symbol (e.g., `"BTC"`).
-    #' - `free` (numeric): Available balance.
-    #' - `locked` (numeric): Locked balance.
+    #' @param email (scalar<character>) the sub-account email.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per asset and the following columns:
+    #' - asset (character) Asset symbol (e.g., `"BTC"`).
+    #' - free (numeric) Available balance.
+    #' - locked (numeric) Locked balance.
     #'
     #' @examples
     #' \dontrun{
@@ -234,6 +236,7 @@ BinanceSubAccount <- R6::R6Class(
     #' print(balances)
     #' }
     get_balances = function(email, recvWindow = NULL) {
+      assert_args_BinanceSubAccount__get_balances(email, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v3/sub-account/assets",
         query = list(
@@ -286,17 +289,17 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param email Character or NULL; filter by sub-account email.
-    #' @param page Integer or NULL; page number (default 1).
-    #' @param size Integer or NULL; results per page (default 10, max 20).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with **one row per sub-account**; the
+    #' @param email (scalar<character>?) filter by sub-account email.
+    #' @param page (scalar<count>?) page number (default 1).
+    #' @param size (scalar<count>?) results per page (default 10, max 20).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per sub-account; the
     #'   master-level summary fields are replicated on each row. Columns:
-    #' - `total_count` (integer): Total number of sub-accounts (repeated per row).
-    #' - `master_account_total_asset` (character): Master account total
+    #' - total_count (integer) Total number of sub-accounts (repeated per row).
+    #' - master_account_total_asset (character) Master account total
     #'   asset value in BTC (repeated per row).
-    #' - `sub_user_email` (character): Sub-account email.
-    #' - `sub_user_total_asset` (character): Sub-account total asset value in BTC.
+    #' - sub_user_email (character) Sub-account email.
+    #' - sub_user_total_asset (character) Sub-account total asset value in BTC.
     #'
     #' @examples
     #' \dontrun{
@@ -305,6 +308,7 @@ BinanceSubAccount <- R6::R6Class(
     #' print(summary)
     #' }
     get_spot_summary = function(email = NULL, page = NULL, size = NULL, recvWindow = NULL) {
+      assert_args_BinanceSubAccount__get_spot_summary(email, page, size, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/sub-account/spotSummary",
         query = list(
@@ -382,19 +386,19 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param fromEmail Character or NULL; sender sub-account email.
-    #' @param toEmail Character or NULL; recipient sub-account email.
-    #' @param fromAccountType Character; source account type. One of
+    #' @param fromEmail (scalar<character>?) sender sub-account email.
+    #' @param toEmail (scalar<character>?) recipient sub-account email.
+    #' @param fromAccountType (scalar<character>) source account type. One of
     #'   `"SPOT"`, `"USDT_FUTURE"`, `"COIN_FUTURE"`, `"MARGIN"`, `"ISOLATED_MARGIN"`.
-    #' @param toAccountType Character; destination account type. One of
+    #' @param toAccountType (scalar<character>) destination account type. One of
     #'   `"SPOT"`, `"USDT_FUTURE"`, `"COIN_FUTURE"`, `"MARGIN"`, `"ISOLATED_MARGIN"`.
-    #' @param asset Character; asset to transfer (e.g., `"USDT"`).
-    #' @param amount Numeric; amount to transfer.
-    #' @param clientTranId Character or NULL; client-defined transfer ID.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `tran_id` (integer): Binance-assigned transfer ID.
-    #' - `client_tran_id` (character): Client-defined transfer ID.
+    #' @param asset (scalar<character>) asset to transfer (e.g., `"USDT"`).
+    #' @param amount (scalar<numeric>) amount to transfer.
+    #' @param clientTranId (scalar<character>?) client-defined transfer ID.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row and the following columns:
+    #' - tran_id (integer) Binance-assigned transfer ID.
+    #' - client_tran_id (character) Client-defined transfer ID.
     #'
     #' @examples
     #' \dontrun{
@@ -416,6 +420,16 @@ BinanceSubAccount <- R6::R6Class(
       clientTranId = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceSubAccount__add_transfer(
+        fromEmail,
+        toEmail,
+        fromAccountType,
+        toAccountType,
+        asset,
+        amount,
+        clientTranId,
+        recvWindow
+      )
       valid_types <- c("SPOT", "USDT_FUTURE", "COIN_FUTURE", "MARGIN", "ISOLATED_MARGIN")
       if (!fromAccountType %in% valid_types) {
         rlang::abort(paste0(
@@ -491,25 +505,25 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param fromEmail Character or NULL; filter by sender email.
-    #' @param toEmail Character or NULL; filter by recipient email.
-    #' @param clientTranId Character or NULL; filter by client transfer ID.
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param page Integer or NULL; page number (default 1).
-    #' @param limit Integer or NULL; results per page (default 500, max 500).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per transfer and the following columns:
-    #' - `tran_id` (integer): Binance-assigned transfer ID.
-    #' - `from_email` (character): Sender email.
-    #' - `to_email` (character): Recipient email.
-    #' - `asset` (character): Transferred asset.
-    #' - `amount` (character): Transfer amount.
-    #' - `create_time_stamp` (POSIXct): Transfer time converted from `createTimeStamp`.
-    #' - `from_account_type` (character): Source account type.
-    #' - `to_account_type` (character): Destination account type.
-    #' - `status` (character): Transfer status.
-    #' - `client_tran_id` (character): Client-defined transfer ID.
+    #' @param fromEmail (scalar<character>?) filter by sender email.
+    #' @param toEmail (scalar<character>?) filter by recipient email.
+    #' @param clientTranId (scalar<character>?) filter by client transfer ID.
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param page (scalar<count>?) page number (default 1).
+    #' @param limit (scalar<count>?) results per page (default 500, max 500).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per transfer and the following columns:
+    #' - tran_id (integer) Binance-assigned transfer ID.
+    #' - from_email (character) Sender email.
+    #' - to_email (character) Recipient email.
+    #' - asset (character) Transferred asset.
+    #' - amount (character) Transfer amount.
+    #' - create_time_stamp (POSIXct) Transfer time converted from `createTimeStamp`.
+    #' - from_account_type (character) Source account type.
+    #' - to_account_type (character) Destination account type.
+    #' - status (character) Transfer status.
+    #' - client_tran_id (character) Client-defined transfer ID.
     #'
     #' @examples
     #' \dontrun{
@@ -527,6 +541,16 @@ BinanceSubAccount <- R6::R6Class(
       limit = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceSubAccount__get_transfer_history(
+        fromEmail,
+        toEmail,
+        clientTranId,
+        startTime,
+        endTime,
+        page,
+        limit,
+        recvWindow
+      )
       return(private$.request(
         endpoint = "/sapi/v1/sub-account/universalTransfer",
         query = list(
@@ -604,25 +628,25 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param email Character; the sub-account email.
-    #' @param futuresType Integer; `1` for USDT-margined futures, `2` for COIN-margined futures.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per asset (long format) and the following columns:
-    #' - `email` (character): Sub-account email (repeated per asset).
-    #' - `asset` (character): Margin asset (e.g., `"USDT"`).
-    #' - `can_deposit` (logical): Whether deposits are permitted.
-    #' - `can_trade` (logical): Whether trading is permitted.
-    #' - `can_withdraw` (logical): Whether withdrawals are permitted.
-    #' - `fee_tier` (integer): Fee tier level.
-    #' - `max_withdraw_amount` (character): Maximum withdrawable amount.
-    #' - `total_initial_margin` (character): Total initial margin.
-    #' - `total_margin_balance` (character): Total margin balance.
-    #' - `total_wallet_balance` (character): Total wallet balance.
-    #' - `total_unrealized_profit` (character): Total unrealised PnL.
-    #' - `update_time` (POSIXct): Last update time.
-    #' - `asset_asset` (character): Per-asset name.
-    #' - `asset_wallet_balance` (character): Per-asset wallet balance.
-    #' - `asset_margin_balance` (character): Per-asset margin balance.
+    #' @param email (scalar<character>) the sub-account email.
+    #' @param futuresType (scalar<count>) `1` for USDT-margined futures, `2` for COIN-margined futures.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per asset (long format) and the following columns:
+    #' - email (character) Sub-account email (repeated per asset).
+    #' - asset (character) Margin asset (e.g., `"USDT"`).
+    #' - can_deposit (logical) Whether deposits are permitted.
+    #' - can_trade (logical) Whether trading is permitted.
+    #' - can_withdraw (logical) Whether withdrawals are permitted.
+    #' - fee_tier (integer) Fee tier level.
+    #' - max_withdraw_amount (character) Maximum withdrawable amount.
+    #' - total_initial_margin (character) Total initial margin.
+    #' - total_margin_balance (character) Total margin balance.
+    #' - total_wallet_balance (character) Total wallet balance.
+    #' - total_unrealized_profit (character) Total unrealised PnL.
+    #' - update_time (POSIXct) Last update time.
+    #' - asset_asset (character) Per-asset name.
+    #' - asset_wallet_balance (character) Per-asset wallet balance.
+    #' - asset_margin_balance (character) Per-asset margin balance.
     #'
     #' When the response contains an `assets` list, it is expanded to long format
     #' with parent account fields repeated. When there are no assets, returns a
@@ -635,6 +659,7 @@ BinanceSubAccount <- R6::R6Class(
     #' print(futures)
     #' }
     get_futures_account = function(email, futuresType, recvWindow = NULL) {
+      assert_args_BinanceSubAccount__get_futures_account(email, futuresType, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v2/sub-account/futures/account",
         query = list(
@@ -699,15 +724,15 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param email Character; the sub-account email.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `email` (character): Sub-account email.
-    #' - `margin_level` (character): Current margin level.
-    #' - `total_asset_of_btc` (character): Total asset value in BTC.
-    #' - `total_liability_of_btc` (character): Total liability in BTC.
-    #' - `total_net_asset_of_btc` (character): Net asset value in BTC.
-    #' - `margin_trade_coeff_vo` (list): Nested margin trading coefficient details.
+    #' @param email (scalar<character>) the sub-account email.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row and the following columns:
+    #' - email (character) Sub-account email.
+    #' - margin_level (character) Current margin level.
+    #' - total_asset_of_btc (character) Total asset value in BTC.
+    #' - total_liability_of_btc (character) Total liability in BTC.
+    #' - total_net_asset_of_btc (character) Net asset value in BTC.
+    #' - margin_trade_coeff_vo (list) Nested margin trading coefficient details.
     #'
     #' @examples
     #' \dontrun{
@@ -716,6 +741,7 @@ BinanceSubAccount <- R6::R6Class(
     #' print(margin)
     #' }
     get_margin_account = function(email, recvWindow = NULL) {
+      assert_args_BinanceSubAccount__get_margin_account(email, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/sub-account/margin/account",
         query = list(
@@ -762,16 +788,16 @@ BinanceSubAccount <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param email Character or NULL; filter by sub-account email.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per sub-account and the following columns:
-    #' - `email` (character): Sub-account email.
-    #' - `is_sub_user_enabled` (logical): Whether the sub-user is enabled.
-    #' - `is_user_active` (logical): Whether the user is active.
-    #' - `insert_time` (POSIXct): Time the sub-account was inserted.
-    #' - `is_margin_enabled` (logical): Whether margin trading is enabled.
-    #' - `is_future_enabled` (logical): Whether futures trading is enabled.
-    #' - `mobile` (integer): Mobile verification status.
+    #' @param email (scalar<character>?) filter by sub-account email.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per sub-account and the following columns:
+    #' - email (character) Sub-account email.
+    #' - is_sub_user_enabled (logical) Whether the sub-user is enabled.
+    #' - is_user_active (logical) Whether the user is active.
+    #' - insert_time (POSIXct) Time the sub-account was inserted.
+    #' - is_margin_enabled (logical) Whether margin trading is enabled.
+    #' - is_future_enabled (logical) Whether futures trading is enabled.
+    #' - mobile (integer) Mobile verification status.
     #'
     #' @examples
     #' \dontrun{
@@ -780,6 +806,7 @@ BinanceSubAccount <- R6::R6Class(
     #' print(status)
     #' }
     get_status = function(email = NULL, recvWindow = NULL) {
+      assert_args_BinanceSubAccount__get_status(email, recvWindow)
       return(private$.request(
         endpoint = "/sapi/v1/sub-account/status",
         query = list(

@@ -333,20 +333,20 @@ the futures-specific server time endpoint (\verb{/fapi/v1/time}).
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{keys}}{List; API credentials from \code{\link[=get_api_keys]{get_api_keys()}}.}
+\item{\code{keys}}{(list) API credentials from \code{\link[=get_api_keys]{get_api_keys()}}.}
 
-\item{\code{base_url}}{Character; API base URL. Defaults to \code{\link[=get_futures_base_url]{get_futures_base_url()}}.}
+\item{\code{base_url}}{(scalar<character>) API base URL. Defaults to \code{\link[=get_futures_base_url]{get_futures_base_url()}}.}
 
-\item{\code{async}}{Logical; if \code{TRUE}, methods return promises. Default \code{FALSE}.}
+\item{\code{async}}{(scalar<logical>) if \code{TRUE}, methods return promises. Default \code{FALSE}.}
 
-\item{\code{time_source}}{Character; clock source for HMAC request signing.
+\item{\code{time_source}}{(scalar<character>) clock source for HMAC request signing.
 \code{"local"} (default) uses \code{Sys.time()}. \code{"server"} fetches the Binance
 Futures server time before each authenticated request.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-Invisible self.
+(class<BinanceFutures>) invisibly, self.
 }
 }
 \if{html}{\out{<hr>}}
@@ -440,55 +440,55 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{side}}{Character; \code{"BUY"} or \code{"SELL"}.}
+\item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
 
-\item{\code{type}}{Character; order type: \code{"LIMIT"}, \code{"MARKET"}, \code{"STOP"},
+\item{\code{type}}{(scalar<character>) order type: \code{"LIMIT"}, \code{"MARKET"}, \code{"STOP"},
 \code{"STOP_MARKET"}, \code{"TAKE_PROFIT"}, \code{"TAKE_PROFIT_MARKET"},
 \code{"TRAILING_STOP_MARKET"}.}
 
-\item{\code{quantity}}{Numeric or NULL; order quantity.}
+\item{\code{quantity}}{(scalar<numeric>?) order quantity.}
 
-\item{\code{price}}{Numeric or NULL; price for limit orders.}
+\item{\code{price}}{(scalar<numeric>?) price for limit orders.}
 
-\item{\code{stopPrice}}{Numeric or NULL; trigger price for stop orders.}
+\item{\code{stopPrice}}{(scalar<numeric>?) trigger price for stop orders.}
 
-\item{\code{timeInForce}}{Character or NULL; \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
+\item{\code{timeInForce}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
 
-\item{\code{positionSide}}{Character or NULL; \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
+\item{\code{positionSide}}{(scalar<character>?) \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
 
-\item{\code{reduceOnly}}{Logical or NULL; reduce-only flag.}
+\item{\code{reduceOnly}}{(scalar<logical>?) reduce-only flag.}
 
-\item{\code{newClientOrderId}}{Character or NULL; unique client order ID.}
+\item{\code{newClientOrderId}}{(scalar<character>?) unique client order ID.}
 
-\item{\code{closePosition}}{Logical or NULL; close all position flag.}
+\item{\code{closePosition}}{(scalar<logical>?) close all position flag.}
 
-\item{\code{workingType}}{Character or NULL; \code{"MARK_PRICE"} or \code{"CONTRACT_PRICE"}.}
+\item{\code{workingType}}{(scalar<character>?) \code{"MARK_PRICE"} or \code{"CONTRACT_PRICE"}.}
 
-\item{\code{newOrderRespType}}{Character or NULL; \code{"ACK"}, \code{"RESULT"}.}
+\item{\code{newOrderRespType}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(promise<data.table>) with one row and the following columns:
 \itemize{
-\item \code{symbol} (character): Trading pair (e.g., \code{"BTCUSDT"}).
-\item \code{order_id} (integer): Unique order identifier.
-\item \code{client_order_id} (character): Client-assigned order ID.
-\item \code{price} (character): Order price.
-\item \code{orig_qty} (character): Original requested quantity.
-\item \code{executed_qty} (character): Quantity filled so far.
-\item \code{cum_qty} (character): Cumulative filled quantity.
-\item \code{cum_quote} (character): Cumulative quote asset transacted.
-\item \code{status} (character): Order status (\code{"NEW"}, \code{"FILLED"}, \code{"CANCELED"}, etc.).
-\item \code{time_in_force} (character): Time-in-force policy.
-\item \code{type} (character): Order type.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{position_side} (character): Position side (\code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}).
-\item \code{update_time} (POSIXct): Last update time.
+\item symbol (character) Trading pair (e.g., \code{"BTCUSDT"}).
+\item order_id (integer) Unique order identifier.
+\item client_order_id (character) Client-assigned order ID.
+\item price (character) Order price.
+\item orig_qty (character) Original requested quantity.
+\item executed_qty (character) Quantity filled so far.
+\item cum_qty (character) Cumulative filled quantity.
+\item cum_quote (character) Cumulative quote asset transacted.
+\item status (character) Order status (\code{"NEW"}, \code{"FILLED"}, \code{"CANCELED"}, etc.).
+\item time_in_force (character) Time-in-force policy.
+\item type (character) Order type.
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item position_side (character) Position side (\code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}).
+\item update_time (POSIXct) Last update time.
 }
 }
 \subsection{Examples}{
@@ -577,38 +577,38 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{side}}{Character; \code{"BUY"} or \code{"SELL"}.}
+\item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
 
-\item{\code{type}}{Character; order type.}
+\item{\code{type}}{(scalar<character>) order type.}
 
-\item{\code{quantity}}{Numeric or NULL; order quantity.}
+\item{\code{quantity}}{(scalar<numeric>?) order quantity.}
 
-\item{\code{price}}{Numeric or NULL; price for limit orders.}
+\item{\code{price}}{(scalar<numeric>?) price for limit orders.}
 
-\item{\code{stopPrice}}{Numeric or NULL; trigger price for stop orders.}
+\item{\code{stopPrice}}{(scalar<numeric>?) trigger price for stop orders.}
 
-\item{\code{timeInForce}}{Character or NULL; \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
+\item{\code{timeInForce}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
 
-\item{\code{positionSide}}{Character or NULL; \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
+\item{\code{positionSide}}{(scalar<character>?) \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
 
-\item{\code{reduceOnly}}{Logical or NULL; reduce-only flag.}
+\item{\code{reduceOnly}}{(scalar<logical>?) reduce-only flag.}
 
-\item{\code{newClientOrderId}}{Character or NULL; unique client order ID.}
+\item{\code{newClientOrderId}}{(scalar<character>?) unique client order ID.}
 
-\item{\code{closePosition}}{Logical or NULL; close all position flag.}
+\item{\code{closePosition}}{(scalar<logical>?) close all position flag.}
 
-\item{\code{workingType}}{Character or NULL; \code{"MARK_PRICE"} or \code{"CONTRACT_PRICE"}.}
+\item{\code{workingType}}{(scalar<character>?) \code{"MARK_PRICE"} or \code{"CONTRACT_PRICE"}.}
 
-\item{\code{newOrderRespType}}{Character or NULL; \code{"ACK"}, \code{"RESULT"}.}
+\item{\code{newOrderRespType}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
+(promise<data.table>)
 with a single row and a single \code{validated} (logical) column,
 set to \code{TRUE} on success. Binance returns \code{{}} on a successful
 test order; the absence of an error is the validation signal.
@@ -703,28 +703,28 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{Integer or NULL; the order ID to cancel.}
+\item{\code{orderId}}{(scalar<count>?) the order ID to cancel.}
 
-\item{\code{origClientOrderId}}{Character or NULL; the client order ID to cancel.}
+\item{\code{origClientOrderId}}{(scalar<character>?) the client order ID to cancel.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(promise<data.table>) with one row and the following columns:
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{order_id} (integer): Unique order identifier.
-\item \code{client_order_id} (character): Client-assigned order ID.
-\item \code{orig_qty} (character): Original requested quantity.
-\item \code{executed_qty} (character): Quantity filled so far.
-\item \code{status} (character): Order status (typically \code{"CANCELED"}).
-\item \code{type} (character): Order type.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{update_time} (POSIXct): Cancellation time.
+\item symbol (character) Trading pair.
+\item order_id (integer) Unique order identifier.
+\item client_order_id (character) Client-assigned order ID.
+\item orig_qty (character) Original requested quantity.
+\item executed_qty (character) Quantity filled so far.
+\item status (character) Order status (typically \code{"CANCELED"}).
+\item type (character) Order type.
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item update_time (POSIXct) Cancellation time.
 }
 }
 \subsection{Examples}{
@@ -791,17 +791,17 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(promise<data.table>) with one row and the following columns:
 \itemize{
-\item \code{code} (integer): Response code (\code{200} on success).
-\item \code{msg} (character): Response message.
+\item code (integer) Response code (\code{200} on success).
+\item msg (character) Response message.
 }
 }
 \subsection{Examples}{
@@ -881,33 +881,33 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{Integer or NULL; the order ID.}
+\item{\code{orderId}}{(scalar<count>?) the order ID.}
 
-\item{\code{origClientOrderId}}{Character or NULL; the client order ID.}
+\item{\code{origClientOrderId}}{(scalar<character>?) the client order ID.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(promise<data.table>) with one row and the following columns:
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{order_id} (integer): Unique order identifier.
-\item \code{client_order_id} (character): Client-assigned order ID.
-\item \code{price} (character): Order price.
-\item \code{orig_qty} (character): Original requested quantity.
-\item \code{executed_qty} (character): Quantity filled so far.
-\item \code{cum_quote} (character): Cumulative quote asset transacted.
-\item \code{status} (character): Order status.
-\item \code{time_in_force} (character): Time-in-force policy.
-\item \code{type} (character): Order type.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{position_side} (character): Position side.
-\item \code{time} (POSIXct): Order creation time.
-\item \code{update_time} (POSIXct): Last update time.
+\item symbol (character) Trading pair.
+\item order_id (integer) Unique order identifier.
+\item client_order_id (character) Client-assigned order ID.
+\item price (character) Order price.
+\item orig_qty (character) Original requested quantity.
+\item executed_qty (character) Quantity filled so far.
+\item cum_quote (character) Cumulative quote asset transacted.
+\item status (character) Order status.
+\item time_in_force (character) Time-in-force policy.
+\item type (character) Order type.
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item position_side (character) Position side.
+\item time (POSIXct) Order creation time.
+\item update_time (POSIXct) Last update time.
 }
 }
 \subsection{Examples}{
@@ -984,27 +984,27 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character or NULL; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per open order and the following columns:
+(promise<data.table>) with one row per open order and the following columns:
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{order_id} (integer): Unique order identifier.
-\item \code{client_order_id} (character): Client-assigned order ID.
-\item \code{price} (character): Order price.
-\item \code{orig_qty} (character): Original requested quantity.
-\item \code{executed_qty} (character): Quantity filled so far.
-\item \code{status} (character): Order status.
-\item \code{type} (character): Order type.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{position_side} (character): Position side.
-\item \code{time} (POSIXct): Order creation time.
-\item \code{update_time} (POSIXct): Last update time.
+\item symbol (character) Trading pair.
+\item order_id (integer) Unique order identifier.
+\item client_order_id (character) Client-assigned order ID.
+\item price (character) Order price.
+\item orig_qty (character) Original requested quantity.
+\item executed_qty (character) Quantity filled so far.
+\item status (character) Order status.
+\item type (character) Order type.
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item position_side (character) Position side.
+\item time (POSIXct) Order creation time.
+\item update_time (POSIXct) Last update time.
 }
 }
 \subsection{Examples}{
@@ -1088,35 +1088,35 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{Integer or NULL; pagination cursor.}
+\item{\code{orderId}}{(scalar<count>?) pagination cursor.}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{limit}}{Integer or NULL; max results (default 500, max 1000).}
+\item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per order and the following columns:
+(promise<data.table>) with one row per order and the following columns:
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{order_id} (integer): Unique order identifier.
-\item \code{client_order_id} (character): Client-assigned order ID.
-\item \code{price} (character): Order price.
-\item \code{orig_qty} (character): Original requested quantity.
-\item \code{executed_qty} (character): Quantity filled so far.
-\item \code{status} (character): Order status.
-\item \code{type} (character): Order type.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{position_side} (character): Position side.
-\item \code{time} (POSIXct): Order creation time.
-\item \code{update_time} (POSIXct): Last update time.
+\item symbol (character) Trading pair.
+\item order_id (integer) Unique order identifier.
+\item client_order_id (character) Client-assigned order ID.
+\item price (character) Order price.
+\item orig_qty (character) Original requested quantity.
+\item executed_qty (character) Quantity filled so far.
+\item status (character) Order status.
+\item type (character) Order type.
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item position_side (character) Position side.
+\item time (POSIXct) Order creation time.
+\item update_time (POSIXct) Last update time.
 }
 }
 \subsection{Examples}{
@@ -1226,35 +1226,35 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with \strong{one row per asset balance} in the
+(promise<data.table>) one row per asset balance in the
 account; account-level fields are replicated on each row. The
 companion \code{positions} array Binance returns is intentionally
 dropped — see the long note below. Columns:
 \itemize{
-\item \code{fee_tier} (integer): Commission fee tier.
-\item \code{can_trade} (logical): Whether trading is permitted.
-\item \code{can_deposit} (logical): Whether deposits are permitted.
-\item \code{can_withdraw} (logical): Whether withdrawals are permitted.
-\item \code{total_initial_margin} (character): Total initial margin required.
-\item \code{total_maint_margin} (character): Total maintenance margin required.
-\item \code{total_wallet_balance} (character): Total wallet balance.
-\item \code{total_unrealized_profit} (character): Total unrealised PnL.
-\item \code{total_margin_balance} (character): Total margin balance.
-\item \code{total_cross_wallet_balance} (character): Total cross-wallet balance.
-\item \code{available_balance} (character): Available balance for new positions.
-\item \code{max_withdraw_amount} (character): Maximum withdrawable amount.
-\item \code{asset_asset} (character): Per-asset symbol — one row per asset
+\item fee_tier (integer) Commission fee tier.
+\item can_trade (logical) Whether trading is permitted.
+\item can_deposit (logical) Whether deposits are permitted.
+\item can_withdraw (logical) Whether withdrawals are permitted.
+\item total_initial_margin (character) Total initial margin required.
+\item total_maint_margin (character) Total maintenance margin required.
+\item total_wallet_balance (character) Total wallet balance.
+\item total_unrealized_profit (character) Total unrealised PnL.
+\item total_margin_balance (character) Total margin balance.
+\item total_cross_wallet_balance (character) Total cross-wallet balance.
+\item available_balance (character) Available balance for new positions.
+\item max_withdraw_amount (character) Maximum withdrawable amount.
+\item asset_asset (character) Per-asset symbol — one row per asset
 (Binance returns the symbol under the \code{asset} field within the
 \code{assets} array, hence the doubled name after \code{asset_} prefixing).
-\item \code{asset_wallet_balance} (character): Per-asset wallet balance.
-\item \code{asset_unrealized_profit} (character): Per-asset unrealised PnL.
-\item \code{asset_margin_balance} (character): Per-asset margin balance.
-\item \code{asset_available_balance} (character): Per-asset available balance.
+\item asset_wallet_balance (character) Per-asset wallet balance.
+\item asset_unrealized_profit (character) Per-asset unrealised PnL.
+\item asset_margin_balance (character) Per-asset margin balance.
+\item asset_available_balance (character) Per-asset available balance.
 }
 
 Account-level fields are replicated on each asset row. For
@@ -1343,22 +1343,22 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per asset and the following columns:
+(promise<data.table>) with one row per asset and the following columns:
 \itemize{
-\item \code{account_alias} (character): Account alias (e.g., \code{"SgsR"}).
-\item \code{asset} (character): Asset symbol (e.g., \code{"USDT"}).
-\item \code{balance} (character): Wallet balance.
-\item \code{cross_wallet_balance} (character): Cross-wallet balance.
-\item \code{cross_un_pnl} (character): Unrealised PnL from cross positions.
-\item \code{available_balance} (character): Available balance.
-\item \code{max_withdraw_amount} (character): Maximum withdrawable amount.
-\item \code{margin_available} (logical): Whether margin is available.
-\item \code{update_time} (POSIXct): Last balance update time.
+\item account_alias (character) Account alias (e.g., \code{"SgsR"}).
+\item asset (character) Asset symbol (e.g., \code{"USDT"}).
+\item balance (character) Wallet balance.
+\item cross_wallet_balance (character) Cross-wallet balance.
+\item cross_un_pnl (character) Unrealised PnL from cross positions.
+\item available_balance (character) Available balance.
+\item max_withdraw_amount (character) Maximum withdrawable amount.
+\item margin_available (logical) Whether margin is available.
+\item update_time (POSIXct) Last balance update time.
 }
 }
 \subsection{Examples}{
@@ -1430,27 +1430,27 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character or NULL; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per position and the following columns:
+(promise<data.table>) with one row per position and the following columns:
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{position_side} (character): \code{"BOTH"}, \code{"LONG"}, or \code{"SHORT"}.
-\item \code{position_amt} (character): Position quantity.
-\item \code{entry_price} (character): Average entry price.
-\item \code{mark_price} (character): Current mark price.
-\item \code{un_realized_profit} (character): Unrealised PnL.
-\item \code{liquidation_price} (character): Estimated liquidation price.
-\item \code{leverage} (character): Current leverage.
-\item \code{margin_type} (character): \code{"isolated"} or \code{"cross"}.
-\item \code{isolated_margin} (character): Isolated margin amount.
-\item \code{notional} (character): Position notional value.
-\item \code{update_time} (POSIXct): Last position update time.
+\item symbol (character) Trading pair.
+\item position_side (character) \code{"BOTH"}, \code{"LONG"}, or \code{"SHORT"}.
+\item position_amt (character) Position quantity.
+\item entry_price (character) Average entry price.
+\item mark_price (character) Current mark price.
+\item un_realized_profit (character) Unrealised PnL.
+\item liquidation_price (character) Estimated liquidation price.
+\item leverage (character) Current leverage.
+\item margin_type (character) \code{"isolated"} or \code{"cross"}.
+\item isolated_margin (character) Isolated margin amount.
+\item notional (character) Position notional value.
+\item update_time (POSIXct) Last position update time.
 }
 }
 \subsection{Examples}{
@@ -1520,20 +1520,20 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{leverage}}{Integer; target leverage (1-125).}
+\item{\code{leverage}}{(scalar<count>) target leverage (1-125).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(promise<data.table>) with one row and the following columns:
 \itemize{
-\item \code{leverage} (integer): New leverage setting.
-\item \code{max_notional_value} (character): Maximum notional value for this leverage.
-\item \code{symbol} (character): Trading pair.
+\item leverage (integer) New leverage setting.
+\item max_notional_value (character) Maximum notional value for this leverage.
+\item symbol (character) Trading pair.
 }
 }
 \subsection{Examples}{
@@ -1602,19 +1602,19 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{marginType}}{Character; \code{"ISOLATED"} or \code{"CROSSED"}.}
+\item{\code{marginType}}{(scalar<character>) \code{"ISOLATED"} or \code{"CROSSED"}.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(promise<data.table>) with one row and the following columns:
 \itemize{
-\item \code{code} (integer): Response code (\code{200} on success).
-\item \code{msg} (character): Response message.
+\item code (integer) Response code (\code{200} on success).
+\item msg (character) Response message.
 }
 }
 \subsection{Examples}{
@@ -1692,25 +1692,25 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{amount}}{Numeric; margin amount.}
+\item{\code{amount}}{(scalar<numeric>) margin amount.}
 
-\item{\code{type}}{Integer; 1 = add margin, 2 = reduce margin.}
+\item{\code{type}}{(scalar<count>) 1 = add margin, 2 = reduce margin.}
 
-\item{\code{positionSide}}{Character or NULL; \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
+\item{\code{positionSide}}{(scalar<character>?) \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(promise<data.table>) with one row and the following columns:
 \itemize{
-\item \code{code} (integer): Response code (\code{200} on success).
-\item \code{msg} (character): Response message.
-\item \code{amount} (numeric): Margin amount modified.
-\item \code{type} (integer): Margin change type (1 = add, 2 = reduce).
+\item code (integer) Response code (\code{200} on success).
+\item msg (character) Response message.
+\item amount (numeric) Margin amount modified.
+\item type (integer) Margin change type (1 = add, 2 = reduce).
 }
 }
 \subsection{Examples}{
@@ -1781,30 +1781,30 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{type}}{Integer or NULL; 1 = add margin, 2 = reduce margin.}
+\item{\code{type}}{(scalar<count>?) 1 = add margin, 2 = reduce margin.}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{limit}}{Integer or NULL; max results (default 500).}
+\item{\code{limit}}{(scalar<count>?) max results (default 500).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per margin change and the following columns:
+(promise<data.table>) with one row per margin change and the following columns:
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{type} (integer): Margin change type (1 = add, 2 = reduce).
-\item \code{delta_type} (character): Type of margin change.
-\item \code{amount} (character): Margin amount changed.
-\item \code{asset} (character): Margin asset (e.g., \code{"USDT"}).
-\item \code{time} (POSIXct): Time of the margin change.
-\item \code{position_side} (character): Position side.
+\item symbol (character) Trading pair.
+\item type (integer) Margin change type (1 = add, 2 = reduce).
+\item delta_type (character) Type of margin change.
+\item amount (character) Margin amount changed.
+\item asset (character) Margin asset (e.g., \code{"USDT"}).
+\item time (POSIXct) Time of the margin change.
+\item position_side (character) Position side.
 }
 }
 \subsection{Examples}{
@@ -1884,39 +1884,39 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{Integer or NULL; filter by order ID.}
+\item{\code{orderId}}{(scalar<count>?) filter by order ID.}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{fromId}}{Integer or NULL; trade ID to fetch from.}
+\item{\code{fromId}}{(scalar<count>?) trade ID to fetch from.}
 
-\item{\code{limit}}{Integer or NULL; max results (default 500, max 1000).}
+\item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per trade and the following columns:
+(promise<data.table>) with one row per trade and the following columns:
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{id} (integer): Trade identifier.
-\item \code{order_id} (integer): Order identifier.
-\item \code{price} (character): Trade execution price.
-\item \code{qty} (character): Trade quantity.
-\item \code{quote_qty} (character): Quote asset quantity.
-\item \code{commission} (character): Commission paid.
-\item \code{commission_asset} (character): Commission asset (e.g., \code{"USDT"}).
-\item \code{realized_pnl} (character): Realised profit/loss.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{position_side} (character): Position side.
-\item \code{buyer} (logical): Whether the trade was a buy.
-\item \code{maker} (logical): Whether the trade was a maker.
-\item \code{time} (POSIXct): Trade execution time.
+\item symbol (character) Trading pair.
+\item id (integer) Trade identifier.
+\item order_id (integer) Order identifier.
+\item price (character) Trade execution price.
+\item qty (character) Trade quantity.
+\item quote_qty (character) Quote asset quantity.
+\item commission (character) Commission paid.
+\item commission_asset (character) Commission asset (e.g., \code{"USDT"}).
+\item realized_pnl (character) Realised profit/loss.
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item position_side (character) Position side.
+\item buyer (logical) Whether the trade was a buy.
+\item maker (logical) Whether the trade was a maker.
+\item time (POSIXct) Trade execution time.
 }
 }
 \subsection{Examples}{
@@ -1999,9 +1999,9 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character or NULL; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{incomeType}}{Character or NULL; income type filter. Valid values:
+\item{\code{incomeType}}{(scalar<character>?) income type filter. Valid values:
 \code{"TRANSFER"}, \code{"WELCOME_BONUS"}, \code{"REALIZED_PNL"}, \code{"FUNDING_FEE"},
 \code{"COMMISSION"}, \code{"INSURANCE_CLEAR"}, \code{"REFERRAL_KICKBACK"},
 \code{"COMMISSION_REBATE"}, \code{"API_REBATE"}, \code{"CONTEST_REWARD"},
@@ -2010,27 +2010,27 @@ Verified: 2026-05-22
 \code{"DELIVERED_SETTELMENT"}, \code{"COIN_SWAP_DEPOSIT"}, \code{"COIN_SWAP_WITHDRAW"},
 \code{"POSITION_LIMIT_INCREASE_FEE"}.}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{limit}}{Integer or NULL; max results (default 100, max 1000).}
+\item{\code{limit}}{(scalar<count>?) max results (default 100, max 1000).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per income entry and the following columns:
+(promise<data.table>) with one row per income entry and the following columns:
 \itemize{
-\item \code{symbol} (character): Trading pair (may be empty for some income types).
-\item \code{income_type} (character): Type of income (e.g., \code{"FUNDING_FEE"}, \code{"REALIZED_PNL"}).
-\item \code{income} (character): Income amount (negative for fees paid).
-\item \code{asset} (character): Asset of the income (e.g., \code{"USDT"}).
-\item \code{info} (character): Additional info about the income event.
-\item \code{time} (POSIXct): Time of the income event.
-\item \code{tran_id} (integer): Transaction identifier.
-\item \code{trade_id} (character): Associated trade ID if applicable.
+\item symbol (character) Trading pair (may be empty for some income types).
+\item income_type (character) Type of income (e.g., \code{"FUNDING_FEE"}, \code{"REALIZED_PNL"}).
+\item income (character) Income amount (negative for fees paid).
+\item asset (character) Asset of the income (e.g., \code{"USDT"}).
+\item info (character) Additional info about the income event.
+\item time (POSIXct) Time of the income event.
+\item tran_id (integer) Transaction identifier.
+\item trade_id (character) Associated trade ID if applicable.
 }
 }
 \subsection{Examples}{
@@ -2098,17 +2098,17 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{dualSidePosition}}{Logical; \code{TRUE} for hedge mode, \code{FALSE} for one-way.}
+\item{\code{dualSidePosition}}{(scalar<logical>) \code{TRUE} for hedge mode, \code{FALSE} for one-way.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(promise<data.table>) with one row and the following columns:
 \itemize{
-\item \code{code} (integer): Response code (\code{200} on success).
-\item \code{msg} (character): Response message.
+\item code (integer) Response code (\code{200} on success).
+\item msg (character) Response message.
 }
 }
 \subsection{Examples}{
@@ -2164,14 +2164,14 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(promise<data.table>) with one row and the following columns:
 \itemize{
-\item \code{dual_side_position} (logical): \code{TRUE} if hedge mode, \code{FALSE} if one-way mode.
+\item dual_side_position (logical) \code{TRUE} if hedge mode, \code{FALSE} if one-way mode.
 }
 }
 \subsection{Examples}{

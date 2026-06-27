@@ -10,12 +10,16 @@ get_api_keys(
 )
 }
 \arguments{
-\item{api_key}{Character string; Binance API key. Defaults to \code{Sys.getenv("BINANCE_API_KEY")}.}
+\item{api_key}{(scalar<character>) Binance API key. Defaults to \code{Sys.getenv("BINANCE_API_KEY")}.}
 
-\item{api_secret}{Character string; Binance API secret. Defaults to \code{Sys.getenv("BINANCE_API_SECRET")}.}
+\item{api_secret}{(scalar<character>) Binance API secret. Defaults to \code{Sys.getenv("BINANCE_API_SECRET")}.}
 }
 \value{
-Named list with \code{api_key} and \code{api_secret}.
+(list) named list with \code{api_key} and \code{api_secret}:
+\itemize{
+\item api_key (scalar<character>) the API key.
+\item api_secret (scalar<character>) the API secret.
+}
 }
 \description{
 Fetches API credentials from environment variables or explicit arguments.

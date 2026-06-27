@@ -6,16 +6,17 @@
 #' Converts column names from Binance's camelCase convention to R's
 #' snake_case convention.
 #'
-#' @param names Character vector; names to convert.
-#' @return Character vector; converted snake_case names.
+#' @param names (character) names to convert.
+#' @return (character) converted snake_case names.
 #'
 #' @keywords internal
 #' @noRd
 to_snake_case <- function(names) {
+  assert_args_to_snake_case(names)
   out <- gsub("([a-z0-9])([A-Z])", "\\1_\\2", names)
   out <- gsub("([A-Z])([A-Z][a-z])", "\\1_\\2", out)
   out <- tolower(out)
-  return(out)
+  return(assert_return_to_snake_case(out))
 }
 
 #' Convert a List or Named List to a data.table Row
@@ -24,14 +25,16 @@ to_snake_case <- function(names) {
 #' into a single-row [data.table::data.table]. NULL values become NA.
 #' Column names are converted to snake_case.
 #'
-#' @param x A named list.
-#' @return A single-row [data.table::data.table] with snake_case column names.
+#' @param x (list?) a named list.
+#' @return (data.table) a single-row [data.table::data.table] with snake_case
+#'   column names.
 #'
 #' @keywords internal
 #' @noRd
 as_dt_row <- function(x) {
+  assert_args_as_dt_row(x)
   if (is.null(x) || length(x) == 0) {
-    return(data.table::data.table()[])
+    return(assert_return_as_dt_row(data.table::data.table()[]))
   }
   x <- lapply(x, function(val) {
     if (is.null(val)) {
@@ -47,7 +50,7 @@ as_dt_row <- function(x) {
   })
   dt <- data.table::as.data.table(x)
   data.table::setnames(dt, to_snake_case(names(dt)))
-  return(dt[])
+  return(assert_return_as_dt_row(dt[]))
 }
 
 #' Convert a List of Lists to a data.table
@@ -55,17 +58,19 @@ as_dt_row <- function(x) {
 #' Takes a list where each element is a named list (e.g., from a JSON array)
 #' and row-binds them into a [data.table::data.table] with snake_case columns.
 #'
-#' @param items A list of named lists, or NULL.
-#' @return A [data.table::data.table]. Returns an empty data.table if `items` is NULL or empty.
+#' @param items (list?) a list of named lists, or NULL.
+#' @return (data.table) a [data.table::data.table]. Returns an empty data.table
+#'   if `items` is NULL or empty.
 #'
 #' @keywords internal
 #' @noRd
 as_dt_list <- function(items) {
+  assert_args_as_dt_list(items)
   if (is.null(items) || length(items) == 0) {
-    return(data.table::data.table()[])
+    return(assert_return_as_dt_list(data.table::data.table()[]))
   }
   dt <- data.table::rbindlist(lapply(items, as_dt_row), fill = TRUE)
-  return(dt[])
+  return(assert_return_as_dt_list(dt[]))
 }
 
 #' Collapse a Plain-String Array Field on a Single Record
@@ -107,13 +112,14 @@ as_dt_list <- function(items) {
 #' Only fields in `fields` are touched; nested objects elsewhere are left
 #' alone so they can be flattened by their own parser.
 #'
-#' @param x A named list representing a single API record.
-#' @param fields Character vector; names of fields to collapse.
-#' @return The same named list with the matching fields collapsed in place.
+#' @param x (list) a named list representing a single API record.
+#' @param fields (character) names of fields to collapse.
+#' @return (list) the same named list with the matching fields collapsed in place.
 #'
 #' @keywords internal
 #' @noRd
 collapse_string_array_fields <- function(x, fields) {
+  assert_args_collapse_string_array_fields(x, fields)
   for (nm in fields) {
     val <- x[[nm]]
     if (is.null(val) || length(val) == 0L) {
@@ -158,20 +164,22 @@ collapse_string_array_fields <- function(x, fields) {
       x[[nm]] <- paste(val_chr, collapse = ";")
     }
   }
-  return(x)
+  return(assert_return_collapse_string_array_fields(x))
 }
 
 #' Convert a Binance Millisecond Timestamp to POSIXct
 #'
-#' @param ms Numeric; millisecond Unix timestamp.
-#' @return POSIXct in UTC, or NA if `ms` is NULL/NA.
+#' @param ms (numeric | character | NA?) millisecond Unix timestamp(s); a
+#'   numeric or character vector (NA elements pass through), or NULL.
+#' @return (POSIXct | NA) POSIXct in UTC, or NA if `ms` is NULL/NA.
+#' @noassert ms
 #'
 #' @importFrom lubridate as_datetime
 #' @keywords internal
 #' @noRd
 ms_to_datetime <- function(ms) {
   if (is.null(ms)) {
-    return(lubridate::NA_POSIXct_)
+    return(assert_return_ms_to_datetime(lubridate::NA_POSIXct_))
   }
   # Don't short-circuit on `all(is.na(ms))` — returning the length-1
   # `NA_POSIXct_` from there would, when fed back through
@@ -182,7 +190,7 @@ ms_to_datetime <- function(ms) {
   # value is NA. `lubridate::as_datetime()` does the right thing on
   # all-NA input on its own.
   if (is.numeric(ms)) {
-    return(lubridate::as_datetime(ms / 1000))
+    return(assert_return_ms_to_datetime(lubridate::as_datetime(ms / 1000)))
   }
   # Character path. Only feed real (non-NA) values to `as.numeric()` so
   # the documented NA-in -> NA-out contract is silent, but a genuinely
@@ -194,7 +202,7 @@ ms_to_datetime <- function(ms) {
   if (any(not_na)) {
     result[not_na] <- as.numeric(ms[not_na])
   }
-  return(lubridate::as_datetime(result / 1000))
+  return(assert_return_ms_to_datetime(lubridate::as_datetime(result / 1000)))
 }
 
 #' Parse a Binance UTC Datetime String to POSIXct
@@ -205,18 +213,19 @@ ms_to_datetime <- function(ms) {
 #' normalised to `NA` before `lubridate::ymd_hms()` runs so we don't trip
 #' the upstream "All formats failed to parse" warning.
 #'
-#' @param x Character vector of UTC datetime strings.
-#' @return POSIXct vector in UTC.
+#' @param x (vector<character, 0..>?) UTC datetime strings (possibly empty or NULL).
+#' @return (POSIXct | NA) POSIXct vector in UTC (NA elements where unparseable or empty).
 #'
 #' @importFrom lubridate ymd_hms
 #' @keywords internal
 #' @noRd
 utc_string_to_datetime <- function(x) {
+  assert_args_utc_string_to_datetime(x)
   if (is.null(x) || length(x) == 0L) {
-    return(lubridate::NA_POSIXct_)
+    return(assert_return_utc_string_to_datetime(lubridate::NA_POSIXct_))
   }
   x[!nzchar(x)] <- NA_character_
-  return(lubridate::ymd_hms(x, tz = "UTC"))
+  return(assert_return_utc_string_to_datetime(lubridate::ymd_hms(x, tz = "UTC")))
 }
 
 #' Apply a Function to Selected Columns of a data.table by Reference
@@ -248,17 +257,18 @@ utc_string_to_datetime <- function(x) {
 #' Modifies `dt` by reference via `data.table::set()`; returns `dt`
 #' invisibly so the call can be the last line of a parser.
 #'
-#' @param dt A [data.table::data.table].
-#' @param cols Character; candidate column names to convert.
-#' @param fn Function; takes a column vector, returns the coerced vector.
+#' @param dt (data.table) a [data.table::data.table].
+#' @param cols (character) candidate column names to convert.
+#' @param fn (function) takes a column vector, returns the coerced vector.
 #'
-#' @return `dt`, modified by reference and returned invisibly.
+#' @return (data.table) `dt`, modified by reference and returned invisibly.
 #'
 #' @keywords internal
 #' @noRd
 coerce_cols <- function(dt, cols, fn) {
+  assert_args_coerce_cols(dt, cols, fn)
   if (nrow(dt) == 0L) {
-    return(invisible(dt))
+    return(invisible(assert_return_coerce_cols(dt)))
   }
   # `unique()` prevents double-coercion when a caller passes the same
   # column name twice (e.g. `coerce_cols(dt, c("time", "time"),
@@ -270,7 +280,7 @@ coerce_cols <- function(dt, cols, fn) {
       data.table::set(dt, j = col, value = fn(dt[[col]]))
     }
   }
-  return(invisible(dt))
+  return(invisible(assert_return_coerce_cols(dt)))
 }
 
 #' Process Orderbook Data into a data.table
@@ -278,25 +288,29 @@ coerce_cols <- function(dt, cols, fn) {
 #' Transforms the bids/asks arrays from a Binance orderbook response into a
 #' tidy [data.table::data.table] with `side`, `price`, and `size` columns.
 #'
-#' @param data List; the parsed Binance orderbook response data containing
+#' @param data (list?) the parsed Binance orderbook response data containing
 #'   `bids`, `asks`, and `lastUpdateId` fields.
-#' @return A [data.table::data.table] with columns: `last_update_id`,
-#'   `side`, `price`, `size`.
+#' @return (data.table) a [data.table::data.table] with columns:
+#' - last_update_id (character) order book sequence id.
+#' - side (character) `"bid"` or `"ask"`.
+#' - price (numeric) price level.
+#' - size (numeric) size at this price level.
 #'
 #' @keywords internal
 #' @noRd
 parse_orderbook <- function(data) {
+  assert_args_parse_orderbook(data)
   # Guard against `data = NULL` / empty list (which `parse_binance_response()`
   # can return on an empty body or JSON-parse failure). Without this,
   # `data$bids` and `data$lastUpdateId` below would error with
   # "$ operator applied to NULL".
   if (is.null(data) || length(data) == 0) {
-    return(data.table::data.table(
+    return(assert_return_parse_orderbook(data.table::data.table(
       last_update_id = character(),
       side = character(),
       price = numeric(),
       size = numeric()
-    )[])
+    )[]))
   }
   parse_side <- function(entries, side_label) {
     if (is.null(entries) || length(entries) == 0) {
@@ -320,7 +334,7 @@ parse_orderbook <- function(data) {
   result[, last_update_id := as.character(data$lastUpdateId)]
   data.table::setcolorder(result, c("last_update_id", "side", "price", "size"))
 
-  return(result[])
+  return(assert_return_parse_orderbook(result[]))
 }
 
 #' Parse Paginated Binance Response
@@ -328,34 +342,46 @@ parse_orderbook <- function(data) {
 #' Extracts the `rows` array from a paginated Binance response that has the
 #' shape `{"total": N, "rows": [...]}` and converts to a [data.table::data.table].
 #'
-#' @param data List; the parsed Binance response containing `total` and `rows`.
-#' @param time_cols Character vector; column names to convert from ms to POSIXct.
-#' @return A [data.table::data.table] with snake_case column names.
+#' @param data (list?) the parsed Binance response containing `total` and `rows`.
+#' @param time_cols (vector<character, 0..>) column names to convert from ms to
+#'   POSIXct (possibly none).
+#' @return (data.table) a [data.table::data.table] with snake_case column names.
 #'
 #' @keywords internal
 #' @noRd
 parse_paginated <- function(data, time_cols = character(0)) {
+  assert_args_parse_paginated(data, time_cols)
   # Guard against `data = NULL` (empty body / JSON-parse failure) before
   # subscripting. `is.null(data$rows)` on a NULL `data` returns TRUE so
   # this is partly defensive — but `data` itself being NULL is a real
   # path through `parse_binance_response()`.
   if (is.null(data) || length(data) == 0) {
-    return(data.table::data.table()[])
+    return(assert_return_parse_paginated(data.table::data.table()[]))
   }
   rows <- data$rows
   if (is.null(rows) || length(rows) == 0) {
-    return(data.table::data.table()[])
+    return(assert_return_parse_paginated(data.table::data.table()[]))
   }
   dt <- as_dt_list(rows)
   coerce_cols(dt, time_cols, ms_to_datetime)
-  return(dt[])
+  return(assert_return_parse_paginated(dt[]))
 }
 
+#' Parse a Binance Klines Array into a data.table
+#'
+#' @param data (list?) the parsed Binance klines response: a list of 12-element
+#'   candle arrays, or NULL/empty.
+#' @return (data.table) OHLCV candles with snake_case columns (`open_time`,
+#'   `open`, `high`, `low`, `close`, `volume`, `close_time`, `quote_volume`,
+#'   `trades`, `taker_buy_base_volume`, `taker_buy_quote_volume`, `ignore`).
+#'
+#' @importFrom lubridate as_datetime
 #' @keywords internal
 #' @noRd
 parse_klines <- function(data) {
+  assert_args_parse_klines(data)
   if (is.null(data) || length(data) == 0) {
-    return(data.table::data.table()[])
+    return(assert_return_parse_klines(data.table::data.table()[]))
   }
   # Binance kline fields (0-indexed):
   # [0] Open time, [1] Open, [2] High, [3] Low, [4] Close, [5] Volume,
@@ -375,5 +401,5 @@ parse_klines <- function(data) {
     taker_buy_quote_volume = as.numeric(vapply(data, `[[`, character(1), 11L)),
     ignore = vapply(data, `[[`, character(1), 12L)
   )
-  return(dt[])
+  return(assert_return_parse_klines(dt[]))
 }

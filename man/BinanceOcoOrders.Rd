@@ -218,60 +218,60 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{side}}{Character; \code{"BUY"} or \code{"SELL"}.}
+\item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
 
-\item{\code{quantity}}{Numeric; base asset quantity.}
+\item{\code{quantity}}{(scalar<numeric>) base asset quantity.}
 
-\item{\code{price}}{Numeric; price for the limit leg.}
+\item{\code{price}}{(scalar<numeric>) price for the limit leg.}
 
-\item{\code{stopPrice}}{Numeric; trigger price for the stop-loss leg.}
+\item{\code{stopPrice}}{(scalar<numeric>) trigger price for the stop-loss leg.}
 
-\item{\code{stopLimitPrice}}{Numeric or NULL; limit price for the stop-loss-limit leg.}
+\item{\code{stopLimitPrice}}{(scalar<numeric>?) limit price for the stop-loss-limit leg.}
 
-\item{\code{stopLimitTimeInForce}}{Character or NULL; time-in-force for the stop-limit leg
+\item{\code{stopLimitTimeInForce}}{(scalar<character>?) time-in-force for the stop-limit leg
 (\code{"GTC"}, \code{"IOC"}, \code{"FOK"}). Required if \code{stopLimitPrice} is provided.}
 
-\item{\code{listClientOrderId}}{Character or NULL; unique ID for the entire OCO list.}
+\item{\code{listClientOrderId}}{(scalar<character>?) unique ID for the entire OCO list.}
 
-\item{\code{limitClientOrderId}}{Character or NULL; unique ID for the limit leg.}
+\item{\code{limitClientOrderId}}{(scalar<character>?) unique ID for the limit leg.}
 
-\item{\code{stopClientOrderId}}{Character or NULL; unique ID for the stop-loss leg.}
+\item{\code{stopClientOrderId}}{(scalar<character>?) unique ID for the stop-loss leg.}
 
-\item{\code{limitIcebergQty}}{Numeric or NULL; iceberg quantity for the limit leg.}
+\item{\code{limitIcebergQty}}{(scalar<numeric>?) iceberg quantity for the limit leg.}
 
-\item{\code{stopIcebergQty}}{Numeric or NULL; iceberg quantity for the stop-loss leg.}
+\item{\code{stopIcebergQty}}{(scalar<numeric>?) iceberg quantity for the stop-loss leg.}
 
-\item{\code{newOrderRespType}}{Character or NULL; \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
+\item{\code{newOrderRespType}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
 
-\item{\code{selfTradePreventionMode}}{Character or NULL.}
+\item{\code{selfTradePreventionMode}}{(scalar<character>?)}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per child order report (long format) and the following columns:
+(promise<data.table>) with one row per child order report (long format) and the following columns:
 \itemize{
-\item \code{order_list_id} (integer): OCO order list identifier (repeated per child order).
-\item \code{contingency_type} (character): Always \code{"OCO"}.
-\item \code{list_status_type} (character): Status type (e.g., \code{"EXEC_STARTED"}).
-\item \code{list_order_status} (character): Order status (e.g., \code{"EXECUTING"}).
-\item \code{list_client_order_id} (character): Client-assigned list ID.
-\item \code{transact_time} (POSIXct): Transaction time.
-\item \code{symbol} (character): Trading pair from parent OCO.
-\item \code{order_report_symbol} (character): Trading pair from child order report.
-\item \code{order_report_order_id} (integer): Child order ID.
-\item \code{order_report_client_order_id} (character): Child order client ID.
-\item \code{order_report_transact_time} (POSIXct): Child order transaction time.
-\item \code{order_report_price} (character): Child order price.
-\item \code{order_report_orig_qty} (character): Child order original quantity.
-\item \code{order_report_executed_qty} (character): Child order executed quantity.
-\item \code{order_report_status} (character): Child order status (e.g., \code{"NEW"}).
-\item \code{order_report_type} (character): Child order type (e.g., \code{"STOP_LOSS_LIMIT"}, \code{"LIMIT_MAKER"}).
-\item \code{order_report_side} (character): Child order side.
-\item \code{order_report_stop_price} (character): Stop price (if applicable).
+\item order_list_id (integer) OCO order list identifier (repeated per child order).
+\item contingency_type (character) Always \code{"OCO"}.
+\item list_status_type (character) Status type (e.g., \code{"EXEC_STARTED"}).
+\item list_order_status (character) Order status (e.g., \code{"EXECUTING"}).
+\item list_client_order_id (character) Client-assigned list ID.
+\item transact_time (POSIXct) Transaction time.
+\item symbol (character) Trading pair from parent OCO.
+\item order_report_symbol (character) Trading pair from child order report.
+\item order_report_order_id (integer) Child order ID.
+\item order_report_client_order_id (character) Child order client ID.
+\item order_report_transact_time (POSIXct) Child order transaction time.
+\item order_report_price (character) Child order price.
+\item order_report_orig_qty (character) Child order original quantity.
+\item order_report_executed_qty (character) Child order executed quantity.
+\item order_report_status (character) Child order status (e.g., \code{"NEW"}).
+\item order_report_type (character) Child order type (e.g., \code{"STOP_LOSS_LIMIT"}, \code{"LIMIT_MAKER"}).
+\item order_report_side (character) Child order side.
+\item order_report_stop_price (character) Stop price (if applicable).
 }
 }
 \subsection{Examples}{
@@ -386,41 +386,41 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderListId}}{Integer or NULL; the OCO order list ID.}
+\item{\code{orderListId}}{(scalar<count>?) the OCO order list ID.}
 
-\item{\code{listClientOrderId}}{Character or NULL; the client order list ID.}
+\item{\code{listClientOrderId}}{(scalar<character>?) the client order list ID.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with \strong{one row per child order report} (long
+(promise<data.table>) with one row per child order report (long
 format), matching the shape returned by \code{add_oco_order()}. The
 thinner \code{orders} array Binance returns is dropped in favour of
 the richer \code{orderReports} payload, which includes the
 cancellation status, prices, quantities, and stop price for
 each child order. Columns:
 \itemize{
-\item \code{order_list_id} (integer): OCO order list identifier (repeated per child order).
-\item \code{contingency_type} (character): Always \code{"OCO"}.
-\item \code{list_status_type} (character): Status type (e.g., \code{"ALL_DONE"}).
-\item \code{list_order_status} (character): Order status (e.g., \code{"ALL_DONE"}).
-\item \code{list_client_order_id} (character): Client-assigned list ID.
-\item \code{transact_time} (POSIXct): Cancellation time (if present).
-\item \code{symbol} (character): Trading pair from parent OCO.
-\item \code{order_report_symbol} (character): Trading pair from child order.
-\item \code{order_report_order_id} (integer): Child order ID.
-\item \code{order_report_client_order_id} (character): Child order client ID.
-\item \code{order_report_price} (character): Child order price.
-\item \code{order_report_orig_qty} (character): Child order original quantity.
-\item \code{order_report_executed_qty} (character): Child order executed quantity.
-\item \code{order_report_status} (character): Child order status (e.g., \code{"CANCELED"}).
-\item \code{order_report_type} (character): Child order type.
-\item \code{order_report_side} (character): Child order side.
-\item \code{order_report_stop_price} (character): Stop price (if applicable).
+\item order_list_id (integer) OCO order list identifier (repeated per child order).
+\item contingency_type (character) Always \code{"OCO"}.
+\item list_status_type (character) Status type (e.g., \code{"ALL_DONE"}).
+\item list_order_status (character) Order status (e.g., \code{"ALL_DONE"}).
+\item list_client_order_id (character) Client-assigned list ID.
+\item transact_time (POSIXct) Cancellation time (if present).
+\item symbol (character) Trading pair from parent OCO.
+\item order_report_symbol (character) Trading pair from child order.
+\item order_report_order_id (integer) Child order ID.
+\item order_report_client_order_id (character) Child order client ID.
+\item order_report_price (character) Child order price.
+\item order_report_orig_qty (character) Child order original quantity.
+\item order_report_executed_qty (character) Child order executed quantity.
+\item order_report_status (character) Child order status (e.g., \code{"CANCELED"}).
+\item order_report_type (character) Child order type.
+\item order_report_side (character) Child order side.
+\item order_report_stop_price (character) Stop price (if applicable).
 }
 }
 \subsection{Examples}{
@@ -498,27 +498,27 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{orderListId}}{Integer or NULL; the OCO order list ID.}
+\item{\code{orderListId}}{(scalar<count>?) the OCO order list ID.}
 
-\item{\code{origClientOrderId}}{Character or NULL; the original client order list ID.}
+\item{\code{origClientOrderId}}{(scalar<character>?) the original client order list ID.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per child order (long format) and the following columns:
+(promise<data.table>) with one row per child order (long format) and the following columns:
 \itemize{
-\item \code{order_list_id} (integer): OCO order list identifier (repeated per child order).
-\item \code{contingency_type} (character): Always \code{"OCO"}.
-\item \code{list_status_type} (character): Status type (e.g., \code{"ALL_DONE"}).
-\item \code{list_order_status} (character): Order status.
-\item \code{list_client_order_id} (character): Client-assigned list ID.
-\item \code{transaction_time} (POSIXct): Transaction time (if present).
-\item \code{symbol} (character): Trading pair from parent OCO.
-\item \code{order_symbol} (character): Trading pair from child order.
-\item \code{order_id} (integer): Child order ID.
-\item \code{client_order_id} (character): Child order client ID.
+\item order_list_id (integer) OCO order list identifier (repeated per child order).
+\item contingency_type (character) Always \code{"OCO"}.
+\item list_status_type (character) Status type (e.g., \code{"ALL_DONE"}).
+\item list_order_status (character) Order status.
+\item list_client_order_id (character) Client-assigned list ID.
+\item transaction_time (POSIXct) Transaction time (if present).
+\item symbol (character) Trading pair from parent OCO.
+\item order_symbol (character) Trading pair from child order.
+\item order_id (integer) Child order ID.
+\item client_order_id (character) Child order client ID.
 }
 }
 \subsection{Examples}{
@@ -593,24 +593,24 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per child order across all open OCOs (long format).
+(promise<data.table>) with one row per child order across all open OCOs (long format).
 Columns include:
 \itemize{
-\item \code{order_list_id} (integer): OCO order list identifier (repeated per child order).
-\item \code{contingency_type} (character): Always \code{"OCO"}.
-\item \code{list_status_type} (character): Status type.
-\item \code{list_order_status} (character): Order status.
-\item \code{list_client_order_id} (character): Client-assigned list ID.
-\item \code{transaction_time} (POSIXct): Transaction time.
-\item \code{symbol} (character): Trading pair from parent OCO.
-\item \code{order_symbol} (character): Trading pair from child order.
-\item \code{order_id} (integer): Child order ID.
-\item \code{client_order_id} (character): Child order client ID.
+\item order_list_id (integer) OCO order list identifier (repeated per child order).
+\item contingency_type (character) Always \code{"OCO"}.
+\item list_status_type (character) Status type.
+\item list_order_status (character) Order status.
+\item list_client_order_id (character) Client-assigned list ID.
+\item transaction_time (POSIXct) Transaction time.
+\item symbol (character) Trading pair from parent OCO.
+\item order_symbol (character) Trading pair from child order.
+\item order_id (integer) Child order ID.
+\item client_order_id (character) Child order client ID.
 }
 }
 \subsection{Examples}{
@@ -714,32 +714,32 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{fromId}}{Integer or NULL; pagination cursor (orderListId).}
+\item{\code{fromId}}{(scalar<count>?) pagination cursor (orderListId).}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{limit}}{Integer or NULL; max results (default 500, max 1000).}
+\item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per child order across all OCOs (long format).
+(promise<data.table>) with one row per child order across all OCOs (long format).
 Columns include:
 \itemize{
-\item \code{order_list_id} (integer): OCO order list identifier (repeated per child order).
-\item \code{contingency_type} (character): Always \code{"OCO"}.
-\item \code{list_status_type} (character): Status type.
-\item \code{list_order_status} (character): Order status.
-\item \code{list_client_order_id} (character): Client-assigned list ID.
-\item \code{transaction_time} (POSIXct): Transaction time.
-\item \code{symbol} (character): Trading pair from parent OCO.
-\item \code{order_symbol} (character): Trading pair from child order.
-\item \code{order_id} (integer): Child order ID.
-\item \code{client_order_id} (character): Child order client ID.
+\item order_list_id (integer) OCO order list identifier (repeated per child order).
+\item contingency_type (character) Always \code{"OCO"}.
+\item list_status_type (character) Status type.
+\item list_order_status (character) Order status.
+\item list_client_order_id (character) Client-assigned list ID.
+\item transaction_time (POSIXct) Transaction time.
+\item symbol (character) Trading pair from parent OCO.
+\item order_symbol (character) Trading pair from child order.
+\item order_id (integer) Child order ID.
+\item client_order_id (character) Child order client ID.
 }
 }
 \subsection{Examples}{

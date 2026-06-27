@@ -16,32 +16,32 @@ binance_backfill_klines(
 )
 }
 \arguments{
-\item{symbols}{Character vector of trading pair symbols (e.g.,
+\item{symbols}{(character) trading pair symbols (e.g.,
 \code{c("BTCUSDT", "ETHUSDT")}). Must not be NULL or empty.}
 
-\item{timeframes}{Character vector of candle timeframes (e.g., \code{c("1d", "1h")}).
+\item{timeframes}{(character) candle timeframes (e.g., \code{c("1d", "1h")}).
 Valid values: \code{"1s"}, \code{"1m"}, \code{"3m"}, \code{"5m"}, \code{"15m"}, \code{"30m"}, \code{"1h"},
 \code{"2h"}, \code{"4h"}, \code{"6h"}, \code{"8h"}, \code{"12h"}, \code{"1d"}, \code{"3d"}, \code{"1w"}, \code{"1M"}.}
 
-\item{from}{POSIXct or numeric; start of the backfill window. Defaults to one
-year ago. Values before \code{"2017-07-01"} (or \code{-Inf}) are clamped to
-\code{"2017-07-01"} since Binance data does not exist before that date.}
+\item{from}{(scalar<POSIXct> | scalar<numeric>) start of the backfill window.
+Defaults to one year ago. Values before \code{"2017-07-01"} (or \code{-Inf}) are
+clamped to \code{"2017-07-01"} since Binance data does not exist before that date.}
 
-\item{to}{POSIXct or numeric; end of the backfill window. Defaults to
-current time. \code{Inf} is replaced with current time.}
+\item{to}{(scalar<POSIXct> | scalar<numeric>) end of the backfill window.
+Defaults to current time. \code{Inf} is replaced with current time.}
 
-\item{file}{Character; path to the output CSV file. Data is appended
+\item{file}{(scalar<character>) path to the output CSV file. Data is appended
 incrementally so progress is saved even if the process is interrupted.}
 
-\item{base_url}{Character; Binance API base URL.}
+\item{base_url}{(scalar<character>) Binance API base URL.}
 
-\item{sleep}{Numeric; seconds to sleep between each symbol-timeframe
-combination to respect rate limits.}
+\item{sleep}{(scalar<numeric in [0, Inf[>) seconds to sleep between each
+symbol-timeframe combination to respect rate limits.}
 
-\item{verbose}{Logical; if \code{TRUE}, prints progress messages via \code{\link[rlang:abort]{rlang::inform()}}.}
+\item{verbose}{(scalar<logical>) if \code{TRUE}, prints progress messages via \code{\link[rlang:abort]{rlang::inform()}}.}
 }
 \value{
-The file path (invisibly).
+(scalar<character>) the file path (invisibly).
 
 Per-combo failures are surfaced as warnings during the run (one
 \code{rlang::warn()} per failed \verb{(symbol, timeframe)} pair, with the

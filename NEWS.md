@@ -1,3 +1,29 @@
+# binance 0.5.0
+
+## Internal
+
+* **REST endpoint contracts via `roxyassert`.** Every `@param` and `@return` on
+  the REST endpoint classes (`BinanceAccount`, `BinanceDeposit`, `BinanceEarn`,
+  `BinanceFutures`, `BinanceFuturesData`, `BinanceMargin`, `BinanceMarginData`,
+  `BinanceMarketData`, `BinanceOcoOrders`, `BinanceSubAccount`, `BinanceTrading`,
+  `BinanceTransfer`, `BinanceWithdrawal`) and the package helpers (`backfill`,
+  `helpers_parse`, `helpers_request`, `helpers_validate`, `utils`, `utils_time`)
+  is now written in the `roxyassert` type grammar instead of prose, completing
+  the migration begun for the WebSocket/base classes. The documented type both
+  renders in the help page and generates a runtime `assert_args_*()` guard, so
+  every method now validates its inputs against its documented contract at the
+  top of the call.
+  - This is **purely additive validation** — no public signature or behaviour
+    changes for valid inputs; the full test suite passes untouched.
+  - Endpoint methods that resolve sync-or-async are typed `(promise<data.table>)`
+    (the resolved-type collapse), so the contract describes the data the caller
+    receives whether the client is synchronous or returns a promise.
+  - A handful of polymorphic / hand-guarded inputs (e.g. `ms_to_datetime()`'s
+    coercion-dispatched argument, `binance_backfill_klines()`'s emptiness-checked
+    `symbols`, the thin transport delegators) are typed for documentation but
+    exempted from the generated check with `@noassert`, leaving their existing
+    bespoke guards in place.
+
 # binance 0.4.0
 
 ## Internal

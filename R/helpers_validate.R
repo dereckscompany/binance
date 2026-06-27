@@ -12,21 +12,23 @@
 #' - **Market orders**: require either `quantity` or `quoteOrderQty` (mutually exclusive);
 #'   `price` not allowed.
 #'
-#' @param type Character; `"LIMIT"` or `"MARKET"`.
-#' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-#' @param side Character; `"BUY"` or `"SELL"`.
-#' @param quantity Numeric or NULL; base asset quantity.
-#' @param quoteOrderQty Numeric or NULL; quote asset quantity (market orders only).
-#' @param price Numeric or NULL; price for limit orders.
-#' @param timeInForce Character or NULL; `"GTC"`, `"IOC"`, `"FOK"`.
-#' @param newClientOrderId Character or NULL; unique client order ID.
-#' @param stopPrice Numeric or NULL; trigger price for stop orders.
-#' @param icebergQty Numeric or NULL; iceberg quantity.
-#' @param newOrderRespType Character or NULL; `"ACK"`, `"RESULT"`, or `"FULL"`.
-#' @param selfTradePreventionMode Character or NULL; `"NONE"`, `"EXPIRE_TAKER"`,
+#' @param type (scalar<character>) order type, case-insensitive; one of `"LIMIT"`,
+#'   `"MARKET"`, `"STOP_LOSS"`, `"STOP_LOSS_LIMIT"`, `"TAKE_PROFIT"`,
+#'   `"TAKE_PROFIT_LIMIT"`, `"LIMIT_MAKER"`.
+#' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+#' @param side (scalar<character>) order side, case-insensitive; `"BUY"` or `"SELL"`.
+#' @param quantity (scalar<numeric>?) base asset quantity.
+#' @param quoteOrderQty (scalar<numeric>?) quote asset quantity (market orders only).
+#' @param price (scalar<numeric>?) price for limit orders.
+#' @param timeInForce (scalar<character>?) `"GTC"`, `"IOC"`, `"FOK"`.
+#' @param newClientOrderId (scalar<character>?) unique client order ID.
+#' @param stopPrice (scalar<numeric>?) trigger price for stop orders.
+#' @param icebergQty (scalar<numeric>?) iceberg quantity.
+#' @param newOrderRespType (scalar<character>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
+#' @param selfTradePreventionMode (scalar<character>?) `"NONE"`, `"EXPIRE_TAKER"`,
 #'   `"EXPIRE_MAKER"`, `"EXPIRE_BOTH"`.
-#' @param recvWindow Integer or NULL; max 60000.
-#' @return Named list of validated order parameters (NULLs removed).
+#' @param recvWindow (scalar<count in [1, Inf[>?) max 60000.
+#' @return (list) named list of validated order parameters (NULLs removed).
 #'
 #' @importFrom rlang abort arg_match0
 #' @keywords internal
@@ -46,6 +48,21 @@ validate_order_params <- function(
   selfTradePreventionMode = NULL,
   recvWindow = NULL
 ) {
+  assert_args_validate_order_params(
+    type,
+    symbol,
+    side,
+    quantity,
+    quoteOrderQty,
+    price,
+    timeInForce,
+    newClientOrderId,
+    stopPrice,
+    icebergQty,
+    newOrderRespType,
+    selfTradePreventionMode,
+    recvWindow
+  )
   # Required field validation
   type <- toupper(type)
   side <- toupper(side)
@@ -133,5 +150,5 @@ validate_order_params <- function(
   )
   params <- params[!vapply(params, is.null, logical(1))]
 
-  return(params)
+  return(assert_return_validate_order_params(params))
 }

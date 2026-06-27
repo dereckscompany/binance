@@ -195,35 +195,35 @@ to select the cheapest or fastest network.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{coin}}{Character; coin symbol (e.g., \code{"BTC"}, \code{"USDT"}).}
+\item{\code{coin}}{(scalar<character>) coin symbol (e.g., \code{"BTC"}, \code{"USDT"}).}
 
-\item{\code{address}}{Character; destination wallet address.}
+\item{\code{address}}{(scalar<character>) destination wallet address.}
 
-\item{\code{amount}}{Numeric or character; withdrawal amount.}
+\item{\code{amount}}{(scalar<numeric> | scalar<character>) withdrawal amount.}
 
-\item{\code{network}}{Character or NULL; blockchain network (e.g., \code{"ETH"}, \code{"TRX"}, \code{"BSC"}).
+\item{\code{network}}{(scalar<character>?) blockchain network (e.g., \code{"ETH"}, \code{"TRX"}, \code{"BSC"}).
 If NULL, uses the coin's default network.}
 
-\item{\code{withdrawOrderId}}{Character or NULL; client-side withdrawal ID for tracking.}
+\item{\code{withdrawOrderId}}{(scalar<character>?) client-side withdrawal ID for tracking.}
 
-\item{\code{addressTag}}{Character or NULL; secondary address identifier (required for
+\item{\code{addressTag}}{(scalar<character>?) secondary address identifier (required for
 coins like XRP, XMR, XLM).}
 
-\item{\code{transactionFeeFlag}}{Logical or NULL; for internal transfers: \code{TRUE} returns
+\item{\code{transactionFeeFlag}}{(scalar<logical>?) for internal transfers: \code{TRUE} returns
 fee to destination, \code{FALSE} to origin.}
 
-\item{\code{name}}{Character or NULL; description for the address (max 200 entries in address book).}
+\item{\code{name}}{(scalar<character>?) description for the address (max 200 entries in address book).}
 
-\item{\code{walletType}}{Integer or NULL; \code{0} for spot wallet, \code{1} for funding wallet.}
+\item{\code{walletType}}{(scalar<count>?) \code{0} for spot wallet, \code{1} for funding wallet.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{id} (character): Unique withdrawal identifier assigned by Binance.
+\item id (character) Unique withdrawal identifier assigned by Binance.
 }
 }
 \subsection{Examples}{
@@ -321,45 +321,45 @@ left the exchange.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{coin}}{Character or NULL; filter by coin (e.g., \code{"BTC"}, \code{"USDT"}).}
+\item{\code{coin}}{(scalar<character>?) filter by coin (e.g., \code{"BTC"}, \code{"USDT"}).}
 
-\item{\code{withdrawOrderId}}{Character or NULL; filter by client-side withdrawal ID.}
+\item{\code{withdrawOrderId}}{(scalar<character>?) filter by client-side withdrawal ID.}
 
-\item{\code{status}}{Integer or NULL; filter by status:
+\item{\code{status}}{(scalar<count>?) filter by status:
 \code{0} (email sent), \code{1} (cancelled), \code{2} (awaiting approval),
 \code{3} (rejected), \code{4} (processing), \code{5} (failure), \code{6} (completed).}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{offset}}{Integer or NULL; pagination offset (default 0).}
+\item{\code{offset}}{(scalar<count>?) pagination offset (default 0).}
 
-\item{\code{limit}}{Integer or NULL; max results (default 1000, max 1000).}
+\item{\code{limit}}{(scalar<count>?) max results (default 1000, max 1000).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(promise<data.table>) with columns:
 \itemize{
-\item \code{id} (character): Unique withdrawal identifier.
-\item \code{amount} (character): Withdrawal amount.
-\item \code{transaction_fee} (character): Fee charged for the withdrawal.
-\item \code{coin} (character): Withdrawn coin symbol.
-\item \code{status} (integer): Withdrawal status code (0-6).
-\item \code{address} (character): Destination address.
-\item \code{tx_id} (character): On-chain transaction hash.
-\item \code{apply_time} (POSIXct): Time the withdrawal was submitted (parsed from the UTC string Binance returns).
-\item \code{network} (character): Blockchain network used.
-\item \code{transfer_type} (integer): 0=external, 1=internal.
-\item \code{withdraw_order_id} (character): Client-side withdrawal ID.
-\item \code{info} (character): Additional info or error message.
-\item \code{confirm_no} (integer): Number of on-chain confirmations.
-\item \code{wallet_type} (integer): 0=spot, 1=funding.
-\item \code{tx_key} (character): Transaction key.
-\item \code{complete_time} (POSIXct): Completion time (parsed from the UTC string Binance returns).
+\item id (character) Unique withdrawal identifier.
+\item amount (character) Withdrawal amount.
+\item transaction_fee (character) Fee charged for the withdrawal.
+\item coin (character) Withdrawn coin symbol.
+\item status (integer) Withdrawal status code (0-6).
+\item address (character) Destination address.
+\item tx_id (character) On-chain transaction hash.
+\item apply_time (POSIXct) Time the withdrawal was submitted (parsed from the UTC string Binance returns).
+\item network (character) Blockchain network used.
+\item transfer_type (integer) 0=external, 1=internal.
+\item withdraw_order_id (character) Client-side withdrawal ID.
+\item info (character) Additional info or error message.
+\item confirm_no (integer) Number of on-chain confirmations.
+\item wallet_type (integer) 0=spot, 1=funding.
+\item tx_key (character) Transaction key.
+\item complete_time (POSIXct) Completion time (parsed from the UTC string Binance returns).
 }
 }
 \subsection{Examples}{

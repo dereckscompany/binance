@@ -105,41 +105,41 @@ BinanceOcoOrders <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param side Character; `"BUY"` or `"SELL"`.
-    #' @param quantity Numeric; base asset quantity.
-    #' @param price Numeric; price for the limit leg.
-    #' @param stopPrice Numeric; trigger price for the stop-loss leg.
-    #' @param stopLimitPrice Numeric or NULL; limit price for the stop-loss-limit leg.
-    #' @param stopLimitTimeInForce Character or NULL; time-in-force for the stop-limit leg
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param side (scalar<character>) `"BUY"` or `"SELL"`.
+    #' @param quantity (scalar<numeric>) base asset quantity.
+    #' @param price (scalar<numeric>) price for the limit leg.
+    #' @param stopPrice (scalar<numeric>) trigger price for the stop-loss leg.
+    #' @param stopLimitPrice (scalar<numeric>?) limit price for the stop-loss-limit leg.
+    #' @param stopLimitTimeInForce (scalar<character>?) time-in-force for the stop-limit leg
     #'   (`"GTC"`, `"IOC"`, `"FOK"`). Required if `stopLimitPrice` is provided.
-    #' @param listClientOrderId Character or NULL; unique ID for the entire OCO list.
-    #' @param limitClientOrderId Character or NULL; unique ID for the limit leg.
-    #' @param stopClientOrderId Character or NULL; unique ID for the stop-loss leg.
-    #' @param limitIcebergQty Numeric or NULL; iceberg quantity for the limit leg.
-    #' @param stopIcebergQty Numeric or NULL; iceberg quantity for the stop-loss leg.
-    #' @param newOrderRespType Character or NULL; `"ACK"`, `"RESULT"`, or `"FULL"`.
-    #' @param selfTradePreventionMode Character or NULL.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per child order report (long format) and the following columns:
-    #' - `order_list_id` (integer): OCO order list identifier (repeated per child order).
-    #' - `contingency_type` (character): Always `"OCO"`.
-    #' - `list_status_type` (character): Status type (e.g., `"EXEC_STARTED"`).
-    #' - `list_order_status` (character): Order status (e.g., `"EXECUTING"`).
-    #' - `list_client_order_id` (character): Client-assigned list ID.
-    #' - `transact_time` (POSIXct): Transaction time.
-    #' - `symbol` (character): Trading pair from parent OCO.
-    #' - `order_report_symbol` (character): Trading pair from child order report.
-    #' - `order_report_order_id` (integer): Child order ID.
-    #' - `order_report_client_order_id` (character): Child order client ID.
-    #' - `order_report_transact_time` (POSIXct): Child order transaction time.
-    #' - `order_report_price` (character): Child order price.
-    #' - `order_report_orig_qty` (character): Child order original quantity.
-    #' - `order_report_executed_qty` (character): Child order executed quantity.
-    #' - `order_report_status` (character): Child order status (e.g., `"NEW"`).
-    #' - `order_report_type` (character): Child order type (e.g., `"STOP_LOSS_LIMIT"`, `"LIMIT_MAKER"`).
-    #' - `order_report_side` (character): Child order side.
-    #' - `order_report_stop_price` (character): Stop price (if applicable).
+    #' @param listClientOrderId (scalar<character>?) unique ID for the entire OCO list.
+    #' @param limitClientOrderId (scalar<character>?) unique ID for the limit leg.
+    #' @param stopClientOrderId (scalar<character>?) unique ID for the stop-loss leg.
+    #' @param limitIcebergQty (scalar<numeric>?) iceberg quantity for the limit leg.
+    #' @param stopIcebergQty (scalar<numeric>?) iceberg quantity for the stop-loss leg.
+    #' @param newOrderRespType (scalar<character>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
+    #' @param selfTradePreventionMode (scalar<character>?)
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per child order report (long format) and the following columns:
+    #' - order_list_id (integer) OCO order list identifier (repeated per child order).
+    #' - contingency_type (character) Always `"OCO"`.
+    #' - list_status_type (character) Status type (e.g., `"EXEC_STARTED"`).
+    #' - list_order_status (character) Order status (e.g., `"EXECUTING"`).
+    #' - list_client_order_id (character) Client-assigned list ID.
+    #' - transact_time (POSIXct) Transaction time.
+    #' - symbol (character) Trading pair from parent OCO.
+    #' - order_report_symbol (character) Trading pair from child order report.
+    #' - order_report_order_id (integer) Child order ID.
+    #' - order_report_client_order_id (character) Child order client ID.
+    #' - order_report_transact_time (POSIXct) Child order transaction time.
+    #' - order_report_price (character) Child order price.
+    #' - order_report_orig_qty (character) Child order original quantity.
+    #' - order_report_executed_qty (character) Child order executed quantity.
+    #' - order_report_status (character) Child order status (e.g., `"NEW"`).
+    #' - order_report_type (character) Child order type (e.g., `"STOP_LOSS_LIMIT"`, `"LIMIT_MAKER"`).
+    #' - order_report_side (character) Child order side.
+    #' - order_report_stop_price (character) Stop price (if applicable).
     #'
     #' @examples
     #' \dontrun{
@@ -168,6 +168,23 @@ BinanceOcoOrders <- R6::R6Class(
       selfTradePreventionMode = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceOcoOrders__add_oco_order(
+        symbol,
+        side,
+        quantity,
+        price,
+        stopPrice,
+        stopLimitPrice,
+        stopLimitTimeInForce,
+        listClientOrderId,
+        limitClientOrderId,
+        stopClientOrderId,
+        limitIcebergQty,
+        stopIcebergQty,
+        newOrderRespType,
+        selfTradePreventionMode,
+        recvWindow
+      )
       side <- rlang::arg_match0(side, c("BUY", "SELL"))
 
       body <- list(
@@ -291,33 +308,33 @@ BinanceOcoOrders <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderListId Integer or NULL; the OCO order list ID.
-    #' @param listClientOrderId Character or NULL; the client order list ID.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with **one row per child order report** (long
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param orderListId (scalar<count>?) the OCO order list ID.
+    #' @param listClientOrderId (scalar<character>?) the client order list ID.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per child order report (long
     #'   format), matching the shape returned by `add_oco_order()`. The
     #'   thinner `orders` array Binance returns is dropped in favour of
     #'   the richer `orderReports` payload, which includes the
     #'   cancellation status, prices, quantities, and stop price for
     #'   each child order. Columns:
-    #' - `order_list_id` (integer): OCO order list identifier (repeated per child order).
-    #' - `contingency_type` (character): Always `"OCO"`.
-    #' - `list_status_type` (character): Status type (e.g., `"ALL_DONE"`).
-    #' - `list_order_status` (character): Order status (e.g., `"ALL_DONE"`).
-    #' - `list_client_order_id` (character): Client-assigned list ID.
-    #' - `transact_time` (POSIXct): Cancellation time (if present).
-    #' - `symbol` (character): Trading pair from parent OCO.
-    #' - `order_report_symbol` (character): Trading pair from child order.
-    #' - `order_report_order_id` (integer): Child order ID.
-    #' - `order_report_client_order_id` (character): Child order client ID.
-    #' - `order_report_price` (character): Child order price.
-    #' - `order_report_orig_qty` (character): Child order original quantity.
-    #' - `order_report_executed_qty` (character): Child order executed quantity.
-    #' - `order_report_status` (character): Child order status (e.g., `"CANCELED"`).
-    #' - `order_report_type` (character): Child order type.
-    #' - `order_report_side` (character): Child order side.
-    #' - `order_report_stop_price` (character): Stop price (if applicable).
+    #' - order_list_id (integer) OCO order list identifier (repeated per child order).
+    #' - contingency_type (character) Always `"OCO"`.
+    #' - list_status_type (character) Status type (e.g., `"ALL_DONE"`).
+    #' - list_order_status (character) Order status (e.g., `"ALL_DONE"`).
+    #' - list_client_order_id (character) Client-assigned list ID.
+    #' - transact_time (POSIXct) Cancellation time (if present).
+    #' - symbol (character) Trading pair from parent OCO.
+    #' - order_report_symbol (character) Trading pair from child order.
+    #' - order_report_order_id (integer) Child order ID.
+    #' - order_report_client_order_id (character) Child order client ID.
+    #' - order_report_price (character) Child order price.
+    #' - order_report_orig_qty (character) Child order original quantity.
+    #' - order_report_executed_qty (character) Child order executed quantity.
+    #' - order_report_status (character) Child order status (e.g., `"CANCELED"`).
+    #' - order_report_type (character) Child order type.
+    #' - order_report_side (character) Child order side.
+    #' - order_report_stop_price (character) Stop price (if applicable).
     #'
     #' @examples
     #' \dontrun{
@@ -326,6 +343,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' print(cancelled)
     #' }
     cancel_oco_order = function(symbol, orderListId = NULL, listClientOrderId = NULL, recvWindow = NULL) {
+      assert_args_BinanceOcoOrders__cancel_oco_order(symbol, orderListId, listClientOrderId, recvWindow)
       if (is.null(orderListId) && is.null(listClientOrderId)) {
         rlang::abort("Either 'orderListId' or 'listClientOrderId' must be provided.")
       }
@@ -408,20 +426,20 @@ BinanceOcoOrders <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param orderListId Integer or NULL; the OCO order list ID.
-    #' @param origClientOrderId Character or NULL; the original client order list ID.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per child order (long format) and the following columns:
-    #' - `order_list_id` (integer): OCO order list identifier (repeated per child order).
-    #' - `contingency_type` (character): Always `"OCO"`.
-    #' - `list_status_type` (character): Status type (e.g., `"ALL_DONE"`).
-    #' - `list_order_status` (character): Order status.
-    #' - `list_client_order_id` (character): Client-assigned list ID.
-    #' - `transaction_time` (POSIXct): Transaction time (if present).
-    #' - `symbol` (character): Trading pair from parent OCO.
-    #' - `order_symbol` (character): Trading pair from child order.
-    #' - `order_id` (integer): Child order ID.
-    #' - `client_order_id` (character): Child order client ID.
+    #' @param orderListId (scalar<count>?) the OCO order list ID.
+    #' @param origClientOrderId (scalar<character>?) the original client order list ID.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per child order (long format) and the following columns:
+    #' - order_list_id (integer) OCO order list identifier (repeated per child order).
+    #' - contingency_type (character) Always `"OCO"`.
+    #' - list_status_type (character) Status type (e.g., `"ALL_DONE"`).
+    #' - list_order_status (character) Order status.
+    #' - list_client_order_id (character) Client-assigned list ID.
+    #' - transaction_time (POSIXct) Transaction time (if present).
+    #' - symbol (character) Trading pair from parent OCO.
+    #' - order_symbol (character) Trading pair from child order.
+    #' - order_id (integer) Child order ID.
+    #' - client_order_id (character) Child order client ID.
     #'
     #' @examples
     #' \dontrun{
@@ -430,6 +448,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' print(order)
     #' }
     get_oco_order = function(orderListId = NULL, origClientOrderId = NULL, recvWindow = NULL) {
+      assert_args_BinanceOcoOrders__get_oco_order(orderListId, origClientOrderId, recvWindow)
       if (is.null(orderListId) && is.null(origClientOrderId)) {
         rlang::abort("Either 'orderListId' or 'origClientOrderId' must be provided.")
       }
@@ -504,19 +523,19 @@ BinanceOcoOrders <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per child order across all open OCOs (long format).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per child order across all open OCOs (long format).
     #'   Columns include:
-    #' - `order_list_id` (integer): OCO order list identifier (repeated per child order).
-    #' - `contingency_type` (character): Always `"OCO"`.
-    #' - `list_status_type` (character): Status type.
-    #' - `list_order_status` (character): Order status.
-    #' - `list_client_order_id` (character): Client-assigned list ID.
-    #' - `transaction_time` (POSIXct): Transaction time.
-    #' - `symbol` (character): Trading pair from parent OCO.
-    #' - `order_symbol` (character): Trading pair from child order.
-    #' - `order_id` (integer): Child order ID.
-    #' - `client_order_id` (character): Child order client ID.
+    #' - order_list_id (integer) OCO order list identifier (repeated per child order).
+    #' - contingency_type (character) Always `"OCO"`.
+    #' - list_status_type (character) Status type.
+    #' - list_order_status (character) Order status.
+    #' - list_client_order_id (character) Client-assigned list ID.
+    #' - transaction_time (POSIXct) Transaction time.
+    #' - symbol (character) Trading pair from parent OCO.
+    #' - order_symbol (character) Trading pair from child order.
+    #' - order_id (integer) Child order ID.
+    #' - client_order_id (character) Child order client ID.
     #'
     #' @examples
     #' \dontrun{
@@ -525,6 +544,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' print(open)
     #' }
     get_open_oco_orders = function(recvWindow = NULL) {
+      assert_args_BinanceOcoOrders__get_open_oco_orders(recvWindow)
       return(private$.request(
         endpoint = "/api/v3/openOrderList",
         query = list(recvWindow = recvWindow),
@@ -620,23 +640,23 @@ BinanceOcoOrders <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param fromId Integer or NULL; pagination cursor (orderListId).
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param limit Integer or NULL; max results (default 500, max 1000).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per child order across all OCOs (long format).
+    #' @param fromId (scalar<count>?) pagination cursor (orderListId).
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param limit (scalar<count>?) max results (default 500, max 1000).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (promise<data.table>) with one row per child order across all OCOs (long format).
     #'   Columns include:
-    #' - `order_list_id` (integer): OCO order list identifier (repeated per child order).
-    #' - `contingency_type` (character): Always `"OCO"`.
-    #' - `list_status_type` (character): Status type.
-    #' - `list_order_status` (character): Order status.
-    #' - `list_client_order_id` (character): Client-assigned list ID.
-    #' - `transaction_time` (POSIXct): Transaction time.
-    #' - `symbol` (character): Trading pair from parent OCO.
-    #' - `order_symbol` (character): Trading pair from child order.
-    #' - `order_id` (integer): Child order ID.
-    #' - `client_order_id` (character): Child order client ID.
+    #' - order_list_id (integer) OCO order list identifier (repeated per child order).
+    #' - contingency_type (character) Always `"OCO"`.
+    #' - list_status_type (character) Status type.
+    #' - list_order_status (character) Order status.
+    #' - list_client_order_id (character) Client-assigned list ID.
+    #' - transaction_time (POSIXct) Transaction time.
+    #' - symbol (character) Trading pair from parent OCO.
+    #' - order_symbol (character) Trading pair from child order.
+    #' - order_id (integer) Child order ID.
+    #' - client_order_id (character) Child order client ID.
     #'
     #' @examples
     #' \dontrun{
@@ -651,6 +671,7 @@ BinanceOcoOrders <- R6::R6Class(
       limit = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceOcoOrders__get_all_oco_orders(fromId, startTime, endTime, limit, recvWindow)
       return(private$.request(
         endpoint = "/api/v3/allOrderList",
         query = list(

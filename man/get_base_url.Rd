@@ -7,11 +7,11 @@
 get_base_url(url = Sys.getenv("BINANCE_API_ENDPOINT"))
 }
 \arguments{
-\item{url}{Character string; explicit base URL. Defaults to
+\item{url}{(scalar<character>?) explicit base URL. Defaults to
 \code{Sys.getenv("BINANCE_API_ENDPOINT")}.}
 }
 \value{
-Character string; the API base URL.
+(scalar<character>) the API base URL.
 }
 \description{
 Returns the base URL for the Binance API in the following priority:

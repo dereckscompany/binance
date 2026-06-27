@@ -77,28 +77,30 @@ BinanceFuturesData <- R6::R6Class(
     #' Overrides the default base URL to use the Futures API endpoint and
     #' configures the server time endpoint for futures when `time_source = "server"`.
     #'
-    #' @param keys List; API credentials from [get_api_keys()].
+    #' @param keys (list) API credentials from [get_api_keys()].
     #'   Defaults to `get_api_keys()`.
-    #' @param base_url Character; API base URL. Defaults to `get_futures_base_url()`.
-    #' @param async Logical; if `TRUE`, methods return promises. Default `FALSE`.
-    #' @param time_source Character; clock source for HMAC request signing.
+    #' @param base_url (scalar<character>) API base URL. Defaults to `get_futures_base_url()`.
+    #' @param async (scalar<logical>) if `TRUE`, methods return promises. Default `FALSE`.
+    #' @param time_source (scalar<character>) clock source for HMAC request signing.
     #'   `"local"` (default) uses `Sys.time()`. `"server"` fetches the Binance
     #'   Futures server time before each authenticated request.
-    #' @return Invisible self.
+    #' @return (class<BinanceFuturesData>) invisibly, self.
     initialize = function(
       keys = get_api_keys(),
       base_url = get_futures_base_url(),
       async = FALSE,
       time_source = c("local", "server")
     ) {
+      time_source <- match.arg(time_source)
+      assert_args_BinanceFuturesData__initialize(keys, base_url, async, time_source)
       super$initialize(keys = keys, base_url = base_url, async = async, time_source = time_source)
 
-      if (match.arg(time_source) == "server") {
+      if (time_source == "server") {
         url <- base_url
         private$.get_timestamp_ms <- function() fetch_server_time_ms(url, "/fapi/v1/time")
       }
 
-      return(invisible(self))
+      return(invisible(assert_return_BinanceFuturesData__initialize(self)))
     },
 
     # ---- Exchange Info ----
@@ -156,32 +158,32 @@ BinanceFuturesData <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with all symbol
+    #' @return (promise<data.table>) with all symbol
     #'   fields returned by the API, converted to snake_case. Key columns include:
-    #'   - `symbol` (character): Trading pair identifier (e.g., `"BTCUSDT"`).
-    #'   - `pair` (character): Underlying pair.
-    #'   - `contract_type` (character): Contract type (e.g., `"PERPETUAL"`).
-    #'   - `status` (character): Trading status (`"TRADING"`, etc.).
-    #'   - `base_asset` (character): Base asset code (e.g., `"BTC"`).
-    #'   - `quote_asset` (character): Quote asset code (e.g., `"USDT"`).
-    #'   - `margin_asset` (character): Margin asset code (e.g., `"USDT"`).
-    #'   - `price_precision` (integer): Decimal precision for prices.
-    #'   - `quantity_precision` (integer): Decimal precision for quantities.
-    #'   - `order_types` (character): Semicolon-separated allowed order types.
+    #'   - symbol (character) Trading pair identifier (e.g., `"BTCUSDT"`).
+    #'   - pair (character) Underlying pair.
+    #'   - contract_type (character) Contract type (e.g., `"PERPETUAL"`).
+    #'   - status (character) Trading status (`"TRADING"`, etc.).
+    #'   - base_asset (character) Base asset code (e.g., `"BTC"`).
+    #'   - quote_asset (character) Quote asset code (e.g., `"USDT"`).
+    #'   - margin_asset (character) Margin asset code (e.g., `"USDT"`).
+    #'   - price_precision (integer) Decimal precision for prices.
+    #'   - quantity_precision (integer) Decimal precision for quantities.
+    #'   - order_types (character) Semicolon-separated allowed order types.
     #'     Recover via `strsplit(dt$order_types[1], ";", fixed = TRUE)[[1]]`.
-    #'   - `time_in_force` (character): Semicolon-separated allowed
+    #'   - time_in_force (character) Semicolon-separated allowed
     #'     time-in-force values.
-    #'   - `underlying_sub_type` (character): Semicolon-separated underlying
+    #'   - underlying_sub_type (character) Semicolon-separated underlying
     #'     sub-types.
-    #'   - `permission_sets` (character): Semicolon-separated permission sets.
-    #'   - `lot_min_qty` (numeric): Minimum order quantity (from LOT_SIZE filter).
-    #'   - `lot_max_qty` (numeric): Maximum order quantity (from LOT_SIZE filter).
-    #'   - `lot_step_size` (numeric): Quantity step size (from LOT_SIZE filter).
-    #'   - `price_min` (numeric): Minimum price (from PRICE_FILTER).
-    #'   - `price_max` (numeric): Maximum price (from PRICE_FILTER).
-    #'   - `price_tick_size` (numeric): Price tick size (from PRICE_FILTER).
-    #'   - `min_notional` (numeric): Minimum notional value (from MIN_NOTIONAL filter).
-    #'   - `filters_raw` (character): JSON-encoded copy of the full per-symbol
+    #'   - permission_sets (character) Semicolon-separated permission sets.
+    #'   - lot_min_qty (numeric) Minimum order quantity (from LOT_SIZE filter).
+    #'   - lot_max_qty (numeric) Maximum order quantity (from LOT_SIZE filter).
+    #'   - lot_step_size (numeric) Quantity step size (from LOT_SIZE filter).
+    #'   - price_min (numeric) Minimum price (from PRICE_FILTER).
+    #'   - price_max (numeric) Maximum price (from PRICE_FILTER).
+    #'   - price_tick_size (numeric) Price tick size (from PRICE_FILTER).
+    #'   - min_notional (numeric) Minimum notional value (from MIN_NOTIONAL filter).
+    #'   - filters_raw (character) JSON-encoded copy of the full per-symbol
     #'     `filters` array. Preserves filter types not pulled into curated
     #'     columns (`PERCENT_PRICE`, `MARKET_LOT_SIZE`, `MAX_NUM_ORDERS`,
     #'     `MAX_NUM_ALGO_ORDERS`, `MIN_NOTIONAL`'s extra fields, ...).
@@ -278,7 +280,7 @@ BinanceFuturesData <- R6::R6Class(
     #' ### API Endpoint
     #' `GET https://fapi.binance.com/fapi/v1/exchangeInfo`
     #'
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
+    #' @return (promise<data.table>)
     #'   with one row per rate-limit rule. Columns: `rate_limit_type`,
     #'   `interval`, `interval_num`, `limit`. Empty `data.table` if
     #'   Binance returned no `rateLimits` block.
@@ -311,7 +313,7 @@ BinanceFuturesData <- R6::R6Class(
     #' ### API Endpoint
     #' `GET https://fapi.binance.com/fapi/v1/exchangeInfo`
     #'
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
+    #' @return (promise<data.table>)
     #'   with one row per exchange-wide filter rule. Empty when none.
     #'
     #' @examples
@@ -343,11 +345,11 @@ BinanceFuturesData <- R6::R6Class(
     #' ### API Endpoint
     #' `GET https://fapi.binance.com/fapi/v1/exchangeInfo`
     #'
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
+    #' @return (promise<data.table>)
     #'   with one row per margin asset. Typical columns:
-    #'   - `asset` (character): Asset symbol (e.g., `"USDT"`).
-    #'   - `margin_available` (logical): Whether the asset can be used as margin.
-    #'   - `auto_asset_exchange` (character): Auto-exchange threshold.
+    #'   - asset (character) Asset symbol (e.g., `"USDT"`).
+    #'   - margin_available (logical) Whether the asset can be used as margin.
+    #'   - auto_asset_exchange (character) Auto-exchange threshold.
     #'
     #'   Empty `data.table` if Binance returned no `assets` block.
     #'
@@ -409,43 +411,43 @@ BinanceFuturesData <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param interval Character; candle interval. Valid values:
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param interval (scalar<character>) candle interval. Valid values:
     #'   `"1s"`, `"1m"`, `"3m"`, `"5m"`, `"15m"`, `"30m"`,
     #'   `"1h"`, `"2h"`, `"4h"`, `"6h"`, `"8h"`, `"12h"`,
     #'   `"1d"`, `"3d"`, `"1w"`, `"1M"`.
-    #' @param startTime POSIXct or numeric or NULL; start time (ms or POSIXct).
-    #' @param endTime POSIXct or numeric or NULL; end time (ms or POSIXct).
-    #' @param limit Integer or NULL; max results (default 500, max 1500).
-    #' @param fetch_all Logical; if `TRUE`, automatically pages forward through the
+    #' @param startTime (scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).
+    #' @param endTime (scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).
+    #' @param limit (scalar<count>?) max results (default 500, max 1500).
+    #' @param fetch_all (scalar<logical>) if `TRUE`, automatically pages forward through the
     #'   time range — following the data and stopping at the first empty or short
     #'   page — and returns the combined result sorted by `open_time`. Both
     #'   `startTime` and `endTime` are required when enabled. **Warning**: large
     #'   date ranges will consume multiple API requests and may impact your
     #'   rate-limit quota. Default `FALSE`.
-    #' @param sleep Numeric; seconds to wait between consecutive API calls when
+    #' @param sleep (scalar<numeric>) seconds to wait between consecutive API calls when
     #'   `fetch_all = TRUE`. Use this to avoid hitting Binance rate limits. Only
     #'   applies in synchronous mode; async mode chains requests sequentially via
     #'   promises. Default `0.2`.
-    #' @param on_page Optional `function(page)` called with each page (a
+    #' @param on_page (function?) optional `function(page)` called with each page (a
     #'   `data.table`) as it is fetched, when `fetch_all = TRUE`. When supplied,
     #'   pages are streamed to the callback and **not** accumulated — the method
     #'   returns invisibly, so the callback owns the data (e.g. writes it to disk).
     #'   Use it to process arbitrarily large ranges without holding everything in
     #'   memory. Ignored in single-call mode (`fetch_all = FALSE`). Default `NULL`.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `open_time` (POSIXct): Candle open time.
-    #'   - `open` (numeric): Opening price.
-    #'   - `high` (numeric): Highest price during the interval.
-    #'   - `low` (numeric): Lowest price during the interval.
-    #'   - `close` (numeric): Closing price.
-    #'   - `volume` (numeric): Base asset volume traded.
-    #'   - `close_time` (POSIXct): Candle close time.
-    #'   - `quote_volume` (numeric): Quote asset volume traded.
-    #'   - `trades` (integer): Number of trades during the interval.
-    #'   - `taker_buy_base_volume` (numeric): Base asset volume bought by takers.
-    #'   - `taker_buy_quote_volume` (numeric): Quote asset volume bought by takers.
-    #'   - `ignore` (character): Unused field from Binance API.
+    #' @return (promise<data.table>) with columns:
+    #'   - open_time (POSIXct) Candle open time.
+    #'   - open (numeric) Opening price.
+    #'   - high (numeric) Highest price during the interval.
+    #'   - low (numeric) Lowest price during the interval.
+    #'   - close (numeric) Closing price.
+    #'   - volume (numeric) Base asset volume traded.
+    #'   - close_time (POSIXct) Candle close time.
+    #'   - quote_volume (numeric) Quote asset volume traded.
+    #'   - trades (integer) Number of trades during the interval.
+    #'   - taker_buy_base_volume (numeric) Base asset volume bought by takers.
+    #'   - taker_buy_quote_volume (numeric) Quote asset volume bought by takers.
+    #'   - ignore (character) Unused field from Binance API.
     #'
     #' @examples
     #' \dontrun{
@@ -470,6 +472,7 @@ BinanceFuturesData <- R6::R6Class(
       sleep = 0.2,
       on_page = NULL
     ) {
+      assert_args_BinanceFuturesData__get_klines(symbol, interval, startTime, endTime, limit, fetch_all, sleep, on_page)
       valid_intervals <- c(
         "1s",
         "1m",
@@ -573,17 +576,17 @@ BinanceFuturesData <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
+    #' @param symbol (scalar<character>?) trading pair (e.g., `"BTCUSDT"`).
     #'   If NULL, returns data for all symbols.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `symbol` (character): Trading pair identifier.
-    #'   - `mark_price` (character): Current mark price.
-    #'   - `index_price` (character): Current index price.
-    #'   - `estimated_settle_price` (character): Estimated settlement price.
-    #'   - `last_funding_rate` (character): Last funding rate.
-    #'   - `next_funding_time` (POSIXct): Next funding time.
-    #'   - `interest_rate` (character): Interest rate.
-    #'   - `time` (POSIXct): Data timestamp.
+    #' @return (promise<data.table>) with columns:
+    #'   - symbol (character) Trading pair identifier.
+    #'   - mark_price (character) Current mark price.
+    #'   - index_price (character) Current index price.
+    #'   - estimated_settle_price (character) Estimated settlement price.
+    #'   - last_funding_rate (character) Last funding rate.
+    #'   - next_funding_time (POSIXct) Next funding time.
+    #'   - interest_rate (character) Interest rate.
+    #'   - time (POSIXct) Data timestamp.
     #'
     #' @examples
     #' \dontrun{
@@ -596,6 +599,7 @@ BinanceFuturesData <- R6::R6Class(
     #' print(all_marks)
     #' }
     get_mark_price = function(symbol = NULL) {
+      assert_args_BinanceFuturesData__get_mark_price(symbol)
       query <- list()
       if (!is.null(symbol)) {
         query$symbol <- symbol
@@ -654,15 +658,15 @@ BinanceFuturesData <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param startTime POSIXct or numeric or NULL; start time (ms or POSIXct).
-    #' @param endTime POSIXct or numeric or NULL; end time (ms or POSIXct).
-    #' @param limit Integer or NULL; max results (default 100, max 1000).
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `symbol` (character): Trading pair identifier.
-    #'   - `funding_rate` (character): Funding rate value.
-    #'   - `funding_time` (POSIXct): Funding timestamp.
-    #'   - `mark_price` (character): Mark price at funding time.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param startTime (scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).
+    #' @param endTime (scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).
+    #' @param limit (scalar<count>?) max results (default 100, max 1000).
+    #' @return (promise<data.table>) with columns:
+    #'   - symbol (character) Trading pair identifier.
+    #'   - funding_rate (character) Funding rate value.
+    #'   - funding_time (POSIXct) Funding timestamp.
+    #'   - mark_price (character) Mark price at funding time.
     #'
     #' @examples
     #' \dontrun{
@@ -671,6 +675,7 @@ BinanceFuturesData <- R6::R6Class(
     #' print(rates)
     #' }
     get_funding_rate = function(symbol, startTime = NULL, endTime = NULL, limit = NULL) {
+      assert_args_BinanceFuturesData__get_funding_rate(symbol, startTime, endTime, limit)
       # Convert POSIXct to milliseconds
       if (inherits(startTime, "POSIXct")) {
         startTime <- format(floor(as.numeric(startTime) * 1000), scientific = FALSE)
@@ -741,18 +746,18 @@ BinanceFuturesData <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
+    #' @param symbol (scalar<character>?) trading pair (e.g., `"BTCUSDT"`).
     #'   If NULL, returns data for all symbols.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `symbol` (character): Trading pair identifier.
-    #'   - `price_change` (character): Absolute price change over 24h.
-    #'   - `price_change_percent` (character): Percentage price change over 24h.
-    #'   - `weighted_avg_price` (character): Volume-weighted average price over 24h.
-    #'   - `last_price` (character): Most recent trade price.
-    #'   - `volume` (character): Total base asset volume in 24h.
-    #'   - `quote_volume` (character): Total quote asset volume in 24h.
-    #'   - `open_time` (POSIXct): Start of the 24h window.
-    #'   - `close_time` (POSIXct): End of the 24h window.
+    #' @return (promise<data.table>) with columns:
+    #'   - symbol (character) Trading pair identifier.
+    #'   - price_change (character) Absolute price change over 24h.
+    #'   - price_change_percent (character) Percentage price change over 24h.
+    #'   - weighted_avg_price (character) Volume-weighted average price over 24h.
+    #'   - last_price (character) Most recent trade price.
+    #'   - volume (character) Total base asset volume in 24h.
+    #'   - quote_volume (character) Total quote asset volume in 24h.
+    #'   - open_time (POSIXct) Start of the 24h window.
+    #'   - close_time (POSIXct) End of the 24h window.
     #'
     #' @examples
     #' \dontrun{
@@ -761,6 +766,7 @@ BinanceFuturesData <- R6::R6Class(
     #' print(stats[, .(symbol, last_price, price_change_percent, volume)])
     #' }
     get_24hr_stats = function(symbol = NULL) {
+      assert_args_BinanceFuturesData__get_24hr_stats(symbol)
       query <- list()
       if (!is.null(symbol)) {
         query$symbol <- symbol
@@ -810,12 +816,12 @@ BinanceFuturesData <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
+    #' @param symbol (scalar<character>?) trading pair (e.g., `"BTCUSDT"`).
     #'   If NULL, returns data for all symbols.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `symbol` (character): Trading pair identifier.
-    #'   - `price` (character): Latest traded price as string.
-    #'   - `time` (POSIXct): Timestamp (if present in response).
+    #' @return (promise<data.table>) with columns:
+    #'   - symbol (character) Trading pair identifier.
+    #'   - price (character) Latest traded price as string.
+    #'   - time (POSIXct) Timestamp (if present in response).
     #'
     #' @examples
     #' \dontrun{
@@ -824,6 +830,7 @@ BinanceFuturesData <- R6::R6Class(
     #' print(ticker)
     #' }
     get_ticker = function(symbol = NULL) {
+      assert_args_BinanceFuturesData__get_ticker(symbol)
       query <- list()
       if (!is.null(symbol)) {
         query$symbol <- symbol
@@ -877,15 +884,15 @@ BinanceFuturesData <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
+    #' @param symbol (scalar<character>?) trading pair (e.g., `"BTCUSDT"`).
     #'   If NULL, returns data for all symbols.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `symbol` (character): Trading pair identifier.
-    #'   - `bid_price` (character): Best bid price.
-    #'   - `bid_qty` (character): Quantity available at best bid.
-    #'   - `ask_price` (character): Best ask price.
-    #'   - `ask_qty` (character): Quantity available at best ask.
-    #'   - `time` (POSIXct): Timestamp (if present in response).
+    #' @return (promise<data.table>) with columns:
+    #'   - symbol (character) Trading pair identifier.
+    #'   - bid_price (character) Best bid price.
+    #'   - bid_qty (character) Quantity available at best bid.
+    #'   - ask_price (character) Best ask price.
+    #'   - ask_qty (character) Quantity available at best ask.
+    #'   - time (POSIXct) Timestamp (if present in response).
     #'
     #' @examples
     #' \dontrun{
@@ -894,6 +901,7 @@ BinanceFuturesData <- R6::R6Class(
     #' print(book)
     #' }
     get_book_ticker = function(symbol = NULL) {
+      assert_args_BinanceFuturesData__get_book_ticker(symbol)
       query <- list()
       if (!is.null(symbol)) {
         query$symbol <- symbol
@@ -943,11 +951,11 @@ BinanceFuturesData <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `symbol` (character): Trading pair identifier.
-    #'   - `open_interest` (character): Current open interest.
-    #'   - `time` (POSIXct): Timestamp (if present in response).
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @return (promise<data.table>) with columns:
+    #'   - symbol (character) Trading pair identifier.
+    #'   - open_interest (character) Current open interest.
+    #'   - time (POSIXct) Timestamp (if present in response).
     #'
     #' @examples
     #' \dontrun{
@@ -956,6 +964,7 @@ BinanceFuturesData <- R6::R6Class(
     #' print(oi)
     #' }
     get_open_interest = function(symbol) {
+      assert_args_BinanceFuturesData__get_open_interest(symbol)
       return(private$.request(
         endpoint = "/fapi/v1/openInterest",
         query = list(symbol = symbol),
@@ -1006,14 +1015,14 @@ BinanceFuturesData <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param limit Integer or NULL; depth limit. Valid values: 5, 10, 20, 50,
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param limit (scalar<count>?) depth limit. Valid values: 5, 10, 20, 50,
     #'   100, 500, 1000. Default 500.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `last_update_id` (character): Sequence ID for orderbook synchronisation.
-    #'   - `side` (character): `"bid"` or `"ask"`.
-    #'   - `price` (numeric): Price level.
-    #'   - `size` (numeric): Available size at this price level.
+    #' @return (promise<data.table>) with columns:
+    #'   - last_update_id (character) Sequence ID for orderbook synchronisation.
+    #'   - side (character) `"bid"` or `"ask"`.
+    #'   - price (numeric) Price level.
+    #'   - size (numeric) Available size at this price level.
     #'
     #' @examples
     #' \dontrun{
@@ -1022,6 +1031,7 @@ BinanceFuturesData <- R6::R6Class(
     #' print(depth)
     #' }
     get_depth = function(symbol, limit = NULL) {
+      assert_args_BinanceFuturesData__get_depth(symbol, limit)
       return(private$.request(
         endpoint = "/fapi/v1/depth",
         query = list(symbol = symbol, limit = limit),
@@ -1071,15 +1081,15 @@ BinanceFuturesData <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param limit Integer or NULL; max results (default 500, max 1000).
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `id` (integer): Unique trade identifier.
-    #'   - `price` (character): Trade execution price.
-    #'   - `qty` (character): Base asset quantity traded.
-    #'   - `quote_qty` (character): Quote asset quantity traded.
-    #'   - `time` (POSIXct): Trade execution time.
-    #'   - `is_buyer_maker` (logical): `TRUE` if the buyer was the maker.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param limit (scalar<count>?) max results (default 500, max 1000).
+    #' @return (promise<data.table>) with columns:
+    #'   - id (integer) Unique trade identifier.
+    #'   - price (character) Trade execution price.
+    #'   - qty (character) Base asset quantity traded.
+    #'   - quote_qty (character) Quote asset quantity traded.
+    #'   - time (POSIXct) Trade execution time.
+    #'   - is_buyer_maker (logical) `TRUE` if the buyer was the maker.
     #'
     #' @examples
     #' \dontrun{
@@ -1088,6 +1098,7 @@ BinanceFuturesData <- R6::R6Class(
     #' print(trades)
     #' }
     get_trades = function(symbol, limit = NULL) {
+      assert_args_BinanceFuturesData__get_trades(symbol, limit)
       return(private$.request(
         endpoint = "/fapi/v1/trades",
         query = list(symbol = symbol, limit = limit),
@@ -1142,27 +1153,27 @@ BinanceFuturesData <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param pair Character; underlying pair (e.g., `"BTCUSDT"`).
-    #' @param interval Character; candle interval. Valid values:
+    #' @param pair (scalar<character>) underlying pair (e.g., `"BTCUSDT"`).
+    #' @param interval (scalar<character>) candle interval. Valid values:
     #'   `"1s"`, `"1m"`, `"3m"`, `"5m"`, `"15m"`, `"30m"`,
     #'   `"1h"`, `"2h"`, `"4h"`, `"6h"`, `"8h"`, `"12h"`,
     #'   `"1d"`, `"3d"`, `"1w"`, `"1M"`.
-    #' @param startTime POSIXct or numeric or NULL; start time (ms or POSIXct).
-    #' @param endTime POSIXct or numeric or NULL; end time (ms or POSIXct).
-    #' @param limit Integer or NULL; max results (default 500, max 1500).
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #' - `open_time` (POSIXct): Candle open time.
-    #' - `open` (numeric): Opening price.
-    #' - `high` (numeric): Highest price.
-    #' - `low` (numeric): Lowest price.
-    #' - `close` (numeric): Closing price.
-    #' - `volume` (numeric): Trading volume.
-    #' - `close_time` (POSIXct): Candle close time.
-    #' - `quote_volume` (numeric): Quote asset volume.
-    #' - `trades` (integer): Number of trades.
-    #' - `taker_buy_base_volume` (numeric): Taker buy base asset volume.
-    #' - `taker_buy_quote_volume` (numeric): Taker buy quote asset volume.
-    #' - `ignore` (character): Unused field.
+    #' @param startTime (scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).
+    #' @param endTime (scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).
+    #' @param limit (scalar<count>?) max results (default 500, max 1500).
+    #' @return (promise<data.table>) with columns:
+    #' - open_time (POSIXct) Candle open time.
+    #' - open (numeric) Opening price.
+    #' - high (numeric) Highest price.
+    #' - low (numeric) Lowest price.
+    #' - close (numeric) Closing price.
+    #' - volume (numeric) Trading volume.
+    #' - close_time (POSIXct) Candle close time.
+    #' - quote_volume (numeric) Quote asset volume.
+    #' - trades (integer) Number of trades.
+    #' - taker_buy_base_volume (numeric) Taker buy base asset volume.
+    #' - taker_buy_quote_volume (numeric) Taker buy quote asset volume.
+    #' - ignore (character) Unused field.
     #'
     #' @examples
     #' \dontrun{
@@ -1177,6 +1188,7 @@ BinanceFuturesData <- R6::R6Class(
       endTime = NULL,
       limit = NULL
     ) {
+      assert_args_BinanceFuturesData__get_index_price_klines(pair, interval, startTime, endTime, limit)
       valid_intervals <- c(
         "1s",
         "1m",
@@ -1258,27 +1270,27 @@ BinanceFuturesData <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param interval Character; candle interval. Valid values:
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param interval (scalar<character>) candle interval. Valid values:
     #'   `"1s"`, `"1m"`, `"3m"`, `"5m"`, `"15m"`, `"30m"`,
     #'   `"1h"`, `"2h"`, `"4h"`, `"6h"`, `"8h"`, `"12h"`,
     #'   `"1d"`, `"3d"`, `"1w"`, `"1M"`.
-    #' @param startTime POSIXct or numeric or NULL; start time (ms or POSIXct).
-    #' @param endTime POSIXct or numeric or NULL; end time (ms or POSIXct).
-    #' @param limit Integer or NULL; max results (default 500, max 1500).
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #' - `open_time` (POSIXct): Candle open time.
-    #' - `open` (numeric): Opening price.
-    #' - `high` (numeric): Highest price.
-    #' - `low` (numeric): Lowest price.
-    #' - `close` (numeric): Closing price.
-    #' - `volume` (numeric): Trading volume.
-    #' - `close_time` (POSIXct): Candle close time.
-    #' - `quote_volume` (numeric): Quote asset volume.
-    #' - `trades` (integer): Number of trades.
-    #' - `taker_buy_base_volume` (numeric): Taker buy base asset volume.
-    #' - `taker_buy_quote_volume` (numeric): Taker buy quote asset volume.
-    #' - `ignore` (character): Unused field.
+    #' @param startTime (scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).
+    #' @param endTime (scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).
+    #' @param limit (scalar<count>?) max results (default 500, max 1500).
+    #' @return (promise<data.table>) with columns:
+    #' - open_time (POSIXct) Candle open time.
+    #' - open (numeric) Opening price.
+    #' - high (numeric) Highest price.
+    #' - low (numeric) Lowest price.
+    #' - close (numeric) Closing price.
+    #' - volume (numeric) Trading volume.
+    #' - close_time (POSIXct) Candle close time.
+    #' - quote_volume (numeric) Quote asset volume.
+    #' - trades (integer) Number of trades.
+    #' - taker_buy_base_volume (numeric) Taker buy base asset volume.
+    #' - taker_buy_quote_volume (numeric) Taker buy quote asset volume.
+    #' - ignore (character) Unused field.
     #'
     #' @examples
     #' \dontrun{
@@ -1293,6 +1305,7 @@ BinanceFuturesData <- R6::R6Class(
       endTime = NULL,
       limit = NULL
     ) {
+      assert_args_BinanceFuturesData__get_mark_price_klines(symbol, interval, startTime, endTime, limit)
       valid_intervals <- c(
         "1s",
         "1m",
