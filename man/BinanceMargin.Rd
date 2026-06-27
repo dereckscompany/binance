@@ -578,7 +578,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and columns including:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair.
 \item order_id (integer) Unique order identifier.
@@ -690,7 +690,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and columns including:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair.
 \item order_id (integer) Unique order identifier.
@@ -785,8 +785,10 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) .
-When orders are cancelled, one row per order with columns:
+(data.table | promise<data.table>) one row per cancelled order
+(empty when there were no open orders to cancel, per the cross-package
+"no stub rows" convention — the absence of an error is the success
+signal):
 \itemize{
 \item symbol (character) Trading pair.
 \item order_id (integer) Unique order identifier.
@@ -795,10 +797,6 @@ When orders are cancelled, one row per order with columns:
 \item transact_time (POSIXct) Cancellation time.
 \item is_isolated (logical) Whether this is an isolated margin order.
 }
-
-When there were no open orders to cancel, the return is an
-empty \code{data.table} (per the cross-package "no stub rows"
-convention — the absence of an error is the success signal).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -986,7 +984,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per open order and the following columns:
+(data.table | promise<data.table>) one row per open order
+(empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
 \item order_id (integer) Unique order identifier.
@@ -1115,7 +1114,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per order and the following columns:
+(data.table | promise<data.table>) one row per order
+(empty when there are no matching orders):
 \itemize{
 \item symbol (character) Trading pair.
 \item order_id (integer) Unique order identifier.
@@ -1214,7 +1214,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and columns including:
+(data.table | promise<data.table>) one row per user asset:
 \itemize{
 \item borrow_enabled (logical) Whether borrowing is enabled.
 \item margin_level (character) Current margin level.
@@ -1296,7 +1296,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item amount (character) Maximum borrowable amount.
 \item borrow_limit (character) Borrow limit.
@@ -1368,7 +1368,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item amount (character) Maximum transferable-out amount.
 \item borrow_limit (character) Remaining borrow limit for the
@@ -1473,7 +1473,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per interest record and the following columns:
+(data.table | promise<data.table>) one row per interest record
+(empty when there are none):
 \itemize{
 \item asset (character) Asset charged interest.
 \item interest (character) Interest amount accrued.
@@ -1574,7 +1575,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per liquidation record and the following columns:
+(data.table | promise<data.table>) one row per liquidation record
+(empty when there are none):
 \itemize{
 \item avg_price (character) Average liquidation price.
 \item executed_qty (character) Liquidated quantity.
@@ -1682,7 +1684,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per trade and columns including:
+(data.table | promise<data.table>) one row per trade
+(empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
 \item id (integer) Trade ID.
@@ -1796,7 +1799,8 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row per isolated margin pair (long format) and columns including:
+(data.table | promise<data.table>) one row per isolated margin
+pair (long format):
 \itemize{
 \item total_asset_of_btc (character) Total asset value in BTC (repeated per pair).
 \item total_liability_of_btc (character) Total liability in BTC (repeated per pair).
@@ -1901,7 +1905,7 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(promise<data.table>) with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
 \item tran_id (integer) Transaction identifier.
 }

@@ -863,6 +863,110 @@ empty_dt_sub_status <- function() {
 #' @keywords internal
 #' @noRd
 #' @noassert
+empty_dt_margin_cancel <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    order_id = integer(0),
+    orig_client_order_id = character(0),
+    status = character(0),
+    transact_time = ms_to_datetime(numeric(0)),
+    is_isolated = logical(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_margin_order_query <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    order_id = integer(0),
+    client_order_id = character(0),
+    price = character(0),
+    orig_qty = character(0),
+    executed_qty = character(0),
+    status = character(0),
+    type = character(0),
+    side = character(0),
+    time = ms_to_datetime(numeric(0)),
+    update_time = ms_to_datetime(numeric(0)),
+    is_isolated = logical(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_margin_interest_history <- function() {
+  return(data.table::data.table(
+    asset = character(0),
+    interest = character(0),
+    interest_accured_time = ms_to_datetime(numeric(0)),
+    interest_rate = character(0),
+    principal = character(0),
+    type = character(0),
+    isolated_symbol = character(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_margin_force_liquidation <- function() {
+  return(data.table::data.table(
+    avg_price = character(0),
+    executed_qty = character(0),
+    order_id = integer(0),
+    price = character(0),
+    qty = character(0),
+    side = character(0),
+    symbol = character(0),
+    time = ms_to_datetime(numeric(0)),
+    is_isolated = logical(0),
+    updated_time = ms_to_datetime(numeric(0))
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_margin_trade <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    id = integer(0),
+    order_id = integer(0),
+    price = character(0),
+    qty = character(0),
+    commission = character(0),
+    commission_asset = character(0),
+    time = ms_to_datetime(numeric(0)),
+    is_buyer = logical(0),
+    is_maker = logical(0),
+    is_isolated = logical(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
+empty_dt_margin_isolated_account <- function() {
+  return(data.table::data.table(
+    total_asset_of_btc = character(0),
+    total_liability_of_btc = character(0),
+    total_net_asset_of_btc = character(0),
+    base_asset = list(),
+    quote_asset = list(),
+    symbol = character(0),
+    isolated_created = logical(0),
+    enabled = logical(0),
+    margin_level = character(0),
+    trade_enabled = logical(0)
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
 empty_dt_ticker_price <- function() {
   return(data.table::data.table(
     symbol = character(0),
