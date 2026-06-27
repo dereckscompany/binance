@@ -2036,7 +2036,8 @@ Verified: 2026-05-22
 \item asset (character) Asset of the income (e.g., \code{"USDT"}).
 \item info (character) Additional info about the income event.
 \item time (POSIXct) Time of the income event.
-\item tran_id (integer) Transaction identifier.
+\item tran_id (numeric) Transaction identifier (a large integer that overflows
+R's 32-bit \code{integer}, so it is coerced to a double).
 \item trade_id (character) Associated trade ID if applicable.
 }
 }

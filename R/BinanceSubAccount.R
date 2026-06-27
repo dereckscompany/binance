@@ -491,7 +491,11 @@ BinanceSubAccount <- R6::R6Class(
           clientTranId = clientTranId,
           recvWindow = recvWindow
         ),
-        .parser = as_dt_row
+        .parser = function(data) {
+          dt <- as_dt_row(data)
+          coerce_cols(dt, "tran_id", as.numeric)
+          return(dt[])
+        }
       )
       return(connectcore::then_or_now(
         res,
@@ -605,6 +609,7 @@ BinanceSubAccount <- R6::R6Class(
           }
           dt <- as_dt_list(items)
           coerce_cols(dt, "create_time_stamp", ms_to_datetime)
+          coerce_cols(dt, "tran_id", as.numeric)
           return(dt[])
         }
       )

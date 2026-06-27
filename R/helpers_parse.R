@@ -1250,7 +1250,7 @@ empty_dt_futures_income <- function() {
     asset = character(0),
     info = character(0),
     time = ms_to_datetime(numeric(0)),
-    tran_id = integer(0),
+    tran_id = numeric(0),
     trade_id = character(0)
   ))
 }

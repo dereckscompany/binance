@@ -120,7 +120,8 @@ BinanceMargin <- R6::R6Class(
     #' @param symbol (scalar<character>?) required when `isIsolated = "TRUE"`.
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
-    #' - tran_id (integer) Transaction identifier.
+    #' - tran_id (numeric) Transaction identifier (a large integer that overflows
+    #'   R's 32-bit `integer`, so it is coerced to a double).
     #'
     #' @examples
     #' \dontrun{
@@ -142,7 +143,9 @@ BinanceMargin <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data)[])
+          dt <- as_dt_row(data)
+          coerce_cols(dt, "tran_id", as.numeric)
+          return(dt[])
         }
       )
       return(connectcore::then_or_now(
@@ -195,7 +198,8 @@ BinanceMargin <- R6::R6Class(
     #' @param symbol (scalar<character>?) required when `isIsolated = "TRUE"`.
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
-    #' - tran_id (integer) Transaction identifier.
+    #' - tran_id (numeric) Transaction identifier (a large integer that overflows
+    #'   R's 32-bit `integer`, so it is coerced to a double).
     #'
     #' @examples
     #' \dontrun{
@@ -217,7 +221,9 @@ BinanceMargin <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data)[])
+          dt <- as_dt_row(data)
+          coerce_cols(dt, "tran_id", as.numeric)
+          return(dt[])
         }
       )
       return(connectcore::then_or_now(
@@ -1622,7 +1628,8 @@ BinanceMargin <- R6::R6Class(
     #' @param amount (scalar<numeric>) amount to transfer.
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
-    #' - tran_id (integer) Transaction identifier.
+    #' - tran_id (numeric) Transaction identifier (a large integer that overflows
+    #'   R's 32-bit `integer`, so it is coerced to a double).
     #'
     #' @examples
     #' \dontrun{
@@ -1653,7 +1660,9 @@ BinanceMargin <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data)[])
+          dt <- as_dt_row(data)
+          coerce_cols(dt, "tran_id", as.numeric)
+          return(dt[])
         }
       )
       return(connectcore::then_or_now(

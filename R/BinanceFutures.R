@@ -1793,7 +1793,8 @@ BinanceFutures <- R6::R6Class(
     #' - asset (character) Asset of the income (e.g., `"USDT"`).
     #' - info (character) Additional info about the income event.
     #' - time (POSIXct) Time of the income event.
-    #' - tran_id (integer) Transaction identifier.
+    #' - tran_id (numeric) Transaction identifier (a large integer that overflows
+    #'   R's 32-bit `integer`, so it is coerced to a double).
     #' - trade_id (character) Associated trade ID if applicable.
     #'
     #' @examples
@@ -1855,6 +1856,7 @@ BinanceFutures <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "time", ms_to_datetime)
+          coerce_cols(dt, "tran_id", as.numeric)
           return(dt[])
         }
       )

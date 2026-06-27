@@ -363,7 +363,8 @@ Verified: 2026-05-22
 \subsection{Returns}{
 (data.table | promise<data.table>) one row:
 \itemize{
-\item tran_id (integer) Transaction identifier.
+\item tran_id (numeric) Transaction identifier (a large integer that overflows
+R's 32-bit \code{integer}, so it is coerced to a double).
 }
 }
 \subsection{Examples}{
@@ -452,7 +453,8 @@ Verified: 2026-05-22
 \subsection{Returns}{
 (data.table | promise<data.table>) one row:
 \itemize{
-\item tran_id (integer) Transaction identifier.
+\item tran_id (numeric) Transaction identifier (a large integer that overflows
+R's 32-bit \code{integer}, so it is coerced to a double).
 }
 }
 \subsection{Examples}{
@@ -1907,7 +1909,8 @@ Verified: 2026-05-22
 \subsection{Returns}{
 (data.table | promise<data.table>) one row:
 \itemize{
-\item tran_id (integer) Transaction identifier.
+\item tran_id (numeric) Transaction identifier (a large integer that overflows
+R's 32-bit \code{integer}, so it is coerced to a double).
 }
 }
 \subsection{Examples}{
