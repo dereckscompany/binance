@@ -1,4 +1,4 @@
-# binance 0.3.0.9000
+# binance 0.4.0
 
 ## Internal
 
