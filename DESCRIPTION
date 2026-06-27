@@ -45,8 +45,8 @@ Suggests:
     diffviewer,
     knitr,
     rmarkdown,
-    roxyassert
+    roxyassert (>= 0.9.1)
 Remotes:
     dereckscompany/assert,
-    dereckscompany/roxyassert
+    dereckscompany/roxyassert@v0.9.1
 Config/testthat/edition: 3
