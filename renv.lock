@@ -695,6 +695,17 @@
       "Maintainer": "Lionel Henry <lionel@posit.co>",
       "Repository": "https://packagemanager.posit.co/cran/latest"
     },
+    "roxyassert": {
+      "Package": "roxyassert",
+      "Version": "0.9.1",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "dereckscompany",
+      "RemoteRepo": "roxyassert",
+      "RemoteRef": "v0.9.1",
+      "RemoteSha": "8fc6101b91f3f33cdfa85ebf155ed268d885977e"
+    },
     "sys": {
       "Package": "sys",
       "Version": "3.4.3",
