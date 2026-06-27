@@ -826,8 +826,8 @@ Verified: 2026-05-22
 \item quote_volume (character) Total quote asset volume in 24h.
 \item open_time (POSIXct) Start of the 24h window.
 \item close_time (POSIXct) End of the 24h window.
-\item first_id (integer) First trade ID in the window.
-\item last_id (integer) Last trade ID in the window.
+\item first_id (numeric) First trade ID in the window.
+\item last_id (numeric) Last trade ID in the window.
 \item count (integer) Total number of trades in 24h.
 }
 }

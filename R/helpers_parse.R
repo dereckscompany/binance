@@ -392,9 +392,9 @@ empty_dt_balances <- function() {
 empty_dt_account_trade <- function() {
   return(data.table::data.table(
     symbol = character(0),
-    id = integer(0),
-    order_id = integer(0),
-    order_list_id = integer(0),
+    id = numeric(0),
+    order_id = numeric(0),
+    order_list_id = numeric(0),
     price = character(0),
     qty = character(0),
     quote_qty = character(0),
@@ -432,7 +432,7 @@ empty_dt_ohlcv <- function() {
 #' @noassert
 empty_dt_trade <- function() {
   return(data.table::data.table(
-    id = integer(0),
+    id = numeric(0),
     price = character(0),
     qty = character(0),
     quote_qty = character(0),
@@ -496,8 +496,8 @@ empty_dt_rate_limit <- function() {
 empty_dt_spot_order_query <- function() {
   return(data.table::data.table(
     symbol = character(0),
-    order_id = integer(0),
-    order_list_id = integer(0),
+    order_id = numeric(0),
+    order_list_id = numeric(0),
     client_order_id = character(0),
     price = character(0),
     orig_qty = character(0),
@@ -524,8 +524,8 @@ empty_dt_spot_order_query <- function() {
 empty_dt_spot_order_list <- function() {
   return(data.table::data.table(
     symbol = character(0),
-    order_id = integer(0),
-    order_list_id = integer(0),
+    order_id = numeric(0),
+    order_list_id = numeric(0),
     client_order_id = character(0),
     price = character(0),
     orig_qty = character(0),
@@ -552,8 +552,8 @@ empty_dt_spot_cancel <- function() {
   return(data.table::data.table(
     symbol = character(0),
     orig_client_order_id = character(0),
-    order_id = integer(0),
-    order_list_id = integer(0),
+    order_id = numeric(0),
+    order_list_id = numeric(0),
     client_order_id = character(0),
     price = character(0),
     orig_qty = character(0),
@@ -574,8 +574,8 @@ empty_dt_spot_cancel <- function() {
 empty_dt_spot_order_ack_fills <- function() {
   return(data.table::data.table(
     symbol = character(0),
-    order_id = integer(0),
-    order_list_id = integer(0),
+    order_id = numeric(0),
+    order_list_id = numeric(0),
     client_order_id = character(0),
     price = character(0),
     orig_qty = character(0),
@@ -593,7 +593,7 @@ empty_dt_spot_order_ack_fills <- function() {
     fill_qty = character(0),
     fill_commission = character(0),
     fill_commission_asset = character(0),
-    fill_trade_id = integer(0)
+    fill_trade_id = numeric(0)
   ))
 }
 
@@ -602,7 +602,7 @@ empty_dt_spot_order_ack_fills <- function() {
 #' @noassert
 empty_dt_oco_add <- function() {
   return(data.table::data.table(
-    order_list_id = integer(0),
+    order_list_id = numeric(0),
     contingency_type = character(0),
     list_status_type = character(0),
     list_order_status = character(0),
@@ -610,8 +610,8 @@ empty_dt_oco_add <- function() {
     transact_time = ms_to_datetime(numeric(0)),
     symbol = character(0),
     order_report_symbol = character(0),
-    order_report_order_id = integer(0),
-    order_report_order_list_id = integer(0),
+    order_report_order_id = numeric(0),
+    order_report_order_list_id = numeric(0),
     order_report_client_order_id = character(0),
     order_report_transact_time = ms_to_datetime(numeric(0)),
     order_report_price = character(0),
@@ -639,7 +639,7 @@ empty_dt_oco_cancel <- function() {
 #' @noassert
 empty_dt_oco_query <- function() {
   return(data.table::data.table(
-    order_list_id = integer(0),
+    order_list_id = numeric(0),
     contingency_type = character(0),
     list_status_type = character(0),
     list_order_status = character(0),
@@ -647,7 +647,7 @@ empty_dt_oco_query <- function() {
     transaction_time = ms_to_datetime(numeric(0)),
     symbol = character(0),
     order_symbol = character(0),
-    order_order_id = integer(0),
+    order_order_id = numeric(0),
     order_client_order_id = character(0)
   ))
 }
@@ -718,7 +718,7 @@ empty_dt_transfer_history <- function() {
 empty_dt_margin_all_pairs <- function() {
   return(data.table::data.table(
     base = character(0),
-    id = integer(0),
+    id = numeric(0),
     is_buy_allowed = logical(0),
     is_margin_trade = logical(0),
     is_sell_allowed = logical(0),
@@ -879,7 +879,7 @@ empty_dt_sub_status <- function() {
 empty_dt_margin_cancel <- function() {
   return(data.table::data.table(
     symbol = character(0),
-    order_id = integer(0),
+    order_id = numeric(0),
     orig_client_order_id = character(0),
     status = character(0),
     transact_time = ms_to_datetime(numeric(0)),
@@ -893,7 +893,7 @@ empty_dt_margin_cancel <- function() {
 empty_dt_margin_order_query <- function() {
   return(data.table::data.table(
     symbol = character(0),
-    order_id = integer(0),
+    order_id = numeric(0),
     client_order_id = character(0),
     price = character(0),
     orig_qty = character(0),
@@ -929,7 +929,7 @@ empty_dt_margin_force_liquidation <- function() {
   return(data.table::data.table(
     avg_price = character(0),
     executed_qty = character(0),
-    order_id = integer(0),
+    order_id = numeric(0),
     price = character(0),
     qty = character(0),
     side = character(0),
@@ -946,8 +946,8 @@ empty_dt_margin_force_liquidation <- function() {
 empty_dt_margin_trade <- function() {
   return(data.table::data.table(
     symbol = character(0),
-    id = integer(0),
-    order_id = integer(0),
+    id = numeric(0),
+    order_id = numeric(0),
     price = character(0),
     qty = character(0),
     commission = character(0),
@@ -1091,7 +1091,7 @@ empty_dt_earn_flexible_subscription_history <- function() {
     amount = character(0),
     asset = character(0),
     time = ms_to_datetime(numeric(0)),
-    purchase_id = integer(0),
+    purchase_id = numeric(0),
     type = character(0),
     source_account = character(0),
     status = character(0)
@@ -1106,7 +1106,7 @@ empty_dt_earn_locked_subscription_history <- function() {
     amount = character(0),
     asset = character(0),
     time = ms_to_datetime(numeric(0)),
-    purchase_id = integer(0),
+    purchase_id = numeric(0),
     position_id = character(0),
     lock_period = integer(0),
     type = character(0),
@@ -1124,7 +1124,7 @@ empty_dt_earn_flexible_redemption_history <- function() {
     asset = character(0),
     time = ms_to_datetime(numeric(0)),
     project_id = character(0),
-    redeem_id = integer(0),
+    redeem_id = numeric(0),
     dest_account = character(0),
     status = character(0)
   ))
@@ -1139,7 +1139,7 @@ empty_dt_earn_locked_redemption_history <- function() {
     asset = character(0),
     time = ms_to_datetime(numeric(0)),
     position_id = character(0),
-    redeem_id = integer(0),
+    redeem_id = numeric(0),
     deliver_date = ms_to_datetime(numeric(0)),
     status = character(0)
   ))
@@ -1151,7 +1151,7 @@ empty_dt_earn_locked_redemption_history <- function() {
 empty_dt_futures_order_query <- function() {
   return(data.table::data.table(
     symbol = character(0),
-    order_id = integer(0),
+    order_id = numeric(0),
     client_order_id = character(0),
     price = character(0),
     orig_qty = character(0),
@@ -1223,8 +1223,8 @@ empty_dt_futures_margin_history <- function() {
 empty_dt_futures_trade <- function() {
   return(data.table::data.table(
     symbol = character(0),
-    id = integer(0),
-    order_id = integer(0),
+    id = numeric(0),
+    order_id = numeric(0),
     price = character(0),
     qty = character(0),
     quote_qty = character(0),
@@ -1369,7 +1369,7 @@ empty_dt_futures_book_ticker <- function() {
 #' @noassert
 empty_dt_futures_trade_public <- function() {
   return(data.table::data.table(
-    id = integer(0),
+    id = numeric(0),
     price = character(0),
     qty = character(0),
     quote_qty = character(0),
@@ -1411,8 +1411,8 @@ empty_dt_ticker_24hr <- function() {
     quote_volume = character(0),
     open_time = ms_to_datetime(numeric(0)),
     close_time = ms_to_datetime(numeric(0)),
-    first_id = integer(0),
-    last_id = integer(0),
+    first_id = numeric(0),
+    last_id = numeric(0),
     count = integer(0)
   ))
 }

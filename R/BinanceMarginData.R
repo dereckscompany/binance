@@ -109,7 +109,7 @@ BinanceMarginData <- R6::R6Class(
     #' @param recvWindow (scalar<count>?) request validity window in milliseconds.
     #' @return (data.table | promise<data.table>) one row per pair:
     #'   - base (character) Base asset code (e.g., `"BTC"`).
-    #'   - id (integer) Pair identifier.
+    #'   - id (numeric) Pair identifier.
     #'   - is_buy_allowed (logical) Whether buying is allowed.
     #'   - is_margin_trade (logical) Whether margin trading is enabled.
     #'   - is_sell_allowed (logical) Whether selling is allowed.
@@ -133,7 +133,10 @@ BinanceMarginData <- R6::R6Class(
           if (is.null(data) || length(data) == 0) {
             return(empty_dt_margin_all_pairs())
           }
-          return(as_dt_list(data)[])
+          dt <- as_dt_list(data)
+          # 64-bit margin-pair id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "id", as.numeric)
+          return(dt[])
         }
       )
       return(connectcore::then_or_now(

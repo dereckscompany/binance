@@ -1255,7 +1255,7 @@ Verified: 2026-05-22
 (data.table | promise<data.table>) one row per public trade
 (empty when there are none):
 \itemize{
-\item id (integer) Unique trade identifier.
+\item id (numeric) Unique trade identifier.
 \item price (character) Trade execution price.
 \item qty (character) Base asset quantity traded.
 \item quote_qty (character) Quote asset quantity traded.

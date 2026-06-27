@@ -255,7 +255,7 @@ Verified: 2026-05-22
 (data.table | promise<data.table>) one row per child order report
 (long format):
 \itemize{
-\item order_list_id (integer) OCO order list identifier (repeated per child order).
+\item order_list_id (numeric) OCO order list identifier (repeated per child order).
 \item contingency_type (character) Always \code{"OCO"}.
 \item list_status_type (character) Status type (e.g., \code{"EXEC_STARTED"}).
 \item list_order_status (character) Order status (e.g., \code{"EXECUTING"}).
@@ -263,8 +263,8 @@ Verified: 2026-05-22
 \item transact_time (POSIXct) Transaction time.
 \item symbol (character) Trading pair from parent OCO.
 \item order_report_symbol (character) Trading pair from child order report.
-\item order_report_order_id (integer) Child order ID.
-\item order_report_order_list_id (integer) Child order's OCO list ID.
+\item order_report_order_id (numeric) Child order ID.
+\item order_report_order_list_id (numeric) Child order's OCO list ID.
 \item order_report_client_order_id (character) Child order client ID.
 \item order_report_transact_time (POSIXct) Child order transaction time.
 \item order_report_price (character) Child order price.
@@ -412,7 +412,7 @@ the richer \code{orderReports} payload, which includes the
 cancellation status, prices, quantities, and stop price for
 each child order:
 \itemize{
-\item order_list_id (integer) OCO order list identifier (repeated per child order).
+\item order_list_id (numeric) OCO order list identifier (repeated per child order).
 \item contingency_type (character) Always \code{"OCO"}.
 \item list_status_type (character) Status type (e.g., \code{"ALL_DONE"}).
 \item list_order_status (character) Order status (e.g., \code{"ALL_DONE"}).
@@ -420,8 +420,8 @@ each child order:
 \item transact_time (POSIXct) Cancellation time (if present).
 \item symbol (character) Trading pair from parent OCO.
 \item order_report_symbol (character) Trading pair from child order.
-\item order_report_order_id (integer) Child order ID.
-\item order_report_order_list_id (integer) Child order's OCO list ID.
+\item order_report_order_id (numeric) Child order ID.
+\item order_report_order_list_id (numeric) Child order's OCO list ID.
 \item order_report_client_order_id (character) Child order client ID.
 \item order_report_transact_time (POSIXct) Child order transaction time.
 \item order_report_price (character) Child order price.
@@ -526,7 +526,7 @@ Verified: 2026-05-22
 (data.table | promise<data.table>) one row per child order
 (long format):
 \itemize{
-\item order_list_id (integer) OCO order list identifier (repeated per child order).
+\item order_list_id (numeric) OCO order list identifier (repeated per child order).
 \item contingency_type (character) Always \code{"OCO"}.
 \item list_status_type (character) Status type (e.g., \code{"ALL_DONE"}).
 \item list_order_status (character) Order status.
@@ -534,7 +534,7 @@ Verified: 2026-05-22
 \item transaction_time (POSIXct) Transaction time (if present).
 \item symbol (character) Trading pair from parent OCO.
 \item order_symbol (character) Trading pair from child order.
-\item order_order_id (integer) Child order ID.
+\item order_order_id (numeric) Child order ID.
 \item order_client_order_id (character) Child order client ID.
 }
 }
@@ -618,7 +618,7 @@ Verified: 2026-05-22
 (data.table | promise<data.table>) one row per child order across
 all open OCOs (long format; empty when there are no open OCOs):
 \itemize{
-\item order_list_id (integer) OCO order list identifier (repeated per child order).
+\item order_list_id (numeric) OCO order list identifier (repeated per child order).
 \item contingency_type (character) Always \code{"OCO"}.
 \item list_status_type (character) Status type.
 \item list_order_status (character) Order status.
@@ -626,7 +626,7 @@ all open OCOs (long format; empty when there are no open OCOs):
 \item transaction_time (POSIXct) Transaction time.
 \item symbol (character) Trading pair from parent OCO.
 \item order_symbol (character) Trading pair from child order.
-\item order_order_id (integer) Child order ID.
+\item order_order_id (numeric) Child order ID.
 \item order_client_order_id (character) Child order client ID.
 }
 }
@@ -747,7 +747,7 @@ Verified: 2026-05-22
 (data.table | promise<data.table>) one row per child order across
 all OCOs (long format; empty when there are no matching OCOs):
 \itemize{
-\item order_list_id (integer) OCO order list identifier (repeated per child order).
+\item order_list_id (numeric) OCO order list identifier (repeated per child order).
 \item contingency_type (character) Always \code{"OCO"}.
 \item list_status_type (character) Status type.
 \item list_order_status (character) Order status.
@@ -755,7 +755,7 @@ all OCOs (long format; empty when there are no matching OCOs):
 \item transaction_time (POSIXct) Transaction time.
 \item symbol (character) Trading pair from parent OCO.
 \item order_symbol (character) Trading pair from child order.
-\item order_order_id (integer) Child order ID.
+\item order_order_id (numeric) Child order ID.
 \item order_client_order_id (character) Child order client ID.
 }
 }

@@ -298,8 +298,8 @@ Verified: 2026-05-22
 \code{NA} \verb{fill_*} columns when the order had no fills):
 \itemize{
 \item symbol (character) Trading pair (e.g., \code{"BTCUSDT"}).
-\item order_id (integer) Unique order identifier assigned by Binance.
-\item order_list_id (integer) OCO order list ID; \code{-1} if not an OCO.
+\item order_id (numeric) Unique order identifier assigned by Binance.
+\item order_list_id (numeric) OCO order list ID; \code{-1} if not an OCO.
 \item client_order_id (character) Client-assigned order ID.
 \item price (character) Order price.
 \item orig_qty (character) Original requested quantity.
@@ -320,7 +320,8 @@ had no fills).
 (\code{NA} when no fills).
 \item fill_commission_asset (character | NA) Asset used for commission
 (e.g., \code{"BNB"}; \code{NA} when no fills).
-\item fill_trade_id (integer | NA) Fill trade ID (\code{NA} when no fills).
+\item fill_trade_id (numeric | NA) Fill trade ID (a 64-bit id; \code{numeric} to
+avoid 32-bit overflow; \code{NA} when no fills).
 }
 
 When the order has N fills, the parent order fields are replicated on
@@ -547,8 +548,8 @@ Verified: 2026-05-22
 \itemize{
 \item symbol (character) Trading pair.
 \item orig_client_order_id (character) Original client order ID.
-\item order_id (integer) Unique order identifier.
-\item order_list_id (integer) OCO order list ID; \code{-1} if not an OCO.
+\item order_id (numeric) Unique order identifier.
+\item order_list_id (numeric) OCO order list ID; \code{-1} if not an OCO.
 \item client_order_id (character) New client order ID after cancellation.
 \item price (character) Order price.
 \item orig_qty (character) Original requested quantity.
@@ -661,8 +662,8 @@ signal):
 \itemize{
 \item symbol (character) Trading pair.
 \item orig_client_order_id (character) Original client order ID.
-\item order_id (integer) Unique order identifier.
-\item order_list_id (integer) OCO order list ID; \code{-1} if not an OCO.
+\item order_id (numeric) Unique order identifier.
+\item order_list_id (numeric) OCO order list ID; \code{-1} if not an OCO.
 \item client_order_id (character) New client order ID after cancellation.
 \item price (character) Order price.
 \item orig_qty (character) Original requested quantity.
@@ -850,8 +851,8 @@ If NULL, returns open orders for all symbols (weight 80).}
 (empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
-\item order_id (integer) Exchange-assigned order id.
-\item order_list_id (integer) OCO list id, or \code{-1} for a non-OCO order.
+\item order_id (numeric) Exchange-assigned order id.
+\item order_list_id (numeric) OCO list id, or \code{-1} for a non-OCO order.
 \item client_order_id (character) Client-assigned order id.
 \item price (character) Order price.
 \item orig_qty (character) Original requested quantity.
@@ -993,8 +994,8 @@ Verified: 2026-05-22
 (empty when there are no matching orders):
 \itemize{
 \item symbol (character) Trading pair.
-\item order_id (integer) Exchange-assigned order id.
-\item order_list_id (integer) OCO list id, or \code{-1} for a non-OCO order.
+\item order_id (numeric) Exchange-assigned order id.
+\item order_list_id (numeric) OCO list id, or \code{-1} for a non-OCO order.
 \item client_order_id (character) Client-assigned order id.
 \item price (character) Order price.
 \item orig_qty (character) Original requested quantity.

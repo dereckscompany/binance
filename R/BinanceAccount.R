@@ -132,7 +132,7 @@ BinanceAccount <- R6::R6Class(
     #'   row per account — collapsed via the shared
     #'   `collapse_string_array_fields()` helper for cross-package
     #'   consistency.
-    #' - uid (integer) Unique account identifier.
+    #' - uid (numeric) Unique account identifier.
     #'
     #' @examples
     #' \dontrun{
@@ -163,6 +163,8 @@ BinanceAccount <- R6::R6Class(
           data <- collapse_string_array_fields(data, "permissions")
           dt <- as_dt_row(data)
           coerce_cols(dt, "update_time", ms_to_datetime)
+          # 64-bit account uid -> numeric so a large uid never overflows int32.
+          coerce_cols(dt, "uid", as.numeric)
           return(dt[])
         }
       )
@@ -303,9 +305,9 @@ BinanceAccount <- R6::R6Class(
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per trade:
     #' - symbol (character) Trading pair (e.g., `"BTCUSDT"`).
-    #' - id (integer) Unique trade identifier.
-    #' - order_id (integer) Order that generated this trade.
-    #' - order_list_id (integer) OCO order list ID; `-1` if not an OCO.
+    #' - id (numeric) Unique trade identifier.
+    #' - order_id (numeric) Order that generated this trade.
+    #' - order_list_id (numeric) OCO order list ID; `-1` if not an OCO.
     #' - price (character) Execution price.
     #' - qty (character) Quantity traded.
     #' - quote_qty (character) Quote asset amount transacted.
@@ -349,6 +351,8 @@ BinanceAccount <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "time", ms_to_datetime)
+          # 64-bit ids -> numeric so a large id never overflows int32.
+          coerce_cols(dt, c("id", "order_id", "order_list_id"), as.numeric)
           return(dt[])
         }
       )

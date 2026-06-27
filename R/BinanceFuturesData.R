@@ -1150,7 +1150,7 @@ BinanceFuturesData <- R6::R6Class(
     #' @param limit (scalar<count>?) max results (default 500, max 1000).
     #' @return (data.table | promise<data.table>) one row per public trade
     #'   (empty when there are none):
-    #'   - id (integer) Unique trade identifier.
+    #'   - id (numeric) Unique trade identifier.
     #'   - price (character) Trade execution price.
     #'   - qty (character) Base asset quantity traded.
     #'   - quote_qty (character) Quote asset quantity traded.
@@ -1175,6 +1175,8 @@ BinanceFuturesData <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "time", ms_to_datetime)
+          # 64-bit trade id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "id", as.numeric)
           return(dt[])
         }
       )

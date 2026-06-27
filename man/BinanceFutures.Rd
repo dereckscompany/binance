@@ -476,7 +476,7 @@ Verified: 2026-05-22
 (data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair (e.g., \code{"BTCUSDT"}).
-\item order_id (integer) Unique order identifier.
+\item order_id (numeric) Unique order identifier.
 \item client_order_id (character) Client-assigned order ID.
 \item price (character) Order price.
 \item orig_qty (character) Original requested quantity.
@@ -716,7 +716,7 @@ Verified: 2026-05-22
 (data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair.
-\item order_id (integer) Unique order identifier.
+\item order_id (numeric) Unique order identifier.
 \item client_order_id (character) Client-assigned order ID.
 \item orig_qty (character) Original requested quantity.
 \item executed_qty (character) Quantity filled so far.
@@ -894,7 +894,7 @@ Verified: 2026-05-22
 (data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair.
-\item order_id (integer) Unique order identifier.
+\item order_id (numeric) Unique order identifier.
 \item client_order_id (character) Client-assigned order ID.
 \item price (character) Order price.
 \item orig_qty (character) Original requested quantity.
@@ -994,7 +994,7 @@ Verified: 2026-05-22
 (empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
-\item order_id (integer) Unique order identifier.
+\item order_id (numeric) Unique order identifier.
 \item client_order_id (character) Client-assigned order ID.
 \item price (character) Order price.
 \item orig_qty (character) Original requested quantity.
@@ -1107,7 +1107,7 @@ Verified: 2026-05-22
 (empty when there are no matching orders):
 \itemize{
 \item symbol (character) Trading pair.
-\item order_id (integer) Unique order identifier.
+\item order_id (numeric) Unique order identifier.
 \item client_order_id (character) Client-assigned order ID.
 \item price (character) Order price.
 \item orig_qty (character) Original requested quantity.
@@ -1712,8 +1712,8 @@ Verified: 2026-05-22
 \itemize{
 \item code (integer) Response code (\code{200} on success).
 \item msg (character) Response message.
-\item amount (integer) Margin amount modified (Binance returns it as a
-whole-number JSON number).
+\item amount (numeric) Margin amount modified (Binance returns it as a JSON
+decimal, so it is parsed as a double, not an integer).
 \item type (integer) Margin change type (1 = add, 2 = reduce).
 }
 }
@@ -1910,8 +1910,8 @@ Verified: 2026-05-22
 (empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
-\item id (integer) Trade identifier.
-\item order_id (integer) Order identifier.
+\item id (numeric) Trade identifier.
+\item order_id (numeric) Order identifier.
 \item price (character) Trade execution price.
 \item qty (character) Trade quantity.
 \item quote_qty (character) Quote asset quantity.

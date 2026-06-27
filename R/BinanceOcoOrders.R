@@ -123,7 +123,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per child order report
     #'   (long format):
-    #' - order_list_id (integer) OCO order list identifier (repeated per child order).
+    #' - order_list_id (numeric) OCO order list identifier (repeated per child order).
     #' - contingency_type (character) Always `"OCO"`.
     #' - list_status_type (character) Status type (e.g., `"EXEC_STARTED"`).
     #' - list_order_status (character) Order status (e.g., `"EXECUTING"`).
@@ -131,8 +131,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' - transact_time (POSIXct) Transaction time.
     #' - symbol (character) Trading pair from parent OCO.
     #' - order_report_symbol (character) Trading pair from child order report.
-    #' - order_report_order_id (integer) Child order ID.
-    #' - order_report_order_list_id (integer) Child order's OCO list ID.
+    #' - order_report_order_id (numeric) Child order ID.
+    #' - order_report_order_list_id (numeric) Child order's OCO list ID.
     #' - order_report_client_order_id (character) Child order client ID.
     #' - order_report_transact_time (POSIXct) Child order transaction time.
     #' - order_report_price (character) Child order price.
@@ -236,6 +236,12 @@ BinanceOcoOrders <- R6::R6Class(
             dt <- cbind(dt, reports_dt)
             coerce_cols(dt, "order_report_transact_time", ms_to_datetime)
           }
+          # 64-bit ids -> numeric so a large id never overflows int32.
+          coerce_cols(
+            dt,
+            c("order_list_id", "order_report_order_id", "order_report_order_list_id"),
+            as.numeric
+          )
           return(dt[])
         }
       )
@@ -334,7 +340,7 @@ BinanceOcoOrders <- R6::R6Class(
     #'   the richer `orderReports` payload, which includes the
     #'   cancellation status, prices, quantities, and stop price for
     #'   each child order:
-    #' - order_list_id (integer) OCO order list identifier (repeated per child order).
+    #' - order_list_id (numeric) OCO order list identifier (repeated per child order).
     #' - contingency_type (character) Always `"OCO"`.
     #' - list_status_type (character) Status type (e.g., `"ALL_DONE"`).
     #' - list_order_status (character) Order status (e.g., `"ALL_DONE"`).
@@ -342,8 +348,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' - transact_time (POSIXct) Cancellation time (if present).
     #' - symbol (character) Trading pair from parent OCO.
     #' - order_report_symbol (character) Trading pair from child order.
-    #' - order_report_order_id (integer) Child order ID.
-    #' - order_report_order_list_id (integer) Child order's OCO list ID.
+    #' - order_report_order_id (numeric) Child order ID.
+    #' - order_report_order_list_id (numeric) Child order's OCO list ID.
     #' - order_report_client_order_id (character) Child order client ID.
     #' - order_report_transact_time (POSIXct) Child order transaction time.
     #' - order_report_price (character) Child order price.
@@ -402,6 +408,12 @@ BinanceOcoOrders <- R6::R6Class(
             dt <- cbind(dt, reports_dt)
             coerce_cols(dt, "order_report_transact_time", ms_to_datetime)
           }
+          # 64-bit ids -> numeric so a large id never overflows int32.
+          coerce_cols(
+            dt,
+            c("order_list_id", "order_report_order_id", "order_report_order_list_id"),
+            as.numeric
+          )
           return(dt[])
         }
       )
@@ -463,7 +475,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per child order
     #'   (long format):
-    #' - order_list_id (integer) OCO order list identifier (repeated per child order).
+    #' - order_list_id (numeric) OCO order list identifier (repeated per child order).
     #' - contingency_type (character) Always `"OCO"`.
     #' - list_status_type (character) Status type (e.g., `"ALL_DONE"`).
     #' - list_order_status (character) Order status.
@@ -471,7 +483,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' - transaction_time (POSIXct) Transaction time (if present).
     #' - symbol (character) Trading pair from parent OCO.
     #' - order_symbol (character) Trading pair from child order.
-    #' - order_order_id (integer) Child order ID.
+    #' - order_order_id (numeric) Child order ID.
     #' - order_client_order_id (character) Child order client ID.
     #'
     #' @examples
@@ -509,6 +521,8 @@ BinanceOcoOrders <- R6::R6Class(
             dt <- dt[rep(1L, nrow(orders_dt))]
             dt <- cbind(dt, orders_dt)
           }
+          # 64-bit ids -> numeric so a large id never overflows int32.
+          coerce_cols(dt, c("order_list_id", "order_order_id"), as.numeric)
           return(dt[])
         }
       )
@@ -567,7 +581,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per child order across
     #'   all open OCOs (long format; empty when there are no open OCOs):
-    #' - order_list_id (integer) OCO order list identifier (repeated per child order).
+    #' - order_list_id (numeric) OCO order list identifier (repeated per child order).
     #' - contingency_type (character) Always `"OCO"`.
     #' - list_status_type (character) Status type.
     #' - list_order_status (character) Order status.
@@ -575,7 +589,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' - transaction_time (POSIXct) Transaction time.
     #' - symbol (character) Trading pair from parent OCO.
     #' - order_symbol (character) Trading pair from child order.
-    #' - order_order_id (integer) Child order ID.
+    #' - order_order_id (numeric) Child order ID.
     #' - order_client_order_id (character) Child order client ID.
     #'
     #' @examples
@@ -608,7 +622,10 @@ BinanceOcoOrders <- R6::R6Class(
             }
             return(parent_dt)
           })
-          return(data.table::rbindlist(rows, fill = TRUE)[])
+          dt <- data.table::rbindlist(rows, fill = TRUE)
+          # 64-bit ids -> numeric so a large id never overflows int32.
+          coerce_cols(dt, c("order_list_id", "order_order_id"), as.numeric)
+          return(dt[])
         }
       )
       return(connectcore::then_or_now(
@@ -693,7 +710,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per child order across
     #'   all OCOs (long format; empty when there are no matching OCOs):
-    #' - order_list_id (integer) OCO order list identifier (repeated per child order).
+    #' - order_list_id (numeric) OCO order list identifier (repeated per child order).
     #' - contingency_type (character) Always `"OCO"`.
     #' - list_status_type (character) Status type.
     #' - list_order_status (character) Order status.
@@ -701,7 +718,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' - transaction_time (POSIXct) Transaction time.
     #' - symbol (character) Trading pair from parent OCO.
     #' - order_symbol (character) Trading pair from child order.
-    #' - order_order_id (integer) Child order ID.
+    #' - order_order_id (numeric) Child order ID.
     #' - order_client_order_id (character) Child order client ID.
     #'
     #' @examples
@@ -746,7 +763,10 @@ BinanceOcoOrders <- R6::R6Class(
             }
             return(parent_dt)
           })
-          return(data.table::rbindlist(rows, fill = TRUE)[])
+          dt <- data.table::rbindlist(rows, fill = TRUE)
+          # 64-bit ids -> numeric so a large id never overflows int32.
+          coerce_cols(dt, c("order_list_id", "order_order_id"), as.numeric)
+          return(dt[])
         }
       )
       return(connectcore::then_or_now(

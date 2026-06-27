@@ -583,7 +583,7 @@ Verified: 2026-05-22
 (data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair.
-\item order_id (integer) Unique order identifier.
+\item order_id (numeric) Unique order identifier.
 \item client_order_id (character) Client-assigned order ID.
 \item transact_time (POSIXct) Transaction time.
 \item price (character) Order price.
@@ -695,7 +695,7 @@ Verified: 2026-05-22
 (data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair.
-\item order_id (integer) Unique order identifier.
+\item order_id (numeric) Unique order identifier.
 \item orig_client_order_id (character) Original client order ID.
 \item status (character) Order status (typically \code{"CANCELED"}).
 \item transact_time (POSIXct) Cancellation time.
@@ -793,7 +793,7 @@ Verified: 2026-05-22
 signal):
 \itemize{
 \item symbol (character) Trading pair.
-\item order_id (integer) Unique order identifier.
+\item order_id (numeric) Unique order identifier.
 \item orig_client_order_id (character) Original client order ID.
 \item status (character) Order status (typically \code{"CANCELED"}).
 \item transact_time (POSIXct) Cancellation time.
@@ -890,7 +890,7 @@ Verified: 2026-05-22
 (data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair.
-\item order_id (integer) Unique order identifier.
+\item order_id (numeric) Unique order identifier.
 \item client_order_id (character) Client-assigned order ID.
 \item price (character) Order price.
 \item orig_qty (character) Original requested quantity.
@@ -990,7 +990,7 @@ Verified: 2026-05-22
 (empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
-\item order_id (integer) Unique order identifier.
+\item order_id (numeric) Unique order identifier.
 \item client_order_id (character) Client-assigned order ID.
 \item price (character) Order price.
 \item orig_qty (character) Original requested quantity.
@@ -1120,7 +1120,7 @@ Verified: 2026-05-22
 (empty when there are no matching orders):
 \itemize{
 \item symbol (character) Trading pair.
-\item order_id (integer) Unique order identifier.
+\item order_id (numeric) Unique order identifier.
 \item client_order_id (character) Client-assigned order ID.
 \item price (character) Order price.
 \item orig_qty (character) Original requested quantity.
@@ -1582,7 +1582,7 @@ Verified: 2026-05-22
 \itemize{
 \item avg_price (character) Average liquidation price.
 \item executed_qty (character) Liquidated quantity.
-\item order_id (integer) Liquidation order identifier.
+\item order_id (numeric) Liquidation order identifier.
 \item price (character) Liquidation price.
 \item qty (character) Total quantity.
 \item side (character) \code{"BUY"} or \code{"SELL"}.
@@ -1690,8 +1690,8 @@ Verified: 2026-05-22
 (empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
-\item id (integer) Trade ID.
-\item order_id (integer) Order ID.
+\item id (numeric) Trade ID.
+\item order_id (numeric) Order ID.
 \item price (character) Trade price.
 \item qty (character) Trade quantity.
 \item commission (character) Commission paid.

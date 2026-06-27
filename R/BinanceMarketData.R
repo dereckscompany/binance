@@ -683,8 +683,8 @@ BinanceMarketData <- R6::R6Class(
     #'   - quote_volume (character) Total quote asset volume in 24h.
     #'   - open_time (POSIXct) Start of the 24h window.
     #'   - close_time (POSIXct) End of the 24h window.
-    #'   - first_id (integer) First trade ID in the window.
-    #'   - last_id (integer) Last trade ID in the window.
+    #'   - first_id (numeric) First trade ID in the window.
+    #'   - last_id (numeric) Last trade ID in the window.
     #'   - count (integer) Total number of trades in 24h.
     #'
     #' @examples
@@ -702,6 +702,8 @@ BinanceMarketData <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           coerce_cols(dt, c("open_time", "close_time"), ms_to_datetime)
+          # 64-bit trade ids -> numeric so a large id never overflows int32.
+          coerce_cols(dt, c("first_id", "last_id"), as.numeric)
           return(dt[])
         }
       )
@@ -740,6 +742,8 @@ BinanceMarketData <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_list(data)
           coerce_cols(dt, c("open_time", "close_time"), ms_to_datetime)
+          # 64-bit trade ids -> numeric so a large id never overflows int32.
+          coerce_cols(dt, c("first_id", "last_id"), as.numeric)
           return(dt[])
         }
       )
@@ -922,6 +926,8 @@ BinanceMarketData <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "time", ms_to_datetime)
+          # 64-bit trade id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "id", as.numeric)
           return(dt[])
         }
       )

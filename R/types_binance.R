@@ -58,7 +58,7 @@
 #'
 #' @type Trade (data.table) one row per public trade, as parsed from
 #'   `GET /api/v3/trades` and `GET /fapi/v1/trades`:
-#' - id (integer) trade id.
+#' - id (numeric) trade id (a 64-bit id; `numeric` to avoid 32-bit overflow).
 #' - price (character) execution price.
 #' - qty (character) base-asset quantity.
 #' - quote_qty (character) quote-asset quantity.
@@ -79,8 +79,10 @@
 #'   into one row per fill via the `fill_*` columns, which are `NA` when the
 #'   order placed with no fills):
 #' - symbol (character) the trading pair.
-#' - order_id (integer) exchange-assigned order id.
-#' - order_list_id (integer) OCO list id, or `-1` for a non-OCO order.
+#' - order_id (numeric) exchange-assigned order id (a 64-bit id; `numeric` to
+#'   avoid 32-bit overflow).
+#' - order_list_id (numeric) OCO list id, or `-1` for a non-OCO order (a 64-bit
+#'   id; `numeric` to avoid 32-bit overflow).
 #' - client_order_id (character) client-assigned order id.
 #' - transact_time (POSIXct) transaction time.
 #' - price (character) order price.
@@ -97,8 +99,10 @@
 #' @type SpotOrderQuery (data.table) the query / list order shape shared by spot
 #'   `get_order()`, `get_open_orders()`, `get_all_orders()`. One row per order:
 #' - symbol (character) the trading pair.
-#' - order_id (integer) exchange-assigned order id.
-#' - order_list_id (integer) OCO list id, or `-1` for a non-OCO order.
+#' - order_id (numeric) exchange-assigned order id (a 64-bit id; `numeric` to
+#'   avoid 32-bit overflow).
+#' - order_list_id (numeric) OCO list id, or `-1` for a non-OCO order (a 64-bit
+#'   id; `numeric` to avoid 32-bit overflow).
 #' - client_order_id (character) client-assigned order id.
 #' - price (character) order price.
 #' - orig_qty (character) original requested quantity.
@@ -120,7 +124,8 @@
 #' @type FuturesOrder (data.table) the USD-M futures order shape shared by
 #'   `add_order()`, `cancel_order()`, `get_order()`, `get_open_orders()`,
 #'   `get_all_orders()`. One row per order:
-#' - order_id (integer) exchange-assigned order id.
+#' - order_id (numeric) exchange-assigned order id (a 64-bit id; `numeric` to
+#'   avoid 32-bit overflow).
 #' - symbol (character) the trading pair.
 #' - status (character) order status.
 #' - client_order_id (character) client-assigned order id.
@@ -140,14 +145,16 @@
 #' - orig_type (character) original order type.
 #' - price_match (character) price-match mode.
 #' - self_trade_prevention_mode (character) self-trade-prevention mode.
-#' - good_till_date (integer) GTD expiry epoch ms, or `0` when not GTD.
+#' - good_till_date (numeric) GTD expiry epoch ms, or `0` when not GTD (an
+#'   epoch-ms value that exceeds 32-bit range; `numeric` to avoid overflow).
 #' - update_time (POSIXct) most recent update time.
 #'
 #' @type AccountTrade (data.table) one row per account trade (fill), shared by
 #'   spot `get_trades()` and margin `get_trades()` (margin adds `is_isolated`):
 #' - symbol (character) the trading pair.
-#' - id (integer) trade id.
-#' - order_id (integer) the order this fill belongs to.
+#' - id (numeric) trade id (a 64-bit id; `numeric` to avoid 32-bit overflow).
+#' - order_id (numeric) the order this fill belongs to (a 64-bit id; `numeric`
+#'   to avoid 32-bit overflow).
 #' - price (character) fill price.
 #' - qty (character) base-asset fill quantity.
 #' - quote_qty (character) quote-asset fill quantity.

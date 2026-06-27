@@ -213,7 +213,7 @@ so the return is always one row per account.
 row per account — collapsed via the shared
 \code{collapse_string_array_fields()} helper for cross-package
 consistency.
-\item uid (integer) Unique account identifier.
+\item uid (numeric) Unique account identifier.
 }
 }
 \subsection{Examples}{
@@ -401,9 +401,9 @@ Verified: 2026-05-22
 (data.table | promise<data.table>) one row per trade:
 \itemize{
 \item symbol (character) Trading pair (e.g., \code{"BTCUSDT"}).
-\item id (integer) Unique trade identifier.
-\item order_id (integer) Order that generated this trade.
-\item order_list_id (integer) OCO order list ID; \code{-1} if not an OCO.
+\item id (numeric) Unique trade identifier.
+\item order_id (numeric) Order that generated this trade.
+\item order_list_id (numeric) OCO order list ID; \code{-1} if not an OCO.
 \item price (character) Execution price.
 \item qty (character) Quantity traded.
 \item quote_qty (character) Quote asset amount transacted.

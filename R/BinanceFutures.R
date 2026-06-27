@@ -193,7 +193,7 @@ BinanceFutures <- R6::R6Class(
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - symbol (character) Trading pair (e.g., `"BTCUSDT"`).
-    #' - order_id (integer) Unique order identifier.
+    #' - order_id (numeric) Unique order identifier.
     #' - client_order_id (character) Client-assigned order ID.
     #' - price (character) Order price.
     #' - orig_qty (character) Original requested quantity.
@@ -305,6 +305,9 @@ BinanceFutures <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           coerce_cols(dt, "update_time", ms_to_datetime)
+          # 64-bit order id and epoch-ms good_till_date -> numeric so neither
+          # overflows int32.
+          coerce_cols(dt, c("order_id", "good_till_date"), as.numeric)
           return(dt[])
         }
       )
@@ -550,7 +553,7 @@ BinanceFutures <- R6::R6Class(
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - symbol (character) Trading pair.
-    #' - order_id (integer) Unique order identifier.
+    #' - order_id (numeric) Unique order identifier.
     #' - client_order_id (character) Client-assigned order ID.
     #' - orig_qty (character) Original requested quantity.
     #' - executed_qty (character) Quantity filled so far.
@@ -583,6 +586,9 @@ BinanceFutures <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           coerce_cols(dt, "update_time", ms_to_datetime)
+          # 64-bit order id and epoch-ms good_till_date -> numeric so neither
+          # overflows int32.
+          coerce_cols(dt, c("order_id", "good_till_date"), as.numeric)
           return(dt[])
         }
       )
@@ -711,7 +717,7 @@ BinanceFutures <- R6::R6Class(
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - symbol (character) Trading pair.
-    #' - order_id (integer) Unique order identifier.
+    #' - order_id (numeric) Unique order identifier.
     #' - client_order_id (character) Client-assigned order ID.
     #' - price (character) Order price.
     #' - orig_qty (character) Original requested quantity.
@@ -748,6 +754,8 @@ BinanceFutures <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           coerce_cols(dt, c("time", "update_time"), ms_to_datetime)
+          # 64-bit order id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "order_id", as.numeric)
           return(dt[])
         }
       )
@@ -810,7 +818,7 @@ BinanceFutures <- R6::R6Class(
     #' @return (data.table | promise<data.table>) one row per open order
     #'   (empty when there are none):
     #' - symbol (character) Trading pair.
-    #' - order_id (integer) Unique order identifier.
+    #' - order_id (numeric) Unique order identifier.
     #' - client_order_id (character) Client-assigned order ID.
     #' - price (character) Order price.
     #' - orig_qty (character) Original requested quantity.
@@ -839,6 +847,8 @@ BinanceFutures <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, c("time", "update_time"), ms_to_datetime)
+          # 64-bit order id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "order_id", as.numeric)
           return(dt[])
         }
       )
@@ -905,7 +915,7 @@ BinanceFutures <- R6::R6Class(
     #' @return (data.table | promise<data.table>) one row per order
     #'   (empty when there are no matching orders):
     #' - symbol (character) Trading pair.
-    #' - order_id (integer) Unique order identifier.
+    #' - order_id (numeric) Unique order identifier.
     #' - client_order_id (character) Client-assigned order ID.
     #' - price (character) Order price.
     #' - orig_qty (character) Original requested quantity.
@@ -948,6 +958,8 @@ BinanceFutures <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, c("time", "update_time"), ms_to_datetime)
+          # 64-bit order id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "order_id", as.numeric)
           return(dt[])
         }
       )
@@ -1486,8 +1498,8 @@ BinanceFutures <- R6::R6Class(
     #' @return (data.table | promise<data.table>) one row:
     #' - code (integer) Response code (`200` on success).
     #' - msg (character) Response message.
-    #' - amount (integer) Margin amount modified (Binance returns it as a
-    #'   whole-number JSON number).
+    #' - amount (numeric) Margin amount modified (Binance returns it as a JSON
+    #'   decimal, so it is parsed as a double, not an integer).
     #' - type (integer) Margin change type (1 = add, 2 = reduce).
     #'
     #' @examples
@@ -1514,7 +1526,11 @@ BinanceFutures <- R6::R6Class(
         method = "POST",
         body = body,
         .parser = function(data) {
-          return(as_dt_row(data)[])
+          dt <- as_dt_row(data)
+          # `amount` is a JSON decimal -> coerce to numeric so the contract
+          # matches the parser's own double output.
+          coerce_cols(dt, "amount", as.numeric)
+          return(dt[])
         }
       )
       return(connectcore::then_or_now(
@@ -1669,8 +1685,8 @@ BinanceFutures <- R6::R6Class(
     #' @return (data.table | promise<data.table>) one row per trade
     #'   (empty when there are none):
     #' - symbol (character) Trading pair.
-    #' - id (integer) Trade identifier.
-    #' - order_id (integer) Order identifier.
+    #' - id (numeric) Trade identifier.
+    #' - order_id (numeric) Order identifier.
     #' - price (character) Trade execution price.
     #' - qty (character) Trade quantity.
     #' - quote_qty (character) Quote asset quantity.
@@ -1716,6 +1732,8 @@ BinanceFutures <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "time", ms_to_datetime)
+          # 64-bit ids -> numeric so a large id never overflows int32.
+          coerce_cols(dt, c("id", "order_id"), as.numeric)
           return(dt[])
         }
       )

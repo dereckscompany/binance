@@ -217,7 +217,7 @@ Verified: 2026-05-22
 (data.table | promise<data.table>) one row per pair:
 \itemize{
 \item base (character) Base asset code (e.g., \code{"BTC"}).
-\item id (integer) Pair identifier.
+\item id (numeric) Pair identifier.
 \item is_buy_allowed (logical) Whether buying is allowed.
 \item is_margin_trade (logical) Whether margin trading is enabled.
 \item is_sell_allowed (logical) Whether selling is allowed.

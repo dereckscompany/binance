@@ -132,8 +132,8 @@ BinanceTrading <- R6::R6Class(
     #' @return (data.table | promise<data.table>) one row per fill (one row with
     #'   `NA` `fill_*` columns when the order had no fills):
     #' - symbol (character) Trading pair (e.g., `"BTCUSDT"`).
-    #' - order_id (integer) Unique order identifier assigned by Binance.
-    #' - order_list_id (integer) OCO order list ID; `-1` if not an OCO.
+    #' - order_id (numeric) Unique order identifier assigned by Binance.
+    #' - order_list_id (numeric) OCO order list ID; `-1` if not an OCO.
     #' - client_order_id (character) Client-assigned order ID.
     #' - price (character) Order price.
     #' - orig_qty (character) Original requested quantity.
@@ -154,7 +154,8 @@ BinanceTrading <- R6::R6Class(
     #'   (`NA` when no fills).
     #' - fill_commission_asset (character | NA) Asset used for commission
     #'   (e.g., `"BNB"`; `NA` when no fills).
-    #' - fill_trade_id (integer | NA) Fill trade ID (`NA` when no fills).
+    #' - fill_trade_id (numeric | NA) Fill trade ID (a 64-bit id; `numeric` to
+    #'   avoid 32-bit overflow; `NA` when no fills).
     #'
     #' When the order has N fills, the parent order fields are replicated on
     #' each of the N rows and `fill_index` runs `1..N`. When the order has
@@ -254,6 +255,9 @@ BinanceTrading <- R6::R6Class(
             dt[, fill_commission_asset := NA_character_]
             dt[, fill_trade_id := NA_integer_]
           }
+          # 64-bit ids: coerce to numeric so a large id never overflows the
+          # 32-bit integer the small-id fixtures would otherwise yield.
+          coerce_cols(dt, c("order_id", "order_list_id", "fill_trade_id"), as.numeric)
           return(dt[])
         }
       )
@@ -456,8 +460,8 @@ BinanceTrading <- R6::R6Class(
     #' @return (data.table | promise<data.table>) one row:
     #' - symbol (character) Trading pair.
     #' - orig_client_order_id (character) Original client order ID.
-    #' - order_id (integer) Unique order identifier.
-    #' - order_list_id (integer) OCO order list ID; `-1` if not an OCO.
+    #' - order_id (numeric) Unique order identifier.
+    #' - order_list_id (numeric) OCO order list ID; `-1` if not an OCO.
     #' - client_order_id (character) New client order ID after cancellation.
     #' - price (character) Order price.
     #' - orig_qty (character) Original requested quantity.
@@ -494,6 +498,8 @@ BinanceTrading <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           coerce_cols(dt, "transact_time", ms_to_datetime)
+          # 64-bit ids -> numeric so a large id never overflows int32.
+          coerce_cols(dt, c("order_id", "order_list_id"), as.numeric)
           return(dt[])
         }
       )
@@ -570,8 +576,8 @@ BinanceTrading <- R6::R6Class(
     #'   signal):
     #'   - symbol (character) Trading pair.
     #'   - orig_client_order_id (character) Original client order ID.
-    #'   - order_id (integer) Unique order identifier.
-    #'   - order_list_id (integer) OCO order list ID; `-1` if not an OCO.
+    #'   - order_id (numeric) Unique order identifier.
+    #'   - order_list_id (numeric) OCO order list ID; `-1` if not an OCO.
     #'   - client_order_id (character) New client order ID after cancellation.
     #'   - price (character) Order price.
     #'   - orig_qty (character) Original requested quantity.
@@ -608,6 +614,8 @@ BinanceTrading <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "transact_time", ms_to_datetime)
+          # 64-bit ids -> numeric so a large id never overflows int32.
+          coerce_cols(dt, c("order_id", "order_list_id"), as.numeric)
           return(dt[])
         }
       )
@@ -693,6 +701,8 @@ BinanceTrading <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           coerce_cols(dt, c("time", "update_time", "working_time"), ms_to_datetime)
+          # 64-bit ids -> numeric so a large id never overflows int32.
+          coerce_cols(dt, c("order_id", "order_list_id"), as.numeric)
           return(dt[])
         }
       )
@@ -755,8 +765,8 @@ BinanceTrading <- R6::R6Class(
     #' @return (data.table | promise<data.table>) one row per open order
     #'   (empty when there are none):
     #' - symbol (character) Trading pair.
-    #' - order_id (integer) Exchange-assigned order id.
-    #' - order_list_id (integer) OCO list id, or `-1` for a non-OCO order.
+    #' - order_id (numeric) Exchange-assigned order id.
+    #' - order_list_id (numeric) OCO list id, or `-1` for a non-OCO order.
     #' - client_order_id (character) Client-assigned order id.
     #' - price (character) Order price.
     #' - orig_qty (character) Original requested quantity.
@@ -791,6 +801,8 @@ BinanceTrading <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, c("time", "update_time", "working_time"), ms_to_datetime)
+          # 64-bit ids -> numeric so a large id never overflows int32.
+          coerce_cols(dt, c("order_id", "order_list_id"), as.numeric)
           return(dt[])
         }
       )
@@ -880,8 +892,8 @@ BinanceTrading <- R6::R6Class(
     #' @return (data.table | promise<data.table>) one row per order
     #'   (empty when there are no matching orders):
     #' - symbol (character) Trading pair.
-    #' - order_id (integer) Exchange-assigned order id.
-    #' - order_list_id (integer) OCO list id, or `-1` for a non-OCO order.
+    #' - order_id (numeric) Exchange-assigned order id.
+    #' - order_list_id (numeric) OCO list id, or `-1` for a non-OCO order.
     #' - client_order_id (character) Client-assigned order id.
     #' - price (character) Order price.
     #' - orig_qty (character) Original requested quantity.
@@ -930,6 +942,8 @@ BinanceTrading <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, c("time", "update_time", "working_time"), ms_to_datetime)
+          # 64-bit ids -> numeric so a large id never overflows int32.
+          coerce_cols(dt, c("order_id", "order_list_id"), as.numeric)
           return(dt[])
         }
       )

@@ -359,7 +359,7 @@ BinanceEarn <- R6::R6Class(
     #' @param sourceAccount (scalar<character>?) source wallet: `"SPOT"`, `"FUND"`, or `"ALL"`. Default `"SPOT"`.
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
-    #' - purchase_id (integer) Unique purchase identifier.
+    #' - purchase_id (numeric) Unique purchase identifier.
     #' - success (logical) Whether the subscription was successful.
     #'
     #' @examples
@@ -387,7 +387,10 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data)[])
+          dt <- as_dt_row(data)
+          # 64-bit purchase id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "purchase_id", as.numeric)
+          return(dt[])
         }
       )
       return(connectcore::then_or_now(
@@ -439,7 +442,7 @@ BinanceEarn <- R6::R6Class(
     #' @param autoSubscribe (scalar<logical>?) whether to enable auto-subscription.
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
-    #' - purchase_id (integer) Unique purchase identifier.
+    #' - purchase_id (numeric) Unique purchase identifier.
     #' - position_id (character) Position identifier for the locked subscription.
     #' - success (logical) Whether the subscription was successful.
     #'
@@ -461,7 +464,10 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data)[])
+          dt <- as_dt_row(data)
+          # 64-bit purchase id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "purchase_id", as.numeric)
+          return(dt[])
         }
       )
       return(connectcore::then_or_now(
@@ -516,7 +522,7 @@ BinanceEarn <- R6::R6Class(
     #' @param destAccount (scalar<character>?) destination wallet: `"SPOT"` or `"FUND"`. Default `"SPOT"`.
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
-    #' - redeem_id (integer) Unique redemption identifier.
+    #' - redeem_id (numeric) Unique redemption identifier.
     #' - success (logical) Whether the redemption was successful.
     #'
     #' @examples
@@ -544,7 +550,10 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data)[])
+          dt <- as_dt_row(data)
+          # 64-bit redeem id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "redeem_id", as.numeric)
+          return(dt[])
         }
       )
       return(connectcore::then_or_now(
@@ -591,7 +600,7 @@ BinanceEarn <- R6::R6Class(
     #' @param positionId (scalar<character>) the position ID to redeem.
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
-    #' - redeem_id (integer) Unique redemption identifier.
+    #' - redeem_id (numeric) Unique redemption identifier.
     #' - success (logical) Whether the redemption was successful.
     #'
     #' @examples
@@ -610,7 +619,10 @@ BinanceEarn <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data)[])
+          dt <- as_dt_row(data)
+          # 64-bit redeem id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "redeem_id", as.numeric)
+          return(dt[])
         }
       )
       return(connectcore::then_or_now(
@@ -936,7 +948,7 @@ BinanceEarn <- R6::R6Class(
     #' - amount (character) Subscription amount.
     #' - asset (character) Asset symbol.
     #' - time (POSIXct) Subscription time.
-    #' - purchase_id (integer) Purchase identifier.
+    #' - purchase_id (numeric) Purchase identifier.
     #' - type (character) Subscription type (e.g., `"AUTO"`, `"NORMAL"`).
     #' - source_account (character) Source account (e.g., `"SPOT"`).
     #' - status (character) Subscription status (e.g., `"SUCCESS"`).
@@ -984,6 +996,8 @@ BinanceEarn <- R6::R6Class(
           if (nrow(dt) == 0L) {
             return(empty_dt_earn_flexible_subscription_history())
           }
+          # 64-bit purchase id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "purchase_id", as.numeric)
           return(dt[])
         }
       )
@@ -1044,7 +1058,7 @@ BinanceEarn <- R6::R6Class(
     #' - amount (character) Subscription amount.
     #' - asset (character) Asset symbol.
     #' - time (POSIXct) Subscription time.
-    #' - purchase_id (integer) Purchase identifier.
+    #' - purchase_id (numeric) Purchase identifier.
     #' - position_id (character) Position identifier.
     #' - lock_period (integer) Lock duration in days.
     #' - type (character) Subscription type.
@@ -1091,6 +1105,8 @@ BinanceEarn <- R6::R6Class(
           if (nrow(dt) == 0L) {
             return(empty_dt_earn_locked_subscription_history())
           }
+          # 64-bit purchase id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "purchase_id", as.numeric)
           return(dt[])
         }
       )
@@ -1151,7 +1167,7 @@ BinanceEarn <- R6::R6Class(
     #' - asset (character) Asset symbol.
     #' - time (POSIXct) Redemption time.
     #' - project_id (character) Product identifier.
-    #' - redeem_id (integer) Redemption identifier.
+    #' - redeem_id (numeric) Redemption identifier.
     #' - dest_account (character) Destination account.
     #' - status (character) Redemption status (e.g., `"PAID"`).
     #'
@@ -1198,6 +1214,8 @@ BinanceEarn <- R6::R6Class(
           if (nrow(dt) == 0L) {
             return(empty_dt_earn_flexible_redemption_history())
           }
+          # 64-bit redeem id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "redeem_id", as.numeric)
           return(dt[])
         }
       )
@@ -1258,7 +1276,7 @@ BinanceEarn <- R6::R6Class(
     #' - asset (character) Asset symbol.
     #' - time (POSIXct) Redemption time.
     #' - position_id (character) Position identifier.
-    #' - redeem_id (integer) Redemption identifier.
+    #' - redeem_id (numeric) Redemption identifier.
     #' - deliver_date (POSIXct) Expected delivery time.
     #' - status (character) Redemption status.
     #'
@@ -1305,6 +1323,8 @@ BinanceEarn <- R6::R6Class(
           if (nrow(dt) == 0L) {
             return(empty_dt_earn_locked_redemption_history())
           }
+          # 64-bit redeem id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "redeem_id", as.numeric)
           return(dt[])
         }
       )

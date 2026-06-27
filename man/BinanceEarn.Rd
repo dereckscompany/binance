@@ -526,7 +526,7 @@ Verified: 2026-05-22
 \subsection{Returns}{
 (data.table | promise<data.table>) one row:
 \itemize{
-\item purchase_id (integer) Unique purchase identifier.
+\item purchase_id (numeric) Unique purchase identifier.
 \item success (logical) Whether the subscription was successful.
 }
 }
@@ -613,7 +613,7 @@ Verified: 2026-05-22
 \subsection{Returns}{
 (data.table | promise<data.table>) one row:
 \itemize{
-\item purchase_id (integer) Unique purchase identifier.
+\item purchase_id (numeric) Unique purchase identifier.
 \item position_id (character) Position identifier for the locked subscription.
 \item success (logical) Whether the subscription was successful.
 }
@@ -704,7 +704,7 @@ Verified: 2026-05-22
 \subsection{Returns}{
 (data.table | promise<data.table>) one row:
 \itemize{
-\item redeem_id (integer) Unique redemption identifier.
+\item redeem_id (numeric) Unique redemption identifier.
 \item success (logical) Whether the redemption was successful.
 }
 }
@@ -779,7 +779,7 @@ Verified: 2026-05-22
 \subsection{Returns}{
 (data.table | promise<data.table>) one row:
 \itemize{
-\item redeem_id (integer) Unique redemption identifier.
+\item redeem_id (numeric) Unique redemption identifier.
 \item success (logical) Whether the redemption was successful.
 }
 }
@@ -1134,7 +1134,7 @@ Verified: 2026-05-22
 \item amount (character) Subscription amount.
 \item asset (character) Asset symbol.
 \item time (POSIXct) Subscription time.
-\item purchase_id (integer) Purchase identifier.
+\item purchase_id (numeric) Purchase identifier.
 \item type (character) Subscription type (e.g., \code{"AUTO"}, \code{"NORMAL"}).
 \item source_account (character) Source account (e.g., \code{"SPOT"}).
 \item status (character) Subscription status (e.g., \code{"SUCCESS"}).
@@ -1236,7 +1236,7 @@ Verified: 2026-05-22
 \item amount (character) Subscription amount.
 \item asset (character) Asset symbol.
 \item time (POSIXct) Subscription time.
-\item purchase_id (integer) Purchase identifier.
+\item purchase_id (numeric) Purchase identifier.
 \item position_id (character) Position identifier.
 \item lock_period (integer) Lock duration in days.
 \item type (character) Subscription type.
@@ -1342,7 +1342,7 @@ Verified: 2026-05-22
 \item asset (character) Asset symbol.
 \item time (POSIXct) Redemption time.
 \item project_id (character) Product identifier.
-\item redeem_id (integer) Redemption identifier.
+\item redeem_id (numeric) Redemption identifier.
 \item dest_account (character) Destination account.
 \item status (character) Redemption status (e.g., \code{"PAID"}).
 }
@@ -1445,7 +1445,7 @@ Verified: 2026-05-22
 \item asset (character) Asset symbol.
 \item time (POSIXct) Redemption time.
 \item position_id (character) Position identifier.
-\item redeem_id (integer) Redemption identifier.
+\item redeem_id (numeric) Redemption identifier.
 \item deliver_date (POSIXct) Expected delivery time.
 \item status (character) Redemption status.
 }

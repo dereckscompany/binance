@@ -302,7 +302,7 @@ BinanceMargin <- R6::R6Class(
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - symbol (character) Trading pair.
-    #' - order_id (integer) Unique order identifier.
+    #' - order_id (numeric) Unique order identifier.
     #' - client_order_id (character) Client-assigned order ID.
     #' - transact_time (POSIXct) Transaction time.
     #' - price (character) Order price.
@@ -400,6 +400,8 @@ BinanceMargin <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           coerce_cols(dt, "transact_time", ms_to_datetime)
+          # 64-bit order id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "order_id", as.numeric)
           return(dt[])
         }
       )
@@ -464,7 +466,7 @@ BinanceMargin <- R6::R6Class(
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - symbol (character) Trading pair.
-    #' - order_id (integer) Unique order identifier.
+    #' - order_id (numeric) Unique order identifier.
     #' - orig_client_order_id (character) Original client order ID.
     #' - status (character) Order status (typically `"CANCELED"`).
     #' - transact_time (POSIXct) Cancellation time.
@@ -495,6 +497,8 @@ BinanceMargin <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           coerce_cols(dt, "transact_time", ms_to_datetime)
+          # 64-bit order id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "order_id", as.numeric)
           return(dt[])
         }
       )
@@ -561,7 +565,7 @@ BinanceMargin <- R6::R6Class(
     #'   "no stub rows" convention — the absence of an error is the success
     #'   signal):
     #'   - symbol (character) Trading pair.
-    #'   - order_id (integer) Unique order identifier.
+    #'   - order_id (numeric) Unique order identifier.
     #'   - orig_client_order_id (character) Original client order ID.
     #'   - status (character) Order status (typically `"CANCELED"`).
     #'   - transact_time (POSIXct) Cancellation time.
@@ -591,6 +595,8 @@ BinanceMargin <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "transact_time", ms_to_datetime)
+          # 64-bit order id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "order_id", as.numeric)
           return(dt[])
         }
       )
@@ -651,7 +657,7 @@ BinanceMargin <- R6::R6Class(
     #' @param recvWindow (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - symbol (character) Trading pair.
-    #' - order_id (integer) Unique order identifier.
+    #' - order_id (numeric) Unique order identifier.
     #' - client_order_id (character) Client-assigned order ID.
     #' - price (character) Order price.
     #' - orig_qty (character) Original requested quantity.
@@ -687,6 +693,8 @@ BinanceMargin <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           coerce_cols(dt, c("time", "update_time"), ms_to_datetime)
+          # 64-bit order id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "order_id", as.numeric)
           return(dt[])
         }
       )
@@ -746,7 +754,7 @@ BinanceMargin <- R6::R6Class(
     #' @return (data.table | promise<data.table>) one row per open order
     #'   (empty when there are none):
     #' - symbol (character) Trading pair.
-    #' - order_id (integer) Unique order identifier.
+    #' - order_id (numeric) Unique order identifier.
     #' - client_order_id (character) Client-assigned order ID.
     #' - price (character) Order price.
     #' - orig_qty (character) Original requested quantity.
@@ -779,6 +787,8 @@ BinanceMargin <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, c("time", "update_time"), ms_to_datetime)
+          # 64-bit order id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "order_id", as.numeric)
           return(dt[])
         }
       )
@@ -860,7 +870,7 @@ BinanceMargin <- R6::R6Class(
     #' @return (data.table | promise<data.table>) one row per order
     #'   (empty when there are no matching orders):
     #' - symbol (character) Trading pair.
-    #' - order_id (integer) Unique order identifier.
+    #' - order_id (numeric) Unique order identifier.
     #' - client_order_id (character) Client-assigned order ID.
     #' - price (character) Order price.
     #' - orig_qty (character) Original requested quantity.
@@ -905,6 +915,8 @@ BinanceMargin <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, c("time", "update_time"), ms_to_datetime)
+          # 64-bit order id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "order_id", as.numeric)
           return(dt[])
         }
       )
@@ -1293,7 +1305,7 @@ BinanceMargin <- R6::R6Class(
     #'   (empty when there are none):
     #' - avg_price (character) Average liquidation price.
     #' - executed_qty (character) Liquidated quantity.
-    #' - order_id (integer) Liquidation order identifier.
+    #' - order_id (numeric) Liquidation order identifier.
     #' - price (character) Liquidation price.
     #' - qty (character) Total quantity.
     #' - side (character) `"BUY"` or `"SELL"`.
@@ -1339,6 +1351,8 @@ BinanceMargin <- R6::R6Class(
           if (nrow(dt) == 0L) {
             return(empty_dt_margin_force_liquidation())
           }
+          # 64-bit order id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "order_id", as.numeric)
           return(dt[])
         }
       )
@@ -1401,8 +1415,8 @@ BinanceMargin <- R6::R6Class(
     #' @return (data.table | promise<data.table>) one row per trade
     #'   (empty when there are none):
     #' - symbol (character) Trading pair.
-    #' - id (integer) Trade ID.
-    #' - order_id (integer) Order ID.
+    #' - id (numeric) Trade ID.
+    #' - order_id (numeric) Order ID.
     #' - price (character) Trade price.
     #' - qty (character) Trade quantity.
     #' - commission (character) Commission paid.
@@ -1447,6 +1461,8 @@ BinanceMargin <- R6::R6Class(
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "time", ms_to_datetime)
+          # 64-bit ids -> numeric so a large id never overflows int32.
+          coerce_cols(dt, c("id", "order_id"), as.numeric)
           return(dt[])
         }
       )
