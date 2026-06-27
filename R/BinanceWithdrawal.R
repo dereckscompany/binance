@@ -112,7 +112,7 @@ BinanceWithdrawal <- R6::R6Class(
     #' @param name (scalar<character>?) description for the address (max 200 entries in address book).
     #' @param walletType (scalar<count>?) `0` for spot wallet, `1` for funding wallet.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with columns:
+    #' @return (data.table | promise<data.table>) one row:
     #' - id (character) Unique withdrawal identifier assigned by Binance.
     #'
     #' @examples
@@ -186,11 +186,16 @@ BinanceWithdrawal <- R6::R6Class(
         body$recvWindow <- as.character(recvWindow)
       }
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/capital/withdraw/apply",
         method = "POST",
         body = body,
         .parser = as_dt_row
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceWithdrawal__add_withdrawal,
+        is_async = private$.is_async
       ))
     },
 
@@ -253,7 +258,8 @@ BinanceWithdrawal <- R6::R6Class(
     #' @param offset (scalar<count>?) pagination offset (default 0).
     #' @param limit (scalar<count>?) max results (default 1000, max 1000).
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (promise<data.table>) with columns:
+    #' @return (data.table | promise<data.table>) one row per withdrawal
+    #'   (empty when there are no matching withdrawals):
     #' - id (character) Unique withdrawal identifier.
     #' - amount (character) Withdrawal amount.
     #' - transaction_fee (character) Fee charged for the withdrawal.
@@ -269,7 +275,9 @@ BinanceWithdrawal <- R6::R6Class(
     #' - confirm_no (integer) Number of on-chain confirmations.
     #' - wallet_type (integer) 0=spot, 1=funding.
     #' - tx_key (character) Transaction key.
-    #' - complete_time (POSIXct) Completion time (parsed from the UTC string Binance returns).
+    #' - complete_time (POSIXct | NA) Completion time (parsed from the UTC string
+    #'   Binance returns; `NA` for in-progress withdrawals, which Binance sends as
+    #'   an empty string).
     #'
     #' @examples
     #' \dontrun{
@@ -306,7 +314,7 @@ BinanceWithdrawal <- R6::R6Class(
         limit,
         recvWindow
       )
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/capital/withdraw/history",
         query = list(
           coin = coin,
@@ -320,7 +328,7 @@ BinanceWithdrawal <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_withdrawal_history())
           }
           dt <- as_dt_list(data)
           # `apply_time` and `complete_time` come back as UTC datetime
@@ -330,6 +338,11 @@ BinanceWithdrawal <- R6::R6Class(
           coerce_cols(dt, c("apply_time", "complete_time"), utc_string_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceWithdrawal__get_withdrawal_history,
+        is_async = private$.is_async
       ))
     }
   )
