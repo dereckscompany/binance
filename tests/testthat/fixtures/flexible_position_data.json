@@ -1,0 +1,21 @@
+{
+  "total": 1,
+  "rows": [
+    {
+      "totalAmount": "100.00000000",
+      "tierAnnualPercentageRate": [],
+      "latestAnnualPercentageRate": "0.03250000",
+      "yesterdayAirdropPercentageRate": "0.00008000",
+      "asset": "USDT",
+      "airDropAsset": "USDT",
+      "canRedeem": true,
+      "collateralAmount": "0.00000000",
+      "productId": "USDT001",
+      "yesterdayRealTimeRewards": "0.00800000",
+      "cumulativeBonusRewards": "0.15000000",
+      "cumulativeRealTimeRewards": "0.08000000",
+      "cumulativeTotalRewards": "0.23000000",
+      "autoSubscribe": true
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "orderListId": 0,
+  "contingencyType": "OCO",
+  "listStatusType": "ALL_DONE",
+  "listOrderStatus": "ALL_DONE",
+  "listClientOrderId": "JYVpp3F0f5CAG15DhtrqLp",
+  "transactionTime": 1563417480525,
+  "symbol": "BTCUSDT",
+  "orders": [
+    {
+      "symbol": "BTCUSDT",
+      "orderId": 12,
+      "clientOrderId": "bX5wROblo6YeDwa9iTLeyY"
+    },
+    {
+      "symbol": "BTCUSDT",
+      "orderId": 13,
+      "clientOrderId": "Tnu2IP0J5Y4mxw3IATBfmW"
+    }
+  ]
+}

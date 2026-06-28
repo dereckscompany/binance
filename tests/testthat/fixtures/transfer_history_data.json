@@ -1,0 +1,21 @@
+{
+  "total": 2,
+  "rows": [
+    {
+      "asset": "USDT",
+      "amount": "100.00000000",
+      "type": "MAIN_UMFUTURE",
+      "status": "CONFIRMED",
+      "tranId": 13526853623,
+      "timestamp": 1661493146000
+    },
+    {
+      "asset": "BTC",
+      "amount": "0.01000000",
+      "type": "MAIN_MARGIN",
+      "status": "CONFIRMED",
+      "tranId": 13526853624,
+      "timestamp": 1661493246000
+    }
+  ]
+}

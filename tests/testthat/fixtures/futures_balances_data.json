@@ -1,0 +1,13 @@
+[
+  {
+    "accountAlias": "SgsR",
+    "asset": "USDT",
+    "balance": "1000.00000000",
+    "crossWalletBalance": "1000.00000000",
+    "crossUnPnl": "0.00000000",
+    "availableBalance": "1000.00000000",
+    "maxWithdrawAmount": "1000.00000000",
+    "marginAvailable": true,
+    "updateTime": 1661493146000
+  }
+]

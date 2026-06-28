@@ -1,0 +1,18 @@
+{
+  "subAccounts": [
+    {
+      "email": "testsub01@virtual.com",
+      "isFreeze": false,
+      "createTime": 1661493146000,
+      "isManagedSubAccount": false,
+      "isAssetManagementSubAccount": false
+    },
+    {
+      "email": "testsub02@virtual.com",
+      "isFreeze": true,
+      "createTime": 1661493246000,
+      "isManagedSubAccount": false,
+      "isAssetManagementSubAccount": false
+    }
+  ]
+}
