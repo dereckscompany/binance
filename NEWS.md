@@ -1,3 +1,13 @@
+# binance 0.5.2
+
+## Bug fixes
+
+* **Two over-strict `get_exchange_info()` return contracts rejected real live responses.** The synthetic fixtures hid a divergence the real Binance API exposes: on the spot endpoint every symbol now returns an empty `permissions` array (the data has moved to `permission_sets`), and on the futures endpoint many non-coin / index-style contracts return no `underlyingSubType` — in both cases the parser correctly emits `NA`, but the `@type` contract still asserted no missing values and aborted. Loosened `permissions` (spot) and `underlying_sub_type` (futures) to `character | NA` in the `@return` grammar and regenerated `R/contracts-generated.R`; the parser already round-tripped the empty array to `NA` via `collapse_string_array_fields()`, so no parser change was needed. Surfaced by the public live-integration tests (`BINANCE_LIVE_TESTS=true`) run against the real API.
+
+## Internal
+
+* **Public market-data fixtures validated and enriched against the real wire shapes.** A new read-only capture harness (`dev/capture-binance.R`, GET-only, public market-data endpoints, no credentials, raw bodies written only to the git-ignored `local/raw-data/binance/`) was used to diff every committed public fixture against a fresh live capture. The spot and futures `exchangeInfo` fixtures gained the real superset of per-symbol fields they previously omitted — spot: `baseCommissionPrecision`, `quoteCommissionPrecision`, `opoAllowed`, `amendAllowed`, `pegInstructionsAllowed`; futures: `liquidationFee`, `maintMarginPercent`, `requiredMarginPercent`, `marketTakeBound`, `maxMoveOrderLimit`, `permissionSets` — so the mock harness mirrors a current live response. The remaining market-data fixtures (ticker, book ticker, 24hr stats, average price, depth, trades, klines, mark price, funding rate, open interest) matched the live shapes verbatim. The private / account fixtures (account, orders, margin, futures account, sub-accounts) require API keys and remain fully synthetic — they are not validated by this pass.
+
 # binance 0.5.1
 
 ## Internal

@@ -175,8 +175,9 @@ BinanceFuturesData <- R6::R6Class(
     #'     Recover via `strsplit(dt$order_types[1], ";", fixed = TRUE)[[1]]`.
     #'   - time_in_force (character) Semicolon-separated allowed
     #'     time-in-force values.
-    #'   - underlying_sub_type (character) Semicolon-separated underlying
-    #'     sub-types.
+    #'   - underlying_sub_type (character | NA) Semicolon-separated underlying
+    #'     sub-types (`NA` when the symbol omits the field, as many
+    #'     non-coin / index-style contracts do).
     #'   - permission_sets (character | NA) Semicolon-separated permission sets
     #'     (`NA` when the symbol omits the field).
     #'   - lot_min_qty (numeric | NA) Minimum order quantity (from LOT_SIZE

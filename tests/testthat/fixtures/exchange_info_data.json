@@ -10,6 +10,8 @@
       "quoteAsset": "USDT",
       "quoteAssetPrecision": 8,
       "quotePrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -20,9 +22,12 @@
       "icebergAllowed": true,
       "ocoAllowed": true,
       "otoAllowed": true,
+      "opoAllowed": true,
       "quoteOrderQtyMarketAllowed": true,
       "allowTrailingStop": true,
       "cancelReplaceAllowed": true,
+      "amendAllowed": true,
+      "pegInstructionsAllowed": true,
       "isSpotTradingAllowed": true,
       "isMarginTradingAllowed": true,
       "filters": [
@@ -65,6 +70,8 @@
       "quoteAsset": "USDT",
       "quoteAssetPrecision": 8,
       "quotePrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "MARKET"
@@ -72,9 +79,12 @@
       "icebergAllowed": false,
       "ocoAllowed": false,
       "otoAllowed": false,
+      "opoAllowed": false,
       "quoteOrderQtyMarketAllowed": true,
       "allowTrailingStop": false,
       "cancelReplaceAllowed": false,
+      "amendAllowed": false,
+      "pegInstructionsAllowed": false,
       "isSpotTradingAllowed": true,
       "isMarginTradingAllowed": false,
       "filters": [

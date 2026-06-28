@@ -222,12 +222,12 @@ BinanceMarketData <- R6::R6Class(
     #'     `ICEBERG_PARTS`, `MAX_POSITION`, `TRAILING_DELTA`, ...). Recover
     #'     with `jsonlite::fromJSON(dt$filters_raw[1])`. `NA` if Binance
     #'     returned no filters for the symbol.
-    #'   - permissions (character) Semicolon-separated trading permissions
+    #'   - permissions (character | NA) Semicolon-separated trading permissions
     #'     (e.g., `"SPOT;MARGIN"`). Recover via
     #'     `strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]`. **Note:**
     #'     on newer symbols Binance often returns `permissions = []` and
-    #'     populates `permission_sets` instead. Prefer `permission_sets`
-    #'     for new code.
+    #'     populates `permission_sets` instead, so this column is `NA` for
+    #'     those symbols. Prefer `permission_sets` for new code.
     #'   - permission_sets (character | NA) JSON string preserving
     #'     Binance's array-of-arrays structure (e.g.
     #'     `'[["SPOT","MARGIN"],["TRD_GRP_004"]]'`). Inner groupings
