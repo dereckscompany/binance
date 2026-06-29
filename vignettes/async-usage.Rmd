@@ -91,6 +91,7 @@ fetch_tickers <- coro::async(function() {
   btc <- await(market$get_ticker(symbol = "BTCUSDT"))
   eth <- await(market$get_ticker(symbol = "ETHUSDT"))
   results <<- list(btc = btc, eth = eth)
+  return(invisible(NULL))
 })
 
 fetch_tickers()
@@ -120,6 +121,7 @@ fetch_parallel <- coro::async(function() {
   # Await them together
   res <- await(promises::promise_all(btc = btc_promise, eth = eth_promise))
   results <<- res
+  return(invisible(NULL))
 })
 
 fetch_parallel()
@@ -143,9 +145,11 @@ chain_result <- NULL
 market$get_24hr_stats(symbol = "BTCUSDT") |>
   promises::then(function(stats) {
     chain_result <<- stats
+    return(invisible(NULL))
   }) |>
   promises::catch(function(err) {
     message("Error: ", conditionMessage(err))
+    return(invisible(NULL))
   })
 
 while (!later::loop_empty()) {
@@ -169,13 +173,14 @@ all_tickers <- NULL
 fetch_watchlist <- coro::async(function() {
   # Fire all requests concurrently
   ticker_promises <- lapply(symbols, function(sym) {
-    market$get_ticker(symbol = sym)
+    return(market$get_ticker(symbol = sym))
   })
   names(ticker_promises) <- symbols
 
   # Await all at once
   res <- await(do.call(promises::promise_all, ticker_promises))
   all_tickers <<- res
+  return(invisible(NULL))
 })
 
 fetch_watchlist()

@@ -334,6 +334,7 @@ test_that("binance_fetch_klines streams pages to on_page in async mode", {
     on_page = function(page) {
       pages_seen <<- pages_seen + 1L
       rows_seen <<- rows_seen + nrow(page)
+      return(invisible(NULL))
     }
   )
 

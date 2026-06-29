@@ -67,6 +67,7 @@ BinanceSubAccount <- R6::R6Class(
   public = list(
     # ---- Sub-Account Creation ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Create a Virtual Sub-Account
     #'
@@ -104,6 +105,7 @@ BinanceSubAccount <- R6::R6Class(
     #' result <- sub$add_sub_account(subAccountString = "mysubaccount")
     #' print(result$email)
     #' }
+    # nolint end
     add_sub_account = function(subAccountString, recvWindow = NULL) {
       assert_args_BinanceSubAccount__add_sub_account(subAccountString, recvWindow)
       assert::assert_nonempty_strings(subAccountString)
@@ -125,6 +127,7 @@ BinanceSubAccount <- R6::R6Class(
 
     # ---- Sub-Account Queries ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' List Sub-Accounts
     #'
@@ -178,6 +181,7 @@ BinanceSubAccount <- R6::R6Class(
     #' accounts <- sub$get_sub_accounts()
     #' print(accounts[, .(email, is_freeze, create_time)])
     #' }
+    # nolint end
     get_sub_accounts = function(email = NULL, isFreeze = NULL, page = NULL, limit = NULL, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_sub_accounts(email, isFreeze, page, limit, recvWindow)
       assert::assert_nonempty_strings(email, null_ok = TRUE)
@@ -207,6 +211,7 @@ BinanceSubAccount <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Sub-Account Balances
     #'
@@ -249,6 +254,7 @@ BinanceSubAccount <- R6::R6Class(
     #' balances <- sub$get_balances(email = "sub@virtual.com")
     #' print(balances)
     #' }
+    # nolint end
     get_balances = function(email, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_balances(email, recvWindow)
       assert::assert_nonempty_strings(email)
@@ -277,6 +283,7 @@ BinanceSubAccount <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Sub-Account Spot Summary
     #'
@@ -332,6 +339,7 @@ BinanceSubAccount <- R6::R6Class(
     #' summary <- sub$get_spot_summary()
     #' print(summary)
     #' }
+    # nolint end
     get_spot_summary = function(email = NULL, page = NULL, size = NULL, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_spot_summary(email, page, size, recvWindow)
       assert::assert_nonempty_strings(email, null_ok = TRUE)
@@ -376,6 +384,7 @@ BinanceSubAccount <- R6::R6Class(
 
     # ---- Transfers ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Universal Transfer
     #'
@@ -442,6 +451,7 @@ BinanceSubAccount <- R6::R6Class(
     #' )
     #' print(result$tran_id)
     #' }
+    # nolint end
     add_transfer = function(
       fromEmail = NULL,
       toEmail = NULL,
@@ -511,6 +521,7 @@ BinanceSubAccount <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Universal Transfer History
     #'
@@ -577,6 +588,7 @@ BinanceSubAccount <- R6::R6Class(
     #' history <- sub$get_transfer_history(toEmail = "sub@virtual.com")
     #' print(history)
     #' }
+    # nolint end
     get_transfer_history = function(
       fromEmail = NULL,
       toEmail = NULL,
@@ -631,6 +643,7 @@ BinanceSubAccount <- R6::R6Class(
 
     # ---- Futures / Margin ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Sub-Account Futures Account
     #'
@@ -704,6 +717,7 @@ BinanceSubAccount <- R6::R6Class(
     #' futures <- sub$get_futures_account(email = "sub@virtual.com", futuresType = 1)
     #' print(futures)
     #' }
+    # nolint end
     get_futures_account = function(email, futuresType, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_futures_account(email, futuresType, recvWindow)
       assert::assert_nonempty_strings(email)
@@ -745,6 +759,7 @@ BinanceSubAccount <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Sub-Account Margin Account
     #'
@@ -794,6 +809,7 @@ BinanceSubAccount <- R6::R6Class(
     #' margin <- sub$get_margin_account(email = "sub@virtual.com")
     #' print(margin)
     #' }
+    # nolint end
     get_margin_account = function(email, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_margin_account(email, recvWindow)
       assert::assert_nonempty_strings(email)
@@ -814,6 +830,7 @@ BinanceSubAccount <- R6::R6Class(
 
     # ---- Status ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Sub-Account Status
     #'
@@ -866,6 +883,7 @@ BinanceSubAccount <- R6::R6Class(
     #' status <- sub$get_status()
     #' print(status)
     #' }
+    # nolint end
     get_status = function(email = NULL, recvWindow = NULL) {
       assert_args_BinanceSubAccount__get_status(email, recvWindow)
       assert::assert_nonempty_strings(email, null_ok = TRUE)

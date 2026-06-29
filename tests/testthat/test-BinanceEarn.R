@@ -440,7 +440,7 @@ test_that("get_flexible_position converts subscription_start_time to POSIXct (re
 
 # -- get_locked_position --
 
-test_that("get_locked_position converts purchase_time / next_pay_date / rewards_end_date / deliver_date / partial_amt_deliver_date to POSIXct (regression)", {
+test_that("get_locked_position converts its five ms-timestamp fields to POSIXct (regression)", {
   # All five were numeric ms in 0.1.0.
   resp <- mock_binance_response(
     data = list(

@@ -101,7 +101,7 @@ test_that("backfill resume logic starts after last existing timestamp", {
 # the length-1 and length-N branches, and `rbindlist` keeps it
 # character (no list-column fallback).
 # ---------------------------------------------------------------------------
-test_that("collapse_string_array_fields + as_dt_row produces a stable character column for length-1 and length-N arrays", {
+test_that("collapse_string_array_fields + as_dt_row: stable character column for length-1 and length-N arrays", {
   row1 <- list(name = "A", perms = list("SPOT"))
   row2 <- list(name = "B", perms = list("SPOT", "MARGIN"))
 

@@ -72,6 +72,7 @@ BinanceTrading <- R6::R6Class(
   public = list(
     # ---- Order Placement ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Place an Order
     #'
@@ -172,6 +173,7 @@ BinanceTrading <- R6::R6Class(
     #' )
     #' print(order)
     #' }
+    # nolint end
     add_order = function(
       type,
       symbol,
@@ -270,6 +272,7 @@ BinanceTrading <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Test Order Placement
     #'
@@ -344,6 +347,7 @@ BinanceTrading <- R6::R6Class(
     #' )
     #' stopifnot(test$validated)
     #' }
+    # nolint end
     add_order_test = function(
       type,
       symbol,
@@ -418,6 +422,7 @@ BinanceTrading <- R6::R6Class(
 
     # ---- Order Cancellation ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Cancel an Order
     #'
@@ -484,6 +489,7 @@ BinanceTrading <- R6::R6Class(
     #' cancelled <- trading$cancel_order("BTCUSDT", orderId = 12345)
     #' print(cancelled)
     #' }
+    # nolint end
     cancel_order = function(symbol, orderId = NULL, origClientOrderId = NULL, recvWindow = NULL) {
       assert_args_BinanceTrading__cancel_order(symbol, orderId, origClientOrderId, recvWindow)
       assert::assert_nonempty_strings(symbol)
@@ -516,6 +522,7 @@ BinanceTrading <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Cancel All Open Orders on a Symbol
     #'
@@ -602,6 +609,7 @@ BinanceTrading <- R6::R6Class(
     #' cancelled <- trading$cancel_all_orders("BTCUSDT")
     #' print(cancelled)
     #' }
+    # nolint end
     cancel_all_orders = function(symbol, recvWindow = NULL) {
       assert_args_BinanceTrading__cancel_all_orders(symbol, recvWindow)
       assert::assert_nonempty_strings(symbol)
@@ -635,6 +643,7 @@ BinanceTrading <- R6::R6Class(
 
     # ---- Order Queries ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Query Order
     #'
@@ -691,6 +700,7 @@ BinanceTrading <- R6::R6Class(
     #' order <- trading$get_order("BTCUSDT", orderId = 12345)
     #' print(order)
     #' }
+    # nolint end
     get_order = function(symbol, orderId = NULL, origClientOrderId = NULL, recvWindow = NULL) {
       assert_args_BinanceTrading__get_order(symbol, orderId, origClientOrderId, recvWindow)
       assert::assert_nonempty_strings(symbol)
@@ -722,6 +732,7 @@ BinanceTrading <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Open Orders
     #'
@@ -799,6 +810,7 @@ BinanceTrading <- R6::R6Class(
     #' open <- trading$get_open_orders("BTCUSDT")
     #' print(open)
     #' }
+    # nolint end
     get_open_orders = function(symbol = NULL, recvWindow = NULL) {
       assert_args_BinanceTrading__get_open_orders(symbol, recvWindow)
       assert::assert_nonempty_strings(symbol, null_ok = TRUE)
@@ -823,6 +835,7 @@ BinanceTrading <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get All Orders
     #'
@@ -927,6 +940,7 @@ BinanceTrading <- R6::R6Class(
     #' all <- trading$get_all_orders("BTCUSDT", limit = 50)
     #' print(all[, .(order_id, side, price, status, time)])
     #' }
+    # nolint end
     get_all_orders = function(
       symbol,
       orderId = NULL,
