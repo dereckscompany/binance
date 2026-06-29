@@ -1,0 +1,56 @@
+{
+  "orderListId": 0,
+  "contingencyType": "OCO",
+  "listStatusType": "EXEC_STARTED",
+  "listOrderStatus": "EXECUTING",
+  "listClientOrderId": "JYVpp3F0f5CAG15DhtrqLp",
+  "transactTime": 1563417480525,
+  "symbol": "BTCUSDT",
+  "orders": [
+    {
+      "symbol": "BTCUSDT",
+      "orderId": 12,
+      "clientOrderId": "bX5wROblo6YeDwa9iTLeyY"
+    },
+    {
+      "symbol": "BTCUSDT",
+      "orderId": 13,
+      "clientOrderId": "Tnu2IP0J5Y4mxw3IATBfmW"
+    }
+  ],
+  "orderReports": [
+    {
+      "symbol": "BTCUSDT",
+      "orderId": 12,
+      "orderListId": 0,
+      "clientOrderId": "bX5wROblo6YeDwa9iTLeyY",
+      "transactTime": 1563417480525,
+      "price": "50000.00000000",
+      "origQty": "0.00010000",
+      "executedQty": "0.00000000",
+      "cummulativeQuoteQty": "0.00000000",
+      "status": "NEW",
+      "timeInForce": "GTC",
+      "type": "STOP_LOSS_LIMIT",
+      "side": "SELL",
+      "stopPrice": "49000.00000000",
+      "selfTradePreventionMode": "NONE"
+    },
+    {
+      "symbol": "BTCUSDT",
+      "orderId": 13,
+      "orderListId": 0,
+      "clientOrderId": "Tnu2IP0J5Y4mxw3IATBfmW",
+      "transactTime": 1563417480525,
+      "price": "55000.00000000",
+      "origQty": "0.00010000",
+      "executedQty": "0.00000000",
+      "cummulativeQuoteQty": "0.00000000",
+      "status": "NEW",
+      "timeInForce": "GTC",
+      "type": "LIMIT_MAKER",
+      "side": "SELL",
+      "selfTradePreventionMode": "NONE"
+    }
+  ]
+}

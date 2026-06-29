@@ -237,16 +237,16 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{subAccountString}}{Character; the sub-account name/string identifier.}
+\item{\code{subAccountString}}{(scalar<character>) the sub-account name/string identifier.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
-\item \code{email} (character): The email of the newly created sub-account.
+\item email (character) The email of the newly created sub-account.
 }
 }
 \subsection{Examples}{
@@ -316,26 +316,27 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{email}}{Character or NULL; filter by sub-account email.}
+\item{\code{email}}{(scalar<character>?) filter by sub-account email.}
 
-\item{\code{isFreeze}}{Logical or NULL; filter by freeze status.}
+\item{\code{isFreeze}}{(scalar<logical>?) filter by freeze status.}
 
-\item{\code{page}}{Integer or NULL; page number (default 1).}
+\item{\code{page}}{(scalar<count>?) page number (default 1).}
 
-\item{\code{limit}}{Integer or NULL; results per page (default 1, max 200).}
+\item{\code{limit}}{(scalar<count>?) results per page (default 1, max 200).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per sub-account and the following columns:
+(data.table | promise<data.table>) one row per sub-account
+(empty when there are none):
 \itemize{
-\item \code{email} (character): Sub-account email.
-\item \code{is_freeze} (logical): Whether the sub-account is frozen.
-\item \code{create_time} (POSIXct): Account creation time converted from \code{createTime}.
-\item \code{is_managed_sub_account} (logical): Whether it is a managed sub-account.
-\item \code{is_asset_management_sub_account} (logical): Whether it is an asset management sub-account.
+\item email (character) Sub-account email.
+\item is_freeze (logical) Whether the sub-account is frozen.
+\item create_time (POSIXct) Account creation time converted from \code{createTime}.
+\item is_managed_sub_account (logical) Whether it is a managed sub-account.
+\item is_asset_management_sub_account (logical) Whether it is an asset management sub-account.
 }
 }
 \subsection{Examples}{
@@ -393,18 +394,19 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{email}}{Character; the sub-account email.}
+\item{\code{email}}{(scalar<character>) the sub-account email.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per asset and the following columns:
+(data.table | promise<data.table>) one row per asset
+(empty when there are none):
 \itemize{
-\item \code{asset} (character): Asset symbol (e.g., \code{"BTC"}).
-\item \code{free} (numeric): Available balance.
-\item \code{locked} (numeric): Locked balance.
+\item asset (character) Asset symbol (e.g., \code{"BTC"}).
+\item free (numeric) Available balance.
+\item locked (numeric) Locked balance.
 }
 }
 \subsection{Examples}{
@@ -475,25 +477,26 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{email}}{Character or NULL; filter by sub-account email.}
+\item{\code{email}}{(scalar<character>?) filter by sub-account email.}
 
-\item{\code{page}}{Integer or NULL; page number (default 1).}
+\item{\code{page}}{(scalar<count>?) page number (default 1).}
 
-\item{\code{size}}{Integer or NULL; results per page (default 10, max 20).}
+\item{\code{size}}{(scalar<count>?) results per page (default 10, max 20).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with \strong{one row per sub-account}; the
-master-level summary fields are replicated on each row. Columns:
+(data.table | promise<data.table>) one row per sub-account
+(empty when there are none); the master-level summary fields are
+replicated on each row:
 \itemize{
-\item \code{total_count} (integer): Total number of sub-accounts (repeated per row).
-\item \code{master_account_total_asset} (character): Master account total
+\item total_count (integer) Total number of sub-accounts (repeated per row).
+\item master_account_total_asset (character) Master account total
 asset value in BTC (repeated per row).
-\item \code{sub_user_email} (character): Sub-account email.
-\item \code{sub_user_total_asset} (character): Sub-account total asset value in BTC.
+\item sub_user_email (character) Sub-account email.
+\item sub_user_total_asset (character) Sub-account total asset value in BTC.
 }
 }
 \subsection{Examples}{
@@ -574,31 +577,32 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{fromEmail}}{Character or NULL; sender sub-account email.}
+\item{\code{fromEmail}}{(scalar<character>?) sender sub-account email.}
 
-\item{\code{toEmail}}{Character or NULL; recipient sub-account email.}
+\item{\code{toEmail}}{(scalar<character>?) recipient sub-account email.}
 
-\item{\code{fromAccountType}}{Character; source account type. One of
+\item{\code{fromAccountType}}{(scalar<character>) source account type. One of
 \code{"SPOT"}, \code{"USDT_FUTURE"}, \code{"COIN_FUTURE"}, \code{"MARGIN"}, \code{"ISOLATED_MARGIN"}.}
 
-\item{\code{toAccountType}}{Character; destination account type. One of
+\item{\code{toAccountType}}{(scalar<character>) destination account type. One of
 \code{"SPOT"}, \code{"USDT_FUTURE"}, \code{"COIN_FUTURE"}, \code{"MARGIN"}, \code{"ISOLATED_MARGIN"}.}
 
-\item{\code{asset}}{Character; asset to transfer (e.g., \code{"USDT"}).}
+\item{\code{asset}}{(scalar<character>) asset to transfer (e.g., \code{"USDT"}).}
 
-\item{\code{amount}}{Numeric; amount to transfer.}
+\item{\code{amount}}{(scalar<numeric>) amount to transfer.}
 
-\item{\code{clientTranId}}{Character or NULL; client-defined transfer ID.}
+\item{\code{clientTranId}}{(scalar<character>?) client-defined transfer ID.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
-\item \code{tran_id} (integer): Binance-assigned transfer ID.
-\item \code{client_tran_id} (character): Client-defined transfer ID.
+\item tran_id (numeric) Binance-assigned transfer ID (a large integer that
+overflows R's 32-bit \code{integer}, so it arrives as a double).
+\item client_tran_id (character) Client-defined transfer ID.
 }
 }
 \subsection{Examples}{
@@ -679,37 +683,39 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{fromEmail}}{Character or NULL; filter by sender email.}
+\item{\code{fromEmail}}{(scalar<character>?) filter by sender email.}
 
-\item{\code{toEmail}}{Character or NULL; filter by recipient email.}
+\item{\code{toEmail}}{(scalar<character>?) filter by recipient email.}
 
-\item{\code{clientTranId}}{Character or NULL; filter by client transfer ID.}
+\item{\code{clientTranId}}{(scalar<character>?) filter by client transfer ID.}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{page}}{Integer or NULL; page number (default 1).}
+\item{\code{page}}{(scalar<count>?) page number (default 1).}
 
-\item{\code{limit}}{Integer or NULL; results per page (default 500, max 500).}
+\item{\code{limit}}{(scalar<count>?) results per page (default 500, max 500).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per transfer and the following columns:
+(data.table | promise<data.table>) one row per transfer
+(empty when there are none):
 \itemize{
-\item \code{tran_id} (integer): Binance-assigned transfer ID.
-\item \code{from_email} (character): Sender email.
-\item \code{to_email} (character): Recipient email.
-\item \code{asset} (character): Transferred asset.
-\item \code{amount} (character): Transfer amount.
-\item \code{create_time_stamp} (POSIXct): Transfer time converted from \code{createTimeStamp}.
-\item \code{from_account_type} (character): Source account type.
-\item \code{to_account_type} (character): Destination account type.
-\item \code{status} (character): Transfer status.
-\item \code{client_tran_id} (character): Client-defined transfer ID.
+\item tran_id (numeric) Binance-assigned transfer ID (a large integer that
+overflows R's 32-bit \code{integer}, so it arrives as a double).
+\item from_email (character) Sender email.
+\item to_email (character) Recipient email.
+\item asset (character) Transferred asset.
+\item amount (character) Transfer amount.
+\item create_time_stamp (POSIXct) Transfer time converted from \code{createTimeStamp}.
+\item from_account_type (character) Source account type.
+\item to_account_type (character) Destination account type.
+\item status (character) Transfer status.
+\item client_tran_id (character) Client-defined transfer ID.
 }
 }
 \subsection{Examples}{
@@ -790,37 +796,27 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{email}}{Character; the sub-account email.}
+\item{\code{email}}{(scalar<character>) the sub-account email.}
 
-\item{\code{futuresType}}{Integer; \code{1} for USDT-margined futures, \code{2} for COIN-margined futures.}
+\item{\code{futuresType}}{(scalar<count>) \code{1} for USDT-margined futures, \code{2} for COIN-margined futures.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per asset (long format) and the following columns:
-\itemize{
-\item \code{email} (character): Sub-account email (repeated per asset).
-\item \code{asset} (character): Margin asset (e.g., \code{"USDT"}).
-\item \code{can_deposit} (logical): Whether deposits are permitted.
-\item \code{can_trade} (logical): Whether trading is permitted.
-\item \code{can_withdraw} (logical): Whether withdrawals are permitted.
-\item \code{fee_tier} (integer): Fee tier level.
-\item \code{max_withdraw_amount} (character): Maximum withdrawable amount.
-\item \code{total_initial_margin} (character): Total initial margin.
-\item \code{total_margin_balance} (character): Total margin balance.
-\item \code{total_wallet_balance} (character): Total wallet balance.
-\item \code{total_unrealized_profit} (character): Total unrealised PnL.
-\item \code{update_time} (POSIXct): Last update time.
-\item \code{asset_asset} (character): Per-asset name.
-\item \code{asset_wallet_balance} (character): Per-asset wallet balance.
-\item \code{asset_margin_balance} (character): Per-asset margin balance.
-}
-
-When the response contains an \code{assets} list, it is expanded to long format
-with parent account fields repeated. When there are no assets, returns a
-single row without asset-level columns.
+(data.table | promise<data.table>) one row per asset (long
+format). Account-level fields (\code{email}, \code{asset}, \code{can_deposit},
+\code{can_trade}, \code{can_withdraw}, \code{fee_tier}, \code{max_withdraw_amount},
+\code{total_initial_margin}, \code{total_margin_balance}, \code{total_wallet_balance},
+\code{total_unrealized_profit}, \code{update_time}) are whichever Binance returns,
+replicated per asset row; the per-asset fields are wide-prefixed
+\verb{asset_*} (e.g. \code{asset_asset}, \code{asset_wallet_balance},
+\code{asset_margin_balance}). The exact column set follows the payload, so
+the return is typed only as a \code{data.table} (no fixed-column contract).
+When the response contains an \code{assets} list, it is expanded to long
+format with parent account fields repeated; when there are no assets, a
+single row without asset-level columns is returned.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -883,22 +879,19 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{email}}{Character; the sub-account email.}
+\item{\code{email}}{(scalar<character>) the sub-account email.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
-\itemize{
-\item \code{email} (character): Sub-account email.
-\item \code{margin_level} (character): Current margin level.
-\item \code{total_asset_of_btc} (character): Total asset value in BTC.
-\item \code{total_liability_of_btc} (character): Total liability in BTC.
-\item \code{total_net_asset_of_btc} (character): Net asset value in BTC.
-\item \code{margin_trade_coeff_vo} (list): Nested margin trading coefficient details.
-}
+(data.table | promise<data.table>) one row, whichever margin
+account fields Binance returns (\code{email}, \code{margin_level},
+\code{total_asset_of_btc}, \code{total_liability_of_btc},
+\code{total_net_asset_of_btc}, and a \code{margin_trade_coeff_vo} list-column of
+nested coefficients). The exact column set follows the payload, so the
+return is typed only as a \code{data.table} (no fixed-column contract).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -961,22 +954,23 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{email}}{Character or NULL; filter by sub-account email.}
+\item{\code{email}}{(scalar<character>?) filter by sub-account email.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per sub-account and the following columns:
+(data.table | promise<data.table>) one row per sub-account
+(empty when there are none):
 \itemize{
-\item \code{email} (character): Sub-account email.
-\item \code{is_sub_user_enabled} (logical): Whether the sub-user is enabled.
-\item \code{is_user_active} (logical): Whether the user is active.
-\item \code{insert_time} (POSIXct): Time the sub-account was inserted.
-\item \code{is_margin_enabled} (logical): Whether margin trading is enabled.
-\item \code{is_future_enabled} (logical): Whether futures trading is enabled.
-\item \code{mobile} (integer): Mobile verification status.
+\item email (character) Sub-account email.
+\item is_sub_user_enabled (logical) Whether the sub-user is enabled.
+\item is_user_active (logical) Whether the user is active.
+\item insert_time (POSIXct) Time the sub-account was inserted.
+\item is_margin_enabled (logical) Whether margin trading is enabled.
+\item is_future_enabled (logical) Whether futures trading is enabled.
+\item mobile (integer) Mobile verification status.
 }
 }
 \subsection{Examples}{

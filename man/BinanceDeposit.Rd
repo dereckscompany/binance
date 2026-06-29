@@ -172,22 +172,22 @@ the address on the correct chain.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{coin}}{Character; coin symbol (e.g., \code{"BTC"}, \code{"ETH"}, \code{"USDT"}).}
+\item{\code{coin}}{(scalar<character>) coin symbol (e.g., \code{"BTC"}, \code{"ETH"}, \code{"USDT"}).}
 
-\item{\code{network}}{Character or NULL; blockchain network (e.g., \code{"ETH"}, \code{"TRX"}, \code{"BSC"}).
-If NULL, uses the coin's default network.}
+\item{\code{network}}{(scalar<character>?) blockchain network (e.g., \code{"ETH"},
+\code{"TRX"}, \code{"BSC"}). If NULL, uses the coin's default network.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count in [1, Inf[>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(data.table | promise<data.table>) one row:
 \itemize{
-\item \code{address} (character): The deposit wallet address.
-\item \code{coin} (character): Coin symbol (e.g., \code{"BTC"}).
-\item \code{tag} (character): Address tag/memo (empty string if not applicable).
-\item \code{url} (character): Blockchain explorer URL for the address.
+\item address (character) the deposit wallet address.
+\item coin (character) coin symbol (e.g., \code{"BTC"}).
+\item tag (character) address tag/memo (empty string if not applicable).
+\item url (character) blockchain explorer URL for the address.
 }
 }
 \subsection{Examples}{
@@ -283,42 +283,43 @@ specific period. Max range is 90 days.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{coin}}{Character or NULL; filter by coin (e.g., \code{"BTC"}, \code{"USDT"}).}
+\item{\code{coin}}{(scalar<character>?) filter by coin (e.g., \code{"BTC"}, \code{"USDT"}).}
 
-\item{\code{status}}{Integer or NULL; filter by status:
+\item{\code{status}}{(scalar<count>?) filter by status:
 \code{0} (pending), \code{1} (success), \code{6} (credited), \code{7} (wrong), \code{8} (waiting confirm).}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{offset}}{Integer or NULL; pagination offset (default 0).}
+\item{\code{offset}}{(scalar<count>?) pagination offset (default 0).}
 
-\item{\code{limit}}{Integer or NULL; max results (default 1000, max 1000).}
+\item{\code{limit}}{(scalar<count>?) max results (default 1000, max 1000).}
 
-\item{\code{txId}}{Character or NULL; filter by transaction ID.}
+\item{\code{txId}}{(scalar<character>?) filter by transaction ID.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}) with columns:
+(data.table | promise<data.table>) one row per deposit
+(empty when there are no matching deposits):
 \itemize{
-\item \code{id} (character): Unique deposit identifier.
-\item \code{amount} (character): Deposit amount.
-\item \code{coin} (character): Deposited coin symbol.
-\item \code{network} (character): Blockchain network used.
-\item \code{status} (integer): Deposit status code (0=pending, 1=success, 6=credited).
-\item \code{address} (character): Deposit address.
-\item \code{address_tag} (character): Address tag/memo.
-\item \code{tx_id} (character): On-chain transaction hash.
-\item \code{transfer_type} (integer): 0=external, 1=internal.
-\item \code{confirm_times} (character): Confirmation progress (e.g., \code{"1/1"}).
-\item \code{unlock_confirm} (integer): Confirmations needed to unlock.
-\item \code{wallet_type} (integer): 0=spot, 1=funding.
-\item \code{insert_time} (POSIXct): Deposit time converted from \code{insertTime}.
-\item \code{complete_time} (POSIXct): Completion time converted from \code{completeTime}.
+\item id (character) unique deposit identifier.
+\item amount (character) deposit amount.
+\item coin (character) deposited coin symbol.
+\item network (character) blockchain network used.
+\item status (integer) deposit status code (0=pending, 1=success, 6=credited).
+\item address (character) deposit address.
+\item address_tag (character) address tag/memo.
+\item tx_id (character) on-chain transaction hash.
+\item transfer_type (integer) 0=external, 1=internal.
+\item confirm_times (character) confirmation progress (e.g., \code{"1/1"}).
+\item unlock_confirm (integer) confirmations needed to unlock.
+\item wallet_type (integer) 0=spot, 1=funding.
+\item insert_time (POSIXct) deposit time converted from \code{insertTime}.
+\item complete_time (POSIXct) completion time converted from \code{completeTime}.
 }
 }
 \subsection{Examples}{

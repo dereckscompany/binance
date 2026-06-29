@@ -1,0 +1,16 @@
+{
+  "result": [
+    {
+      "tranId": 11945860693,
+      "fromEmail": "master@test.com",
+      "toEmail": "testsub01@virtual.com",
+      "asset": "USDT",
+      "amount": "100.00000000",
+      "createTimeStamp": 1661493146000,
+      "fromAccountType": "SPOT",
+      "toAccountType": "SPOT",
+      "status": "SUCCESS",
+      "clientTranId": "test_001"
+    }
+  ]
+}

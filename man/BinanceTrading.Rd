@@ -265,61 +265,63 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{type}}{Character; \code{"LIMIT"} or \code{"MARKET"} (and stop/take-profit variants).}
+\item{\code{type}}{(scalar<character>) \code{"LIMIT"} or \code{"MARKET"} (and stop/take-profit variants).}
 
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{side}}{Character; \code{"BUY"} or \code{"SELL"}.}
+\item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
 
-\item{\code{quantity}}{Numeric or NULL; base asset quantity.}
+\item{\code{quantity}}{(scalar<numeric>?) base asset quantity.}
 
-\item{\code{quoteOrderQty}}{Numeric or NULL; quote asset quantity (market orders only).}
+\item{\code{quoteOrderQty}}{(scalar<numeric>?) quote asset quantity (market orders only).}
 
-\item{\code{price}}{Numeric or NULL; price for limit orders.}
+\item{\code{price}}{(scalar<numeric>?) price for limit orders.}
 
-\item{\code{timeInForce}}{Character or NULL; \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
+\item{\code{timeInForce}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
 
-\item{\code{newClientOrderId}}{Character or NULL; unique client order ID.}
+\item{\code{newClientOrderId}}{(scalar<character>?) unique client order ID.}
 
-\item{\code{stopPrice}}{Numeric or NULL; trigger price for stop orders.}
+\item{\code{stopPrice}}{(scalar<numeric>?) trigger price for stop orders.}
 
-\item{\code{icebergQty}}{Numeric or NULL; iceberg quantity.}
+\item{\code{icebergQty}}{(scalar<numeric>?) iceberg quantity.}
 
-\item{\code{newOrderRespType}}{Character or NULL; \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
+\item{\code{newOrderRespType}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
 
-\item{\code{selfTradePreventionMode}}{Character or NULL.}
+\item{\code{selfTradePreventionMode}}{(scalar<character>?)}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(data.table | promise<data.table>) one row per fill (one row with
+\code{NA} \verb{fill_*} columns when the order had no fills):
 \itemize{
-\item \code{symbol} (character): Trading pair (e.g., \code{"BTCUSDT"}).
-\item \code{order_id} (integer): Unique order identifier assigned by Binance.
-\item \code{order_list_id} (integer): OCO order list ID; \code{-1} if not an OCO.
-\item \code{client_order_id} (character): Client-assigned order ID.
-\item \code{price} (character): Order price.
-\item \code{orig_qty} (character): Original requested quantity.
-\item \code{executed_qty} (character): Quantity filled so far.
-\item \code{cummulative_quote_qty} (character): Cumulative quote asset transacted.
-\item \code{status} (character): Order status (\code{"NEW"}, \code{"FILLED"}, \code{"CANCELED"}, etc.).
-\item \code{time_in_force} (character): Time-in-force policy (\code{"GTC"}, \code{"IOC"}, \code{"FOK"}).
-\item \code{type} (character): Order type (\code{"LIMIT"}, \code{"MARKET"}, etc.).
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{working_time} (POSIXct): Time when the order started working.
-\item \code{self_trade_prevention_mode} (character): STP mode applied.
-\item \code{transact_time} (POSIXct): Transaction time converted from \code{transactTime}.
-\item \code{fill_index} (integer): 1-indexed fill position (\code{NA} when the order
+\item symbol (character) Trading pair (e.g., \code{"BTCUSDT"}).
+\item order_id (numeric) Unique order identifier assigned by Binance.
+\item order_list_id (numeric) OCO order list ID; \code{-1} if not an OCO.
+\item client_order_id (character) Client-assigned order ID.
+\item price (character) Order price.
+\item orig_qty (character) Original requested quantity.
+\item executed_qty (character) Quantity filled so far.
+\item cummulative_quote_qty (character) Cumulative quote asset transacted.
+\item status (character) Order status (\code{"NEW"}, \code{"FILLED"}, \code{"CANCELED"}, etc.).
+\item time_in_force (character) Time-in-force policy (\code{"GTC"}, \code{"IOC"}, \code{"FOK"}).
+\item type (character) Order type (\code{"LIMIT"}, \code{"MARKET"}, etc.).
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item working_time (POSIXct) Time when the order started working.
+\item self_trade_prevention_mode (character) STP mode applied.
+\item transact_time (POSIXct) Transaction time converted from \code{transactTime}.
+\item fill_index (integer | NA) 1-indexed fill position (\code{NA} when the order
 had no fills).
-\item \code{fill_price} (character): Fill execution price (\code{NA} when no fills).
-\item \code{fill_qty} (character): Fill quantity (\code{NA} when no fills).
-\item \code{fill_commission} (character): Commission charged for this fill
+\item fill_price (character | NA) Fill execution price (\code{NA} when no fills).
+\item fill_qty (character | NA) Fill quantity (\code{NA} when no fills).
+\item fill_commission (character | NA) Commission charged for this fill
 (\code{NA} when no fills).
-\item \code{fill_commission_asset} (character): Asset used for commission
+\item fill_commission_asset (character | NA) Asset used for commission
 (e.g., \code{"BNB"}; \code{NA} when no fills).
-\item \code{fill_trade_id} (integer): Fill trade ID (\code{NA} when no fills).
+\item fill_trade_id (numeric | NA) Fill trade ID (a 64-bit id; \code{numeric} to
+avoid 32-bit overflow; \code{NA} when no fills).
 }
 
 When the order has N fills, the parent order fields are replicated on
@@ -421,37 +423,37 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{type}}{Character; \code{"LIMIT"} or \code{"MARKET"} (and stop/take-profit variants).}
+\item{\code{type}}{(scalar<character>) \code{"LIMIT"} or \code{"MARKET"} (and stop/take-profit variants).}
 
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{side}}{Character; \code{"BUY"} or \code{"SELL"}.}
+\item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
 
-\item{\code{quantity}}{Numeric or NULL; base asset quantity.}
+\item{\code{quantity}}{(scalar<numeric>?) base asset quantity.}
 
-\item{\code{quoteOrderQty}}{Numeric or NULL; quote asset quantity (market orders only).}
+\item{\code{quoteOrderQty}}{(scalar<numeric>?) quote asset quantity (market orders only).}
 
-\item{\code{price}}{Numeric or NULL; price for limit orders.}
+\item{\code{price}}{(scalar<numeric>?) price for limit orders.}
 
-\item{\code{timeInForce}}{Character or NULL; \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
+\item{\code{timeInForce}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
 
-\item{\code{newClientOrderId}}{Character or NULL; unique client order ID.}
+\item{\code{newClientOrderId}}{(scalar<character>?) unique client order ID.}
 
-\item{\code{stopPrice}}{Numeric or NULL; trigger price for stop orders.}
+\item{\code{stopPrice}}{(scalar<numeric>?) trigger price for stop orders.}
 
-\item{\code{icebergQty}}{Numeric or NULL; iceberg quantity.}
+\item{\code{icebergQty}}{(scalar<numeric>?) iceberg quantity.}
 
-\item{\code{newOrderRespType}}{Character or NULL; \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
+\item{\code{newOrderRespType}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
 
-\item{\code{selfTradePreventionMode}}{Character or NULL.}
+\item{\code{selfTradePreventionMode}}{(scalar<character>?)}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE})
-with a single row and a single \code{validated} (logical) column,
+(data.table | promise<data.table>) a single row with a single
+\code{validated} (logical) column,
 set to \code{TRUE} on success. Binance returns \code{{}} on a successful
 test order — the absence of an error is the validation
 signal, so we don't fabricate a stub row echoing the request
@@ -531,34 +533,34 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{Integer or NULL; the order ID to cancel.}
+\item{\code{orderId}}{(scalar<count>?) the order ID to cancel.}
 
-\item{\code{origClientOrderId}}{Character or NULL; the client order ID to cancel.}
+\item{\code{origClientOrderId}}{(scalar<character>?) the client order ID to cancel.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{orig_client_order_id} (character): Original client order ID.
-\item \code{order_id} (integer): Unique order identifier.
-\item \code{order_list_id} (integer): OCO order list ID; \code{-1} if not an OCO.
-\item \code{client_order_id} (character): New client order ID after cancellation.
-\item \code{price} (character): Order price.
-\item \code{orig_qty} (character): Original requested quantity.
-\item \code{executed_qty} (character): Quantity filled before cancellation.
-\item \code{cummulative_quote_qty} (character): Cumulative quote asset transacted.
-\item \code{status} (character): Order status (typically \code{"CANCELED"}).
-\item \code{time_in_force} (character): Time-in-force policy.
-\item \code{type} (character): Order type.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{self_trade_prevention_mode} (character): STP mode applied.
-\item \code{transact_time} (POSIXct): Cancellation time converted from \code{transactTime}.
+\item symbol (character) Trading pair.
+\item orig_client_order_id (character) Original client order ID.
+\item order_id (numeric) Unique order identifier.
+\item order_list_id (numeric) OCO order list ID; \code{-1} if not an OCO.
+\item client_order_id (character) New client order ID after cancellation.
+\item price (character) Order price.
+\item orig_qty (character) Original requested quantity.
+\item executed_qty (character) Quantity filled before cancellation.
+\item cummulative_quote_qty (character) Cumulative quote asset transacted.
+\item status (character) Order status (typically \code{"CANCELED"}).
+\item time_in_force (character) Time-in-force policy.
+\item type (character) Order type.
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item self_trade_prevention_mode (character) STP mode applied.
+\item transact_time (POSIXct) Cancellation time converted from \code{transactTime}.
 }
 }
 \subsection{Examples}{
@@ -646,36 +648,34 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}).
-When orders are cancelled, one row per order with columns:
+(data.table | promise<data.table>) one row per cancelled order
+(empty when there were no open orders to cancel, per the cross-package
+"no stub rows" convention — the absence of an error is the success
+signal):
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{orig_client_order_id} (character): Original client order ID.
-\item \code{order_id} (integer): Unique order identifier.
-\item \code{order_list_id} (integer): OCO order list ID; \code{-1} if not an OCO.
-\item \code{client_order_id} (character): New client order ID after cancellation.
-\item \code{price} (character): Order price.
-\item \code{orig_qty} (character): Original requested quantity.
-\item \code{executed_qty} (character): Quantity filled before cancellation.
-\item \code{cummulative_quote_qty} (character): Cumulative quote asset transacted.
-\item \code{status} (character): Order status (typically \code{"CANCELED"}).
-\item \code{time_in_force} (character): Time-in-force policy.
-\item \code{type} (character): Order type.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{self_trade_prevention_mode} (character): STP mode applied.
-\item \code{transact_time} (POSIXct): Cancellation time.
+\item symbol (character) Trading pair.
+\item orig_client_order_id (character) Original client order ID.
+\item order_id (numeric) Unique order identifier.
+\item order_list_id (numeric) OCO order list ID; \code{-1} if not an OCO.
+\item client_order_id (character) New client order ID after cancellation.
+\item price (character) Order price.
+\item orig_qty (character) Original requested quantity.
+\item executed_qty (character) Quantity filled before cancellation.
+\item cummulative_quote_qty (character) Cumulative quote asset transacted.
+\item status (character) Order status (typically \code{"CANCELED"}).
+\item time_in_force (character) Time-in-force policy.
+\item type (character) Order type.
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item self_trade_prevention_mode (character) STP mode applied.
+\item transact_time (POSIXct) Cancellation time.
 }
-
-When there were no open orders to cancel, the return is an
-empty \code{data.table} (per the cross-package "no stub rows"
-convention — the absence of an error is the success signal).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -753,40 +753,18 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{Integer or NULL; the order ID.}
+\item{\code{orderId}}{(scalar<count>?) the order ID.}
 
-\item{\code{origClientOrderId}}{Character or NULL; the client order ID.}
+\item{\code{origClientOrderId}}{(scalar<character>?) the client order ID.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
-\itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{order_id} (integer): Unique order identifier.
-\item \code{order_list_id} (integer): OCO order list ID; \code{-1} if not an OCO.
-\item \code{client_order_id} (character): Client-assigned order ID.
-\item \code{price} (character): Order price.
-\item \code{orig_qty} (character): Original requested quantity.
-\item \code{executed_qty} (character): Quantity filled so far.
-\item \code{cummulative_quote_qty} (character): Cumulative quote asset transacted.
-\item \code{status} (character): Order status (\code{"NEW"}, \code{"FILLED"}, \code{"CANCELED"}, etc.).
-\item \code{time_in_force} (character): Time-in-force policy.
-\item \code{type} (character): Order type.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{stop_price} (character): Trigger price for stop orders.
-\item \code{iceberg_qty} (character): Iceberg quantity.
-\item \code{is_working} (logical): Whether the order is on the order book.
-\item \code{orig_quote_order_qty} (character): Original quote order quantity.
-\item \code{working_time} (POSIXct): Time when the order started working.
-\item \code{self_trade_prevention_mode} (character): STP mode applied.
-\item \code{time} (POSIXct): Order creation time converted from \code{time}.
-\item \code{update_time} (POSIXct): Last update time converted from \code{updateTime}.
-}
+(SpotOrderQuery | promise<SpotOrderQuery>) one row, the order.
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -861,36 +839,36 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character or NULL; trading pair (e.g., \code{"BTCUSDT"}).
+\item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).
 If NULL, returns open orders for all symbols (weight 80).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per open order and the following columns:
+(data.table | promise<data.table>) one row per open order
+(empty when there are none):
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{order_id} (integer): Unique order identifier.
-\item \code{order_list_id} (integer): OCO order list ID; \code{-1} if not an OCO.
-\item \code{client_order_id} (character): Client-assigned order ID.
-\item \code{price} (character): Order price.
-\item \code{orig_qty} (character): Original requested quantity.
-\item \code{executed_qty} (character): Quantity filled so far.
-\item \code{cummulative_quote_qty} (character): Cumulative quote asset transacted.
-\item \code{status} (character): Order status (typically \code{"NEW"} or \code{"PARTIALLY_FILLED"}).
-\item \code{time_in_force} (character): Time-in-force policy.
-\item \code{type} (character): Order type.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{stop_price} (character): Trigger price for stop orders.
-\item \code{iceberg_qty} (character): Iceberg quantity.
-\item \code{is_working} (logical): Whether the order is on the order book.
-\item \code{orig_quote_order_qty} (character): Original quote order quantity.
-\item \code{working_time} (POSIXct): Time when the order started working.
-\item \code{self_trade_prevention_mode} (character): STP mode applied.
-\item \code{time} (POSIXct): Order creation time converted from \code{time}.
-\item \code{update_time} (POSIXct): Last update time converted from \code{updateTime}.
+\item symbol (character) Trading pair.
+\item order_id (numeric) Exchange-assigned order id.
+\item order_list_id (numeric) OCO list id, or \code{-1} for a non-OCO order.
+\item client_order_id (character) Client-assigned order id.
+\item price (character) Order price.
+\item orig_qty (character) Original requested quantity.
+\item executed_qty (character) Quantity filled so far.
+\item cummulative_quote_qty (character) Cumulative quote quantity filled.
+\item status (character) Order status.
+\item time_in_force (character) Time-in-force policy.
+\item type (character) Order type.
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item stop_price (character) Stop trigger price.
+\item iceberg_qty (character) Iceberg quantity.
+\item time (POSIXct) Order creation time.
+\item is_working (logical) Whether the order is on the book.
+\item orig_quote_order_qty (character) Original quote order quantity.
+\item working_time (POSIXct) Time the order started working.
+\item self_trade_prevention_mode (character) Self-trade-prevention mode.
 }
 }
 \subsection{Examples}{
@@ -997,43 +975,43 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{Integer or NULL; pagination cursor.}
+\item{\code{orderId}}{(scalar<count>?) pagination cursor.}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{limit}}{Integer or NULL; max results (default 500, max 1000).}
+\item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per order and the following columns:
+(data.table | promise<data.table>) one row per order
+(empty when there are no matching orders):
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{order_id} (integer): Unique order identifier.
-\item \code{order_list_id} (integer): OCO order list ID; \code{-1} if not an OCO.
-\item \code{client_order_id} (character): Client-assigned order ID.
-\item \code{price} (character): Order price.
-\item \code{orig_qty} (character): Original requested quantity.
-\item \code{executed_qty} (character): Quantity filled so far.
-\item \code{cummulative_quote_qty} (character): Cumulative quote asset transacted.
-\item \code{status} (character): Order status (\code{"NEW"}, \code{"FILLED"}, \code{"CANCELED"}, etc.).
-\item \code{time_in_force} (character): Time-in-force policy.
-\item \code{type} (character): Order type.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{stop_price} (character): Trigger price for stop orders.
-\item \code{iceberg_qty} (character): Iceberg quantity.
-\item \code{is_working} (logical): Whether the order is on the order book.
-\item \code{orig_quote_order_qty} (character): Original quote order quantity.
-\item \code{working_time} (POSIXct): Time when the order started working.
-\item \code{self_trade_prevention_mode} (character): STP mode applied.
-\item \code{time} (POSIXct): Order creation time converted from \code{time}.
-\item \code{update_time} (POSIXct): Last update time converted from \code{updateTime}.
+\item symbol (character) Trading pair.
+\item order_id (numeric) Exchange-assigned order id.
+\item order_list_id (numeric) OCO list id, or \code{-1} for a non-OCO order.
+\item client_order_id (character) Client-assigned order id.
+\item price (character) Order price.
+\item orig_qty (character) Original requested quantity.
+\item executed_qty (character) Quantity filled so far.
+\item cummulative_quote_qty (character) Cumulative quote quantity filled.
+\item status (character) Order status.
+\item time_in_force (character) Time-in-force policy.
+\item type (character) Order type.
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item stop_price (character) Stop trigger price.
+\item iceberg_qty (character) Iceberg quantity.
+\item time (POSIXct) Order creation time.
+\item is_working (logical) Whether the order is on the book.
+\item orig_quote_order_qty (character) Original quote order quantity.
+\item working_time (POSIXct) Time the order started working.
+\item self_trade_prevention_mode (character) Self-trade-prevention mode.
 }
 }
 \subsection{Examples}{

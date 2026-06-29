@@ -188,6 +188,7 @@ market$get_klines(
     pages <<- pages + 1L
     candles <<- candles + nrow(page)
     # e.g. data.table::fwrite(page, "klines.csv", append = TRUE)
+    return(invisible(NULL))
   }
 )
 

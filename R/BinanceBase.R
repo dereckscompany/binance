@@ -77,6 +77,7 @@ BinanceBase <- R6::R6Class(
     ) {
       time_source <- match.arg(time_source)
       assert_args_BinanceBase__initialize(keys, base_url, async, time_source)
+      assert::assert_nonempty_strings(base_url)
       super$initialize(
         keys = keys,
         base_url = base_url,

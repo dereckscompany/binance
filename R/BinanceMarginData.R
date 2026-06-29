@@ -63,6 +63,7 @@ BinanceMarginData <- R6::R6Class(
   public = list(
     # ---- All Cross Margin Pairs ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get All Cross Margin Pairs
     #'
@@ -106,15 +107,15 @@ BinanceMarginData <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param recvWindow Integer or NULL; request validity window in milliseconds.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `base` (character): Base asset code (e.g., `"BTC"`).
-    #'   - `id` (integer): Pair identifier.
-    #'   - `is_buy_allowed` (logical): Whether buying is allowed.
-    #'   - `is_margin_trade` (logical): Whether margin trading is enabled.
-    #'   - `is_sell_allowed` (logical): Whether selling is allowed.
-    #'   - `quote` (character): Quote asset code (e.g., `"USDT"`).
-    #'   - `symbol` (character): Trading pair identifier (e.g., `"BTCUSDT"`).
+    #' @param recvWindow (scalar<count>?) request validity window in milliseconds.
+    #' @return (data.table | promise<data.table>) one row per pair:
+    #'   - base (character) Base asset code (e.g., `"BTC"`).
+    #'   - id (numeric) Pair identifier.
+    #'   - is_buy_allowed (logical) Whether buying is allowed.
+    #'   - is_margin_trade (logical) Whether margin trading is enabled.
+    #'   - is_sell_allowed (logical) Whether selling is allowed.
+    #'   - quote (character) Quote asset code (e.g., `"USDT"`).
+    #'   - symbol (character) Trading pair identifier (e.g., `"BTCUSDT"`).
     #'
     #' @examples
     #' \dontrun{
@@ -122,23 +123,34 @@ BinanceMarginData <- R6::R6Class(
     #' pairs <- margin$get_all_pairs()
     #' print(pairs)
     #' }
+    # nolint end
     get_all_pairs = function(recvWindow = NULL) {
+      assert_args_BinanceMarginData__get_all_pairs(recvWindow)
       query <- list(recvWindow = recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/margin/allPairs",
         query = query,
         auth = TRUE,
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_margin_all_pairs())
           }
-          return(as_dt_list(data)[])
+          dt <- as_dt_list(data)
+          # 64-bit margin-pair id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "id", as.numeric)
+          return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarginData__get_all_pairs,
+        is_async = private$.is_async
       ))
     },
 
     # ---- All Isolated Margin Pairs ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get All Isolated Margin Pairs
     #'
@@ -180,14 +192,14 @@ BinanceMarginData <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param recvWindow Integer or NULL; request validity window in milliseconds.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `symbol` (character): Trading pair identifier (e.g., `"BTCUSDT"`).
-    #'   - `base` (character): Base asset code (e.g., `"BTC"`).
-    #'   - `quote` (character): Quote asset code (e.g., `"USDT"`).
-    #'   - `is_margin_trade` (logical): Whether margin trading is enabled.
-    #'   - `is_buy_allowed` (logical): Whether buying is allowed.
-    #'   - `is_sell_allowed` (logical): Whether selling is allowed.
+    #' @param recvWindow (scalar<count>?) request validity window in milliseconds.
+    #' @return (data.table | promise<data.table>) one row per pair:
+    #'   - symbol (character) Trading pair identifier (e.g., `"BTCUSDT"`).
+    #'   - base (character) Base asset code (e.g., `"BTC"`).
+    #'   - quote (character) Quote asset code (e.g., `"USDT"`).
+    #'   - is_margin_trade (logical) Whether margin trading is enabled.
+    #'   - is_buy_allowed (logical) Whether buying is allowed.
+    #'   - is_sell_allowed (logical) Whether selling is allowed.
     #'
     #' @examples
     #' \dontrun{
@@ -195,23 +207,31 @@ BinanceMarginData <- R6::R6Class(
     #' pairs <- margin$get_isolated_pairs()
     #' print(pairs)
     #' }
+    # nolint end
     get_isolated_pairs = function(recvWindow = NULL) {
+      assert_args_BinanceMarginData__get_isolated_pairs(recvWindow)
       query <- list(recvWindow = recvWindow)
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/margin/isolated/allPairs",
         query = query,
         auth = TRUE,
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_margin_isolated_pairs())
           }
           return(as_dt_list(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarginData__get_isolated_pairs,
+        is_async = private$.is_async
       ))
     },
 
     # ---- Price Index ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Margin Price Index
     #'
@@ -236,11 +256,11 @@ BinanceMarginData <- R6::R6Class(
     #' { "calcTime": 1562046418000, "price": "67232.90000000", "symbol": "BTCUSDT" }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `calc_time` (POSIXct): Calculation time as UTC datetime.
-    #'   - `price` (character): Margin price index value.
-    #'   - `symbol` (character): Trading pair identifier.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @return (data.table | promise<data.table>) one row:
+    #'   - calc_time (POSIXct) Calculation time as UTC datetime.
+    #'   - price (character) Margin price index value.
+    #'   - symbol (character) Trading pair identifier.
     #'
     #' @examples
     #' \dontrun{
@@ -248,8 +268,11 @@ BinanceMarginData <- R6::R6Class(
     #' idx <- margin$get_price_index("BTCUSDT")
     #' print(idx)
     #' }
+    # nolint end
     get_price_index = function(symbol) {
-      return(private$.request(
+      assert_args_BinanceMarginData__get_price_index(symbol)
+      assert::assert_nonempty_strings(symbol)
+      res <- private$.request(
         endpoint = "/sapi/v1/margin/priceIndex",
         query = list(symbol = symbol),
         auth = FALSE,
@@ -258,11 +281,17 @@ BinanceMarginData <- R6::R6Class(
           coerce_cols(dt, "calc_time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarginData__get_price_index,
+        is_async = private$.is_async
       ))
     },
 
     # ---- Interest Rate History ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Interest Rate History
     #'
@@ -300,16 +329,16 @@ BinanceMarginData <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param asset Character; asset code (e.g., `"BTC"`).
-    #' @param vipLevel Integer or NULL; VIP level to query. Defaults to user's VIP level.
-    #' @param startTime Numeric or NULL; start time in milliseconds.
-    #' @param endTime Numeric or NULL; end time in milliseconds.
-    #' @param recvWindow Integer or NULL; request validity window in milliseconds.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `asset` (character): Asset code (e.g., `"BTC"`).
-    #'   - `daily_interest_rate` (character): Daily interest rate as string.
-    #'   - `timestamp` (POSIXct): Record timestamp as UTC datetime.
-    #'   - `vip_level` (integer): VIP level for this rate.
+    #' @param asset (scalar<character>) asset code (e.g., `"BTC"`).
+    #' @param vipLevel (scalar<count>?) VIP level to query. Defaults to user's VIP level.
+    #' @param startTime (scalar<numeric>?) start time in milliseconds.
+    #' @param endTime (scalar<numeric>?) end time in milliseconds.
+    #' @param recvWindow (scalar<count>?) request validity window in milliseconds.
+    #' @return (data.table | promise<data.table>) one row per rate record:
+    #'   - asset (character) Asset code (e.g., `"BTC"`).
+    #'   - daily_interest_rate (character) Daily interest rate as string.
+    #'   - timestamp (POSIXct) Record timestamp as UTC datetime.
+    #'   - vip_level (integer) VIP level for this rate.
     #'
     #' @examples
     #' \dontrun{
@@ -317,7 +346,10 @@ BinanceMarginData <- R6::R6Class(
     #' history <- margin$get_interest_rate_history("BTC")
     #' print(history)
     #' }
+    # nolint end
     get_interest_rate_history = function(asset, vipLevel = NULL, startTime = NULL, endTime = NULL, recvWindow = NULL) {
+      assert_args_BinanceMarginData__get_interest_rate_history(asset, vipLevel, startTime, endTime, recvWindow)
+      assert::assert_nonempty_strings(asset)
       query <- list(
         asset = asset,
         vipLevel = vipLevel,
@@ -325,23 +357,29 @@ BinanceMarginData <- R6::R6Class(
         endTime = endTime,
         recvWindow = recvWindow
       )
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/margin/interestRateHistory",
         query = query,
         auth = TRUE,
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_margin_interest_rate())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "timestamp", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarginData__get_interest_rate_history,
+        is_async = private$.is_async
       ))
     },
 
     # ---- Cross Margin Data ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Cross Margin Data
     #'
@@ -387,18 +425,18 @@ BinanceMarginData <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param vipLevel Integer or NULL; VIP level to query. Defaults to user's VIP level.
-    #' @param coin Character or NULL; specific coin to query (e.g., `"BTC"`).
-    #' @param recvWindow Integer or NULL; request validity window in milliseconds.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `vip_level` (integer): VIP level tier.
-    #'   - `coin` (character): Coin code (e.g., `"BTC"`).
-    #'   - `transfer_in` (logical): Whether transfer in is allowed.
-    #'   - `transfer_out` (logical): Whether transfer out is allowed.
-    #'   - `borrowable` (logical): Whether borrowing is allowed.
-    #'   - `daily_interest` (character): Daily interest rate as string.
-    #'   - `yearly_interest` (character): Yearly interest rate as string.
-    #'   - `marginable_pair` (character): Marginable trading pair (one row per coin-pair combination).
+    #' @param vipLevel (scalar<count>?) VIP level to query. Defaults to user's VIP level.
+    #' @param coin (scalar<character>?) specific coin to query (e.g., `"BTC"`).
+    #' @param recvWindow (scalar<count>?) request validity window in milliseconds.
+    #' @return (data.table | promise<data.table>) one row per coin-pair combination:
+    #'   - vip_level (integer) VIP level tier.
+    #'   - coin (character) Coin code (e.g., `"BTC"`).
+    #'   - transfer_in (logical) Whether transfer in is allowed.
+    #'   - transfer_out (logical) Whether transfer out is allowed.
+    #'   - borrowable (logical) Whether borrowing is allowed.
+    #'   - daily_interest (character) Daily interest rate as string.
+    #'   - yearly_interest (character) Yearly interest rate as string.
+    #'   - marginable_pair (character) Marginable trading pair (one row per coin-pair combination).
     #'
     #' When a coin has multiple marginable pairs, coin-level fields are repeated on each row.
     #'
@@ -408,19 +446,22 @@ BinanceMarginData <- R6::R6Class(
     #' data <- margin$get_cross_margin_data()
     #' print(data)
     #' }
+    # nolint end
     get_cross_margin_data = function(vipLevel = NULL, coin = NULL, recvWindow = NULL) {
+      assert_args_BinanceMarginData__get_cross_margin_data(vipLevel, coin, recvWindow)
+      assert::assert_nonempty_strings(coin, null_ok = TRUE)
       query <- list(
         vipLevel = vipLevel,
         coin = coin,
         recvWindow = recvWindow
       )
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/margin/crossMarginData",
         query = query,
         auth = TRUE,
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_cross_margin_data())
           }
           # Expand marginablePairs to long format before building rows
           rows <- lapply(data, function(item) {
@@ -436,11 +477,17 @@ BinanceMarginData <- R6::R6Class(
           })
           return(data.table::rbindlist(rows, fill = TRUE)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarginData__get_cross_margin_data,
+        is_async = private$.is_async
       ))
     },
 
     # ---- Isolated Margin Data ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Isolated Margin Data
     #'
@@ -500,14 +547,14 @@ BinanceMarginData <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param vipLevel Integer or NULL; VIP level to query. Defaults to user's VIP level.
-    #' @param symbol Character or NULL; specific symbol to query (e.g., `"BTCUSDT"`).
-    #' @param recvWindow Integer or NULL; request validity window in milliseconds.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `vip_level` (integer): VIP level tier.
-    #'   - `symbol` (character): Trading pair identifier.
-    #'   - `leverage` (character): Maximum leverage available.
-    #'   - `data` (list): Nested list of coin-level margin details.
+    #' @param vipLevel (scalar<count>?) VIP level to query. Defaults to user's VIP level.
+    #' @param symbol (scalar<character>?) specific symbol to query (e.g., `"BTCUSDT"`).
+    #' @param recvWindow (scalar<count>?) request validity window in milliseconds.
+    #' @return (data.table | promise<data.table>) one row per symbol:
+    #'   - vip_level (integer) VIP level tier.
+    #'   - symbol (character) Trading pair identifier.
+    #'   - leverage (character) Maximum leverage available.
+    #'   - data (list) Nested list of coin-level margin details.
     #'
     #' @examples
     #' \dontrun{
@@ -515,22 +562,30 @@ BinanceMarginData <- R6::R6Class(
     #' data <- margin$get_isolated_margin_data()
     #' print(data)
     #' }
+    # nolint end
     get_isolated_margin_data = function(vipLevel = NULL, symbol = NULL, recvWindow = NULL) {
+      assert_args_BinanceMarginData__get_isolated_margin_data(vipLevel, symbol, recvWindow)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       query <- list(
         vipLevel = vipLevel,
         symbol = symbol,
         recvWindow = recvWindow
       )
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/margin/isolatedMarginData",
         query = query,
         auth = TRUE,
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_isolated_margin_data())
           }
           return(as_dt_list(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarginData__get_isolated_margin_data,
+        is_async = private$.is_async
       ))
     }
   )

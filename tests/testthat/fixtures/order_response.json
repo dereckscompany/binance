@@ -1,0 +1,17 @@
+{
+  "symbol": "BTCUSDT",
+  "orderId": 28,
+  "orderListId": -1,
+  "clientOrderId": "6gCrw2kRUAF9CvJDGP16IP",
+  "transactTime": 1507725176595,
+  "price": "50000.00000000",
+  "origQty": "0.00010000",
+  "executedQty": "0.00000000",
+  "cummulativeQuoteQty": "0.00000000",
+  "status": "NEW",
+  "timeInForce": "GTC",
+  "type": "LIMIT",
+  "side": "BUY",
+  "workingTime": 1507725176595,
+  "selfTradePreventionMode": "NONE"
+}

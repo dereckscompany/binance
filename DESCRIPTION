@@ -1,7 +1,7 @@
 Package: binance
 Type: Package
 Title: API Wrapper to Binance Cryptocurrency Exchange
-Version: 0.4.0
+Version: 0.5.2
 URL: https://dereckscompany.github.io/binance/
 BugReports: https://github.com/dereckscompany/binance/issues
 Authors@R:
@@ -37,7 +37,7 @@ Imports:
     later,
     websocket,
     promises,
-    connectcore
+    connectcore (>= 0.2.0)
 Suggests:
     coro,
     box,
@@ -49,6 +49,6 @@ Suggests:
     roxyassert (>= 0.9.1)
 Remotes:
     dereckscompany/assert,
-    dereckscompany/roxyassert@v0.9.1,
-    dereckscompany/connectcore@v0.1.0
+    dereckscompany/roxyassert,
+    dereckscompany/connectcore
 Config/testthat/edition: 3

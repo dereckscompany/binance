@@ -1,0 +1,21 @@
+{
+  "total": 1,
+  "rows": [
+    {
+      "asset": "USDT",
+      "latestAnnualPercentageRate": "0.03250000",
+      "tierAnnualPercentageRate": {
+        "0-5BTC": 0.05,
+        "5-10BTC": 0.03
+      },
+      "canPurchase": true,
+      "canRedeem": true,
+      "isSoldOut": false,
+      "hot": true,
+      "minPurchaseAmount": "0.10000000",
+      "productId": "USDT001",
+      "subscriptionStartTime": 1661493146000,
+      "status": "PURCHASING"
+    }
+  ]
+}

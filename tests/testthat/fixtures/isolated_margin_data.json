@@ -1,0 +1,14 @@
+[
+  {
+    "vipLevel": 0,
+    "symbol": "BTCUSDT",
+    "leverage": "10",
+    "data": [
+      {
+        "coin": "BTC",
+        "dailyInterest": "0.00015000",
+        "borrowLimit": "100.00000000"
+      }
+    ]
+  }
+]

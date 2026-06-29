@@ -1,0 +1,20 @@
+[
+  {
+    "base": "BTC",
+    "id": 351637150,
+    "isBuyAllowed": true,
+    "isMarginTrade": true,
+    "isSellAllowed": true,
+    "quote": "USDT",
+    "symbol": "BTCUSDT"
+  },
+  {
+    "base": "ETH",
+    "id": 351637151,
+    "isBuyAllowed": true,
+    "isMarginTrade": true,
+    "isSellAllowed": true,
+    "quote": "USDT",
+    "symbol": "ETHUSDT"
+  }
+]

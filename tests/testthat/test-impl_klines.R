@@ -49,7 +49,7 @@ test_that("binance_fetch_klines rejects invalid timeframe", {
   )
 })
 
-test_that("binance_fetch_klines returns empty data.table for zero-width range", {
+test_that("binance_fetch_klines returns the typed zero-row OHLCV schema for an empty range", {
   fake_fn <- function(...) stop("Should not be called")
   result <- binance_fetch_klines(
     symbol = "BTCUSDT",
@@ -60,6 +60,11 @@ test_that("binance_fetch_klines returns empty data.table for zero-width range", 
   )
   expect_s3_class(result, "data.table")
   expect_equal(nrow(result), 0L)
+  # The empty range must still carry the full typed OHLCV schema (not a
+  # column-less data.table), so it satisfies get_klines()'s strict @return
+  # contract instead of aborting on assert_has_columns.
+  expect_identical(result, empty_dt_ohlcv())
+  expect_silent(assert_return_BinanceMarketData__get_klines(result))
 })
 
 # -- binance_fetch_klines with mock .req_fn --
@@ -144,8 +149,18 @@ test_that("binance_fetch_klines pages forward through large ranges (multiple cal
     data <- lapply(seq_len(n), function(i) {
       ts <- start_ms + (i - 1) * interval_ms
       return(list(
-        ts, "67000", "67100", "66900", "67050", "100",
-        ts + interval_ms - 1, "6700000", 500L, "50", "3350000", "0"
+        ts,
+        "67000",
+        "67100",
+        "66900",
+        "67050",
+        "100",
+        ts + interval_ms - 1,
+        "6700000",
+        500L,
+        "50",
+        "3350000",
+        "0"
       ))
     })
     return(.parser(data))
@@ -374,8 +389,18 @@ test_that("binance_fetch_klines streams pages to on_page and returns invisibly",
     data <- lapply(seq_len(n), function(i) {
       ts <- start_ms + (i - 1) * interval_ms
       return(list(
-        ts, "67000", "67100", "66900", "67050", "100",
-        ts + interval_ms - 1, "6700000", 500L, "50", "3350000", "0"
+        ts,
+        "67000",
+        "67100",
+        "66900",
+        "67050",
+        "100",
+        ts + interval_ms - 1,
+        "6700000",
+        500L,
+        "50",
+        "3350000",
+        "0"
       ))
     })
     return(.parser(data))
@@ -392,6 +417,7 @@ test_that("binance_fetch_klines streams pages to on_page and returns invisibly",
     on_page = function(page) {
       pages_seen <<- pages_seen + 1L
       rows_seen <<- rows_seen + nrow(page)
+      return(invisible(NULL))
     }
   )
 

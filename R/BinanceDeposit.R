@@ -89,15 +89,15 @@ BinanceDeposit <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param coin Character; coin symbol (e.g., `"BTC"`, `"ETH"`, `"USDT"`).
-    #' @param network Character or NULL; blockchain network (e.g., `"ETH"`, `"TRX"`, `"BSC"`).
-    #'   If NULL, uses the coin's default network.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #' - `address` (character): The deposit wallet address.
-    #' - `coin` (character): Coin symbol (e.g., `"BTC"`).
-    #' - `tag` (character): Address tag/memo (empty string if not applicable).
-    #' - `url` (character): Blockchain explorer URL for the address.
+    #' @param coin (scalar<character>) coin symbol (e.g., `"BTC"`, `"ETH"`, `"USDT"`).
+    #' @param network (scalar<character>?) blockchain network (e.g., `"ETH"`,
+    #'   `"TRX"`, `"BSC"`). If NULL, uses the coin's default network.
+    #' @param recvWindow (scalar<count in [1, Inf[>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row:
+    #' - address (character) the deposit wallet address.
+    #' - coin (character) coin symbol (e.g., `"BTC"`).
+    #' - tag (character) address tag/memo (empty string if not applicable).
+    #' - url (character) blockchain explorer URL for the address.
     #'
     #' @examples
     #' \dontrun{
@@ -112,7 +112,10 @@ BinanceDeposit <- R6::R6Class(
     #' print(usdt[, .(address, coin, tag)])
     #' }
     get_deposit_address = function(coin, network = NULL, recvWindow = NULL) {
-      return(private$.request(
+      assert_args_BinanceDeposit__get_deposit_address(coin, network, recvWindow)
+      assert::assert_nonempty_strings(coin)
+      assert::assert_nonempty_strings(network, null_ok = TRUE)
+      res <- private$.request(
         endpoint = "/sapi/v1/capital/deposit/address",
         query = list(
           coin = coin,
@@ -120,9 +123,15 @@ BinanceDeposit <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = as_dt_row
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceDeposit__get_deposit_address,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Deposit History
     #'
@@ -171,30 +180,31 @@ BinanceDeposit <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param coin Character or NULL; filter by coin (e.g., `"BTC"`, `"USDT"`).
-    #' @param status Integer or NULL; filter by status:
+    #' @param coin (scalar<character>?) filter by coin (e.g., `"BTC"`, `"USDT"`).
+    #' @param status (scalar<count>?) filter by status:
     #'   `0` (pending), `1` (success), `6` (credited), `7` (wrong), `8` (waiting confirm).
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param offset Integer or NULL; pagination offset (default 0).
-    #' @param limit Integer or NULL; max results (default 1000, max 1000).
-    #' @param txId Character or NULL; filter by transaction ID.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #' - `id` (character): Unique deposit identifier.
-    #' - `amount` (character): Deposit amount.
-    #' - `coin` (character): Deposited coin symbol.
-    #' - `network` (character): Blockchain network used.
-    #' - `status` (integer): Deposit status code (0=pending, 1=success, 6=credited).
-    #' - `address` (character): Deposit address.
-    #' - `address_tag` (character): Address tag/memo.
-    #' - `tx_id` (character): On-chain transaction hash.
-    #' - `transfer_type` (integer): 0=external, 1=internal.
-    #' - `confirm_times` (character): Confirmation progress (e.g., `"1/1"`).
-    #' - `unlock_confirm` (integer): Confirmations needed to unlock.
-    #' - `wallet_type` (integer): 0=spot, 1=funding.
-    #' - `insert_time` (POSIXct): Deposit time converted from `insertTime`.
-    #' - `complete_time` (POSIXct): Completion time converted from `completeTime`.
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param offset (scalar<count>?) pagination offset (default 0).
+    #' @param limit (scalar<count>?) max results (default 1000, max 1000).
+    #' @param txId (scalar<character>?) filter by transaction ID.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row per deposit
+    #'   (empty when there are no matching deposits):
+    #' - id (character) unique deposit identifier.
+    #' - amount (character) deposit amount.
+    #' - coin (character) deposited coin symbol.
+    #' - network (character) blockchain network used.
+    #' - status (integer) deposit status code (0=pending, 1=success, 6=credited).
+    #' - address (character) deposit address.
+    #' - address_tag (character) address tag/memo.
+    #' - tx_id (character) on-chain transaction hash.
+    #' - transfer_type (integer) 0=external, 1=internal.
+    #' - confirm_times (character) confirmation progress (e.g., `"1/1"`).
+    #' - unlock_confirm (integer) confirmations needed to unlock.
+    #' - wallet_type (integer) 0=spot, 1=funding.
+    #' - insert_time (POSIXct) deposit time converted from `insertTime`.
+    #' - complete_time (POSIXct) completion time converted from `completeTime`.
     #'
     #' @examples
     #' \dontrun{
@@ -211,6 +221,7 @@ BinanceDeposit <- R6::R6Class(
     #'   endTime = now_ms
     #' )
     #' }
+    # nolint end
     get_deposit_history = function(
       coin = NULL,
       status = NULL,
@@ -221,7 +232,18 @@ BinanceDeposit <- R6::R6Class(
       txId = NULL,
       recvWindow = NULL
     ) {
-      return(private$.request(
+      assert_args_BinanceDeposit__get_deposit_history(
+        coin,
+        status,
+        startTime,
+        endTime,
+        offset,
+        limit,
+        txId,
+        recvWindow
+      )
+      assert::assert_nonempty_strings(coin, null_ok = TRUE)
+      res <- private$.request(
         endpoint = "/sapi/v1/capital/deposit/hisrec",
         query = list(
           coin = coin,
@@ -235,12 +257,17 @@ BinanceDeposit <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_deposit_history())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, c("insert_time", "complete_time"), ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceDeposit__get_deposit_history,
+        is_async = private$.is_async
       ))
     }
   )

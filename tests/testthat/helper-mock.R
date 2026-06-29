@@ -1,10 +1,13 @@
 # tests/testthat/helper-mock.R
 # Shared mock response builders for Binance API tests.
-# Imports data fixtures from mockery.R and adds test-only helpers.
+# Sources the synthetic JSON-backed fixture accessors from mockery.R and adds
+# the test-only error-injection helpers (which have no JSON fixture equivalent).
 
-# NOTE: We source() mockery.R rather than box::use(./mockery) because
-# helper files are source()'d by testthat, and box::use(./path) resolves
-# relative to the *calling* script — not relative to this file.
+# NOTE: We source() mockery.R rather than box::use(./mockery) so its mock_*()
+# accessors and mock_response() land as loose globals in the test environment
+# (box::use would bind them under a namespace object instead). mockery.R itself
+# resolves its fixtures directory defensively for both the source() and the
+# box::use() (README/vignette) contexts.
 source(file.path(testthat::test_path(), "mockery.R"), local = TRUE)
 
 # Backward-compatible alias

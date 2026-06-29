@@ -1,0 +1,14 @@
+{
+  "balances": [
+    {
+      "asset": "BTC",
+      "free": 0.1,
+      "locked": 0
+    },
+    {
+      "asset": "USDT",
+      "free": 1000,
+      "locked": 50
+    }
+  ]
+}

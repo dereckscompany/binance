@@ -49,6 +49,7 @@ BinanceAccount <- R6::R6Class(
   "BinanceAccount",
   inherit = BinanceBase,
   public = list(
+    # nolint start: line_length_linter.
     #' @description
     #' Get Account Information
     #'
@@ -108,31 +109,31 @@ BinanceAccount <- R6::R6Class(
     #' `commission_rates_*` columns and `permissions` is `;`-collapsed
     #' so the return is always one row per account.
     #'
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #' - `maker_commission` (integer): Maker commission rate (basis points).
-    #' - `taker_commission` (integer): Taker commission rate (basis points).
-    #' - `buyer_commission` (integer): Buyer commission rate (basis points).
-    #' - `seller_commission` (integer): Seller commission rate (basis points).
-    #' - `commission_rates_maker` (character): Maker commission rate as decimal string.
-    #' - `commission_rates_taker` (character): Taker commission rate as decimal string.
-    #' - `commission_rates_buyer` (character): Buyer commission rate as decimal string.
-    #' - `commission_rates_seller` (character): Seller commission rate as decimal string.
-    #' - `can_trade` (logical): Whether the account can place trades.
-    #' - `can_withdraw` (logical): Whether the account can withdraw.
-    #' - `can_deposit` (logical): Whether the account can deposit.
-    #' - `brokered` (logical): Whether this is a brokered account.
-    #' - `require_self_trade_prevention` (logical): Whether STP is required.
-    #' - `prevent_sor` (logical): Whether smart order routing is prevented.
-    #' - `update_time` (POSIXct): Last account update time.
-    #' - `account_type` (character): Account type (e.g., `"SPOT"`).
-    #' - `permissions` (character): `;`-separated account permissions
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row per account:
+    #' - maker_commission (integer) Maker commission rate (basis points).
+    #' - taker_commission (integer) Taker commission rate (basis points).
+    #' - buyer_commission (integer) Buyer commission rate (basis points).
+    #' - seller_commission (integer) Seller commission rate (basis points).
+    #' - commission_rates_maker (character) Maker commission rate as decimal string.
+    #' - commission_rates_taker (character) Taker commission rate as decimal string.
+    #' - commission_rates_buyer (character) Buyer commission rate as decimal string.
+    #' - commission_rates_seller (character) Seller commission rate as decimal string.
+    #' - can_trade (logical) Whether the account can place trades.
+    #' - can_withdraw (logical) Whether the account can withdraw.
+    #' - can_deposit (logical) Whether the account can deposit.
+    #' - brokered (logical) Whether this is a brokered account.
+    #' - require_self_trade_prevention (logical) Whether STP is required.
+    #' - prevent_sor (logical) Whether smart order routing is prevented.
+    #' - update_time (POSIXct) Last account update time.
+    #' - account_type (character) Account type (e.g., `"SPOT"`).
+    #' - permissions (character) `;`-separated account permissions
     #'   (e.g., `"SPOT;MARGIN"`). Recover the vector with
     #'   `strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]`. Single
     #'   row per account — collapsed via the shared
     #'   `collapse_string_array_fields()` helper for cross-package
     #'   consistency.
-    #' - `uid` (integer): Unique account identifier.
+    #' - uid (numeric) Unique account identifier.
     #'
     #' @examples
     #' \dontrun{
@@ -140,8 +141,10 @@ BinanceAccount <- R6::R6Class(
     #' info <- account$get_account_info()
     #' print(info[, .(maker_commission, taker_commission, can_trade, account_type)])
     #' }
+    # nolint end
     get_account_info = function(recvWindow = NULL) {
-      return(private$.request(
+      assert_args_BinanceAccount__get_account_info(recvWindow)
+      res <- private$.request(
         endpoint = "/api/v3/account",
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
@@ -162,11 +165,19 @@ BinanceAccount <- R6::R6Class(
           data <- collapse_string_array_fields(data, "permissions")
           dt <- as_dt_row(data)
           coerce_cols(dt, "update_time", ms_to_datetime)
+          # 64-bit account uid -> numeric so a large uid never overflows int32.
+          coerce_cols(dt, "uid", as.numeric)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceAccount__get_account_info,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Account Balances
     #'
@@ -206,12 +217,12 @@ BinanceAccount <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param omitZeroBalances Logical or NULL; if TRUE, omit assets with zero balance.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #' - `asset` (character): Asset ticker (e.g., `"BTC"`, `"USDT"`).
-    #' - `free` (character): Available balance for trading.
-    #' - `locked` (character): Balance locked in open orders.
+    #' @param omitZeroBalances (scalar<logical>?) if TRUE, omit assets with zero balance.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row per asset:
+    #' - asset (character) Asset ticker (e.g., `"BTC"`, `"USDT"`).
+    #' - free (character) Available balance for trading.
+    #' - locked (character) Balance locked in open orders.
     #'
     #' @examples
     #' \dontrun{
@@ -219,25 +230,33 @@ BinanceAccount <- R6::R6Class(
     #' balances <- account$get_balances()
     #' print(balances[free != "0.00000000"])
     #' }
+    # nolint end
     get_balances = function(omitZeroBalances = NULL, recvWindow = NULL) {
+      assert_args_BinanceAccount__get_balances(omitZeroBalances, recvWindow)
       query <- list(recvWindow = recvWindow)
       if (isTRUE(omitZeroBalances)) {
         query$omitZeroBalances <- "true"
       }
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/account",
         query = query,
         .parser = function(data) {
           balances <- data$balances
           if (is.null(balances) || length(balances) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_balances())
           }
           return(as_dt_list(balances)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceAccount__get_balances,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Account Trade List
     #'
@@ -282,27 +301,27 @@ BinanceAccount <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderId Integer or NULL; filter by order ID.
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param fromId Integer or NULL; trade ID to fetch from.
-    #' @param limit Integer or NULL; max results (default 500, max 1000).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per trade and the following columns:
-    #' - `symbol` (character): Trading pair (e.g., `"BTCUSDT"`).
-    #' - `id` (integer): Unique trade identifier.
-    #' - `order_id` (integer): Order that generated this trade.
-    #' - `order_list_id` (integer): OCO order list ID; `-1` if not an OCO.
-    #' - `price` (character): Execution price.
-    #' - `qty` (character): Quantity traded.
-    #' - `quote_qty` (character): Quote asset amount transacted.
-    #' - `commission` (character): Commission charged.
-    #' - `commission_asset` (character): Asset used for commission (e.g., `"BNB"`).
-    #' - `is_buyer` (logical): `TRUE` if you were the buyer.
-    #' - `is_maker` (logical): `TRUE` if you were the maker.
-    #' - `is_best_match` (logical): `TRUE` if this was the best price match.
-    #' - `time` (POSIXct): Trade execution time converted from `time`.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param orderId (scalar<count>?) filter by order ID.
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param fromId (scalar<count>?) trade ID to fetch from.
+    #' @param limit (scalar<count>?) max results (default 500, max 1000).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row per trade:
+    #' - symbol (character) Trading pair (e.g., `"BTCUSDT"`).
+    #' - id (numeric) Unique trade identifier.
+    #' - order_id (numeric) Order that generated this trade.
+    #' - order_list_id (numeric) OCO order list ID; `-1` if not an OCO.
+    #' - price (character) Execution price.
+    #' - qty (character) Quantity traded.
+    #' - quote_qty (character) Quote asset amount transacted.
+    #' - commission (character) Commission charged.
+    #' - commission_asset (character) Asset used for commission (e.g., `"BNB"`).
+    #' - is_buyer (logical) `TRUE` if you were the buyer.
+    #' - is_maker (logical) `TRUE` if you were the maker.
+    #' - is_best_match (logical) `TRUE` if this was the best price match.
+    #' - time (POSIXct) Trade execution time converted from `time`.
     #'
     #' @examples
     #' \dontrun{
@@ -310,6 +329,7 @@ BinanceAccount <- R6::R6Class(
     #' trades <- account$get_trades("BTCUSDT", limit = 50)
     #' print(trades[, .(id, price, qty, commission, time)])
     #' }
+    # nolint end
     get_trades = function(
       symbol,
       orderId = NULL,
@@ -319,7 +339,9 @@ BinanceAccount <- R6::R6Class(
       limit = NULL,
       recvWindow = NULL
     ) {
-      return(private$.request(
+      assert_args_BinanceAccount__get_trades(symbol, orderId, startTime, endTime, fromId, limit, recvWindow)
+      assert::assert_nonempty_strings(symbol)
+      res <- private$.request(
         endpoint = "/api/v3/myTrades",
         query = list(
           symbol = symbol,
@@ -332,12 +354,19 @@ BinanceAccount <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_account_trade())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "time", ms_to_datetime)
+          # 64-bit ids -> numeric so a large id never overflows int32.
+          coerce_cols(dt, c("id", "order_id", "order_list_id"), as.numeric)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceAccount__get_trades,
+        is_async = private$.is_async
       ))
     }
   )

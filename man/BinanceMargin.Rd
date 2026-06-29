@@ -348,22 +348,23 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{asset}}{Character; asset to borrow (e.g., \code{"USDT"}).}
+\item{\code{asset}}{(scalar<character>) asset to borrow (e.g., \code{"USDT"}).}
 
-\item{\code{amount}}{Numeric; amount to borrow.}
+\item{\code{amount}}{(scalar<numeric>) amount to borrow.}
 
-\item{\code{isIsolated}}{Character; \code{"TRUE"} or \code{"FALSE"} for isolated margin. Default \code{"FALSE"}.}
+\item{\code{isIsolated}}{(scalar<character>) \code{"TRUE"} or \code{"FALSE"} for isolated margin. Default \code{"FALSE"}.}
 
-\item{\code{symbol}}{Character or NULL; required when \code{isIsolated = "TRUE"}.}
+\item{\code{symbol}}{(scalar<character>?) required when \code{isIsolated = "TRUE"}.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
-\item \code{tran_id} (integer): Transaction identifier.
+\item tran_id (numeric) Transaction identifier (a large integer that overflows
+R's 32-bit \code{integer}, so it is coerced to a double).
 }
 }
 \subsection{Examples}{
@@ -437,22 +438,23 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{asset}}{Character; asset to repay (e.g., \code{"USDT"}).}
+\item{\code{asset}}{(scalar<character>) asset to repay (e.g., \code{"USDT"}).}
 
-\item{\code{amount}}{Numeric; amount to repay.}
+\item{\code{amount}}{(scalar<numeric>) amount to repay.}
 
-\item{\code{isIsolated}}{Character; \code{"TRUE"} or \code{"FALSE"} for isolated margin. Default \code{"FALSE"}.}
+\item{\code{isIsolated}}{(scalar<character>) \code{"TRUE"} or \code{"FALSE"} for isolated margin. Default \code{"FALSE"}.}
 
-\item{\code{symbol}}{Character or NULL; required when \code{isIsolated = "TRUE"}.}
+\item{\code{symbol}}{(scalar<character>?) required when \code{isIsolated = "TRUE"}.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
-\item \code{tran_id} (integer): Transaction identifier.
+\item tran_id (numeric) Transaction identifier (a large integer that overflows
+R's 32-bit \code{integer}, so it is coerced to a double).
 }
 }
 \subsection{Examples}{
@@ -548,49 +550,49 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{side}}{Character; \code{"BUY"} or \code{"SELL"}.}
+\item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
 
-\item{\code{type}}{Character; order type: \code{"LIMIT"}, \code{"MARKET"}, \code{"STOP_LOSS"},
+\item{\code{type}}{(scalar<character>) order type: \code{"LIMIT"}, \code{"MARKET"}, \code{"STOP_LOSS"},
 \code{"STOP_LOSS_LIMIT"}, \code{"TAKE_PROFIT"}, \code{"TAKE_PROFIT_LIMIT"}, \code{"LIMIT_MAKER"}.}
 
-\item{\code{quantity}}{Numeric or NULL; base asset quantity.}
+\item{\code{quantity}}{(scalar<numeric>?) base asset quantity.}
 
-\item{\code{quoteOrderQty}}{Numeric or NULL; quote asset quantity (market orders only).}
+\item{\code{quoteOrderQty}}{(scalar<numeric>?) quote asset quantity (market orders only).}
 
-\item{\code{price}}{Numeric or NULL; price for limit orders.}
+\item{\code{price}}{(scalar<numeric>?) price for limit orders.}
 
-\item{\code{stopPrice}}{Numeric or NULL; trigger price for stop orders.}
+\item{\code{stopPrice}}{(scalar<numeric>?) trigger price for stop orders.}
 
-\item{\code{timeInForce}}{Character or NULL; \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
+\item{\code{timeInForce}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
 
-\item{\code{newClientOrderId}}{Character or NULL; unique client order ID.}
+\item{\code{newClientOrderId}}{(scalar<character>?) unique client order ID.}
 
-\item{\code{newOrderRespType}}{Character or NULL; \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
+\item{\code{newOrderRespType}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
 
-\item{\code{sideEffectType}}{Character or NULL; \code{"NO_SIDE_EFFECT"}, \code{"MARGIN_BUY"}, \code{"AUTO_REPAY"}.}
+\item{\code{sideEffectType}}{(scalar<character>?) \code{"NO_SIDE_EFFECT"}, \code{"MARGIN_BUY"}, \code{"AUTO_REPAY"}.}
 
-\item{\code{isIsolated}}{Character or NULL; \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+\item{\code{isIsolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and columns including:
+(data.table | promise<data.table>) one row:
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{order_id} (integer): Unique order identifier.
-\item \code{client_order_id} (character): Client-assigned order ID.
-\item \code{transact_time} (POSIXct): Transaction time.
-\item \code{price} (character): Order price.
-\item \code{orig_qty} (character): Original requested quantity.
-\item \code{executed_qty} (character): Quantity filled so far.
-\item \code{status} (character): Order status.
-\item \code{type} (character): Order type.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{is_isolated} (logical): Whether this is an isolated margin order.
+\item symbol (character) Trading pair.
+\item order_id (numeric) Unique order identifier.
+\item client_order_id (character) Client-assigned order ID.
+\item transact_time (POSIXct) Transaction time.
+\item price (character) Order price.
+\item orig_qty (character) Original requested quantity.
+\item executed_qty (character) Quantity filled so far.
+\item status (character) Order status.
+\item type (character) Order type.
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item is_isolated (logical) Whether this is an isolated margin order.
 }
 }
 \subsection{Examples}{
@@ -677,27 +679,27 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{Integer or NULL; the order ID to cancel.}
+\item{\code{orderId}}{(scalar<count>?) the order ID to cancel.}
 
-\item{\code{origClientOrderId}}{Character or NULL; the client order ID to cancel.}
+\item{\code{origClientOrderId}}{(scalar<character>?) the client order ID to cancel.}
 
-\item{\code{isIsolated}}{Character or NULL; \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+\item{\code{isIsolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and columns including:
+(data.table | promise<data.table>) one row:
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{order_id} (integer): Unique order identifier.
-\item \code{orig_client_order_id} (character): Original client order ID.
-\item \code{status} (character): Order status (typically \code{"CANCELED"}).
-\item \code{transact_time} (POSIXct): Cancellation time.
-\item \code{is_isolated} (logical): Whether this is an isolated margin order.
+\item symbol (character) Trading pair.
+\item order_id (numeric) Unique order identifier.
+\item orig_client_order_id (character) Original client order ID.
+\item status (character) Order status (typically \code{"CANCELED"}).
+\item transact_time (POSIXct) Cancellation time.
+\item is_isolated (logical) Whether this is an isolated margin order.
 }
 }
 \subsection{Examples}{
@@ -776,29 +778,27 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{isIsolated}}{Character or NULL; \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+\item{\code{isIsolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} (or \verb{promise<data.table>} if \code{async = TRUE}).
-When orders are cancelled, one row per order with columns:
+(data.table | promise<data.table>) one row per cancelled order
+(empty when there were no open orders to cancel, per the cross-package
+"no stub rows" convention — the absence of an error is the success
+signal):
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{order_id} (integer): Unique order identifier.
-\item \code{orig_client_order_id} (character): Original client order ID.
-\item \code{status} (character): Order status (typically \code{"CANCELED"}).
-\item \code{transact_time} (POSIXct): Cancellation time.
-\item \code{is_isolated} (logical): Whether this is an isolated margin order.
+\item symbol (character) Trading pair.
+\item order_id (numeric) Unique order identifier.
+\item orig_client_order_id (character) Original client order ID.
+\item status (character) Order status (typically \code{"CANCELED"}).
+\item transact_time (POSIXct) Cancellation time.
+\item is_isolated (logical) Whether this is an isolated margin order.
 }
-
-When there were no open orders to cancel, the return is an
-empty \code{data.table} (per the cross-package "no stub rows"
-convention — the absence of an error is the success signal).
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
@@ -874,33 +874,33 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{Integer or NULL; the order ID.}
+\item{\code{orderId}}{(scalar<count>?) the order ID.}
 
-\item{\code{origClientOrderId}}{Character or NULL; the client order ID.}
+\item{\code{origClientOrderId}}{(scalar<character>?) the client order ID.}
 
-\item{\code{isIsolated}}{Character or NULL; \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+\item{\code{isIsolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and columns including:
+(data.table | promise<data.table>) one row:
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{order_id} (integer): Unique order identifier.
-\item \code{client_order_id} (character): Client-assigned order ID.
-\item \code{price} (character): Order price.
-\item \code{orig_qty} (character): Original requested quantity.
-\item \code{executed_qty} (character): Quantity filled so far.
-\item \code{status} (character): Order status.
-\item \code{type} (character): Order type.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{time} (POSIXct): Order creation time.
-\item \code{update_time} (POSIXct): Last update time.
-\item \code{is_isolated} (logical): Whether this is an isolated margin order.
+\item symbol (character) Trading pair.
+\item order_id (numeric) Unique order identifier.
+\item client_order_id (character) Client-assigned order ID.
+\item price (character) Order price.
+\item orig_qty (character) Original requested quantity.
+\item executed_qty (character) Quantity filled so far.
+\item status (character) Order status.
+\item type (character) Order type.
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item time (POSIXct) Order creation time.
+\item update_time (POSIXct) Last update time.
+\item is_isolated (logical) Whether this is an isolated margin order.
 }
 }
 \subsection{Examples}{
@@ -977,29 +977,30 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character or NULL; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{isIsolated}}{Character or NULL; \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+\item{\code{isIsolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per open order and the following columns:
+(data.table | promise<data.table>) one row per open order
+(empty when there are none):
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{order_id} (integer): Unique order identifier.
-\item \code{client_order_id} (character): Client-assigned order ID.
-\item \code{price} (character): Order price.
-\item \code{orig_qty} (character): Original requested quantity.
-\item \code{executed_qty} (character): Quantity filled so far.
-\item \code{status} (character): Order status.
-\item \code{type} (character): Order type.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{time} (POSIXct): Order creation time.
-\item \code{update_time} (POSIXct): Last update time.
-\item \code{is_isolated} (logical): Whether this is an isolated margin order.
+\item symbol (character) Trading pair.
+\item order_id (numeric) Unique order identifier.
+\item client_order_id (character) Client-assigned order ID.
+\item price (character) Order price.
+\item orig_qty (character) Original requested quantity.
+\item executed_qty (character) Quantity filled so far.
+\item status (character) Order status.
+\item type (character) Order type.
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item time (POSIXct) Order creation time.
+\item update_time (POSIXct) Last update time.
+\item is_isolated (logical) Whether this is an isolated margin order.
 }
 }
 \subsection{Examples}{
@@ -1098,37 +1099,38 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{Integer or NULL; pagination cursor.}
+\item{\code{orderId}}{(scalar<count>?) pagination cursor.}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{limit}}{Integer or NULL; max results (default 500, max 500).}
+\item{\code{limit}}{(scalar<count>?) max results (default 500, max 500).}
 
-\item{\code{isIsolated}}{Character or NULL; \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+\item{\code{isIsolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per order and the following columns:
+(data.table | promise<data.table>) one row per order
+(empty when there are no matching orders):
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{order_id} (integer): Unique order identifier.
-\item \code{client_order_id} (character): Client-assigned order ID.
-\item \code{price} (character): Order price.
-\item \code{orig_qty} (character): Original requested quantity.
-\item \code{executed_qty} (character): Quantity filled so far.
-\item \code{status} (character): Order status.
-\item \code{type} (character): Order type.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{time} (POSIXct): Order creation time.
-\item \code{update_time} (POSIXct): Last update time.
-\item \code{is_isolated} (logical): Whether this is an isolated margin order.
+\item symbol (character) Trading pair.
+\item order_id (numeric) Unique order identifier.
+\item client_order_id (character) Client-assigned order ID.
+\item price (character) Order price.
+\item orig_qty (character) Original requested quantity.
+\item executed_qty (character) Quantity filled so far.
+\item status (character) Order status.
+\item type (character) Order type.
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item time (POSIXct) Order creation time.
+\item update_time (POSIXct) Last update time.
+\item is_isolated (logical) Whether this is an isolated margin order.
 }
 }
 \subsection{Examples}{
@@ -1209,24 +1211,24 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and columns including:
+(data.table | promise<data.table>) one row per user asset:
 \itemize{
-\item \code{borrow_enabled} (logical): Whether borrowing is enabled.
-\item \code{margin_level} (character): Current margin level.
-\item \code{total_asset_of_btc} (character): Total asset value in BTC.
-\item \code{total_liability_of_btc} (character): Total liability in BTC.
-\item \code{total_net_asset_of_btc} (character): Net asset value in BTC.
-\item \code{trade_enabled} (logical): Whether trading is enabled.
-\item \code{transfer_enabled} (logical): Whether transfers are enabled.
-\item \code{account_type} (character): Account type (\code{"MARGIN"}).
-\item \verb{user_asset_*}: Per-asset fields prefixed with \code{user_asset_} (one row per asset).
+\item borrow_enabled (logical) Whether borrowing is enabled.
+\item margin_level (character) Current margin level.
+\item total_asset_of_btc (character) Total asset value in BTC.
+\item total_liability_of_btc (character) Total liability in BTC.
+\item total_net_asset_of_btc (character) Net asset value in BTC.
+\item trade_enabled (logical) Whether trading is enabled.
+\item transfer_enabled (logical) Whether transfers are enabled.
+\item account_type (character) Account type (\code{"MARGIN"}).
 }
 
+Per-asset fields are prefixed with \code{user_asset_}, one row per asset.
 When the account has multiple assets, account-level fields are repeated on each row.
 }
 \subsection{Examples}{
@@ -1287,19 +1289,19 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{asset}}{Character; asset to query (e.g., \code{"USDT"}).}
+\item{\code{asset}}{(scalar<character>) asset to query (e.g., \code{"USDT"}).}
 
-\item{\code{isolatedSymbol}}{Character or NULL; isolated margin pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{isolatedSymbol}}{(scalar<character>?) isolated margin pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
-\item \code{amount} (character): Maximum borrowable amount.
-\item \code{borrow_limit} (character): Borrow limit.
+\item amount (character) Maximum borrowable amount.
+\item borrow_limit (character) Borrow limit.
 }
 }
 \subsection{Examples}{
@@ -1359,19 +1361,19 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{asset}}{Character; asset to query (e.g., \code{"USDT"}).}
+\item{\code{asset}}{(scalar<character>) asset to query (e.g., \code{"USDT"}).}
 
-\item{\code{isolatedSymbol}}{Character or NULL; isolated margin pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{isolatedSymbol}}{(scalar<character>?) isolated margin pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
-\item \code{amount} (character): Maximum transferable-out amount.
-\item \code{borrow_limit} (character): Remaining borrow limit for the
+\item amount (character) Maximum transferable-out amount.
+\item borrow_limit (character) Remaining borrow limit for the
 account, in the same asset units as \code{amount}.
 }
 }
@@ -1456,32 +1458,33 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{asset}}{Character or NULL; filter by asset (e.g., \code{"USDT"}).}
+\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{current}}{Integer or NULL; current page (default 1).}
+\item{\code{current}}{(scalar<count>?) current page (default 1).}
 
-\item{\code{size}}{Integer or NULL; page size (default 10, max 100).}
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{archived}}{Character or NULL; \code{"true"} to query 6-month archived data.}
+\item{\code{archived}}{(scalar<character>?) \code{"true"} to query 6-month archived data.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per interest record and the following columns:
+(data.table | promise<data.table>) one row per interest record
+(empty when there are none):
 \itemize{
-\item \code{asset} (character): Asset charged interest.
-\item \code{interest} (character): Interest amount accrued.
-\item \code{interest_accured_time} (POSIXct): Time of interest accrual.
-\item \code{interest_rate} (character): Applied interest rate.
-\item \code{principal} (character): Principal amount borrowed.
-\item \code{type} (character): Margin type (\code{"ON_BORROW"}, \code{"PERIODIC"}, etc.).
-\item \code{isolated_symbol} (character): Isolated margin pair (if applicable).
+\item asset (character) Asset charged interest.
+\item interest (character) Interest amount accrued.
+\item interest_accured_time (POSIXct) Time of interest accrual.
+\item interest_rate (character) Applied interest rate.
+\item principal (character) Principal amount borrowed.
+\item type (character) Margin type (\code{"ON_BORROW"}, \code{"PERIODIC"}, etc.).
+\item isolated_symbol (character) Isolated margin pair (if applicable).
 }
 }
 \subsection{Examples}{
@@ -1559,33 +1562,34 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{isolatedSymbol}}{Character or NULL; isolated margin pair.}
+\item{\code{isolatedSymbol}}{(scalar<character>?) isolated margin pair.}
 
-\item{\code{current}}{Integer or NULL; current page (default 1).}
+\item{\code{current}}{(scalar<count>?) current page (default 1).}
 
-\item{\code{size}}{Integer or NULL; page size (default 10, max 100).}
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per liquidation record and the following columns:
+(data.table | promise<data.table>) one row per liquidation record
+(empty when there are none):
 \itemize{
-\item \code{avg_price} (character): Average liquidation price.
-\item \code{executed_qty} (character): Liquidated quantity.
-\item \code{order_id} (integer): Liquidation order identifier.
-\item \code{price} (character): Liquidation price.
-\item \code{qty} (character): Total quantity.
-\item \code{side} (character): \code{"BUY"} or \code{"SELL"}.
-\item \code{symbol} (character): Trading pair.
-\item \code{time} (POSIXct): Liquidation time.
-\item \code{is_isolated} (logical): Whether this was an isolated margin liquidation.
-\item \code{updated_time} (POSIXct): Last update time.
+\item avg_price (character) Average liquidation price.
+\item executed_qty (character) Liquidated quantity.
+\item order_id (numeric) Liquidation order identifier.
+\item price (character) Liquidation price.
+\item qty (character) Total quantity.
+\item side (character) \code{"BUY"} or \code{"SELL"}.
+\item symbol (character) Trading pair.
+\item time (POSIXct) Liquidation time.
+\item is_isolated (logical) Whether this was an isolated margin liquidation.
+\item updated_time (POSIXct) Last update time.
 }
 }
 \subsection{Examples}{
@@ -1663,38 +1667,39 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbol}}{Character; trading pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{Integer or NULL; filter by order ID.}
+\item{\code{orderId}}{(scalar<count>?) filter by order ID.}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{fromId}}{Integer or NULL; trade ID to fetch from.}
+\item{\code{fromId}}{(scalar<count>?) trade ID to fetch from.}
 
-\item{\code{limit}}{Integer or NULL; max results (default 500, max 1000).}
+\item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
 
-\item{\code{isIsolated}}{Character or NULL; \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+\item{\code{isIsolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per trade and columns including:
+(data.table | promise<data.table>) one row per trade
+(empty when there are none):
 \itemize{
-\item \code{symbol} (character): Trading pair.
-\item \code{id} (integer): Trade ID.
-\item \code{order_id} (integer): Order ID.
-\item \code{price} (character): Trade price.
-\item \code{qty} (character): Trade quantity.
-\item \code{commission} (character): Commission paid.
-\item \code{commission_asset} (character): Commission asset.
-\item \code{time} (POSIXct): Trade execution time.
-\item \code{is_buyer} (logical): Whether the trade was a buy.
-\item \code{is_maker} (logical): Whether the trade was a maker.
-\item \code{is_isolated} (logical): Whether this is an isolated margin trade.
+\item symbol (character) Trading pair.
+\item id (numeric) Trade ID.
+\item order_id (numeric) Order ID.
+\item price (character) Trade price.
+\item qty (character) Trade quantity.
+\item commission (character) Commission paid.
+\item commission_asset (character) Commission asset.
+\item time (POSIXct) Trade execution time.
+\item is_buyer (logical) Whether the trade was a buy.
+\item is_maker (logical) Whether the trade was a maker.
+\item is_isolated (logical) Whether this is an isolated margin trade.
 }
 }
 \subsection{Examples}{
@@ -1789,25 +1794,26 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{symbols}}{Character or NULL; comma-separated symbols (max 5, e.g., \code{"BTCUSDT,ETHUSDT"}).}
+\item{\code{symbols}}{(scalar<character>?) comma-separated symbols (max 5, e.g., \code{"BTCUSDT,ETHUSDT"}).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per isolated margin pair (long format) and columns including:
+(data.table | promise<data.table>) one row per isolated margin
+pair (long format):
 \itemize{
-\item \code{total_asset_of_btc} (character): Total asset value in BTC (repeated per pair).
-\item \code{total_liability_of_btc} (character): Total liability in BTC (repeated per pair).
-\item \code{total_net_asset_of_btc} (character): Net asset value in BTC (repeated per pair).
-\item \code{base_asset} (list): Base asset details (nested object kept as list-column).
-\item \code{quote_asset} (list): Quote asset details (nested object kept as list-column).
-\item \code{symbol} (character): Isolated margin pair symbol.
-\item \code{isolated_created} (logical): Whether the isolated pair has been created.
-\item \code{enabled} (logical): Whether the pair is enabled.
-\item \code{margin_level} (character): Current margin level.
-\item \code{trade_enabled} (logical): Whether trading is enabled.
+\item total_asset_of_btc (character) Total asset value in BTC (repeated per pair).
+\item total_liability_of_btc (character) Total liability in BTC (repeated per pair).
+\item total_net_asset_of_btc (character) Net asset value in BTC (repeated per pair).
+\item base_asset (list) Base asset details (nested object kept as list-column).
+\item quote_asset (list) Quote asset details (nested object kept as list-column).
+\item symbol (character) Isolated margin pair symbol.
+\item isolated_created (logical) Whether the isolated pair has been created.
+\item enabled (logical) Whether the pair is enabled.
+\item margin_level (character) Current margin level.
+\item trade_enabled (logical) Whether trading is enabled.
 }
 }
 \subsection{Examples}{
@@ -1886,24 +1892,25 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{asset}}{Character; asset to transfer (e.g., \code{"USDT"}).}
+\item{\code{asset}}{(scalar<character>) asset to transfer (e.g., \code{"USDT"}).}
 
-\item{\code{symbol}}{Character; isolated margin pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{symbol}}{(scalar<character>) isolated margin pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{transFrom}}{Character; source account: \code{"SPOT"} or \code{"ISOLATED_MARGIN"}.}
+\item{\code{transFrom}}{(scalar<character>) source account: \code{"SPOT"} or \code{"ISOLATED_MARGIN"}.}
 
-\item{\code{transTo}}{Character; destination account: \code{"SPOT"} or \code{"ISOLATED_MARGIN"}.}
+\item{\code{transTo}}{(scalar<character>) destination account: \code{"SPOT"} or \code{"ISOLATED_MARGIN"}.}
 
-\item{\code{amount}}{Numeric; amount to transfer.}
+\item{\code{amount}}{(scalar<numeric>) amount to transfer.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
-\item \code{tran_id} (integer): Transaction identifier.
+\item tran_id (numeric) Transaction identifier (a large integer that overflows
+R's 32-bit \code{integer}, so it is coerced to a double).
 }
 }
 \subsection{Examples}{

@@ -33,6 +33,7 @@ log.txt
 ^\.graphics$
 ^_pkgdown\.yml$
 ^air\.toml$
+^\.formatignore$
 ^cran-comments\.md$
 ^ROADMAP\.md$
 ^doc$

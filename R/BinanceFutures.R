@@ -86,20 +86,23 @@ BinanceFutures <- R6::R6Class(
     #' Overrides the base constructor to use the futures base URL and
     #' the futures-specific server time endpoint (`/fapi/v1/time`).
     #'
-    #' @param keys List; API credentials from [get_api_keys()].
-    #' @param base_url Character; API base URL. Defaults to [get_futures_base_url()].
-    #' @param async Logical; if `TRUE`, methods return promises. Default `FALSE`.
-    #' @param time_source Character; clock source for HMAC request signing.
+    #' @param keys (list) API credentials from [get_api_keys()].
+    #' @param base_url (scalar<character>) API base URL. Defaults to [get_futures_base_url()].
+    #' @param async (scalar<logical>) if `TRUE`, methods return promises. Default `FALSE`.
+    #' @param time_source (scalar<character>) clock source for HMAC request signing.
     #'   `"local"` (default) uses `Sys.time()`. `"server"` fetches the Binance
     #'   Futures server time before each authenticated request.
-    #' @return Invisible self.
+    #' @return (class<BinanceFutures>) invisibly, self.
     initialize = function(
       keys = get_api_keys(),
       base_url = get_futures_base_url(),
       async = FALSE,
       time_source = c("local", "server")
     ) {
-      if (match.arg(time_source) == "server") {
+      time_source <- match.arg(time_source)
+      assert_args_BinanceFutures__initialize(keys, base_url, async, time_source)
+      assert::assert_nonempty_strings(base_url)
+      if (time_source == "server") {
         super$initialize(keys = keys, base_url = base_url, async = async, time_source = "local")
         url <- base_url
         private$.time_source <- "server"
@@ -107,11 +110,12 @@ BinanceFutures <- R6::R6Class(
       } else {
         super$initialize(keys = keys, base_url = base_url, async = async, time_source = time_source)
       }
-      return(invisible(self))
+      return(invisible(assert_return_BinanceFutures__initialize(self)))
     },
 
     # ---- Order Placement ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Place a Futures Order
     #'
@@ -173,37 +177,36 @@ BinanceFutures <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param side Character; `"BUY"` or `"SELL"`.
-    #' @param type Character; order type: `"LIMIT"`, `"MARKET"`, `"STOP"`,
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param side (scalar<character>) `"BUY"` or `"SELL"`.
+    #' @param type (scalar<character>) order type: `"LIMIT"`, `"MARKET"`, `"STOP"`,
     #'   `"STOP_MARKET"`, `"TAKE_PROFIT"`, `"TAKE_PROFIT_MARKET"`,
     #'   `"TRAILING_STOP_MARKET"`.
-    #' @param quantity Numeric or NULL; order quantity.
-    #' @param price Numeric or NULL; price for limit orders.
-    #' @param stopPrice Numeric or NULL; trigger price for stop orders.
-    #' @param timeInForce Character or NULL; `"GTC"`, `"IOC"`, `"FOK"`.
-    #' @param positionSide Character or NULL; `"BOTH"`, `"LONG"`, `"SHORT"`.
-    #' @param reduceOnly Logical or NULL; reduce-only flag.
-    #' @param newClientOrderId Character or NULL; unique client order ID.
-    #' @param closePosition Logical or NULL; close all position flag.
-    #' @param workingType Character or NULL; `"MARK_PRICE"` or `"CONTRACT_PRICE"`.
-    #' @param newOrderRespType Character or NULL; `"ACK"`, `"RESULT"`.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `symbol` (character): Trading pair (e.g., `"BTCUSDT"`).
-    #' - `order_id` (integer): Unique order identifier.
-    #' - `client_order_id` (character): Client-assigned order ID.
-    #' - `price` (character): Order price.
-    #' - `orig_qty` (character): Original requested quantity.
-    #' - `executed_qty` (character): Quantity filled so far.
-    #' - `cum_qty` (character): Cumulative filled quantity.
-    #' - `cum_quote` (character): Cumulative quote asset transacted.
-    #' - `status` (character): Order status (`"NEW"`, `"FILLED"`, `"CANCELED"`, etc.).
-    #' - `time_in_force` (character): Time-in-force policy.
-    #' - `type` (character): Order type.
-    #' - `side` (character): `"BUY"` or `"SELL"`.
-    #' - `position_side` (character): Position side (`"BOTH"`, `"LONG"`, `"SHORT"`).
-    #' - `update_time` (POSIXct): Last update time.
+    #' @param quantity (scalar<numeric>?) order quantity.
+    #' @param price (scalar<numeric>?) price for limit orders.
+    #' @param stopPrice (scalar<numeric>?) trigger price for stop orders.
+    #' @param timeInForce (scalar<character>?) `"GTC"`, `"IOC"`, `"FOK"`.
+    #' @param positionSide (scalar<character>?) `"BOTH"`, `"LONG"`, `"SHORT"`.
+    #' @param reduceOnly (scalar<logical>?) reduce-only flag.
+    #' @param newClientOrderId (scalar<character>?) unique client order ID.
+    #' @param closePosition (scalar<logical>?) close all position flag.
+    #' @param workingType (scalar<character>?) `"MARK_PRICE"` or `"CONTRACT_PRICE"`.
+    #' @param newOrderRespType (scalar<character>?) `"ACK"`, `"RESULT"`.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row:
+    #' - symbol (character) Trading pair (e.g., `"BTCUSDT"`).
+    #' - order_id (numeric) Unique order identifier.
+    #' - client_order_id (character) Client-assigned order ID.
+    #' - price (character) Order price.
+    #' - orig_qty (character) Original requested quantity.
+    #' - executed_qty (character) Quantity filled so far.
+    #' - cum_quote (character) Cumulative quote asset transacted.
+    #' - status (character) Order status (`"NEW"`, `"FILLED"`, `"CANCELED"`, etc.).
+    #' - time_in_force (character) Time-in-force policy.
+    #' - type (character) Order type.
+    #' - side (character) `"BUY"` or `"SELL"`.
+    #' - position_side (character) Position side (`"BOTH"`, `"LONG"`, `"SHORT"`).
+    #' - update_time (POSIXct) Last update time.
     #'
     #' @examples
     #' \dontrun{
@@ -214,6 +217,7 @@ BinanceFutures <- R6::R6Class(
     #' )
     #' print(order)
     #' }
+    # nolint end
     add_order = function(
       symbol,
       side,
@@ -230,6 +234,24 @@ BinanceFutures <- R6::R6Class(
       newOrderRespType = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceFutures__add_order(
+        symbol,
+        side,
+        type,
+        quantity,
+        price,
+        stopPrice,
+        timeInForce,
+        positionSide,
+        reduceOnly,
+        newClientOrderId,
+        closePosition,
+        workingType,
+        newOrderRespType,
+        recvWindow
+      )
+      assert::assert_nonempty_strings(symbol)
+      assert::assert_nonempty_strings(newClientOrderId, null_ok = TRUE)
       side <- toupper(side)
       type <- toupper(type)
       rlang::arg_match0(side, c("BUY", "SELL"))
@@ -281,18 +303,27 @@ BinanceFutures <- R6::R6Class(
       )
       body <- body[!vapply(body, is.null, logical(1))]
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/order",
         method = "POST",
         body = body,
         .parser = function(data) {
           dt <- as_dt_row(data)
           coerce_cols(dt, "update_time", ms_to_datetime)
+          # 64-bit order id and epoch-ms good_till_date -> numeric so neither
+          # overflows int32.
+          coerce_cols(dt, c("order_id", "good_till_date"), as.numeric)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__add_order,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Test Futures Order Placement
     #'
@@ -333,22 +364,22 @@ BinanceFutures <- R6::R6Class(
     #' {}
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param side Character; `"BUY"` or `"SELL"`.
-    #' @param type Character; order type.
-    #' @param quantity Numeric or NULL; order quantity.
-    #' @param price Numeric or NULL; price for limit orders.
-    #' @param stopPrice Numeric or NULL; trigger price for stop orders.
-    #' @param timeInForce Character or NULL; `"GTC"`, `"IOC"`, `"FOK"`.
-    #' @param positionSide Character or NULL; `"BOTH"`, `"LONG"`, `"SHORT"`.
-    #' @param reduceOnly Logical or NULL; reduce-only flag.
-    #' @param newClientOrderId Character or NULL; unique client order ID.
-    #' @param closePosition Logical or NULL; close all position flag.
-    #' @param workingType Character or NULL; `"MARK_PRICE"` or `"CONTRACT_PRICE"`.
-    #' @param newOrderRespType Character or NULL; `"ACK"`, `"RESULT"`.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
-    #'   with a single row and a single `validated` (logical) column,
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param side (scalar<character>) `"BUY"` or `"SELL"`.
+    #' @param type (scalar<character>) order type.
+    #' @param quantity (scalar<numeric>?) order quantity.
+    #' @param price (scalar<numeric>?) price for limit orders.
+    #' @param stopPrice (scalar<numeric>?) trigger price for stop orders.
+    #' @param timeInForce (scalar<character>?) `"GTC"`, `"IOC"`, `"FOK"`.
+    #' @param positionSide (scalar<character>?) `"BOTH"`, `"LONG"`, `"SHORT"`.
+    #' @param reduceOnly (scalar<logical>?) reduce-only flag.
+    #' @param newClientOrderId (scalar<character>?) unique client order ID.
+    #' @param closePosition (scalar<logical>?) close all position flag.
+    #' @param workingType (scalar<character>?) `"MARK_PRICE"` or `"CONTRACT_PRICE"`.
+    #' @param newOrderRespType (scalar<character>?) `"ACK"`, `"RESULT"`.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) a single row with a single
+    #'   `validated` (logical) column,
     #'   set to `TRUE` on success. Binance returns `{}` on a successful
     #'   test order; the absence of an error is the validation signal.
     #'
@@ -361,6 +392,7 @@ BinanceFutures <- R6::R6Class(
     #' )
     #' stopifnot(test$validated)
     #' }
+    # nolint end
     add_order_test = function(
       symbol,
       side,
@@ -377,6 +409,24 @@ BinanceFutures <- R6::R6Class(
       newOrderRespType = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceFutures__add_order_test(
+        symbol,
+        side,
+        type,
+        quantity,
+        price,
+        stopPrice,
+        timeInForce,
+        positionSide,
+        reduceOnly,
+        newClientOrderId,
+        closePosition,
+        workingType,
+        newOrderRespType,
+        recvWindow
+      )
+      assert::assert_nonempty_strings(symbol)
+      assert::assert_nonempty_strings(newClientOrderId, null_ok = TRUE)
       side <- toupper(side)
       type <- toupper(type)
       rlang::arg_match0(side, c("BUY", "SELL"))
@@ -428,7 +478,7 @@ BinanceFutures <- R6::R6Class(
       )
       body <- body[!vapply(body, is.null, logical(1))]
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/order/test",
         method = "POST",
         body = body,
@@ -442,11 +492,17 @@ BinanceFutures <- R6::R6Class(
           }
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__add_order_test,
+        is_async = private$.is_async
       ))
     },
 
     # ---- Order Cancellation ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Cancel a Futures Order
     #'
@@ -501,20 +557,20 @@ BinanceFutures <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderId Integer or NULL; the order ID to cancel.
-    #' @param origClientOrderId Character or NULL; the client order ID to cancel.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `symbol` (character): Trading pair.
-    #' - `order_id` (integer): Unique order identifier.
-    #' - `client_order_id` (character): Client-assigned order ID.
-    #' - `orig_qty` (character): Original requested quantity.
-    #' - `executed_qty` (character): Quantity filled so far.
-    #' - `status` (character): Order status (typically `"CANCELED"`).
-    #' - `type` (character): Order type.
-    #' - `side` (character): `"BUY"` or `"SELL"`.
-    #' - `update_time` (POSIXct): Cancellation time.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param orderId (scalar<count>?) the order ID to cancel.
+    #' @param origClientOrderId (scalar<character>?) the client order ID to cancel.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row:
+    #' - symbol (character) Trading pair.
+    #' - order_id (numeric) Unique order identifier.
+    #' - client_order_id (character) Client-assigned order ID.
+    #' - orig_qty (character) Original requested quantity.
+    #' - executed_qty (character) Quantity filled so far.
+    #' - status (character) Order status (typically `"CANCELED"`).
+    #' - type (character) Order type.
+    #' - side (character) `"BUY"` or `"SELL"`.
+    #' - update_time (POSIXct) Cancellation time.
     #'
     #' @examples
     #' \dontrun{
@@ -522,12 +578,16 @@ BinanceFutures <- R6::R6Class(
     #' cancelled <- futures$cancel_order("BTCUSDT", orderId = 283194212)
     #' print(cancelled)
     #' }
+    # nolint end
     cancel_order = function(symbol, orderId = NULL, origClientOrderId = NULL, recvWindow = NULL) {
+      assert_args_BinanceFutures__cancel_order(symbol, orderId, origClientOrderId, recvWindow)
+      assert::assert_nonempty_strings(symbol)
+      assert::assert_nonempty_strings(origClientOrderId, null_ok = TRUE)
       if (is.null(orderId) && is.null(origClientOrderId)) {
         rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
       }
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/order",
         method = "DELETE",
         query = list(
@@ -539,11 +599,20 @@ BinanceFutures <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           coerce_cols(dt, "update_time", ms_to_datetime)
+          # 64-bit order id and epoch-ms good_till_date -> numeric so neither
+          # overflows int32.
+          coerce_cols(dt, c("order_id", "good_till_date"), as.numeric)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__cancel_order,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Cancel All Open Futures Orders
     #'
@@ -580,11 +649,11 @@ BinanceFutures <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `code` (integer): Response code (`200` on success).
-    #' - `msg` (character): Response message.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row:
+    #' - code (integer) Response code (`200` on success).
+    #' - msg (character) Response message.
     #'
     #' @examples
     #' \dontrun{
@@ -592,19 +661,28 @@ BinanceFutures <- R6::R6Class(
     #' result <- futures$cancel_all_orders("BTCUSDT")
     #' print(result)
     #' }
+    # nolint end
     cancel_all_orders = function(symbol, recvWindow = NULL) {
-      return(private$.request(
+      assert_args_BinanceFutures__cancel_all_orders(symbol, recvWindow)
+      assert::assert_nonempty_strings(symbol)
+      res <- private$.request(
         endpoint = "/fapi/v1/allOpenOrders",
         method = "DELETE",
         query = list(symbol = symbol, recvWindow = recvWindow),
         .parser = function(data) {
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__cancel_all_orders,
+        is_async = private$.is_async
       ))
     },
 
     # ---- Order Queries ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Query a Futures Order
     #'
@@ -650,25 +728,25 @@ BinanceFutures <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderId Integer or NULL; the order ID.
-    #' @param origClientOrderId Character or NULL; the client order ID.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `symbol` (character): Trading pair.
-    #' - `order_id` (integer): Unique order identifier.
-    #' - `client_order_id` (character): Client-assigned order ID.
-    #' - `price` (character): Order price.
-    #' - `orig_qty` (character): Original requested quantity.
-    #' - `executed_qty` (character): Quantity filled so far.
-    #' - `cum_quote` (character): Cumulative quote asset transacted.
-    #' - `status` (character): Order status.
-    #' - `time_in_force` (character): Time-in-force policy.
-    #' - `type` (character): Order type.
-    #' - `side` (character): `"BUY"` or `"SELL"`.
-    #' - `position_side` (character): Position side.
-    #' - `time` (POSIXct): Order creation time.
-    #' - `update_time` (POSIXct): Last update time.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param orderId (scalar<count>?) the order ID.
+    #' @param origClientOrderId (scalar<character>?) the client order ID.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row:
+    #' - symbol (character) Trading pair.
+    #' - order_id (numeric) Unique order identifier.
+    #' - client_order_id (character) Client-assigned order ID.
+    #' - price (character) Order price.
+    #' - orig_qty (character) Original requested quantity.
+    #' - executed_qty (character) Quantity filled so far.
+    #' - cum_quote (character) Cumulative quote asset transacted.
+    #' - status (character) Order status.
+    #' - time_in_force (character) Time-in-force policy.
+    #' - type (character) Order type.
+    #' - side (character) `"BUY"` or `"SELL"`.
+    #' - position_side (character) Position side.
+    #' - time (POSIXct) Order creation time.
+    #' - update_time (POSIXct) Last update time.
     #'
     #' @examples
     #' \dontrun{
@@ -676,12 +754,16 @@ BinanceFutures <- R6::R6Class(
     #' order <- futures$get_order("BTCUSDT", orderId = 283194212)
     #' print(order)
     #' }
+    # nolint end
     get_order = function(symbol, orderId = NULL, origClientOrderId = NULL, recvWindow = NULL) {
+      assert_args_BinanceFutures__get_order(symbol, orderId, origClientOrderId, recvWindow)
+      assert::assert_nonempty_strings(symbol)
+      assert::assert_nonempty_strings(origClientOrderId, null_ok = TRUE)
       if (is.null(orderId) && is.null(origClientOrderId)) {
         rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
       }
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/order",
         query = list(
           symbol = symbol,
@@ -692,11 +774,19 @@ BinanceFutures <- R6::R6Class(
         .parser = function(data) {
           dt <- as_dt_row(data)
           coerce_cols(dt, c("time", "update_time"), ms_to_datetime)
+          # 64-bit order id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "order_id", as.numeric)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_order,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Open Futures Orders
     #'
@@ -744,21 +834,22 @@ BinanceFutures <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per open order and the following columns:
-    #' - `symbol` (character): Trading pair.
-    #' - `order_id` (integer): Unique order identifier.
-    #' - `client_order_id` (character): Client-assigned order ID.
-    #' - `price` (character): Order price.
-    #' - `orig_qty` (character): Original requested quantity.
-    #' - `executed_qty` (character): Quantity filled so far.
-    #' - `status` (character): Order status.
-    #' - `type` (character): Order type.
-    #' - `side` (character): `"BUY"` or `"SELL"`.
-    #' - `position_side` (character): Position side.
-    #' - `time` (POSIXct): Order creation time.
-    #' - `update_time` (POSIXct): Last update time.
+    #' @param symbol (scalar<character>?) trading pair (e.g., `"BTCUSDT"`).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row per open order
+    #'   (empty when there are none):
+    #' - symbol (character) Trading pair.
+    #' - order_id (numeric) Unique order identifier.
+    #' - client_order_id (character) Client-assigned order ID.
+    #' - price (character) Order price.
+    #' - orig_qty (character) Original requested quantity.
+    #' - executed_qty (character) Quantity filled so far.
+    #' - status (character) Order status.
+    #' - type (character) Order type.
+    #' - side (character) `"BUY"` or `"SELL"`.
+    #' - position_side (character) Position side.
+    #' - time (POSIXct) Order creation time.
+    #' - update_time (POSIXct) Last update time.
     #'
     #' @examples
     #' \dontrun{
@@ -766,21 +857,32 @@ BinanceFutures <- R6::R6Class(
     #' open <- futures$get_open_orders("BTCUSDT")
     #' print(open)
     #' }
+    # nolint end
     get_open_orders = function(symbol = NULL, recvWindow = NULL) {
-      return(private$.request(
+      assert_args_BinanceFutures__get_open_orders(symbol, recvWindow)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
+      res <- private$.request(
         endpoint = "/fapi/v1/openOrders",
         query = list(symbol = symbol, recvWindow = recvWindow),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_futures_order_query())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, c("time", "update_time"), ms_to_datetime)
+          # 64-bit order id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "order_id", as.numeric)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_open_orders,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get All Futures Orders
     #'
@@ -828,25 +930,26 @@ BinanceFutures <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderId Integer or NULL; pagination cursor.
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param limit Integer or NULL; max results (default 500, max 1000).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per order and the following columns:
-    #' - `symbol` (character): Trading pair.
-    #' - `order_id` (integer): Unique order identifier.
-    #' - `client_order_id` (character): Client-assigned order ID.
-    #' - `price` (character): Order price.
-    #' - `orig_qty` (character): Original requested quantity.
-    #' - `executed_qty` (character): Quantity filled so far.
-    #' - `status` (character): Order status.
-    #' - `type` (character): Order type.
-    #' - `side` (character): `"BUY"` or `"SELL"`.
-    #' - `position_side` (character): Position side.
-    #' - `time` (POSIXct): Order creation time.
-    #' - `update_time` (POSIXct): Last update time.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param orderId (scalar<count>?) pagination cursor.
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param limit (scalar<count>?) max results (default 500, max 1000).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row per order
+    #'   (empty when there are no matching orders):
+    #' - symbol (character) Trading pair.
+    #' - order_id (numeric) Unique order identifier.
+    #' - client_order_id (character) Client-assigned order ID.
+    #' - price (character) Order price.
+    #' - orig_qty (character) Original requested quantity.
+    #' - executed_qty (character) Quantity filled so far.
+    #' - status (character) Order status.
+    #' - type (character) Order type.
+    #' - side (character) `"BUY"` or `"SELL"`.
+    #' - position_side (character) Position side.
+    #' - time (POSIXct) Order creation time.
+    #' - update_time (POSIXct) Last update time.
     #'
     #' @examples
     #' \dontrun{
@@ -854,6 +957,7 @@ BinanceFutures <- R6::R6Class(
     #' all <- futures$get_all_orders("BTCUSDT", limit = 50)
     #' print(all)
     #' }
+    # nolint end
     get_all_orders = function(
       symbol,
       orderId = NULL,
@@ -862,7 +966,9 @@ BinanceFutures <- R6::R6Class(
       limit = NULL,
       recvWindow = NULL
     ) {
-      return(private$.request(
+      assert_args_BinanceFutures__get_all_orders(symbol, orderId, startTime, endTime, limit, recvWindow)
+      assert::assert_nonempty_strings(symbol)
+      res <- private$.request(
         endpoint = "/fapi/v1/allOrders",
         query = list(
           symbol = symbol,
@@ -874,17 +980,25 @@ BinanceFutures <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_futures_order_query())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, c("time", "update_time"), ms_to_datetime)
+          # 64-bit order id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "order_id", as.numeric)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_all_orders,
+        is_async = private$.is_async
       ))
     },
 
     # ---- Account ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Futures Account Information
     #'
@@ -965,30 +1079,30 @@ BinanceFutures <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with **one row per asset balance** in the
-    #'   account; account-level fields are replicated on each row. The
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row per asset balance in
+    #'   the account; account-level fields are replicated on each row. The
     #'   companion `positions` array Binance returns is intentionally
     #'   dropped — see the long note below. Columns:
-    #' - `fee_tier` (integer): Commission fee tier.
-    #' - `can_trade` (logical): Whether trading is permitted.
-    #' - `can_deposit` (logical): Whether deposits are permitted.
-    #' - `can_withdraw` (logical): Whether withdrawals are permitted.
-    #' - `total_initial_margin` (character): Total initial margin required.
-    #' - `total_maint_margin` (character): Total maintenance margin required.
-    #' - `total_wallet_balance` (character): Total wallet balance.
-    #' - `total_unrealized_profit` (character): Total unrealised PnL.
-    #' - `total_margin_balance` (character): Total margin balance.
-    #' - `total_cross_wallet_balance` (character): Total cross-wallet balance.
-    #' - `available_balance` (character): Available balance for new positions.
-    #' - `max_withdraw_amount` (character): Maximum withdrawable amount.
-    #' - `asset_asset` (character): Per-asset symbol — one row per asset
+    #' - fee_tier (integer) Commission fee tier.
+    #' - can_trade (logical) Whether trading is permitted.
+    #' - can_deposit (logical) Whether deposits are permitted.
+    #' - can_withdraw (logical) Whether withdrawals are permitted.
+    #' - total_initial_margin (character) Total initial margin required.
+    #' - total_maint_margin (character) Total maintenance margin required.
+    #' - total_wallet_balance (character) Total wallet balance.
+    #' - total_unrealized_profit (character) Total unrealised PnL.
+    #' - total_margin_balance (character) Total margin balance.
+    #' - total_cross_wallet_balance (character) Total cross-wallet balance.
+    #' - available_balance (character) Available balance for new positions.
+    #' - max_withdraw_amount (character) Maximum withdrawable amount.
+    #' - asset_asset (character) Per-asset symbol — one row per asset
     #'   (Binance returns the symbol under the `asset` field within the
     #'   `assets` array, hence the doubled name after `asset_` prefixing).
-    #' - `asset_wallet_balance` (character): Per-asset wallet balance.
-    #' - `asset_unrealized_profit` (character): Per-asset unrealised PnL.
-    #' - `asset_margin_balance` (character): Per-asset margin balance.
-    #' - `asset_available_balance` (character): Per-asset available balance.
+    #' - asset_wallet_balance (character) Per-asset wallet balance.
+    #' - asset_unrealized_profit (character) Per-asset unrealised PnL.
+    #' - asset_margin_balance (character) Per-asset margin balance.
+    #' - asset_available_balance (character) Per-asset available balance.
     #'
     #' Account-level fields are replicated on each asset row. For
     #' per-position data (entry price, leverage, side, unrealised PnL on
@@ -1008,8 +1122,10 @@ BinanceFutures <- R6::R6Class(
     #' positions <- futures$get_positions()
     #' print(positions)
     #' }
+    # nolint end
     get_account = function(recvWindow = NULL) {
-      return(private$.request(
+      assert_args_BinanceFutures__get_account(recvWindow)
+      res <- private$.request(
         endpoint = "/fapi/v2/account",
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
@@ -1029,9 +1145,15 @@ BinanceFutures <- R6::R6Class(
           }
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_account,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Futures Account Balances
     #'
@@ -1079,17 +1201,18 @@ BinanceFutures <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per asset and the following columns:
-    #' - `account_alias` (character): Account alias (e.g., `"SgsR"`).
-    #' - `asset` (character): Asset symbol (e.g., `"USDT"`).
-    #' - `balance` (character): Wallet balance.
-    #' - `cross_wallet_balance` (character): Cross-wallet balance.
-    #' - `cross_un_pnl` (character): Unrealised PnL from cross positions.
-    #' - `available_balance` (character): Available balance.
-    #' - `max_withdraw_amount` (character): Maximum withdrawable amount.
-    #' - `margin_available` (logical): Whether margin is available.
-    #' - `update_time` (POSIXct): Last balance update time.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row per asset
+    #'   (empty when there are none):
+    #' - account_alias (character) Account alias (e.g., `"SgsR"`).
+    #' - asset (character) Asset symbol (e.g., `"USDT"`).
+    #' - balance (character) Wallet balance.
+    #' - cross_wallet_balance (character) Cross-wallet balance.
+    #' - cross_un_pnl (character) Unrealised PnL from cross positions.
+    #' - available_balance (character) Available balance.
+    #' - max_withdraw_amount (character) Maximum withdrawable amount.
+    #' - margin_available (logical) Whether margin is available.
+    #' - update_time (POSIXct) Last balance update time.
     #'
     #' @examples
     #' \dontrun{
@@ -1097,21 +1220,29 @@ BinanceFutures <- R6::R6Class(
     #' balances <- futures$get_balances()
     #' print(balances)
     #' }
+    # nolint end
     get_balances = function(recvWindow = NULL) {
-      return(private$.request(
+      assert_args_BinanceFutures__get_balances(recvWindow)
+      res <- private$.request(
         endpoint = "/fapi/v2/balance",
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_futures_balances())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "update_time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_balances,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Futures Position Information
     #'
@@ -1154,21 +1285,22 @@ BinanceFutures <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per position and the following columns:
-    #' - `symbol` (character): Trading pair.
-    #' - `position_side` (character): `"BOTH"`, `"LONG"`, or `"SHORT"`.
-    #' - `position_amt` (character): Position quantity.
-    #' - `entry_price` (character): Average entry price.
-    #' - `mark_price` (character): Current mark price.
-    #' - `un_realized_profit` (character): Unrealised PnL.
-    #' - `liquidation_price` (character): Estimated liquidation price.
-    #' - `leverage` (character): Current leverage.
-    #' - `margin_type` (character): `"isolated"` or `"cross"`.
-    #' - `isolated_margin` (character): Isolated margin amount.
-    #' - `notional` (character): Position notional value.
-    #' - `update_time` (POSIXct): Last position update time.
+    #' @param symbol (scalar<character>?) trading pair (e.g., `"BTCUSDT"`).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row per position
+    #'   (empty when there are none):
+    #' - symbol (character) Trading pair.
+    #' - position_side (character) `"BOTH"`, `"LONG"`, or `"SHORT"`.
+    #' - position_amt (character) Position quantity.
+    #' - entry_price (character) Average entry price.
+    #' - mark_price (character) Current mark price.
+    #' - un_realized_profit (character) Unrealised PnL.
+    #' - liquidation_price (character) Estimated liquidation price.
+    #' - leverage (character) Current leverage.
+    #' - margin_type (character) `"isolated"` or `"cross"`.
+    #' - isolated_margin (character) Isolated margin amount.
+    #' - notional (character) Position notional value.
+    #' - update_time (POSIXct) Last position update time.
     #'
     #' @examples
     #' \dontrun{
@@ -1176,23 +1308,32 @@ BinanceFutures <- R6::R6Class(
     #' positions <- futures$get_positions("BTCUSDT")
     #' print(positions)
     #' }
+    # nolint end
     get_positions = function(symbol = NULL, recvWindow = NULL) {
-      return(private$.request(
+      assert_args_BinanceFutures__get_positions(symbol, recvWindow)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
+      res <- private$.request(
         endpoint = "/fapi/v2/positionRisk",
         query = list(symbol = symbol, recvWindow = recvWindow),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_futures_positions())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "update_time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_positions,
+        is_async = private$.is_async
       ))
     },
 
     # ---- Leverage & Margin ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Set Leverage
     #'
@@ -1232,13 +1373,13 @@ BinanceFutures <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param leverage Integer; target leverage (1-125).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `leverage` (integer): New leverage setting.
-    #' - `max_notional_value` (character): Maximum notional value for this leverage.
-    #' - `symbol` (character): Trading pair.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param leverage (scalar<count>) target leverage (1-125).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row:
+    #' - leverage (integer) New leverage setting.
+    #' - max_notional_value (character) Maximum notional value for this leverage.
+    #' - symbol (character) Trading pair.
     #'
     #' @examples
     #' \dontrun{
@@ -1246,8 +1387,11 @@ BinanceFutures <- R6::R6Class(
     #' result <- futures$set_leverage("BTCUSDT", 20)
     #' print(result)
     #' }
+    # nolint end
     set_leverage = function(symbol, leverage, recvWindow = NULL) {
-      return(private$.request(
+      assert_args_BinanceFutures__set_leverage(symbol, leverage, recvWindow)
+      assert::assert_nonempty_strings(symbol)
+      res <- private$.request(
         endpoint = "/fapi/v1/leverage",
         method = "POST",
         body = list(
@@ -1258,9 +1402,15 @@ BinanceFutures <- R6::R6Class(
         .parser = function(data) {
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__set_leverage,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Set Margin Type
     #'
@@ -1299,12 +1449,12 @@ BinanceFutures <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param marginType Character; `"ISOLATED"` or `"CROSSED"`.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `code` (integer): Response code (`200` on success).
-    #' - `msg` (character): Response message.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param marginType (scalar<character>) `"ISOLATED"` or `"CROSSED"`.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row:
+    #' - code (integer) Response code (`200` on success).
+    #' - msg (character) Response message.
     #'
     #' @examples
     #' \dontrun{
@@ -1312,11 +1462,14 @@ BinanceFutures <- R6::R6Class(
     #' result <- futures$set_margin_type("BTCUSDT", "ISOLATED")
     #' print(result)
     #' }
+    # nolint end
     set_margin_type = function(symbol, marginType, recvWindow = NULL) {
+      assert_args_BinanceFutures__set_margin_type(symbol, marginType, recvWindow)
+      assert::assert_nonempty_strings(symbol)
       marginType <- toupper(marginType)
       rlang::arg_match0(marginType, c("ISOLATED", "CROSSED"))
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/marginType",
         method = "POST",
         body = list(
@@ -1327,9 +1480,15 @@ BinanceFutures <- R6::R6Class(
         .parser = function(data) {
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__set_margin_type,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Modify Position Margin
     #'
@@ -1371,16 +1530,17 @@ BinanceFutures <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param amount Numeric; margin amount.
-    #' @param type Integer; 1 = add margin, 2 = reduce margin.
-    #' @param positionSide Character or NULL; `"BOTH"`, `"LONG"`, `"SHORT"`.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `code` (integer): Response code (`200` on success).
-    #' - `msg` (character): Response message.
-    #' - `amount` (numeric): Margin amount modified.
-    #' - `type` (integer): Margin change type (1 = add, 2 = reduce).
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param amount (scalar<numeric>) margin amount.
+    #' @param type (scalar<count>) 1 = add margin, 2 = reduce margin.
+    #' @param positionSide (scalar<character>?) `"BOTH"`, `"LONG"`, `"SHORT"`.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row:
+    #' - code (integer) Response code (`200` on success).
+    #' - msg (character) Response message.
+    #' - amount (numeric) Margin amount modified (Binance returns it as a JSON
+    #'   decimal, so it is parsed as a double, not an integer).
+    #' - type (integer) Margin change type (1 = add, 2 = reduce).
     #'
     #' @examples
     #' \dontrun{
@@ -1388,7 +1548,10 @@ BinanceFutures <- R6::R6Class(
     #' result <- futures$modify_position_margin("BTCUSDT", amount = 100, type = 1)
     #' print(result)
     #' }
+    # nolint end
     modify_position_margin = function(symbol, amount, type, positionSide = NULL, recvWindow = NULL) {
+      assert_args_BinanceFutures__modify_position_margin(symbol, amount, type, positionSide, recvWindow)
+      assert::assert_nonempty_strings(symbol)
       amount <- as.character(amount)
 
       body <- list(
@@ -1400,16 +1563,26 @@ BinanceFutures <- R6::R6Class(
       )
       body <- body[!vapply(body, is.null, logical(1))]
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/positionMargin",
         method = "POST",
         body = body,
         .parser = function(data) {
-          return(as_dt_row(data)[])
+          dt <- as_dt_row(data)
+          # `amount` is a JSON decimal -> coerce to numeric so the contract
+          # matches the parser's own double output.
+          coerce_cols(dt, "amount", as.numeric)
+          return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__modify_position_margin,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Position Margin Change History
     #'
@@ -1444,20 +1617,21 @@ BinanceFutures <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param type Integer or NULL; 1 = add margin, 2 = reduce margin.
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param limit Integer or NULL; max results (default 500).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per margin change and the following columns:
-    #' - `symbol` (character): Trading pair.
-    #' - `type` (integer): Margin change type (1 = add, 2 = reduce).
-    #' - `delta_type` (character): Type of margin change.
-    #' - `amount` (character): Margin amount changed.
-    #' - `asset` (character): Margin asset (e.g., `"USDT"`).
-    #' - `time` (POSIXct): Time of the margin change.
-    #' - `position_side` (character): Position side.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param type (scalar<count>?) 1 = add margin, 2 = reduce margin.
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param limit (scalar<count>?) max results (default 500).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row per margin change
+    #'   (empty when there are none):
+    #' - symbol (character) Trading pair.
+    #' - type (integer) Margin change type (1 = add, 2 = reduce).
+    #' - delta_type (character) Type of margin change.
+    #' - amount (character) Margin amount changed.
+    #' - asset (character) Margin asset (e.g., `"USDT"`).
+    #' - time (POSIXct) Time of the margin change.
+    #' - position_side (character) Position side.
     #'
     #' @examples
     #' \dontrun{
@@ -1465,6 +1639,7 @@ BinanceFutures <- R6::R6Class(
     #' history <- futures$get_position_margin_history("BTCUSDT")
     #' print(history)
     #' }
+    # nolint end
     get_position_margin_history = function(
       symbol,
       type = NULL,
@@ -1473,7 +1648,9 @@ BinanceFutures <- R6::R6Class(
       limit = NULL,
       recvWindow = NULL
     ) {
-      return(private$.request(
+      assert_args_BinanceFutures__get_position_margin_history(symbol, type, startTime, endTime, limit, recvWindow)
+      assert::assert_nonempty_strings(symbol)
+      res <- private$.request(
         endpoint = "/fapi/v1/positionMargin/history",
         query = list(
           symbol = symbol,
@@ -1485,17 +1662,23 @@ BinanceFutures <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_futures_margin_history())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_position_margin_history,
+        is_async = private$.is_async
       ))
     },
 
     # ---- Trades & Income ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Futures Account Trade List
     #'
@@ -1538,28 +1721,29 @@ BinanceFutures <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderId Integer or NULL; filter by order ID.
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param fromId Integer or NULL; trade ID to fetch from.
-    #' @param limit Integer or NULL; max results (default 500, max 1000).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per trade and the following columns:
-    #' - `symbol` (character): Trading pair.
-    #' - `id` (integer): Trade identifier.
-    #' - `order_id` (integer): Order identifier.
-    #' - `price` (character): Trade execution price.
-    #' - `qty` (character): Trade quantity.
-    #' - `quote_qty` (character): Quote asset quantity.
-    #' - `commission` (character): Commission paid.
-    #' - `commission_asset` (character): Commission asset (e.g., `"USDT"`).
-    #' - `realized_pnl` (character): Realised profit/loss.
-    #' - `side` (character): `"BUY"` or `"SELL"`.
-    #' - `position_side` (character): Position side.
-    #' - `buyer` (logical): Whether the trade was a buy.
-    #' - `maker` (logical): Whether the trade was a maker.
-    #' - `time` (POSIXct): Trade execution time.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param orderId (scalar<count>?) filter by order ID.
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param fromId (scalar<count>?) trade ID to fetch from.
+    #' @param limit (scalar<count>?) max results (default 500, max 1000).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row per trade
+    #'   (empty when there are none):
+    #' - symbol (character) Trading pair.
+    #' - id (numeric) Trade identifier.
+    #' - order_id (numeric) Order identifier.
+    #' - price (character) Trade execution price.
+    #' - qty (character) Trade quantity.
+    #' - quote_qty (character) Quote asset quantity.
+    #' - commission (character) Commission paid.
+    #' - commission_asset (character) Commission asset (e.g., `"USDT"`).
+    #' - realized_pnl (character) Realised profit/loss.
+    #' - side (character) `"BUY"` or `"SELL"`.
+    #' - position_side (character) Position side.
+    #' - buyer (logical) Whether the trade was a buy.
+    #' - maker (logical) Whether the trade was a maker.
+    #' - time (POSIXct) Trade execution time.
     #'
     #' @examples
     #' \dontrun{
@@ -1567,6 +1751,7 @@ BinanceFutures <- R6::R6Class(
     #' trades <- futures$get_trades("BTCUSDT", limit = 50)
     #' print(trades)
     #' }
+    # nolint end
     get_trades = function(
       symbol,
       orderId = NULL,
@@ -1576,7 +1761,9 @@ BinanceFutures <- R6::R6Class(
       limit = NULL,
       recvWindow = NULL
     ) {
-      return(private$.request(
+      assert_args_BinanceFutures__get_trades(symbol, orderId, startTime, endTime, fromId, limit, recvWindow)
+      assert::assert_nonempty_strings(symbol)
+      res <- private$.request(
         endpoint = "/fapi/v1/userTrades",
         query = list(
           symbol = symbol,
@@ -1589,15 +1776,23 @@ BinanceFutures <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_futures_trade())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "time", ms_to_datetime)
+          # 64-bit ids -> numeric so a large id never overflows int32.
+          coerce_cols(dt, c("id", "order_id"), as.numeric)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_trades,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Income History
     #'
@@ -1644,8 +1839,8 @@ BinanceFutures <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param symbol Character or NULL; trading pair (e.g., `"BTCUSDT"`).
-    #' @param incomeType Character or NULL; income type filter. Valid values:
+    #' @param symbol (scalar<character>?) trading pair (e.g., `"BTCUSDT"`).
+    #' @param incomeType (scalar<character>?) income type filter. Valid values:
     #'   `"TRANSFER"`, `"WELCOME_BONUS"`, `"REALIZED_PNL"`, `"FUNDING_FEE"`,
     #'   `"COMMISSION"`, `"INSURANCE_CLEAR"`, `"REFERRAL_KICKBACK"`,
     #'   `"COMMISSION_REBATE"`, `"API_REBATE"`, `"CONTEST_REWARD"`,
@@ -1653,19 +1848,21 @@ BinanceFutures <- R6::R6Class(
     #'   `"OPTIONS_SETTLE_PROFIT"`, `"INTERNAL_TRANSFER"`, `"AUTO_EXCHANGE"`,
     #'   `"DELIVERED_SETTELMENT"`, `"COIN_SWAP_DEPOSIT"`, `"COIN_SWAP_WITHDRAW"`,
     #'   `"POSITION_LIMIT_INCREASE_FEE"`.
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param limit Integer or NULL; max results (default 100, max 1000).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per income entry and the following columns:
-    #' - `symbol` (character): Trading pair (may be empty for some income types).
-    #' - `income_type` (character): Type of income (e.g., `"FUNDING_FEE"`, `"REALIZED_PNL"`).
-    #' - `income` (character): Income amount (negative for fees paid).
-    #' - `asset` (character): Asset of the income (e.g., `"USDT"`).
-    #' - `info` (character): Additional info about the income event.
-    #' - `time` (POSIXct): Time of the income event.
-    #' - `tran_id` (integer): Transaction identifier.
-    #' - `trade_id` (character): Associated trade ID if applicable.
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param limit (scalar<count>?) max results (default 100, max 1000).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row per income entry
+    #'   (empty when there are none):
+    #' - symbol (character) Trading pair (may be empty for some income types).
+    #' - income_type (character) Type of income (e.g., `"FUNDING_FEE"`, `"REALIZED_PNL"`).
+    #' - income (character) Income amount (negative for fees paid).
+    #' - asset (character) Asset of the income (e.g., `"USDT"`).
+    #' - info (character) Additional info about the income event.
+    #' - time (POSIXct) Time of the income event.
+    #' - tran_id (numeric) Transaction identifier (a large integer that overflows
+    #'   R's 32-bit `integer`, so it is coerced to a double).
+    #' - trade_id (character) Associated trade ID if applicable.
     #'
     #' @examples
     #' \dontrun{
@@ -1673,6 +1870,7 @@ BinanceFutures <- R6::R6Class(
     #' income <- futures$get_income_history(symbol = "BTCUSDT", incomeType = "FUNDING_FEE")
     #' print(income)
     #' }
+    # nolint end
     get_income_history = function(
       symbol = NULL,
       incomeType = NULL,
@@ -1681,6 +1879,8 @@ BinanceFutures <- R6::R6Class(
       limit = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceFutures__get_income_history(symbol, incomeType, startTime, endTime, limit, recvWindow)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       if (!is.null(incomeType)) {
         incomeType <- toupper(incomeType)
         rlang::arg_match0(
@@ -1709,7 +1909,7 @@ BinanceFutures <- R6::R6Class(
         )
       }
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/income",
         query = list(
           symbol = symbol,
@@ -1721,17 +1921,24 @@ BinanceFutures <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_futures_income())
           }
           dt <- as_dt_list(data)
           coerce_cols(dt, "time", ms_to_datetime)
+          coerce_cols(dt, "tran_id", as.numeric)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_income_history,
+        is_async = private$.is_async
       ))
     },
 
     # ---- Position Mode ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Set Position Mode
     #'
@@ -1769,11 +1976,11 @@ BinanceFutures <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param dualSidePosition Logical; `TRUE` for hedge mode, `FALSE` for one-way.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `code` (integer): Response code (`200` on success).
-    #' - `msg` (character): Response message.
+    #' @param dualSidePosition (scalar<logical>) `TRUE` for hedge mode, `FALSE` for one-way.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row:
+    #' - code (integer) Response code (`200` on success).
+    #' - msg (character) Response message.
     #'
     #' @examples
     #' \dontrun{
@@ -1781,10 +1988,12 @@ BinanceFutures <- R6::R6Class(
     #' result <- futures$set_position_mode(TRUE)
     #' print(result)
     #' }
+    # nolint end
     set_position_mode = function(dualSidePosition, recvWindow = NULL) {
+      assert_args_BinanceFutures__set_position_mode(dualSidePosition, recvWindow)
       dualSidePosition <- tolower(as.character(dualSidePosition))
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/fapi/v1/positionSide/dual",
         method = "POST",
         body = list(
@@ -1794,9 +2003,15 @@ BinanceFutures <- R6::R6Class(
         .parser = function(data) {
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__set_position_mode,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Position Mode
     #'
@@ -1823,9 +2038,9 @@ BinanceFutures <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `dual_side_position` (logical): `TRUE` if hedge mode, `FALSE` if one-way mode.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row:
+    #' - dual_side_position (logical) `TRUE` if hedge mode, `FALSE` if one-way mode.
     #'
     #' @examples
     #' \dontrun{
@@ -1833,13 +2048,20 @@ BinanceFutures <- R6::R6Class(
     #' mode <- futures$get_position_mode()
     #' print(mode$dual_side_position)
     #' }
+    # nolint end
     get_position_mode = function(recvWindow = NULL) {
-      return(private$.request(
+      assert_args_BinanceFutures__get_position_mode(recvWindow)
+      res <- private$.request(
         endpoint = "/fapi/v1/positionSide/dual",
         query = list(recvWindow = recvWindow),
         .parser = function(data) {
           return(as_dt_row(data)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFutures__get_position_mode,
+        is_async = private$.is_async
       ))
     }
   )

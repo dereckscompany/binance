@@ -1,0 +1,16 @@
+{
+  "total": 1,
+  "rows": [
+    {
+      "txId": 1.35228657645286E+18,
+      "interestAccuredTime": 1672160400000,
+      "asset": "USDT",
+      "rawAsset": "USDT",
+      "principal": "100.00000000",
+      "interest": "0.01000000",
+      "interestRate": "0.00010000",
+      "type": "ON_BORROW",
+      "isolatedSymbol": ""
+    }
+  ]
+}

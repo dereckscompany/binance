@@ -1,173 +1,154 @@
-# Shared mock HTTP router for README and vignettes.
+# Shared mock HTTP router for the binance README, vignettes, and tests.
 #
-# Dispatches httr2 requests to fixture data based on URL pattern matching.
-# Fixtures come from mockery.R; this file only handles routing logic.
+# This is the THIN binance-specific layer over connectcore's shared mock harness
+# (connectcore::mock_router / with_mock_api / local_mock_api / load_fixtures /
+# mock_response). connectcore owns the response builder, the dispatch loop, and
+# the scoped-activation helpers; this file only declares the route table — URL
+# substring (+ optional HTTP method) -> the fixture for that endpoint — and loads
+# the fixtures from disk.
 #
-# Usage (in a hidden knitr setup chunk):
-#   box::use(./tests/testthat/mock_router[mock_router])
-#   options(httr2_mock = mock_router)
+# Each route's fixture is the SYNTHETIC binance JSON for that endpoint, parsed
+# verbatim from tests/testthat/fixtures/*.json by connectcore::load_fixtures()
+# (a named list keyed by file basename; here parsed to a list so the few routes
+# that wrap a single object in an array can do so). The fixtures are fully
+# synthetic — no live capture, no real account data.
+#
+# httr2 exposes a native global mock hook: connectcore::with_mock_api(.mock_routes,
+# { ... }) (or local_mock_api(.mock_routes)) installs the dispatcher as the
+# httr2_mock option, intercepting every req_perform / req_perform_promise call,
+# so docs render and tests run against canned, deterministic data with no
+# network, no real credentials, and no funds.
+#
+# Usage (in a hidden knitr setup chunk or a test):
+#   box::use(./tests/testthat/mock_router[.mock_routes])
+#   connectcore::with_mock_api(.mock_routes, { ...code... })  # scoped to a block
+#   connectcore::local_mock_api(.mock_routes)                 # scoped to a frame
 
-# Load all fixtures from mockery.R (sibling file)
-box::use(./mockery[
-  mock_response,
-  # Market data
-  mock_server_time_data, mock_exchange_info_data,
-  mock_ticker_data, mock_all_tickers_data, mock_book_ticker_data,
-  mock_24hr_stats_data, mock_avg_price_data,
-  mock_orderbook_data, mock_trades_data, mock_klines_data,
-  # Trading
-  mock_order_response, mock_cancel_order_data, mock_query_order_data,
-  mock_open_orders_data,
-  # Account
-  mock_account_data, mock_my_trades_data,
-  # Deposit / Withdrawal
-  mock_deposit_address_data, mock_deposit_history_data,
-  mock_withdrawal_response, mock_withdrawal_history_data,
-  # OCO Orders
-  mock_oco_order_response, mock_oco_query_data,
-  # Transfer
-  mock_transfer_response, mock_transfer_history_data,
-  # Margin Data
-  mock_margin_all_pairs_data, mock_margin_price_index_data,
-  mock_cross_margin_data, mock_interest_rate_history_data,
-  # Margin Trading
-  mock_margin_borrow_response, mock_margin_order_response,
-  mock_margin_account_data, mock_max_borrowable_data,
-  mock_margin_trades_data,
-  # Sub-Account
-  mock_sub_account_list_data,
-  # Earn
-  mock_flexible_products_data, mock_flexible_subscribe_response,
-  mock_flexible_position_data,
-  # Futures Data
-  mock_futures_exchange_info_data, mock_futures_mark_price_data,
-  mock_futures_funding_rate_data, mock_futures_open_interest_data,
-  mock_futures_ticker_data,
-  # Futures Trading
-  mock_futures_order_response, mock_futures_cancel_all_response,
-  mock_futures_account_data, mock_futures_balances_data,
-  mock_futures_positions_data, mock_futures_leverage_response,
-  mock_futures_margin_type_response, mock_futures_trades_data,
-  mock_futures_income_data, mock_futures_position_mode_data
-])
-
-#' Route table: URL pattern -> fixture thunk
-#' Order matters — more specific patterns first.
-#' @keywords internal
-.mock_routes <- list(
-  # Market data
-  list(pattern = "api/v3/time", fixture = function() mock_server_time_data()),
-  list(pattern = "api/v3/exchangeInfo", fixture = function() mock_exchange_info_data()),
-  list(pattern = "api/v3/ticker/bookTicker", fixture = function() mock_book_ticker_data()),
-  list(pattern = "api/v3/ticker/24hr", fixture = function() mock_24hr_stats_data()),
-  list(pattern = "api/v3/ticker/price", fixture = function() mock_ticker_data()),
-  list(pattern = "api/v3/avgPrice", fixture = function() mock_avg_price_data()),
-  list(pattern = "api/v3/depth", fixture = function() mock_orderbook_data()),
-  list(pattern = "api/v3/trades", fixture = function() mock_trades_data()),
-  list(pattern = "api/v3/klines", fixture = function() mock_klines_data()),
-  # Trading (order matters: test before generic order)
-  list(pattern = "api/v3/order/test", fixture = function() list(), method = "POST"),
-  list(pattern = "api/v3/order", fixture = function() mock_order_response(), method = "POST"),
-  list(pattern = "api/v3/order", fixture = function() mock_cancel_order_data(), method = "DELETE"),
-  list(pattern = "api/v3/openOrders", fixture = function() mock_open_orders_data(), method = "GET"),
-  list(pattern = "api/v3/openOrders", fixture = function() list(mock_cancel_order_data()), method = "DELETE"),
-  list(pattern = "api/v3/allOrders", fixture = function() mock_open_orders_data()),
-  list(pattern = "api/v3/order", fixture = function() mock_query_order_data(), method = "GET"),
-  # Account
-  list(pattern = "api/v3/account", fixture = function() mock_account_data()),
-  list(pattern = "api/v3/myTrades", fixture = function() mock_my_trades_data()),
-  # Deposit
-  list(pattern = "sapi/v1/capital/deposit/address", fixture = function() mock_deposit_address_data()),
-  list(pattern = "sapi/v1/capital/deposit/hisrec", fixture = function() mock_deposit_history_data()),
-  # Withdrawal
-  list(pattern = "sapi/v1/capital/withdraw/apply", fixture = function() mock_withdrawal_response(), method = "POST"),
-  list(pattern = "sapi/v1/capital/withdraw/history", fixture = function() mock_withdrawal_history_data()),
-  # OCO Orders
-  list(pattern = "api/v3/order/oco", fixture = function() mock_oco_order_response(), method = "POST"),
-  list(pattern = "api/v3/openOrderList", fixture = function() list(mock_oco_query_data()), method = "GET"),
-  list(pattern = "api/v3/allOrderList", fixture = function() list(mock_oco_query_data()), method = "GET"),
-  list(pattern = "api/v3/orderList", fixture = function() mock_oco_query_data(), method = "GET"),
-  list(pattern = "api/v3/orderList", fixture = function() mock_oco_order_response(), method = "DELETE"),
-  # Transfer
-  list(pattern = "sapi/v1/asset/transfer", fixture = function() mock_transfer_response(), method = "POST"),
-  list(pattern = "sapi/v1/asset/transfer", fixture = function() mock_transfer_history_data(), method = "GET"),
-  # Margin Data
-  list(pattern = "sapi/v1/margin/allPairs", fixture = function() mock_margin_all_pairs_data()),
-  list(pattern = "sapi/v1/margin/priceIndex", fixture = function() mock_margin_price_index_data()),
-  list(pattern = "sapi/v1/margin/crossMarginData", fixture = function() mock_cross_margin_data()),
-  list(pattern = "sapi/v1/margin/interestRateHistory", fixture = function() mock_interest_rate_history_data()),
-  # Margin Trading
-  list(pattern = "sapi/v1/margin/borrow-repay", fixture = function() mock_margin_borrow_response(), method = "POST"),
-  list(pattern = "sapi/v1/margin/order", fixture = function() mock_margin_order_response(), method = "POST"),
-  list(pattern = "sapi/v1/margin/order", fixture = function() mock_margin_order_response(), method = "DELETE"),
-  list(pattern = "sapi/v1/margin/openOrders", fixture = function() list(mock_margin_order_response())),
-  list(pattern = "sapi/v1/margin/allOrders", fixture = function() list(mock_margin_order_response())),
-  list(pattern = "sapi/v1/margin/account", fixture = function() mock_margin_account_data()),
-  list(pattern = "sapi/v1/margin/maxBorrowable", fixture = function() mock_max_borrowable_data()),
-  list(pattern = "sapi/v1/margin/myTrades", fixture = function() mock_margin_trades_data()),
-  # Sub-Account
-  list(pattern = "sapi/v1/sub-account/list", fixture = function() mock_sub_account_list_data()),
-  # Earn
-  list(pattern = "sapi/v1/simple-earn/flexible/list", fixture = function() mock_flexible_products_data()),
-  list(
-    pattern = "sapi/v1/simple-earn/flexible/subscribe",
-    fixture = function() mock_flexible_subscribe_response(),
-    method = "POST"
-  ),
-  list(pattern = "sapi/v1/simple-earn/flexible/position", fixture = function() mock_flexible_position_data()),
-  # Futures Data (fapi endpoints)
-  list(pattern = "fapi/v1/exchangeInfo", fixture = function() mock_futures_exchange_info_data()),
-  list(pattern = "fapi/v1/premiumIndex", fixture = function() mock_futures_mark_price_data()),
-  list(pattern = "fapi/v1/fundingRate", fixture = function() mock_futures_funding_rate_data()),
-  list(pattern = "fapi/v1/openInterest", fixture = function() mock_futures_open_interest_data()),
-  list(pattern = "fapi/v1/ticker/24hr", fixture = function() mock_24hr_stats_data()),
-  list(pattern = "fapi/v1/ticker/price", fixture = function() mock_futures_ticker_data()),
-  list(pattern = "fapi/v1/ticker/bookTicker", fixture = function() mock_book_ticker_data()),
-  list(pattern = "fapi/v1/depth", fixture = function() mock_orderbook_data()),
-  list(pattern = "fapi/v1/trades", fixture = function() mock_trades_data()),
-  list(pattern = "fapi/v1/klines", fixture = function() mock_klines_data()),
-  list(pattern = "fapi/v1/markPriceKlines", fixture = function() mock_klines_data()),
-  list(pattern = "fapi/v1/indexPriceKlines", fixture = function() mock_klines_data()),
-  # Futures Trading
-  list(pattern = "fapi/v1/order/test", fixture = function() list(), method = "POST"),
-  list(pattern = "fapi/v1/order", fixture = function() mock_futures_order_response(), method = "POST"),
-  list(pattern = "fapi/v1/order", fixture = function() mock_futures_order_response(), method = "DELETE"),
-  list(pattern = "fapi/v1/allOpenOrders", fixture = function() mock_futures_cancel_all_response(), method = "DELETE"),
-  list(pattern = "fapi/v1/openOrders", fixture = function() list(mock_futures_order_response())),
-  list(pattern = "fapi/v1/allOrders", fixture = function() list(mock_futures_order_response())),
-  list(pattern = "fapi/v1/order", fixture = function() mock_futures_order_response(), method = "GET"),
-  list(pattern = "fapi/v2/account", fixture = function() mock_futures_account_data()),
-  list(pattern = "fapi/v2/balance", fixture = function() mock_futures_balances_data()),
-  list(pattern = "fapi/v2/positionRisk", fixture = function() mock_futures_positions_data()),
-  list(pattern = "fapi/v1/leverage", fixture = function() mock_futures_leverage_response(), method = "POST"),
-  list(pattern = "fapi/v1/marginType", fixture = function() mock_futures_margin_type_response(), method = "POST"),
-  list(pattern = "fapi/v1/userTrades", fixture = function() mock_futures_trades_data()),
-  list(pattern = "fapi/v1/income", fixture = function() mock_futures_income_data()),
-  list(pattern = "fapi/v1/positionSide/dual", fixture = function() mock_futures_position_mode_data(), method = "GET"),
-  list(pattern = "fapi/v1/positionSide/dual", fixture = function() mock_futures_margin_type_response(), method = "POST")
+box::use(
+  connectcore[load_fixtures, mock_router_cc = mock_router]
 )
 
-#' Mock HTTP router for README and vignettes
+# Parse every synthetic fixture once into a named list, keyed by file basename
+# (account_data.json -> "account_data"). Resolved relative to THIS module file
+# so it works from the package root (README), vignettes/, and tests/testthat.
+.fixtures <- load_fixtures(box::file("fixtures"), parse = TRUE)
+
+#' Route table: URL substring (+ optional method) -> synthetic-fixture list.
 #'
-#' Dispatches `httr2` requests to fixture data based on URL pattern matching.
-#' Set via `options(httr2_mock = mock_router)` in a hidden knitr setup chunk.
-#'
-#' @param req An `httr2_request` object.
-#' @return An `httr2_response` object.
+#' Order matters — more specific patterns first. Each `fixture` is the parsed
+#' fixture list (served by connectcore::mock_response), or a thunk for the few
+#' endpoints whose live response wraps a single fixture object in an array.
 #' @export
-mock_router <- function(req) {
-  url <- req$url
-  method <- req$method
+.mock_routes <- list(
+  # ---- Spot market data (api.binance.com) ----
+  list(pattern = "api/v3/time", fixture = .fixtures$server_time_data),
+  list(pattern = "api/v3/exchangeInfo", fixture = .fixtures$exchange_info_data),
+  list(pattern = "api/v3/ticker/bookTicker", fixture = .fixtures$book_ticker_data),
+  list(pattern = "api/v3/ticker/24hr", fixture = .fixtures$"24hr_stats_data"),
+  list(pattern = "api/v3/ticker/price", fixture = .fixtures$ticker_data),
+  list(pattern = "api/v3/avgPrice", fixture = .fixtures$avg_price_data),
+  list(pattern = "api/v3/depth", fixture = .fixtures$orderbook_data),
+  list(pattern = "api/v3/trades", fixture = .fixtures$trades_data),
+  list(pattern = "api/v3/klines", fixture = .fixtures$klines_data),
 
-  # Route table lookup
-  for (route in .mock_routes) {
-    if (grepl(route$pattern, url, fixed = TRUE)) {
-      if (!is.null(route$method) && method != route$method) {
-        next
-      }
-      return(mock_response(route$fixture()))
-    }
-  }
+  # ---- Spot trading (order matters: test before generic order) ----
+  list(pattern = "api/v3/order/test", fixture = list(), method = "POST"),
+  list(pattern = "api/v3/order", fixture = .fixtures$order_response, method = "POST"),
+  list(pattern = "api/v3/order", fixture = .fixtures$cancel_order_data, method = "DELETE"),
+  list(pattern = "api/v3/openOrders", fixture = .fixtures$open_orders_data, method = "GET"),
+  list(pattern = "api/v3/openOrders", fixture = function() list(.fixtures$cancel_order_data), method = "DELETE"),
+  list(pattern = "api/v3/allOrders", fixture = .fixtures$open_orders_data),
+  list(pattern = "api/v3/order", fixture = .fixtures$query_order_data, method = "GET"),
 
-  stop("Unmocked request: ", method, " ", url)
-}
+  # ---- Account ----
+  list(pattern = "api/v3/account", fixture = .fixtures$account_data),
+  list(pattern = "api/v3/myTrades", fixture = .fixtures$my_trades_data),
+
+  # ---- Deposit ----
+  list(pattern = "sapi/v1/capital/deposit/address", fixture = .fixtures$deposit_address_data),
+  list(pattern = "sapi/v1/capital/deposit/hisrec", fixture = .fixtures$deposit_history_data),
+
+  # ---- Withdrawal ----
+  list(pattern = "sapi/v1/capital/withdraw/apply", fixture = .fixtures$withdrawal_response, method = "POST"),
+  list(pattern = "sapi/v1/capital/withdraw/history", fixture = .fixtures$withdrawal_history_data),
+
+  # ---- OCO orders ----
+  list(pattern = "api/v3/order/oco", fixture = .fixtures$oco_order_response, method = "POST"),
+  list(pattern = "api/v3/openOrderList", fixture = function() list(.fixtures$oco_query_data), method = "GET"),
+  list(pattern = "api/v3/allOrderList", fixture = function() list(.fixtures$oco_query_data), method = "GET"),
+  list(pattern = "api/v3/orderList", fixture = .fixtures$oco_query_data, method = "GET"),
+  list(pattern = "api/v3/orderList", fixture = .fixtures$oco_order_response, method = "DELETE"),
+
+  # ---- Transfer ----
+  list(pattern = "sapi/v1/asset/transfer", fixture = .fixtures$transfer_response, method = "POST"),
+  list(pattern = "sapi/v1/asset/transfer", fixture = .fixtures$transfer_history_data, method = "GET"),
+
+  # ---- Margin data ----
+  list(pattern = "sapi/v1/margin/allPairs", fixture = .fixtures$margin_all_pairs_data),
+  list(pattern = "sapi/v1/margin/priceIndex", fixture = .fixtures$margin_price_index_data),
+  list(pattern = "sapi/v1/margin/crossMarginData", fixture = .fixtures$cross_margin_data),
+  list(pattern = "sapi/v1/margin/interestRateHistory", fixture = .fixtures$interest_rate_history_data),
+
+  # ---- Margin trading ----
+  list(pattern = "sapi/v1/margin/borrow-repay", fixture = .fixtures$margin_borrow_response, method = "POST"),
+  list(pattern = "sapi/v1/margin/order", fixture = .fixtures$margin_order_response, method = "POST"),
+  list(pattern = "sapi/v1/margin/order", fixture = .fixtures$margin_order_response, method = "DELETE"),
+  list(pattern = "sapi/v1/margin/openOrders", fixture = function() list(.fixtures$margin_order_response)),
+  list(pattern = "sapi/v1/margin/allOrders", fixture = function() list(.fixtures$margin_order_response)),
+  list(pattern = "sapi/v1/margin/account", fixture = .fixtures$margin_account_data),
+  list(pattern = "sapi/v1/margin/maxBorrowable", fixture = .fixtures$max_borrowable_data),
+  list(pattern = "sapi/v1/margin/myTrades", fixture = .fixtures$margin_trades_data),
+
+  # ---- Sub-account ----
+  list(pattern = "sapi/v1/sub-account/list", fixture = .fixtures$sub_account_list_data),
+
+  # ---- Earn ----
+  list(pattern = "sapi/v1/simple-earn/flexible/list", fixture = .fixtures$flexible_products_data),
+  list(
+    pattern = "sapi/v1/simple-earn/flexible/subscribe",
+    fixture = .fixtures$flexible_subscribe_response,
+    method = "POST"
+  ),
+  list(pattern = "sapi/v1/simple-earn/flexible/position", fixture = .fixtures$flexible_position_data),
+
+  # ---- Futures data (fapi) ----
+  list(pattern = "fapi/v1/exchangeInfo", fixture = .fixtures$futures_exchange_info_data),
+  list(pattern = "fapi/v1/premiumIndex", fixture = .fixtures$futures_mark_price_data),
+  list(pattern = "fapi/v1/fundingRate", fixture = .fixtures$futures_funding_rate_data),
+  list(pattern = "fapi/v1/openInterest", fixture = .fixtures$futures_open_interest_data),
+  list(pattern = "fapi/v1/ticker/24hr", fixture = .fixtures$"24hr_stats_data"),
+  list(pattern = "fapi/v1/ticker/price", fixture = .fixtures$futures_ticker_data),
+  list(pattern = "fapi/v1/ticker/bookTicker", fixture = .fixtures$book_ticker_data),
+  list(pattern = "fapi/v1/depth", fixture = .fixtures$orderbook_data),
+  list(pattern = "fapi/v1/trades", fixture = .fixtures$trades_data),
+  list(pattern = "fapi/v1/klines", fixture = .fixtures$klines_data),
+  list(pattern = "fapi/v1/markPriceKlines", fixture = .fixtures$klines_data),
+  list(pattern = "fapi/v1/indexPriceKlines", fixture = .fixtures$klines_data),
+
+  # ---- Futures trading ----
+  list(pattern = "fapi/v1/order/test", fixture = list(), method = "POST"),
+  list(pattern = "fapi/v1/order", fixture = .fixtures$futures_order_response, method = "POST"),
+  list(pattern = "fapi/v1/order", fixture = .fixtures$futures_order_response, method = "DELETE"),
+  list(pattern = "fapi/v1/allOpenOrders", fixture = .fixtures$futures_cancel_all_response, method = "DELETE"),
+  list(pattern = "fapi/v1/openOrders", fixture = function() list(.fixtures$futures_order_response)),
+  list(pattern = "fapi/v1/allOrders", fixture = function() list(.fixtures$futures_order_response)),
+  list(pattern = "fapi/v1/order", fixture = .fixtures$futures_order_response, method = "GET"),
+  list(pattern = "fapi/v2/account", fixture = .fixtures$futures_account_data),
+  list(pattern = "fapi/v2/balance", fixture = .fixtures$futures_balances_data),
+  list(pattern = "fapi/v2/positionRisk", fixture = .fixtures$futures_positions_data),
+  list(pattern = "fapi/v1/leverage", fixture = .fixtures$futures_leverage_response, method = "POST"),
+  list(pattern = "fapi/v1/marginType", fixture = .fixtures$futures_margin_type_response, method = "POST"),
+  list(pattern = "fapi/v1/userTrades", fixture = .fixtures$futures_trades_data),
+  list(pattern = "fapi/v1/income", fixture = .fixtures$futures_income_data),
+  list(pattern = "fapi/v1/positionSide/dual", fixture = .fixtures$futures_position_mode_data, method = "GET"),
+  list(pattern = "fapi/v1/positionSide/dual", fixture = .fixtures$futures_margin_type_response, method = "POST")
+)
+
+#' Mock HTTP router for the README and vignettes (back-compat shim).
+#'
+#' A ready-built dispatcher over `.mock_routes`, for the docs that install the
+#' hook directly with `options(httr2_mock = mock_router)`. Tests and new docs
+#' should prefer `connectcore::with_mock_api(.mock_routes, { ... })` or
+#' `connectcore::local_mock_api(.mock_routes)`.
+#' @export
+mock_router <- mock_router_cc(.mock_routes)

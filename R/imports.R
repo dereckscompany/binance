@@ -1,3 +1,4 @@
-#' @import data.table
 #' @import assert
+#' @import data.table
+#' @import promises
 NULL

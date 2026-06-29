@@ -35,7 +35,6 @@ test_that("ws_backoff_delay grows but stays bounded and >= 1", {
 # ---- Connection-free class behaviour ----------------------------------------
 
 test_that("BinanceMarketStream tracks subscriptions and builds depth stream names", {
-
   stream <- BinanceMarketStream$new()
   expect_false(stream$is_open())
   expect_length(stream$subscriptions(), 0L)
@@ -59,7 +58,6 @@ test_that("$on validates the event name and requires a function", {
 })
 
 test_that("dispatch sends raw messages to global and per-stream handlers correctly", {
-
   global <- list()
   per_stream <- list()
   stream <- BinanceMarketStream$new()
@@ -123,7 +121,9 @@ test_that("live: depth stream connects and delivers depthUpdate messages", {
   stream <- BinanceMarketStream$new()
   stream$on("message", function(m) {
     msgs[[length(msgs) + 1L]] <<- m
-    if (length(msgs) >= 3L) stream$close()
+    if (length(msgs) >= 3L) {
+      stream$close()
+    }
     return(invisible(NULL))
   })
   stream$depth("BTCUSDT", speed = "100ms")

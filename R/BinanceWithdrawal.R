@@ -99,21 +99,21 @@ BinanceWithdrawal <- R6::R6Class(
     #' { "id": "7213fea8e94b4a5593d507237e5a555b" }
     #' ```
     #'
-    #' @param coin Character; coin symbol (e.g., `"BTC"`, `"USDT"`).
-    #' @param address Character; destination wallet address.
-    #' @param amount Numeric or character; withdrawal amount.
-    #' @param network Character or NULL; blockchain network (e.g., `"ETH"`, `"TRX"`, `"BSC"`).
+    #' @param coin (scalar<character>) coin symbol (e.g., `"BTC"`, `"USDT"`).
+    #' @param address (scalar<character>) destination wallet address.
+    #' @param amount (scalar<numeric> | scalar<character>) withdrawal amount.
+    #' @param network (scalar<character>?) blockchain network (e.g., `"ETH"`, `"TRX"`, `"BSC"`).
     #'   If NULL, uses the coin's default network.
-    #' @param withdrawOrderId Character or NULL; client-side withdrawal ID for tracking.
-    #' @param addressTag Character or NULL; secondary address identifier (required for
+    #' @param withdrawOrderId (scalar<character>?) client-side withdrawal ID for tracking.
+    #' @param addressTag (scalar<character>?) secondary address identifier (required for
     #'   coins like XRP, XMR, XLM).
-    #' @param transactionFeeFlag Logical or NULL; for internal transfers: `TRUE` returns
+    #' @param transactionFeeFlag (scalar<logical>?) for internal transfers: `TRUE` returns
     #'   fee to destination, `FALSE` to origin.
-    #' @param name Character or NULL; description for the address (max 200 entries in address book).
-    #' @param walletType Integer or NULL; `0` for spot wallet, `1` for funding wallet.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #' - `id` (character): Unique withdrawal identifier assigned by Binance.
+    #' @param name (scalar<character>?) description for the address (max 200 entries in address book).
+    #' @param walletType (scalar<count>?) `0` for spot wallet, `1` for funding wallet.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row:
+    #' - id (character) Unique withdrawal identifier assigned by Binance.
     #'
     #' @examples
     #' \dontrun{
@@ -140,6 +140,23 @@ BinanceWithdrawal <- R6::R6Class(
       walletType = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceWithdrawal__add_withdrawal(
+        coin,
+        address,
+        amount,
+        network,
+        withdrawOrderId,
+        addressTag,
+        transactionFeeFlag,
+        name,
+        walletType,
+        recvWindow
+      )
+      assert::assert_nonempty_strings(coin)
+      assert::assert_nonempty_strings(address)
+      assert::assert_nonempty_strings(network, null_ok = TRUE)
+      assert::assert_nonempty_strings(withdrawOrderId, null_ok = TRUE)
+      assert::assert_nonempty_strings(addressTag, null_ok = TRUE)
       if (!is.character(coin) || !nzchar(coin)) {
         rlang::abort("Parameter 'coin' must be a non-empty string.")
       }
@@ -174,14 +191,20 @@ BinanceWithdrawal <- R6::R6Class(
         body$recvWindow <- as.character(recvWindow)
       }
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/capital/withdraw/apply",
         method = "POST",
         body = body,
         .parser = as_dt_row
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceWithdrawal__add_withdrawal,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Withdrawal History
     #'
@@ -231,33 +254,36 @@ BinanceWithdrawal <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param coin Character or NULL; filter by coin (e.g., `"BTC"`, `"USDT"`).
-    #' @param withdrawOrderId Character or NULL; filter by client-side withdrawal ID.
-    #' @param status Integer or NULL; filter by status:
+    #' @param coin (scalar<character>?) filter by coin (e.g., `"BTC"`, `"USDT"`).
+    #' @param withdrawOrderId (scalar<character>?) filter by client-side withdrawal ID.
+    #' @param status (scalar<count>?) filter by status:
     #'   `0` (email sent), `1` (cancelled), `2` (awaiting approval),
     #'   `3` (rejected), `4` (processing), `5` (failure), `6` (completed).
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param offset Integer or NULL; pagination offset (default 0).
-    #' @param limit Integer or NULL; max results (default 1000, max 1000).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #' - `id` (character): Unique withdrawal identifier.
-    #' - `amount` (character): Withdrawal amount.
-    #' - `transaction_fee` (character): Fee charged for the withdrawal.
-    #' - `coin` (character): Withdrawn coin symbol.
-    #' - `status` (integer): Withdrawal status code (0-6).
-    #' - `address` (character): Destination address.
-    #' - `tx_id` (character): On-chain transaction hash.
-    #' - `apply_time` (POSIXct): Time the withdrawal was submitted (parsed from the UTC string Binance returns).
-    #' - `network` (character): Blockchain network used.
-    #' - `transfer_type` (integer): 0=external, 1=internal.
-    #' - `withdraw_order_id` (character): Client-side withdrawal ID.
-    #' - `info` (character): Additional info or error message.
-    #' - `confirm_no` (integer): Number of on-chain confirmations.
-    #' - `wallet_type` (integer): 0=spot, 1=funding.
-    #' - `tx_key` (character): Transaction key.
-    #' - `complete_time` (POSIXct): Completion time (parsed from the UTC string Binance returns).
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param offset (scalar<count>?) pagination offset (default 0).
+    #' @param limit (scalar<count>?) max results (default 1000, max 1000).
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row per withdrawal
+    #'   (empty when there are no matching withdrawals):
+    #' - id (character) Unique withdrawal identifier.
+    #' - amount (character) Withdrawal amount.
+    #' - transaction_fee (character) Fee charged for the withdrawal.
+    #' - coin (character) Withdrawn coin symbol.
+    #' - status (integer) Withdrawal status code (0-6).
+    #' - address (character) Destination address.
+    #' - tx_id (character) On-chain transaction hash.
+    #' - apply_time (POSIXct) Time the withdrawal was submitted (parsed from the UTC string Binance returns).
+    #' - network (character) Blockchain network used.
+    #' - transfer_type (integer) 0=external, 1=internal.
+    #' - withdraw_order_id (character) Client-side withdrawal ID.
+    #' - info (character) Additional info or error message.
+    #' - confirm_no (integer) Number of on-chain confirmations.
+    #' - wallet_type (integer) 0=spot, 1=funding.
+    #' - tx_key (character) Transaction key.
+    #' - complete_time (POSIXct | NA) Completion time (parsed from the UTC string
+    #'   Binance returns; `NA` for in-progress withdrawals, which Binance sends as
+    #'   an empty string).
     #'
     #' @examples
     #' \dontrun{
@@ -274,6 +300,7 @@ BinanceWithdrawal <- R6::R6Class(
     #'   endTime = now_ms
     #' )
     #' }
+    # nolint end
     get_withdrawal_history = function(
       coin = NULL,
       withdrawOrderId = NULL,
@@ -284,7 +311,19 @@ BinanceWithdrawal <- R6::R6Class(
       limit = NULL,
       recvWindow = NULL
     ) {
-      return(private$.request(
+      assert_args_BinanceWithdrawal__get_withdrawal_history(
+        coin,
+        withdrawOrderId,
+        status,
+        startTime,
+        endTime,
+        offset,
+        limit,
+        recvWindow
+      )
+      assert::assert_nonempty_strings(coin, null_ok = TRUE)
+      assert::assert_nonempty_strings(withdrawOrderId, null_ok = TRUE)
+      res <- private$.request(
         endpoint = "/sapi/v1/capital/withdraw/history",
         query = list(
           coin = coin,
@@ -298,7 +337,7 @@ BinanceWithdrawal <- R6::R6Class(
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_withdrawal_history())
           }
           dt <- as_dt_list(data)
           # `apply_time` and `complete_time` come back as UTC datetime
@@ -308,6 +347,11 @@ BinanceWithdrawal <- R6::R6Class(
           coerce_cols(dt, c("apply_time", "complete_time"), utc_string_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceWithdrawal__get_withdrawal_history,
+        is_async = private$.is_async
       ))
     }
   )

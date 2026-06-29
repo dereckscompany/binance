@@ -67,6 +67,7 @@ BinanceMarketData <- R6::R6Class(
   public = list(
     # ---- Server Time ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Server Time
     #'
@@ -95,8 +96,8 @@ BinanceMarketData <- R6::R6Class(
     #' { "serverTime": 1499827319559 }
     #' ```
     #'
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `server_time` (POSIXct): Server time as UTC datetime.
+    #' @return (data.table | promise<data.table>) one row:
+    #'   - server_time (POSIXct) Server time as UTC datetime.
     #'
     #' @examples
     #' \dontrun{
@@ -105,8 +106,9 @@ BinanceMarketData <- R6::R6Class(
     #' drift <- as.numeric(difftime(Sys.time(), st$server_time, units = "secs"))
     #' cat("Clock drift:", round(drift * 1000), "ms\n")
     #' }
+    # nolint end
     get_server_time = function() {
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/time",
         auth = FALSE,
         .parser = function(data) {
@@ -114,11 +116,17 @@ BinanceMarketData <- R6::R6Class(
           coerce_cols(dt, "server_time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarketData__get_server_time,
+        is_async = private$.is_async
       ))
     },
 
     # ---- Exchange Info ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Exchange Info
     #'
@@ -178,57 +186,60 @@ BinanceMarketData <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character or NULL; specific symbol (e.g., `"BTCUSDT"`).
-    #' @param symbols Character vector or NULL; multiple symbols.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with all symbol
-    #'   fields returned by the API, converted to snake_case. Key columns include:
-    #'   - `symbol` (character): Trading pair identifier (e.g., `"BTCUSDT"`).
-    #'   - `status` (character): Trading status (`"TRADING"`, `"HALT"`, `"BREAK"`).
-    #'   - `base_asset` (character): Base asset code (e.g., `"BTC"`).
-    #'   - `base_asset_precision` (integer): Decimal precision for base asset quantities.
-    #'   - `quote_asset` (character): Quote asset code (e.g., `"USDT"`).
-    #'   - `quote_asset_precision` (integer): Decimal precision for quote asset quantities.
-    #'   - `quote_precision` (integer): Decimal precision for quote asset prices.
-    #'   - `order_types` (character): Semicolon-separated allowed order types
+    #' @param symbol (scalar<character>?) specific symbol (e.g., `"BTCUSDT"`).
+    #' @param symbols (character?) multiple symbols.
+    #' @return (data.table | promise<data.table>) one row per symbol, with all
+    #'   symbol fields returned by the API, converted to snake_case (empty when
+    #'   Binance returns no symbols). Key columns include:
+    #'   - symbol (character) Trading pair identifier (e.g., `"BTCUSDT"`).
+    #'   - status (character) Trading status (`"TRADING"`, `"HALT"`, `"BREAK"`).
+    #'   - base_asset (character) Base asset code (e.g., `"BTC"`).
+    #'   - base_asset_precision (integer) Decimal precision for base asset quantities.
+    #'   - quote_asset (character) Quote asset code (e.g., `"USDT"`).
+    #'   - quote_asset_precision (integer) Decimal precision for quote asset quantities.
+    #'   - quote_precision (integer) Decimal precision for quote asset prices.
+    #'   - order_types (character) Semicolon-separated allowed order types
     #'     (e.g., `"LIMIT;MARKET"`). Recover the vector via
     #'     `strsplit(dt$order_types[1], ";", fixed = TRUE)[[1]]`.
-    #'   - `iceberg_allowed` (logical): Whether iceberg orders are allowed.
-    #'   - `oco_allowed` (logical): Whether OCO orders are allowed.
-    #'   - `oto_allowed` (logical): Whether OTO orders are allowed.
-    #'   - `quote_order_qty_market_allowed` (logical): Whether quote quantity market orders are allowed.
-    #'   - `allow_trailing_stop` (logical): Whether trailing stop orders are allowed.
-    #'   - `cancel_replace_allowed` (logical): Whether cancel-replace is allowed.
-    #'   - `is_spot_trading_allowed` (logical): Whether spot trading is enabled.
-    #'   - `is_margin_trading_allowed` (logical): Whether margin trading is enabled.
-    #'   - `lot_min_qty` (numeric): Minimum order quantity from LOT_SIZE filter.
-    #'   - `lot_max_qty` (numeric): Maximum order quantity from LOT_SIZE filter.
-    #'   - `lot_step_size` (numeric): Quantity step size from LOT_SIZE filter.
-    #'   - `price_min` (numeric): Minimum price from PRICE_FILTER.
-    #'   - `price_max` (numeric): Maximum price from PRICE_FILTER.
-    #'   - `price_tick_size` (numeric): Price tick size from PRICE_FILTER.
-    #'   - `min_notional` (numeric): Minimum notional value from MIN_NOTIONAL filter.
-    #'   - `filters_raw` (character): JSON-encoded copy of the full per-symbol
+    #'   - iceberg_allowed (logical) Whether iceberg orders are allowed.
+    #'   - oco_allowed (logical) Whether OCO orders are allowed.
+    #'   - oto_allowed (logical) Whether OTO orders are allowed.
+    #'   - quote_order_qty_market_allowed (logical) Whether quote quantity market orders are allowed.
+    #'   - allow_trailing_stop (logical) Whether trailing stop orders are allowed.
+    #'   - cancel_replace_allowed (logical) Whether cancel-replace is allowed.
+    #'   - is_spot_trading_allowed (logical) Whether spot trading is enabled.
+    #'   - is_margin_trading_allowed (logical) Whether margin trading is enabled.
+    #'   - lot_min_qty (numeric | NA) Minimum order quantity from LOT_SIZE filter
+    #'     (`NA` when the symbol carries no LOT_SIZE filter).
+    #'   - lot_max_qty (numeric | NA) Maximum order quantity from LOT_SIZE filter.
+    #'   - lot_step_size (numeric | NA) Quantity step size from LOT_SIZE filter.
+    #'   - price_min (numeric) Minimum price from PRICE_FILTER.
+    #'   - price_max (numeric) Maximum price from PRICE_FILTER.
+    #'   - price_tick_size (numeric) Price tick size from PRICE_FILTER.
+    #'   - min_notional (numeric | NA) Minimum notional value from MIN_NOTIONAL
+    #'     filter (`NA` when the symbol carries no NOTIONAL filter).
+    #'   - filters_raw (character) JSON-encoded copy of the full per-symbol
     #'     `filters` array. Preserves filter types not pulled into curated
     #'     columns (`PERCENT_PRICE`, `PERCENT_PRICE_BY_SIDE`, `MARKET_LOT_SIZE`,
     #'     `MAX_NUM_ORDERS`, `MAX_NUM_ALGO_ORDERS`, `MAX_NUM_ICEBERG_ORDERS`,
     #'     `ICEBERG_PARTS`, `MAX_POSITION`, `TRAILING_DELTA`, ...). Recover
     #'     with `jsonlite::fromJSON(dt$filters_raw[1])`. `NA` if Binance
     #'     returned no filters for the symbol.
-    #'   - `permissions` (character): Semicolon-separated trading permissions
+    #'   - permissions (character | NA) Semicolon-separated trading permissions
     #'     (e.g., `"SPOT;MARGIN"`). Recover via
     #'     `strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]`. **Note:**
     #'     on newer symbols Binance often returns `permissions = []` and
-    #'     populates `permission_sets` instead. Prefer `permission_sets`
-    #'     for new code.
-    #'   - `permission_sets` (character): JSON string preserving
+    #'     populates `permission_sets` instead, so this column is `NA` for
+    #'     those symbols. Prefer `permission_sets` for new code.
+    #'   - permission_sets (character | NA) JSON string preserving
     #'     Binance's array-of-arrays structure (e.g.
     #'     `'[["SPOT","MARGIN"],["TRD_GRP_004"]]'`). Inner groupings
     #'     carry semantic meaning — each inner array is an alternative
     #'     permission set — so we don't flatten with `;`. Recover with
     #'     `jsonlite::fromJSON(dt$permission_sets[1])`. `NA` when the
     #'     symbol omits the field.
-    #'   - `default_self_trade_prevention_mode` (character): Default STP mode.
-    #'   - `allowed_self_trade_prevention_modes` (character): Semicolon-separated
+    #'   - default_self_trade_prevention_mode (character) Default STP mode.
+    #'   - allowed_self_trade_prevention_modes (character) Semicolon-separated
     #'     allowed STP modes.
     #'
     #' Exchange-wide metadata returned by the same endpoint
@@ -251,7 +262,10 @@ BinanceMarketData <- R6::R6Class(
     #' market$get_rate_limits()
     #' market$get_exchange_filters()
     #' }
+    # nolint end
     get_exchange_info = function(symbol = NULL, symbols = NULL) {
+      assert_args_BinanceMarketData__get_exchange_info(symbol, symbols)
+      assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       query <- list()
       if (!is.null(symbol)) {
         query$symbol <- symbol
@@ -259,14 +273,14 @@ BinanceMarketData <- R6::R6Class(
         query$symbols <- jsonlite::toJSON(symbols, auto_unbox = FALSE)
       }
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/exchangeInfo",
         query = query,
         auth = FALSE,
         .parser = function(data) {
           syms <- data$symbols
           if (is.null(syms) || length(syms) == 0) {
-            return(data.table::data.table()[])
+            return(empty_dt_exchange_info())
           }
 
           # Helper to extract a specific filter field from the raw filters list
@@ -349,9 +363,15 @@ BinanceMarketData <- R6::R6Class(
           )
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarketData__get_exchange_info,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Exchange Rate Limits
     #'
@@ -370,33 +390,37 @@ BinanceMarketData <- R6::R6Class(
     #' [Binance Exchange Info](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints#exchange-information)
     #' Verified: 2026-05-22
     #'
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
-    #'   with one row per rate-limit rule. Columns:
-    #'   - `rate_limit_type` (character): `"REQUEST_WEIGHT"`, `"ORDERS"`,
+    #' @return (data.table | promise<data.table>) one row per rate-limit rule
+    #'   (empty when Binance returned no `rateLimits` block):
+    #'   - rate_limit_type (character) `"REQUEST_WEIGHT"`, `"ORDERS"`,
     #'     `"RAW_REQUESTS"`.
-    #'   - `interval` (character): `"SECOND"`, `"MINUTE"`, `"DAY"`.
-    #'   - `interval_num` (integer): Multiplier for `interval`.
-    #'   - `limit` (integer): Maximum requests / orders permitted in the
+    #'   - interval (character) `"SECOND"`, `"MINUTE"`, `"DAY"`.
+    #'   - interval_num (integer) Multiplier for `interval`.
+    #'   - limit (integer) Maximum requests / orders permitted in the
     #'     interval.
-    #'
-    #'   Empty `data.table` if Binance returned no `rateLimits` block.
     #'
     #' @examples
     #' \dontrun{
     #' market <- BinanceMarketData$new()
     #' market$get_rate_limits()
     #' }
+    # nolint end
     get_rate_limits = function() {
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/exchangeInfo",
         auth = FALSE,
         .parser = function(data) {
           rl <- data$rateLimits
           if (is.null(rl) || length(rl) == 0L) {
-            return(data.table::data.table()[])
+            return(empty_dt_rate_limit())
           }
           return(as_dt_list(rl)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarketData__get_rate_limits,
+        is_async = private$.is_async
       ))
     },
 
@@ -416,9 +440,9 @@ BinanceMarketData <- R6::R6Class(
     #' (returns the same payload as [`get_exchange_info()`][BinanceMarketData];
     #' this method extracts the `exchangeFilters` slice.)
     #'
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`)
-    #'   with one row per exchange-wide filter rule. Empty when Binance
-    #'   returns no `exchangeFilters` (the common case).
+    #' @return (data.table | promise<data.table>) one row per exchange-wide
+    #'   filter rule. Empty when Binance returns no `exchangeFilters` (the
+    #'   common case), so this return is schemaless (no fixed columns).
     #'
     #' @examples
     #' \dontrun{
@@ -426,7 +450,7 @@ BinanceMarketData <- R6::R6Class(
     #' market$get_exchange_filters()
     #' }
     get_exchange_filters = function() {
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/exchangeInfo",
         auth = FALSE,
         .parser = function(data) {
@@ -436,11 +460,17 @@ BinanceMarketData <- R6::R6Class(
           }
           return(as_dt_list(ef)[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarketData__get_exchange_filters,
+        is_async = private$.is_async
       ))
     },
 
     # ---- Tickers ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Symbol Price Ticker
     #'
@@ -463,10 +493,10 @@ BinanceMarketData <- R6::R6Class(
     #' { "symbol": "BTCUSDT", "price": "67232.90000000" }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `symbol` (character): Trading pair identifier.
-    #'   - `price` (character): Latest traded price as string.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @return (data.table | promise<data.table>) one row:
+    #'   - symbol (character) Trading pair identifier.
+    #'   - price (character) Latest traded price as string.
     #'
     #' @examples
     #' \dontrun{
@@ -474,15 +504,24 @@ BinanceMarketData <- R6::R6Class(
     #' ticker <- market$get_ticker("BTCUSDT")
     #' print(ticker)
     #' }
+    # nolint end
     get_ticker = function(symbol) {
-      return(private$.request(
+      assert_args_BinanceMarketData__get_ticker(symbol)
+      assert::assert_nonempty_strings(symbol)
+      res <- private$.request(
         endpoint = "/api/v3/ticker/price",
         query = list(symbol = symbol),
         auth = FALSE,
         .parser = as_dt_row
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarketData__get_ticker,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get All Symbol Price Tickers
     #'
@@ -509,9 +548,9 @@ BinanceMarketData <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `symbol` (character): Trading pair identifier.
-    #'   - `price` (character): Latest traded price as string.
+    #' @return (data.table | promise<data.table>) one row per symbol:
+    #'   - symbol (character) Trading pair identifier.
+    #'   - price (character) Latest traded price as string.
     #'
     #' @examples
     #' \dontrun{
@@ -519,14 +558,26 @@ BinanceMarketData <- R6::R6Class(
     #' all_tickers <- market$get_all_tickers()
     #' print(all_tickers[1:5])
     #' }
+    # nolint end
     get_all_tickers = function() {
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/ticker/price",
         auth = FALSE,
-        .parser = as_dt_list
+        .parser = function(data) {
+          if (is.null(data) || length(data) == 0) {
+            return(empty_dt_ticker_price())
+          }
+          return(as_dt_list(data)[])
+        }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarketData__get_all_tickers,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Best Bid/Ask (Book Ticker)
     #'
@@ -555,13 +606,8 @@ BinanceMarketData <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `symbol` (character): Trading pair identifier.
-    #'   - `bid_price` (character): Best bid price.
-    #'   - `bid_qty` (character): Quantity available at best bid.
-    #'   - `ask_price` (character): Best ask price.
-    #'   - `ask_qty` (character): Quantity available at best ask.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @return (BookTicker | promise<BookTicker>) one row, best bid/ask.
     #'
     #' @examples
     #' \dontrun{
@@ -569,17 +615,26 @@ BinanceMarketData <- R6::R6Class(
     #' book <- market$get_book_ticker("BTCUSDT")
     #' print(book)
     #' }
+    # nolint end
     get_book_ticker = function(symbol) {
-      return(private$.request(
+      assert_args_BinanceMarketData__get_book_ticker(symbol)
+      assert::assert_nonempty_strings(symbol)
+      res <- private$.request(
         endpoint = "/api/v3/ticker/bookTicker",
         query = list(symbol = symbol),
         auth = FALSE,
         .parser = as_dt_row
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarketData__get_book_ticker,
+        is_async = private$.is_async
       ))
     },
 
     # ---- 24hr Stats ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get 24hr Ticker Statistics
     #'
@@ -624,29 +679,29 @@ BinanceMarketData <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `symbol` (character): Trading pair identifier.
-    #'   - `price_change` (character): Absolute price change over 24h.
-    #'   - `price_change_percent` (character): Percentage price change over 24h.
-    #'   - `weighted_avg_price` (character): Volume-weighted average price over 24h.
-    #'   - `prev_close_price` (character): Previous day's closing price.
-    #'   - `last_price` (character): Most recent trade price.
-    #'   - `last_qty` (character): Most recent trade quantity.
-    #'   - `bid_price` (character): Current best bid price.
-    #'   - `bid_qty` (character): Current best bid quantity.
-    #'   - `ask_price` (character): Current best ask price.
-    #'   - `ask_qty` (character): Current best ask quantity.
-    #'   - `open_price` (character): Price at 24h window open.
-    #'   - `high_price` (character): Highest price in 24h.
-    #'   - `low_price` (character): Lowest price in 24h.
-    #'   - `volume` (character): Total base asset volume in 24h.
-    #'   - `quote_volume` (character): Total quote asset volume in 24h.
-    #'   - `open_time` (POSIXct): Start of the 24h window.
-    #'   - `close_time` (POSIXct): End of the 24h window.
-    #'   - `first_id` (integer): First trade ID in the window.
-    #'   - `last_id` (integer): Last trade ID in the window.
-    #'   - `count` (integer): Total number of trades in 24h.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @return (data.table | promise<data.table>) one row:
+    #'   - symbol (character) Trading pair identifier.
+    #'   - price_change (character) Absolute price change over 24h.
+    #'   - price_change_percent (character) Percentage price change over 24h.
+    #'   - weighted_avg_price (character) Volume-weighted average price over 24h.
+    #'   - prev_close_price (character) Previous day's closing price.
+    #'   - last_price (character) Most recent trade price.
+    #'   - last_qty (character) Most recent trade quantity.
+    #'   - bid_price (character) Current best bid price.
+    #'   - bid_qty (character) Current best bid quantity.
+    #'   - ask_price (character) Current best ask price.
+    #'   - ask_qty (character) Current best ask quantity.
+    #'   - open_price (character) Price at 24h window open.
+    #'   - high_price (character) Highest price in 24h.
+    #'   - low_price (character) Lowest price in 24h.
+    #'   - volume (character) Total base asset volume in 24h.
+    #'   - quote_volume (character) Total quote asset volume in 24h.
+    #'   - open_time (POSIXct) Start of the 24h window.
+    #'   - close_time (POSIXct) End of the 24h window.
+    #'   - first_id (numeric) First trade ID in the window.
+    #'   - last_id (numeric) Last trade ID in the window.
+    #'   - count (integer) Total number of trades in 24h.
     #'
     #' @examples
     #' \dontrun{
@@ -654,19 +709,30 @@ BinanceMarketData <- R6::R6Class(
     #' stats <- market$get_24hr_stats("BTCUSDT")
     #' print(stats[, .(symbol, last_price, price_change_percent, volume)])
     #' }
+    # nolint end
     get_24hr_stats = function(symbol) {
-      return(private$.request(
+      assert_args_BinanceMarketData__get_24hr_stats(symbol)
+      assert::assert_nonempty_strings(symbol)
+      res <- private$.request(
         endpoint = "/api/v3/ticker/24hr",
         query = list(symbol = symbol),
         auth = FALSE,
         .parser = function(data) {
           dt <- as_dt_row(data)
           coerce_cols(dt, c("open_time", "close_time"), ms_to_datetime)
+          # 64-bit trade ids -> numeric so a large id never overflows int32.
+          coerce_cols(dt, c("first_id", "last_id"), as.numeric)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarketData__get_24hr_stats,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get 24hr Ticker Statistics for All Symbols
     #'
@@ -679,8 +745,8 @@ BinanceMarketData <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance 24hr Ticker Price Change Statistics](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#24hr-ticker-price-change-statistics)
     #'
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with same
-    #'   columns as `get_24hr_stats()`, one row per symbol.
+    #' @return (data.table | promise<data.table>) one row per symbol, with the
+    #'   same columns as `get_24hr_stats()`.
     #'
     #' @examples
     #' \dontrun{
@@ -688,20 +754,29 @@ BinanceMarketData <- R6::R6Class(
     #' all_stats <- market$get_all_24hr_stats()
     #' print(all_stats[1:5, .(symbol, last_price, price_change_percent, volume)])
     #' }
+    # nolint end
     get_all_24hr_stats = function() {
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/ticker/24hr",
         auth = FALSE,
         .parser = function(data) {
           dt <- as_dt_list(data)
           coerce_cols(dt, c("open_time", "close_time"), ms_to_datetime)
+          # 64-bit trade ids -> numeric so a large id never overflows int32.
+          coerce_cols(dt, c("first_id", "last_id"), as.numeric)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarketData__get_all_24hr_stats,
+        is_async = private$.is_async
       ))
     },
 
     # ---- Average Price ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Average Price
     #'
@@ -724,11 +799,11 @@ BinanceMarketData <- R6::R6Class(
     #' { "mins": 5, "price": "67232.45000000", "closeTime": 1694061154503 }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `mins` (integer): Number of minutes in the averaging window.
-    #'   - `price` (character): Weighted average price over the window.
-    #'   - `close_time` (POSIXct): End of the averaging window.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @return (data.table | promise<data.table>) one row:
+    #'   - mins (integer) Number of minutes in the averaging window.
+    #'   - price (character) Weighted average price over the window.
+    #'   - close_time (POSIXct) End of the averaging window.
     #'
     #' @examples
     #' \dontrun{
@@ -736,8 +811,11 @@ BinanceMarketData <- R6::R6Class(
     #' avg <- market$get_avg_price("BTCUSDT")
     #' print(avg)
     #' }
+    # nolint end
     get_avg_price = function(symbol) {
-      return(private$.request(
+      assert_args_BinanceMarketData__get_avg_price(symbol)
+      assert::assert_nonempty_strings(symbol)
+      res <- private$.request(
         endpoint = "/api/v3/avgPrice",
         query = list(symbol = symbol),
         auth = FALSE,
@@ -746,11 +824,17 @@ BinanceMarketData <- R6::R6Class(
           coerce_cols(dt, "close_time", ms_to_datetime)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarketData__get_avg_price,
+        is_async = private$.is_async
       ))
     },
 
     # ---- Order Book ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Order Book Depth
     #'
@@ -783,14 +867,11 @@ BinanceMarketData <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param limit Integer or NULL; depth limit. Valid values: 5, 10, 20, 50, 100,
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param limit (scalar<count>?) depth limit. Valid values: 5, 10, 20, 50, 100,
     #'   500, 1000, 5000. Default 100.
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `last_update_id` (character): Sequence ID for orderbook synchronisation.
-    #'   - `side` (character): `"bid"` or `"ask"`.
-    #'   - `price` (numeric): Price level.
-    #'   - `size` (numeric): Available size at this price level.
+    #' @return (OrderBook | promise<OrderBook>) one row per price level
+    #'   (bids first, then asks).
     #'
     #' @examples
     #' \dontrun{
@@ -798,17 +879,26 @@ BinanceMarketData <- R6::R6Class(
     #' depth <- market$get_depth("BTCUSDT", limit = 20)
     #' print(depth)
     #' }
+    # nolint end
     get_depth = function(symbol, limit = NULL) {
-      return(private$.request(
+      assert_args_BinanceMarketData__get_depth(symbol, limit)
+      assert::assert_nonempty_strings(symbol)
+      res <- private$.request(
         endpoint = "/api/v3/depth",
         query = list(symbol = symbol, limit = limit),
         auth = FALSE,
         .parser = parse_orderbook
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarketData__get_depth,
+        is_async = private$.is_async
       ))
     },
 
     # ---- Recent Trades ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Recent Trades
     #'
@@ -841,16 +931,9 @@ BinanceMarketData <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param limit Integer or NULL; max results (default 500, max 1000).
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `id` (integer): Unique trade identifier.
-    #'   - `price` (character): Trade execution price.
-    #'   - `qty` (character): Base asset quantity traded.
-    #'   - `quote_qty` (character): Quote asset quantity traded.
-    #'   - `time` (POSIXct): Trade execution time.
-    #'   - `is_buyer_maker` (logical): `TRUE` if the buyer was the maker (passive side).
-    #'   - `is_best_match` (logical): `TRUE` if this trade was at the best available price.
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param limit (scalar<count>?) max results (default 500, max 1000).
+    #' @return (Trade | promise<Trade>) one row per public trade.
     #'
     #' @examples
     #' \dontrun{
@@ -858,21 +941,35 @@ BinanceMarketData <- R6::R6Class(
     #' trades <- market$get_trades("BTCUSDT", limit = 10)
     #' print(trades)
     #' }
+    # nolint end
     get_trades = function(symbol, limit = NULL) {
-      return(private$.request(
+      assert_args_BinanceMarketData__get_trades(symbol, limit)
+      assert::assert_nonempty_strings(symbol)
+      res <- private$.request(
         endpoint = "/api/v3/trades",
         query = list(symbol = symbol, limit = limit),
         auth = FALSE,
         .parser = function(data) {
+          if (is.null(data) || length(data) == 0) {
+            return(empty_dt_trade())
+          }
           dt <- as_dt_list(data)
           coerce_cols(dt, "time", ms_to_datetime)
+          # 64-bit trade id -> numeric so a large id never overflows int32.
+          coerce_cols(dt, "id", as.numeric)
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarketData__get_trades,
+        is_async = private$.is_async
       ))
     },
 
     # ---- Klines ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Klines (Candlestick Data)
     #'
@@ -915,44 +1012,35 @@ BinanceMarketData <- R6::R6Class(
     #' - **Backtesting**: Download historical candles for strategy evaluation.
     #' - **Volume Analysis**: Use `volume` and `quote_volume` for liquidity assessment.
     #'
-    #' @param symbol Character; trading pair (e.g., `"BTCUSDT"`).
-    #' @param interval Character; candle interval. Valid values:
+    #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
+    #' @param interval (scalar<character>) candle interval. Valid values:
     #'   `"1s"`, `"1m"`, `"3m"`, `"5m"`, `"15m"`, `"30m"`,
     #'   `"1h"`, `"2h"`, `"4h"`, `"6h"`, `"8h"`, `"12h"`,
     #'   `"1d"`, `"3d"`, `"1w"`, `"1M"`.
-    #' @param startTime POSIXct or numeric or NULL; start time (ms or POSIXct).
-    #' @param endTime POSIXct or numeric or NULL; end time (ms or POSIXct).
-    #' @param limit Integer or NULL; max results (default 500, max 1000).
-    #' @param fetch_all Logical; if `TRUE`, automatically pages forward through the
+    #' @param startTime (scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).
+    #' @param endTime (scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).
+    #' @param limit (scalar<count>?) max results (default 500, max 1000).
+    #' @param fetch_all (scalar<logical>) if `TRUE`, automatically pages forward through the
     #'   time range — following the data and stopping at the first empty or short
     #'   page — and returns the combined result sorted by `open_time`. Both
     #'   `startTime` and `endTime` are required when enabled. **Warning**: large
     #'   date ranges will consume multiple API requests and may impact your
     #'   rate-limit quota. Default `FALSE`.
-    #' @param sleep Numeric; seconds to wait between consecutive API calls when
+    #' @param sleep (scalar<numeric>) seconds to wait between consecutive API calls when
     #'   `fetch_all = TRUE`. Use this to avoid hitting Binance rate limits. Only
     #'   applies in synchronous mode; async mode chains requests sequentially via
     #'   promises. Default `0.2`.
-    #' @param on_page Optional `function(page)` called with each page (a
+    #' @param on_page (function?) optional `function(page)` called with each page (a
     #'   `data.table`) as it is fetched, when `fetch_all = TRUE`. When supplied,
     #'   pages are streamed to the callback and **not** accumulated — the method
     #'   returns invisibly, so the callback owns the data (e.g. writes it to disk).
     #'   Use it to process arbitrarily large ranges without holding everything in
     #'   memory. Ignored in single-call mode (`fetch_all = FALSE`), where there is
     #'   only one page. Default `NULL` (buffer and return the combined table).
-    #' @return `data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-    #'   - `open_time` (POSIXct): Candle open time.
-    #'   - `open` (numeric): Opening price.
-    #'   - `high` (numeric): Highest price during the interval.
-    #'   - `low` (numeric): Lowest price during the interval.
-    #'   - `close` (numeric): Closing price.
-    #'   - `volume` (numeric): Base asset volume traded.
-    #'   - `close_time` (POSIXct): Candle close time.
-    #'   - `quote_volume` (numeric): Quote asset volume traded.
-    #'   - `trades` (integer): Number of trades during the interval.
-    #'   - `taker_buy_base_volume` (numeric): Base asset volume bought by takers.
-    #'   - `taker_buy_quote_volume` (numeric): Quote asset volume bought by takers.
-    #'   - `ignore` (character): Unused field from Binance API.
+    #' @return (Ohlcv | promise<Ohlcv>) one row per candle. When
+    #'   `fetch_all = TRUE` with an `on_page` callback the pages are streamed to
+    #'   the callback and the method returns invisibly (`NULL`); the contract
+    #'   below describes the buffered (returned) case.
     #'
     #' @examples
     #' \dontrun{
@@ -967,6 +1055,7 @@ BinanceMarketData <- R6::R6Class(
     #'   fetch_all = TRUE, sleep = 0.5
     #' )
     #' }
+    # nolint end
     get_klines = function(
       symbol,
       interval = "1h",
@@ -977,6 +1066,8 @@ BinanceMarketData <- R6::R6Class(
       sleep = 0.2,
       on_page = NULL
     ) {
+      assert_args_BinanceMarketData__get_klines(symbol, interval, startTime, endTime, limit, fetch_all, sleep, on_page)
+      assert::assert_nonempty_strings(symbol)
       valid_intervals <- c(
         "1s",
         "1m",
@@ -1033,7 +1124,7 @@ BinanceMarketData <- R6::R6Class(
         endTime <- format(floor(as.numeric(endTime) * 1000), scientific = FALSE)
       }
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/api/v3/klines",
         query = list(
           symbol = symbol,
@@ -1046,12 +1137,18 @@ BinanceMarketData <- R6::R6Class(
         .parser = function(data) {
           dt <- parse_klines(data)
           if (nrow(dt) >= 1000L && is.null(limit)) {
-            rlang::warn(
-              "Binance returned 1000 candles (the maximum). Results may be truncated. Use `fetch_all = TRUE` for large date ranges, or pass an explicit `limit`."
-            )
+            rlang::warn(paste0(
+              "Binance returned 1000 candles (the maximum). Results may be truncated. ",
+              "Use `fetch_all = TRUE` for large date ranges, or pass an explicit `limit`."
+            ))
           }
           return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceMarketData__get_klines,
+        is_async = private$.is_async
       ))
     }
   )

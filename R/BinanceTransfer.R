@@ -109,22 +109,22 @@ BinanceTransfer <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param type Character; transfer type. One of `"MAIN_UMFUTURE"`,
+    #' @param type (scalar<character>) transfer type. One of `"MAIN_UMFUTURE"`,
     #'   `"MAIN_CMFUTURE"`, `"MAIN_MARGIN"`, `"UMFUTURE_MAIN"`,
     #'   `"UMFUTURE_MARGIN"`, `"CMFUTURE_MAIN"`, `"MARGIN_MAIN"`,
     #'   `"MARGIN_UMFUTURE"`, `"MAIN_FUNDING"`, `"FUNDING_MAIN"`,
     #'   `"FUNDING_UMFUTURE"`, `"UMFUTURE_FUNDING"`, `"MARGIN_FUNDING"`,
     #'   `"FUNDING_MARGIN"`, `"FUNDING_CMFUTURE"`, `"CMFUTURE_FUNDING"`,
     #'   `"MAIN_ISOLATED_MARGIN"`, `"ISOLATED_MARGIN_MAIN"`.
-    #' @param asset Character; asset to transfer (e.g., `"USDT"`).
-    #' @param amount Numeric; amount to transfer.
-    #' @param fromSymbol Character or NULL; mandatory when `type` involves
+    #' @param asset (scalar<character>) asset to transfer (e.g., `"USDT"`).
+    #' @param amount (scalar<numeric>) amount to transfer.
+    #' @param fromSymbol (scalar<character>?) mandatory when `type` involves
     #'   isolated margin (e.g., `"BNBUSDT"`).
-    #' @param toSymbol Character or NULL; mandatory when `type` involves
+    #' @param toSymbol (scalar<character>?) mandatory when `type` involves
     #'   isolated margin (e.g., `"BNBUSDT"`).
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row and the following columns:
-    #' - `tran_id` (numeric): Unique transfer identifier assigned by Binance.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row:
+    #' - tran_id (numeric) Unique transfer identifier assigned by Binance.
     #'
     #' @examples
     #' \dontrun{
@@ -142,6 +142,10 @@ BinanceTransfer <- R6::R6Class(
       toSymbol = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceTransfer__add_transfer(type, asset, amount, fromSymbol, toSymbol, recvWindow)
+      assert::assert_nonempty_strings(asset)
+      assert::assert_nonempty_strings(fromSymbol, null_ok = TRUE)
+      assert::assert_nonempty_strings(toSymbol, null_ok = TRUE)
       rlang::arg_match0(
         type,
         c(
@@ -166,7 +170,7 @@ BinanceTransfer <- R6::R6Class(
         )
       )
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/asset/transfer",
         method = "POST",
         query = list(
@@ -178,11 +182,22 @@ BinanceTransfer <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(as_dt_row(data)[])
+          dt <- as_dt_row(data)
+          # Binance's `tranId` is an integer in JSON, but large ids overflow
+          # R's 32-bit integer and arrive as a double; coerce to numeric so
+          # the column type is stable regardless of id magnitude.
+          coerce_cols(dt, "tran_id", as.numeric)
+          return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceTransfer__add_transfer,
+        is_async = private$.is_async
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Query Universal Transfer History
     #'
@@ -219,23 +234,24 @@ BinanceTransfer <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param type Character; transfer type. Same options as `add_transfer()`.
-    #' @param startTime Integer or NULL; start timestamp in milliseconds.
-    #' @param endTime Integer or NULL; end timestamp in milliseconds.
-    #' @param current Integer or NULL; current page (default 1, starting from 1).
-    #' @param size Integer or NULL; page size (default 10, max 100).
-    #' @param fromSymbol Character or NULL; must be sent when `type` involves
+    #' @param type (scalar<character>) transfer type. Same options as `add_transfer()`.
+    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
+    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param current (scalar<count>?) current page (default 1, starting from 1).
+    #' @param size (scalar<count>?) page size (default 10, max 100).
+    #' @param fromSymbol (scalar<character>?) must be sent when `type` involves
     #'   isolated margin.
-    #' @param toSymbol Character or NULL; must be sent when `type` involves
+    #' @param toSymbol (scalar<character>?) must be sent when `type` involves
     #'   isolated margin.
-    #' @param recvWindow Integer or NULL; max 60000.
-    #' @return `data.table` with one row per transfer and the following columns:
-    #' - `asset` (character): Transferred asset (e.g., `"USDT"`).
-    #' - `amount` (character): Amount transferred.
-    #' - `type` (character): Transfer type (e.g., `"MAIN_UMFUTURE"`).
-    #' - `status` (character): Transfer status (`"CONFIRMED"`, `"FAILED"`, `"PENDING"`).
-    #' - `tran_id` (numeric): Unique transfer identifier.
-    #' - `timestamp` (POSIXct): Transfer time converted from milliseconds.
+    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @return (data.table | promise<data.table>) one row per transfer
+    #'   (empty when there are no matching transfers):
+    #' - asset (character) Transferred asset (e.g., `"USDT"`).
+    #' - amount (character) Amount transferred.
+    #' - type (character) Transfer type (e.g., `"MAIN_UMFUTURE"`).
+    #' - status (character) Transfer status (`"CONFIRMED"`, `"FAILED"`, `"PENDING"`).
+    #' - tran_id (numeric) Unique transfer identifier.
+    #' - timestamp (POSIXct) Transfer time converted from milliseconds.
     #'
     #' @examples
     #' \dontrun{
@@ -243,6 +259,7 @@ BinanceTransfer <- R6::R6Class(
     #' history <- transfer$get_transfer_history(type = "MAIN_UMFUTURE")
     #' print(history)
     #' }
+    # nolint end
     get_transfer_history = function(
       type,
       startTime = NULL,
@@ -253,6 +270,18 @@ BinanceTransfer <- R6::R6Class(
       toSymbol = NULL,
       recvWindow = NULL
     ) {
+      assert_args_BinanceTransfer__get_transfer_history(
+        type,
+        startTime,
+        endTime,
+        current,
+        size,
+        fromSymbol,
+        toSymbol,
+        recvWindow
+      )
+      assert::assert_nonempty_strings(fromSymbol, null_ok = TRUE)
+      assert::assert_nonempty_strings(toSymbol, null_ok = TRUE)
       rlang::arg_match0(
         type,
         c(
@@ -277,7 +306,7 @@ BinanceTransfer <- R6::R6Class(
         )
       )
 
-      return(private$.request(
+      res <- private$.request(
         endpoint = "/sapi/v1/asset/transfer",
         query = list(
           type = type,
@@ -290,8 +319,18 @@ BinanceTransfer <- R6::R6Class(
           recvWindow = recvWindow
         ),
         .parser = function(data) {
-          return(parse_paginated(data, time_cols = "timestamp")[])
+          dt <- parse_paginated(data, time_cols = "timestamp")
+          coerce_cols(dt, "tran_id", as.numeric)
+          if (nrow(dt) == 0L) {
+            return(empty_dt_transfer_history())
+          }
+          return(dt[])
         }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceTransfer__get_transfer_history,
+        is_async = private$.is_async
       ))
     }
   )

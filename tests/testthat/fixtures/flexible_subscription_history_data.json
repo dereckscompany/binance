@@ -1,0 +1,16 @@
+{
+  "total": 1,
+  "rows": [
+    {
+      "amount": "100.00000000",
+      "asset": "USDT",
+      "time": 1661493146000,
+      "purchaseId": 40607,
+      "type": "AUTO",
+      "sourceAccount": "SPOT",
+      "amountFromSpot": "100.00000000",
+      "amountFromFunding": "0.00000000",
+      "status": "SUCCESS"
+    }
+  ]
+}

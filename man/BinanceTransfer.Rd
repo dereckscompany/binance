@@ -182,7 +182,7 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{type}}{Character; transfer type. One of \code{"MAIN_UMFUTURE"},
+\item{\code{type}}{(scalar<character>) transfer type. One of \code{"MAIN_UMFUTURE"},
 \code{"MAIN_CMFUTURE"}, \code{"MAIN_MARGIN"}, \code{"UMFUTURE_MAIN"},
 \code{"UMFUTURE_MARGIN"}, \code{"CMFUTURE_MAIN"}, \code{"MARGIN_MAIN"},
 \code{"MARGIN_UMFUTURE"}, \code{"MAIN_FUNDING"}, \code{"FUNDING_MAIN"},
@@ -190,24 +190,24 @@ Verified: 2026-05-22
 \code{"FUNDING_MARGIN"}, \code{"FUNDING_CMFUTURE"}, \code{"CMFUTURE_FUNDING"},
 \code{"MAIN_ISOLATED_MARGIN"}, \code{"ISOLATED_MARGIN_MAIN"}.}
 
-\item{\code{asset}}{Character; asset to transfer (e.g., \code{"USDT"}).}
+\item{\code{asset}}{(scalar<character>) asset to transfer (e.g., \code{"USDT"}).}
 
-\item{\code{amount}}{Numeric; amount to transfer.}
+\item{\code{amount}}{(scalar<numeric>) amount to transfer.}
 
-\item{\code{fromSymbol}}{Character or NULL; mandatory when \code{type} involves
+\item{\code{fromSymbol}}{(scalar<character>?) mandatory when \code{type} involves
 isolated margin (e.g., \code{"BNBUSDT"}).}
 
-\item{\code{toSymbol}}{Character or NULL; mandatory when \code{type} involves
+\item{\code{toSymbol}}{(scalar<character>?) mandatory when \code{type} involves
 isolated margin (e.g., \code{"BNBUSDT"}).}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row and the following columns:
+(data.table | promise<data.table>) one row:
 \itemize{
-\item \code{tran_id} (numeric): Unique transfer identifier assigned by Binance.
+\item tran_id (numeric) Unique transfer identifier assigned by Binance.
 }
 }
 \subsection{Examples}{
@@ -284,35 +284,36 @@ Verified: 2026-05-22
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{type}}{Character; transfer type. Same options as \code{add_transfer()}.}
+\item{\code{type}}{(scalar<character>) transfer type. Same options as \code{add_transfer()}.}
 
-\item{\code{startTime}}{Integer or NULL; start timestamp in milliseconds.}
+\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{Integer or NULL; end timestamp in milliseconds.}
+\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{current}}{Integer or NULL; current page (default 1, starting from 1).}
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
 
-\item{\code{size}}{Integer or NULL; page size (default 10, max 100).}
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{fromSymbol}}{Character or NULL; must be sent when \code{type} involves
+\item{\code{fromSymbol}}{(scalar<character>?) must be sent when \code{type} involves
 isolated margin.}
 
-\item{\code{toSymbol}}{Character or NULL; must be sent when \code{type} involves
+\item{\code{toSymbol}}{(scalar<character>?) must be sent when \code{type} involves
 isolated margin.}
 
-\item{\code{recvWindow}}{Integer or NULL; max 60000.}
+\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-\code{data.table} with one row per transfer and the following columns:
+(data.table | promise<data.table>) one row per transfer
+(empty when there are no matching transfers):
 \itemize{
-\item \code{asset} (character): Transferred asset (e.g., \code{"USDT"}).
-\item \code{amount} (character): Amount transferred.
-\item \code{type} (character): Transfer type (e.g., \code{"MAIN_UMFUTURE"}).
-\item \code{status} (character): Transfer status (\code{"CONFIRMED"}, \code{"FAILED"}, \code{"PENDING"}).
-\item \code{tran_id} (numeric): Unique transfer identifier.
-\item \code{timestamp} (POSIXct): Transfer time converted from milliseconds.
+\item asset (character) Transferred asset (e.g., \code{"USDT"}).
+\item amount (character) Amount transferred.
+\item type (character) Transfer type (e.g., \code{"MAIN_UMFUTURE"}).
+\item status (character) Transfer status (\code{"CONFIRMED"}, \code{"FAILED"}, \code{"PENDING"}).
+\item tran_id (numeric) Unique transfer identifier.
+\item timestamp (POSIXct) Transfer time converted from milliseconds.
 }
 }
 \subsection{Examples}{

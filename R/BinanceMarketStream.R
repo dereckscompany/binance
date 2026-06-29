@@ -109,6 +109,7 @@ BinanceMarketStream <- R6::R6Class(
     #' }
     depth = function(symbol, speed = "1000ms", handler = NULL) {
       assert_args_BinanceMarketStream__depth(symbol, speed, handler)
+      assert::assert_nonempty_strings(symbol)
       stream <- ws_depth_stream(symbol, speed)
       private$.add_stream_handler(stream, handler)
       self$subscribe(stream)
