@@ -30,10 +30,14 @@ suppressWarnings(suppressMessages({
 # Hosts -- public market data only; no credentials.
 # ---------------------------------------------------------------------------
 SPOT_HOST <- Sys.getenv("BINANCE_API_ENDPOINT")
-if (!nzchar(SPOT_HOST)) SPOT_HOST <- "https://api.binance.com"
+if (!nzchar(SPOT_HOST)) {
+  SPOT_HOST <- "https://api.binance.com"
+}
 
 FUTURES_HOST <- Sys.getenv("BINANCE_FUTURES_API_ENDPOINT")
-if (!nzchar(FUTURES_HOST)) FUTURES_HOST <- "https://fapi.binance.com"
+if (!nzchar(FUTURES_HOST)) {
+  FUTURES_HOST <- "https://fapi.binance.com"
+}
 
 OUT_DIR <- file.path("local", "raw-data", "binance")
 dir.create(OUT_DIR, recursive = TRUE, showWarnings = FALSE)
@@ -42,12 +46,15 @@ dir.create(OUT_DIR, recursive = TRUE, showWarnings = FALSE)
 if (Sys.which("git") != "") {
   probe <- file.path(OUT_DIR, "ignore-probe.json")
   ignored <- suppressWarnings(system2(
-    "git", c("check-ignore", probe),
-    stdout = TRUE, stderr = FALSE
+    "git",
+    c("check-ignore", probe),
+    stdout = TRUE,
+    stderr = FALSE
   ))
   if (length(ignored) == 0L) {
     stop(
-      "Refusing to write: ", OUT_DIR,
+      "Refusing to write: ",
+      OUT_DIR,
       " is NOT git-ignored. Aborting to avoid committing raw captures."
     )
   }
@@ -64,8 +71,12 @@ cat("Output dir  :", normalizePath(OUT_DIR), "\n\n")
 log_rows <- list()
 
 is_empty_body <- function(parsed) {
-  if (is.null(parsed)) return(TRUE)
-  if (length(parsed) == 0L) return(TRUE)
+  if (is.null(parsed)) {
+    return(TRUE)
+  }
+  if (length(parsed) == 0L) {
+    return(TRUE)
+  }
   return(FALSE)
 }
 
@@ -95,15 +106,23 @@ capture <- function(name, host, path, query = list()) {
       )
       empty <- is_empty_body(parsed)
       list(
-        name = name, status = status, bytes = length(body_raw),
-        empty = empty, ok = status >= 200 && status < 300,
+        name = name,
+        status = status,
+        bytes = length(body_raw),
+        empty = empty,
+        ok = status >= 200 && status < 300,
         parsed = parsed
       )
     },
     error = function(e) {
       list(
-        name = name, status = NA_integer_, bytes = 0L,
-        empty = NA, ok = FALSE, parsed = NULL, err = conditionMessage(e)
+        name = name,
+        status = NA_integer_,
+        bytes = 0L,
+        empty = NA,
+        ok = FALSE,
+        parsed = NULL,
+        err = conditionMessage(e)
       )
     }
   )
@@ -117,9 +136,11 @@ capture <- function(name, host, path, query = list()) {
   }
   cat(sprintf(
     "%-28s GET %-34s status=%-4s bytes=%-8s %s%s\n",
-    name, path,
+    name,
+    path,
     ifelse(is.na(result$status), "ERR", result$status),
-    result$bytes, state,
+    result$bytes,
+    state,
     if (!is.null(result$err)) paste0("  <", result$err, ">") else ""
   ))
   log_rows[[name]] <<- result
@@ -135,22 +156,16 @@ cat("== Spot Public Market Data ==\n")
 capture("ping", SPOT_HOST, "/api/v3/ping")
 capture("server_time_data", SPOT_HOST, "/api/v3/time")
 # exchangeInfo is huge exchange-wide; pull a 2-symbol slice to mirror fixture.
-capture("exchange_info_data", SPOT_HOST, "/api/v3/exchangeInfo",
-        list(symbols = '["BTCUSDT","ETHUSDT"]'))
+capture("exchange_info_data", SPOT_HOST, "/api/v3/exchangeInfo", list(symbols = '["BTCUSDT","ETHUSDT"]'))
 capture("ticker_data", SPOT_HOST, "/api/v3/ticker/price", list(symbol = "BTCUSDT"))
 capture("all_tickers_data", SPOT_HOST, "/api/v3/ticker/price")
-capture("book_ticker_data", SPOT_HOST, "/api/v3/ticker/bookTicker",
-        list(symbol = "BTCUSDT"))
+capture("book_ticker_data", SPOT_HOST, "/api/v3/ticker/bookTicker", list(symbol = "BTCUSDT"))
 capture("24hr_stats_data", SPOT_HOST, "/api/v3/ticker/24hr", list(symbol = "BTCUSDT"))
-capture("all_24hr_stats_data", SPOT_HOST, "/api/v3/ticker/24hr",
-        list(symbols = '["BTCUSDT","ETHUSDT"]'))
+capture("all_24hr_stats_data", SPOT_HOST, "/api/v3/ticker/24hr", list(symbols = '["BTCUSDT","ETHUSDT"]'))
 capture("avg_price_data", SPOT_HOST, "/api/v3/avgPrice", list(symbol = "BTCUSDT"))
-capture("orderbook_data", SPOT_HOST, "/api/v3/depth",
-        list(symbol = "BTCUSDT", limit = 5))
-capture("trades_data", SPOT_HOST, "/api/v3/trades",
-        list(symbol = "BTCUSDT", limit = 5))
-capture("klines_data", SPOT_HOST, "/api/v3/klines",
-        list(symbol = "BTCUSDT", interval = "1d", limit = 3))
+capture("orderbook_data", SPOT_HOST, "/api/v3/depth", list(symbol = "BTCUSDT", limit = 5))
+capture("trades_data", SPOT_HOST, "/api/v3/trades", list(symbol = "BTCUSDT", limit = 5))
+capture("klines_data", SPOT_HOST, "/api/v3/klines", list(symbol = "BTCUSDT", interval = "1d", limit = 3))
 
 # ---------------------------------------------------------------------------
 # FUTURES PUBLIC market data (fapi.binance.com) -- read endpoints only.
@@ -159,32 +174,33 @@ cat("\n== Futures Public Market Data ==\n")
 capture("futures_ping", FUTURES_HOST, "/fapi/v1/ping")
 # Futures exchangeInfo has no symbol filter; capture full then we slice by hand.
 capture("futures_exchange_info_data", FUTURES_HOST, "/fapi/v1/exchangeInfo")
-capture("futures_klines_data", FUTURES_HOST, "/fapi/v1/klines",
-        list(symbol = "BTCUSDT", interval = "1h", limit = 3))
-capture("futures_mark_price_data", FUTURES_HOST, "/fapi/v1/premiumIndex",
-        list(symbol = "BTCUSDT"))
-capture("futures_funding_rate_data", FUTURES_HOST, "/fapi/v1/fundingRate",
-        list(symbol = "BTCUSDT", limit = 3))
-capture("futures_24hr_stats_data", FUTURES_HOST, "/fapi/v1/ticker/24hr",
-        list(symbol = "BTCUSDT"))
-capture("futures_ticker_data", FUTURES_HOST, "/fapi/v1/ticker/price",
-        list(symbol = "BTCUSDT"))
-capture("futures_book_ticker_data", FUTURES_HOST, "/fapi/v1/ticker/bookTicker",
-        list(symbol = "BTCUSDT"))
-capture("futures_open_interest_data", FUTURES_HOST, "/fapi/v1/openInterest",
-        list(symbol = "BTCUSDT"))
-capture("futures_depth_data", FUTURES_HOST, "/fapi/v1/depth",
-        list(symbol = "BTCUSDT", limit = 5))
-capture("futures_public_trades_data", FUTURES_HOST, "/fapi/v1/trades",
-        list(symbol = "BTCUSDT", limit = 5))
+capture("futures_klines_data", FUTURES_HOST, "/fapi/v1/klines", list(symbol = "BTCUSDT", interval = "1h", limit = 3))
+capture("futures_mark_price_data", FUTURES_HOST, "/fapi/v1/premiumIndex", list(symbol = "BTCUSDT"))
+capture("futures_funding_rate_data", FUTURES_HOST, "/fapi/v1/fundingRate", list(symbol = "BTCUSDT", limit = 3))
+capture("futures_24hr_stats_data", FUTURES_HOST, "/fapi/v1/ticker/24hr", list(symbol = "BTCUSDT"))
+capture("futures_ticker_data", FUTURES_HOST, "/fapi/v1/ticker/price", list(symbol = "BTCUSDT"))
+capture("futures_book_ticker_data", FUTURES_HOST, "/fapi/v1/ticker/bookTicker", list(symbol = "BTCUSDT"))
+capture("futures_open_interest_data", FUTURES_HOST, "/fapi/v1/openInterest", list(symbol = "BTCUSDT"))
+capture("futures_depth_data", FUTURES_HOST, "/fapi/v1/depth", list(symbol = "BTCUSDT", limit = 5))
+capture("futures_public_trades_data", FUTURES_HOST, "/fapi/v1/trades", list(symbol = "BTCUSDT", limit = 5))
 
 # ---------------------------------------------------------------------------
 # Summary
 # ---------------------------------------------------------------------------
 cat("\n== Summary ==\n")
-states <- vapply(log_rows, function(r) {
-  if (!isTRUE(r$ok)) "FAIL" else if (isTRUE(r$empty)) "EMPTY" else "POPULATED"
-}, character(1))
+states <- vapply(
+  log_rows,
+  function(r) {
+    if (!isTRUE(r$ok)) {
+      "FAIL"
+    } else if (isTRUE(r$empty)) {
+      "EMPTY"
+    } else {
+      "POPULATED"
+    }
+  },
+  character(1)
+)
 cat("POPULATED:", sum(states == "POPULATED"), "\n")
 cat("EMPTY    :", sum(states == "EMPTY"), "\n")
 cat("FAIL     :", sum(states == "FAIL"), "\n")
