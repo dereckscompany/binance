@@ -43,3 +43,15 @@ log.txt
 ^.*\.tar\.gz$
 ^docs$
 ^\.playwright-mcp$
+
+# --- merged from cruft template ---
+^demo$
+^dev$
+^\.github$
+^.*\.csv$
+^scripts$
+^\.cruft\.json$
+^\.lintr$
+^LICENSE$
+^\.clang-format$
+^README\.Rmd$

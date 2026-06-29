@@ -71,3 +71,30 @@ rsconnect/
 .DS_Store
 /doc/
 /Meta/
+
+# --- merged from cruft template ---
+*.ignore
+
+# build
+.vscode/
+
+# Compiled objects
+*.o
+*.o.tmp
+*.so
+
+# R specific
+.Rproj.user
+
+
+
+
+
+
+
+
+
+
+
+
+
