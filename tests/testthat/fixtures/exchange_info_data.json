@@ -1,0 +1,107 @@
+{
+  "timezone": "UTC",
+  "serverTime": 1499827319559,
+  "symbols": [
+    {
+      "symbol": "BTCUSDT",
+      "status": "TRADING",
+      "baseAsset": "BTC",
+      "baseAssetPrecision": 8,
+      "quoteAsset": "USDT",
+      "quoteAssetPrecision": 8,
+      "quotePrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
+      "orderTypes": [
+        "LIMIT",
+        "LIMIT_MAKER",
+        "MARKET",
+        "STOP_LOSS_LIMIT",
+        "TAKE_PROFIT_LIMIT"
+      ],
+      "icebergAllowed": true,
+      "ocoAllowed": true,
+      "otoAllowed": true,
+      "opoAllowed": true,
+      "quoteOrderQtyMarketAllowed": true,
+      "allowTrailingStop": true,
+      "cancelReplaceAllowed": true,
+      "amendAllowed": true,
+      "pegInstructionsAllowed": true,
+      "isSpotTradingAllowed": true,
+      "isMarginTradingAllowed": true,
+      "filters": [
+        {
+          "filterType": "PRICE_FILTER",
+          "minPrice": "0.01000000",
+          "maxPrice": "1000000.00",
+          "tickSize": "0.01000000"
+        },
+        {
+          "filterType": "LOT_SIZE",
+          "minQty": "0.00001000",
+          "maxQty": "9000.00000000",
+          "stepSize": "0.00001000"
+        }
+      ],
+      "permissions": [
+        "SPOT",
+        "MARGIN"
+      ],
+      "permissionSets": [
+        [
+          "SPOT",
+          "MARGIN",
+          "TRD_GRP_004"
+        ]
+      ],
+      "defaultSelfTradePreventionMode": "EXPIRE_MAKER",
+      "allowedSelfTradePreventionModes": [
+        "EXPIRE_TAKER",
+        "EXPIRE_MAKER",
+        "EXPIRE_BOTH"
+      ]
+    },
+    {
+      "symbol": "ETHUSDT",
+      "status": "TRADING",
+      "baseAsset": "ETH",
+      "baseAssetPrecision": 8,
+      "quoteAsset": "USDT",
+      "quoteAssetPrecision": 8,
+      "quotePrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
+      "orderTypes": [
+        "LIMIT",
+        "MARKET"
+      ],
+      "icebergAllowed": false,
+      "ocoAllowed": false,
+      "otoAllowed": false,
+      "opoAllowed": false,
+      "quoteOrderQtyMarketAllowed": true,
+      "allowTrailingStop": false,
+      "cancelReplaceAllowed": false,
+      "amendAllowed": false,
+      "pegInstructionsAllowed": false,
+      "isSpotTradingAllowed": true,
+      "isMarginTradingAllowed": false,
+      "filters": [
+        {
+          "filterType": "PRICE_FILTER",
+          "minPrice": "0.01000000",
+          "maxPrice": "100000.00",
+          "tickSize": "0.01000000"
+        }
+      ],
+      "permissions": [
+        "SPOT"
+      ],
+      "defaultSelfTradePreventionMode": "NONE",
+      "allowedSelfTradePreventionModes": [
+        "NONE"
+      ]
+    }
+  ]
+}

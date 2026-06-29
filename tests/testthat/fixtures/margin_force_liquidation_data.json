@@ -1,0 +1,18 @@
+{
+  "total": 1,
+  "rows": [
+    {
+      "avgPrice": "67232.90000000",
+      "executedQty": "0.001",
+      "orderId": 12345,
+      "price": "67000.00000000",
+      "qty": "0.001",
+      "side": "SELL",
+      "symbol": "BTCUSDT",
+      "timeInForce": "GTC",
+      "time": 1661493146000,
+      "updatedTime": 1661493146000,
+      "isIsolated": false
+    }
+  ]
+}

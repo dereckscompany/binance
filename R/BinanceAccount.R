@@ -49,6 +49,7 @@ BinanceAccount <- R6::R6Class(
   "BinanceAccount",
   inherit = BinanceBase,
   public = list(
+    # nolint start: line_length_linter.
     #' @description
     #' Get Account Information
     #'
@@ -140,6 +141,7 @@ BinanceAccount <- R6::R6Class(
     #' info <- account$get_account_info()
     #' print(info[, .(maker_commission, taker_commission, can_trade, account_type)])
     #' }
+    # nolint end
     get_account_info = function(recvWindow = NULL) {
       assert_args_BinanceAccount__get_account_info(recvWindow)
       res <- private$.request(
@@ -175,6 +177,7 @@ BinanceAccount <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Account Balances
     #'
@@ -227,6 +230,7 @@ BinanceAccount <- R6::R6Class(
     #' balances <- account$get_balances()
     #' print(balances[free != "0.00000000"])
     #' }
+    # nolint end
     get_balances = function(omitZeroBalances = NULL, recvWindow = NULL) {
       assert_args_BinanceAccount__get_balances(omitZeroBalances, recvWindow)
       query <- list(recvWindow = recvWindow)
@@ -252,6 +256,7 @@ BinanceAccount <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Account Trade List
     #'
@@ -324,6 +329,7 @@ BinanceAccount <- R6::R6Class(
     #' trades <- account$get_trades("BTCUSDT", limit = 50)
     #' print(trades[, .(id, price, qty, commission, time)])
     #' }
+    # nolint end
     get_trades = function(
       symbol,
       orderId = NULL,

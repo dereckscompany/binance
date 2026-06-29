@@ -131,6 +131,7 @@ BinanceDeposit <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Deposit History
     #'
@@ -220,6 +221,7 @@ BinanceDeposit <- R6::R6Class(
     #'   endTime = now_ms
     #' )
     #' }
+    # nolint end
     get_deposit_history = function(
       coin = NULL,
       status = NULL,

@@ -1,0 +1,27 @@
+{
+  "total": 1,
+  "rows": [
+    {
+      "projectId": "BTC30d001",
+      "detail": {
+        "asset": "BTC",
+        "rewardAsset": "BTC",
+        "duration": 30,
+        "renewable": true,
+        "isSoldOut": false,
+        "apr": "0.05000000",
+        "status": "CREATED",
+        "subscriptionStartTime": 1646182276000,
+        "extraRewardAsset": "BNB",
+        "extraRewardAPR": "0.01000000",
+        "boostRewardAsset": "BTC",
+        "boostApr": "0.00100000",
+        "boostEndTime": 1646182276000
+      },
+      "quota": {
+        "totalPersonalQuota": "10.00000000",
+        "minimum": "0.001"
+      }
+    }
+  ]
+}

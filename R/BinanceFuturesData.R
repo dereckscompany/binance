@@ -1,6 +1,7 @@
 # File: R/BinanceFuturesData.R
 # R6 class for Binance USD-M Futures market data retrieval.
 
+# nolint start: line_length_linter.
 #' BinanceFuturesData: USD-M Futures Market Data Retrieval
 #'
 #' Provides methods for retrieving market data from Binance's USD-M Futures API,
@@ -67,6 +68,7 @@
 #' @importFrom R6 R6Class
 #' @importFrom lubridate as_datetime now dhours
 #' @export
+# nolint end
 BinanceFuturesData <- R6::R6Class(
   "BinanceFuturesData",
   inherit = BinanceBase,
@@ -106,6 +108,7 @@ BinanceFuturesData <- R6::R6Class(
 
     # ---- Exchange Info ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Futures Exchange Info
     #'
@@ -175,8 +178,9 @@ BinanceFuturesData <- R6::R6Class(
     #'     Recover via `strsplit(dt$order_types[1], ";", fixed = TRUE)[[1]]`.
     #'   - time_in_force (character) Semicolon-separated allowed
     #'     time-in-force values.
-    #'   - underlying_sub_type (character) Semicolon-separated underlying
-    #'     sub-types.
+    #'   - underlying_sub_type (character | NA) Semicolon-separated underlying
+    #'     sub-types (`NA` when the symbol omits the field, as many
+    #'     non-coin / index-style contracts do).
     #'   - permission_sets (character | NA) Semicolon-separated permission sets
     #'     (`NA` when the symbol omits the field).
     #'   - lot_min_qty (numeric | NA) Minimum order quantity (from LOT_SIZE
@@ -213,6 +217,7 @@ BinanceFuturesData <- R6::R6Class(
     #' futures$get_rate_limits()
     #' futures$get_futures_assets()
     #' }
+    # nolint end
     get_exchange_info = function() {
       res <- private$.request(
         endpoint = "/fapi/v1/exchangeInfo",
@@ -396,6 +401,7 @@ BinanceFuturesData <- R6::R6Class(
 
     # ---- Klines ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Klines (Candlestick Data)
     #'
@@ -475,6 +481,7 @@ BinanceFuturesData <- R6::R6Class(
     #'   fetch_all = TRUE, sleep = 0.5
     #' )
     #' }
+    # nolint end
     get_klines = function(
       symbol,
       interval = "1h",
@@ -563,6 +570,7 @@ BinanceFuturesData <- R6::R6Class(
 
     # ---- Mark Price ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Mark Price
     #'
@@ -618,6 +626,7 @@ BinanceFuturesData <- R6::R6Class(
     #' all_marks <- futures$get_mark_price()
     #' print(all_marks)
     #' }
+    # nolint end
     get_mark_price = function(symbol = NULL) {
       assert_args_BinanceFuturesData__get_mark_price(symbol)
       assert::assert_nonempty_strings(symbol, null_ok = TRUE)
@@ -652,6 +661,7 @@ BinanceFuturesData <- R6::R6Class(
 
     # ---- Funding Rate ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Funding Rate History
     #'
@@ -704,6 +714,7 @@ BinanceFuturesData <- R6::R6Class(
     #' rates <- futures$get_funding_rate("BTCUSDT", limit = 10)
     #' print(rates)
     #' }
+    # nolint end
     get_funding_rate = function(symbol, startTime = NULL, endTime = NULL, limit = NULL) {
       assert_args_BinanceFuturesData__get_funding_rate(symbol, startTime, endTime, limit)
       assert::assert_nonempty_strings(symbol)
@@ -742,6 +753,7 @@ BinanceFuturesData <- R6::R6Class(
 
     # ---- 24hr Stats ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get 24hr Ticker Statistics
     #'
@@ -802,6 +814,7 @@ BinanceFuturesData <- R6::R6Class(
     #' stats <- futures$get_24hr_stats("BTCUSDT")
     #' print(stats[, .(symbol, last_price, price_change_percent, volume)])
     #' }
+    # nolint end
     get_24hr_stats = function(symbol = NULL) {
       assert_args_BinanceFuturesData__get_24hr_stats(symbol)
       assert::assert_nonempty_strings(symbol, null_ok = TRUE)
@@ -836,6 +849,7 @@ BinanceFuturesData <- R6::R6Class(
 
     # ---- Ticker ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Symbol Price Ticker
     #'
@@ -876,6 +890,7 @@ BinanceFuturesData <- R6::R6Class(
     #' ticker <- futures$get_ticker("BTCUSDT")
     #' print(ticker)
     #' }
+    # nolint end
     get_ticker = function(symbol = NULL) {
       assert_args_BinanceFuturesData__get_ticker(symbol)
       assert::assert_nonempty_strings(symbol, null_ok = TRUE)
@@ -910,6 +925,7 @@ BinanceFuturesData <- R6::R6Class(
 
     # ---- Book Ticker ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Best Bid/Ask (Book Ticker)
     #'
@@ -956,6 +972,7 @@ BinanceFuturesData <- R6::R6Class(
     #' book <- futures$get_book_ticker("BTCUSDT")
     #' print(book)
     #' }
+    # nolint end
     get_book_ticker = function(symbol = NULL) {
       assert_args_BinanceFuturesData__get_book_ticker(symbol)
       assert::assert_nonempty_strings(symbol, null_ok = TRUE)
@@ -990,6 +1007,7 @@ BinanceFuturesData <- R6::R6Class(
 
     # ---- Open Interest ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Open Interest
     #'
@@ -1028,6 +1046,7 @@ BinanceFuturesData <- R6::R6Class(
     #' oi <- futures$get_open_interest("BTCUSDT")
     #' print(oi)
     #' }
+    # nolint end
     get_open_interest = function(symbol) {
       assert_args_BinanceFuturesData__get_open_interest(symbol)
       assert::assert_nonempty_strings(symbol)
@@ -1050,6 +1069,7 @@ BinanceFuturesData <- R6::R6Class(
 
     # ---- Order Book ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Order Book Depth
     #'
@@ -1098,6 +1118,7 @@ BinanceFuturesData <- R6::R6Class(
     #' depth <- futures$get_depth("BTCUSDT", limit = 20)
     #' print(depth)
     #' }
+    # nolint end
     get_depth = function(symbol, limit = NULL) {
       assert_args_BinanceFuturesData__get_depth(symbol, limit)
       assert::assert_nonempty_strings(symbol)
@@ -1116,6 +1137,7 @@ BinanceFuturesData <- R6::R6Class(
 
     # ---- Recent Trades ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Recent Trades
     #'
@@ -1172,6 +1194,7 @@ BinanceFuturesData <- R6::R6Class(
     #' trades <- futures$get_trades("BTCUSDT", limit = 10)
     #' print(trades)
     #' }
+    # nolint end
     get_trades = function(symbol, limit = NULL) {
       assert_args_BinanceFuturesData__get_trades(symbol, limit)
       assert::assert_nonempty_strings(symbol)
@@ -1199,6 +1222,7 @@ BinanceFuturesData <- R6::R6Class(
 
     # ---- Index Price Klines ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Index Price Klines
     #'
@@ -1252,6 +1276,7 @@ BinanceFuturesData <- R6::R6Class(
     #' klines <- futures$get_index_price_klines("BTCUSDT", "1h", limit = 24)
     #' print(klines)
     #' }
+    # nolint end
     get_index_price_klines = function(
       pair,
       interval = "1h",
@@ -1310,6 +1335,7 @@ BinanceFuturesData <- R6::R6Class(
 
     # ---- Mark Price Klines ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Mark Price Klines
     #'
@@ -1363,6 +1389,7 @@ BinanceFuturesData <- R6::R6Class(
     #' klines <- futures$get_mark_price_klines("BTCUSDT", "1h", limit = 24)
     #' print(klines)
     #' }
+    # nolint end
     get_mark_price_klines = function(
       symbol,
       interval = "1h",

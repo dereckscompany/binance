@@ -1,0 +1,15 @@
+[
+  {
+    "vipLevel": 0,
+    "coin": "BTC",
+    "transferIn": true,
+    "transferOut": true,
+    "borrowable": true,
+    "dailyInterest": "0.00015000",
+    "yearlyInterest": "0.05475000",
+    "marginablePairs": [
+      "BTCUSDT",
+      "BTCBUSD"
+    ]
+  }
+]

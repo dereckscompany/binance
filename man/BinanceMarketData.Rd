@@ -428,12 +428,12 @@ columns (\code{PERCENT_PRICE}, \code{PERCENT_PRICE_BY_SIDE}, \code{MARKET_LOT_SI
 \code{ICEBERG_PARTS}, \code{MAX_POSITION}, \code{TRAILING_DELTA}, ...). Recover
 with \code{jsonlite::fromJSON(dt$filters_raw[1])}. \code{NA} if Binance
 returned no filters for the symbol.
-\item permissions (character) Semicolon-separated trading permissions
+\item permissions (character | NA) Semicolon-separated trading permissions
 (e.g., \code{"SPOT;MARGIN"}). Recover via
 \code{strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]}. \strong{Note:}
 on newer symbols Binance often returns \verb{permissions = []} and
-populates \code{permission_sets} instead. Prefer \code{permission_sets}
-for new code.
+populates \code{permission_sets} instead, so this column is \code{NA} for
+those symbols. Prefer \code{permission_sets} for new code.
 \item permission_sets (character | NA) JSON string preserving
 Binance's array-of-arrays structure (e.g.
 \code{'[["SPOT","MARGIN"],["TRD_GRP_004"]]'}). Inner groupings

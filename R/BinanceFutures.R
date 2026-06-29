@@ -115,6 +115,7 @@ BinanceFutures <- R6::R6Class(
 
     # ---- Order Placement ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Place a Futures Order
     #'
@@ -216,6 +217,7 @@ BinanceFutures <- R6::R6Class(
     #' )
     #' print(order)
     #' }
+    # nolint end
     add_order = function(
       symbol,
       side,
@@ -321,6 +323,7 @@ BinanceFutures <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Test Futures Order Placement
     #'
@@ -389,6 +392,7 @@ BinanceFutures <- R6::R6Class(
     #' )
     #' stopifnot(test$validated)
     #' }
+    # nolint end
     add_order_test = function(
       symbol,
       side,
@@ -498,6 +502,7 @@ BinanceFutures <- R6::R6Class(
 
     # ---- Order Cancellation ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Cancel a Futures Order
     #'
@@ -573,6 +578,7 @@ BinanceFutures <- R6::R6Class(
     #' cancelled <- futures$cancel_order("BTCUSDT", orderId = 283194212)
     #' print(cancelled)
     #' }
+    # nolint end
     cancel_order = function(symbol, orderId = NULL, origClientOrderId = NULL, recvWindow = NULL) {
       assert_args_BinanceFutures__cancel_order(symbol, orderId, origClientOrderId, recvWindow)
       assert::assert_nonempty_strings(symbol)
@@ -606,6 +612,7 @@ BinanceFutures <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Cancel All Open Futures Orders
     #'
@@ -654,6 +661,7 @@ BinanceFutures <- R6::R6Class(
     #' result <- futures$cancel_all_orders("BTCUSDT")
     #' print(result)
     #' }
+    # nolint end
     cancel_all_orders = function(symbol, recvWindow = NULL) {
       assert_args_BinanceFutures__cancel_all_orders(symbol, recvWindow)
       assert::assert_nonempty_strings(symbol)
@@ -674,6 +682,7 @@ BinanceFutures <- R6::R6Class(
 
     # ---- Order Queries ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Query a Futures Order
     #'
@@ -745,6 +754,7 @@ BinanceFutures <- R6::R6Class(
     #' order <- futures$get_order("BTCUSDT", orderId = 283194212)
     #' print(order)
     #' }
+    # nolint end
     get_order = function(symbol, orderId = NULL, origClientOrderId = NULL, recvWindow = NULL) {
       assert_args_BinanceFutures__get_order(symbol, orderId, origClientOrderId, recvWindow)
       assert::assert_nonempty_strings(symbol)
@@ -776,6 +786,7 @@ BinanceFutures <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Open Futures Orders
     #'
@@ -846,6 +857,7 @@ BinanceFutures <- R6::R6Class(
     #' open <- futures$get_open_orders("BTCUSDT")
     #' print(open)
     #' }
+    # nolint end
     get_open_orders = function(symbol = NULL, recvWindow = NULL) {
       assert_args_BinanceFutures__get_open_orders(symbol, recvWindow)
       assert::assert_nonempty_strings(symbol, null_ok = TRUE)
@@ -870,6 +882,7 @@ BinanceFutures <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get All Futures Orders
     #'
@@ -944,6 +957,7 @@ BinanceFutures <- R6::R6Class(
     #' all <- futures$get_all_orders("BTCUSDT", limit = 50)
     #' print(all)
     #' }
+    # nolint end
     get_all_orders = function(
       symbol,
       orderId = NULL,
@@ -984,6 +998,7 @@ BinanceFutures <- R6::R6Class(
 
     # ---- Account ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Futures Account Information
     #'
@@ -1107,6 +1122,7 @@ BinanceFutures <- R6::R6Class(
     #' positions <- futures$get_positions()
     #' print(positions)
     #' }
+    # nolint end
     get_account = function(recvWindow = NULL) {
       assert_args_BinanceFutures__get_account(recvWindow)
       res <- private$.request(
@@ -1137,6 +1153,7 @@ BinanceFutures <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Futures Account Balances
     #'
@@ -1203,6 +1220,7 @@ BinanceFutures <- R6::R6Class(
     #' balances <- futures$get_balances()
     #' print(balances)
     #' }
+    # nolint end
     get_balances = function(recvWindow = NULL) {
       assert_args_BinanceFutures__get_balances(recvWindow)
       res <- private$.request(
@@ -1224,6 +1242,7 @@ BinanceFutures <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Futures Position Information
     #'
@@ -1289,6 +1308,7 @@ BinanceFutures <- R6::R6Class(
     #' positions <- futures$get_positions("BTCUSDT")
     #' print(positions)
     #' }
+    # nolint end
     get_positions = function(symbol = NULL, recvWindow = NULL) {
       assert_args_BinanceFutures__get_positions(symbol, recvWindow)
       assert::assert_nonempty_strings(symbol, null_ok = TRUE)
@@ -1313,6 +1333,7 @@ BinanceFutures <- R6::R6Class(
 
     # ---- Leverage & Margin ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Set Leverage
     #'
@@ -1366,6 +1387,7 @@ BinanceFutures <- R6::R6Class(
     #' result <- futures$set_leverage("BTCUSDT", 20)
     #' print(result)
     #' }
+    # nolint end
     set_leverage = function(symbol, leverage, recvWindow = NULL) {
       assert_args_BinanceFutures__set_leverage(symbol, leverage, recvWindow)
       assert::assert_nonempty_strings(symbol)
@@ -1388,6 +1410,7 @@ BinanceFutures <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Set Margin Type
     #'
@@ -1439,6 +1462,7 @@ BinanceFutures <- R6::R6Class(
     #' result <- futures$set_margin_type("BTCUSDT", "ISOLATED")
     #' print(result)
     #' }
+    # nolint end
     set_margin_type = function(symbol, marginType, recvWindow = NULL) {
       assert_args_BinanceFutures__set_margin_type(symbol, marginType, recvWindow)
       assert::assert_nonempty_strings(symbol)
@@ -1464,6 +1488,7 @@ BinanceFutures <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Modify Position Margin
     #'
@@ -1523,6 +1548,7 @@ BinanceFutures <- R6::R6Class(
     #' result <- futures$modify_position_margin("BTCUSDT", amount = 100, type = 1)
     #' print(result)
     #' }
+    # nolint end
     modify_position_margin = function(symbol, amount, type, positionSide = NULL, recvWindow = NULL) {
       assert_args_BinanceFutures__modify_position_margin(symbol, amount, type, positionSide, recvWindow)
       assert::assert_nonempty_strings(symbol)
@@ -1556,6 +1582,7 @@ BinanceFutures <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Position Margin Change History
     #'
@@ -1612,6 +1639,7 @@ BinanceFutures <- R6::R6Class(
     #' history <- futures$get_position_margin_history("BTCUSDT")
     #' print(history)
     #' }
+    # nolint end
     get_position_margin_history = function(
       symbol,
       type = NULL,
@@ -1650,6 +1678,7 @@ BinanceFutures <- R6::R6Class(
 
     # ---- Trades & Income ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Futures Account Trade List
     #'
@@ -1722,6 +1751,7 @@ BinanceFutures <- R6::R6Class(
     #' trades <- futures$get_trades("BTCUSDT", limit = 50)
     #' print(trades)
     #' }
+    # nolint end
     get_trades = function(
       symbol,
       orderId = NULL,
@@ -1762,6 +1792,7 @@ BinanceFutures <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Income History
     #'
@@ -1839,6 +1870,7 @@ BinanceFutures <- R6::R6Class(
     #' income <- futures$get_income_history(symbol = "BTCUSDT", incomeType = "FUNDING_FEE")
     #' print(income)
     #' }
+    # nolint end
     get_income_history = function(
       symbol = NULL,
       incomeType = NULL,
@@ -1906,6 +1938,7 @@ BinanceFutures <- R6::R6Class(
 
     # ---- Position Mode ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Set Position Mode
     #'
@@ -1955,6 +1988,7 @@ BinanceFutures <- R6::R6Class(
     #' result <- futures$set_position_mode(TRUE)
     #' print(result)
     #' }
+    # nolint end
     set_position_mode = function(dualSidePosition, recvWindow = NULL) {
       assert_args_BinanceFutures__set_position_mode(dualSidePosition, recvWindow)
       dualSidePosition <- tolower(as.character(dualSidePosition))
@@ -1977,6 +2011,7 @@ BinanceFutures <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Position Mode
     #'
@@ -2013,6 +2048,7 @@ BinanceFutures <- R6::R6Class(
     #' mode <- futures$get_position_mode()
     #' print(mode$dual_side_position)
     #' }
+    # nolint end
     get_position_mode = function(recvWindow = NULL) {
       assert_args_BinanceFutures__get_position_mode(recvWindow)
       res <- private$.request(

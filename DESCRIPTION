@@ -1,7 +1,7 @@
 Package: binance
 Type: Package
 Title: API Wrapper to Binance Cryptocurrency Exchange
-Version: 0.5.1
+Version: 0.5.2
 URL: https://dereckscompany.github.io/binance/
 BugReports: https://github.com/dereckscompany/binance/issues
 Authors@R:
@@ -37,7 +37,7 @@ Imports:
     later,
     websocket,
     promises,
-    connectcore (>= 0.1.0)
+    connectcore (>= 0.2.0)
 Suggests:
     coro,
     box,

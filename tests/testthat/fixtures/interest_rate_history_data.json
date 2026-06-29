@@ -1,0 +1,14 @@
+[
+  {
+    "asset": "BTC",
+    "dailyInterestRate": "0.00015000",
+    "timestamp": 1661493146000,
+    "vipLevel": 0
+  },
+  {
+    "asset": "BTC",
+    "dailyInterestRate": "0.00012000",
+    "timestamp": 1661493246000,
+    "vipLevel": 0
+  }
+]

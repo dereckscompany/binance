@@ -1,0 +1,11 @@
+[
+  {
+    "symbol": "BTCUSDT",
+    "type": 1,
+    "deltaType": "INCREASE_MARGIN",
+    "amount": "100.00000000",
+    "asset": "USDT",
+    "time": 1710000000000,
+    "positionSide": "BOTH"
+  }
+]

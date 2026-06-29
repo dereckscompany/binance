@@ -67,6 +67,7 @@ BinanceMarketData <- R6::R6Class(
   public = list(
     # ---- Server Time ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Server Time
     #'
@@ -105,6 +106,7 @@ BinanceMarketData <- R6::R6Class(
     #' drift <- as.numeric(difftime(Sys.time(), st$server_time, units = "secs"))
     #' cat("Clock drift:", round(drift * 1000), "ms\n")
     #' }
+    # nolint end
     get_server_time = function() {
       res <- private$.request(
         endpoint = "/api/v3/time",
@@ -124,6 +126,7 @@ BinanceMarketData <- R6::R6Class(
 
     # ---- Exchange Info ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Exchange Info
     #'
@@ -222,12 +225,12 @@ BinanceMarketData <- R6::R6Class(
     #'     `ICEBERG_PARTS`, `MAX_POSITION`, `TRAILING_DELTA`, ...). Recover
     #'     with `jsonlite::fromJSON(dt$filters_raw[1])`. `NA` if Binance
     #'     returned no filters for the symbol.
-    #'   - permissions (character) Semicolon-separated trading permissions
+    #'   - permissions (character | NA) Semicolon-separated trading permissions
     #'     (e.g., `"SPOT;MARGIN"`). Recover via
     #'     `strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]`. **Note:**
     #'     on newer symbols Binance often returns `permissions = []` and
-    #'     populates `permission_sets` instead. Prefer `permission_sets`
-    #'     for new code.
+    #'     populates `permission_sets` instead, so this column is `NA` for
+    #'     those symbols. Prefer `permission_sets` for new code.
     #'   - permission_sets (character | NA) JSON string preserving
     #'     Binance's array-of-arrays structure (e.g.
     #'     `'[["SPOT","MARGIN"],["TRD_GRP_004"]]'`). Inner groupings
@@ -259,6 +262,7 @@ BinanceMarketData <- R6::R6Class(
     #' market$get_rate_limits()
     #' market$get_exchange_filters()
     #' }
+    # nolint end
     get_exchange_info = function(symbol = NULL, symbols = NULL) {
       assert_args_BinanceMarketData__get_exchange_info(symbol, symbols)
       assert::assert_nonempty_strings(symbol, null_ok = TRUE)
@@ -367,6 +371,7 @@ BinanceMarketData <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Exchange Rate Limits
     #'
@@ -399,6 +404,7 @@ BinanceMarketData <- R6::R6Class(
     #' market <- BinanceMarketData$new()
     #' market$get_rate_limits()
     #' }
+    # nolint end
     get_rate_limits = function() {
       res <- private$.request(
         endpoint = "/api/v3/exchangeInfo",
@@ -464,6 +470,7 @@ BinanceMarketData <- R6::R6Class(
 
     # ---- Tickers ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Symbol Price Ticker
     #'
@@ -497,6 +504,7 @@ BinanceMarketData <- R6::R6Class(
     #' ticker <- market$get_ticker("BTCUSDT")
     #' print(ticker)
     #' }
+    # nolint end
     get_ticker = function(symbol) {
       assert_args_BinanceMarketData__get_ticker(symbol)
       assert::assert_nonempty_strings(symbol)
@@ -513,6 +521,7 @@ BinanceMarketData <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get All Symbol Price Tickers
     #'
@@ -549,6 +558,7 @@ BinanceMarketData <- R6::R6Class(
     #' all_tickers <- market$get_all_tickers()
     #' print(all_tickers[1:5])
     #' }
+    # nolint end
     get_all_tickers = function() {
       res <- private$.request(
         endpoint = "/api/v3/ticker/price",
@@ -567,6 +577,7 @@ BinanceMarketData <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Best Bid/Ask (Book Ticker)
     #'
@@ -604,6 +615,7 @@ BinanceMarketData <- R6::R6Class(
     #' book <- market$get_book_ticker("BTCUSDT")
     #' print(book)
     #' }
+    # nolint end
     get_book_ticker = function(symbol) {
       assert_args_BinanceMarketData__get_book_ticker(symbol)
       assert::assert_nonempty_strings(symbol)
@@ -622,6 +634,7 @@ BinanceMarketData <- R6::R6Class(
 
     # ---- 24hr Stats ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get 24hr Ticker Statistics
     #'
@@ -696,6 +709,7 @@ BinanceMarketData <- R6::R6Class(
     #' stats <- market$get_24hr_stats("BTCUSDT")
     #' print(stats[, .(symbol, last_price, price_change_percent, volume)])
     #' }
+    # nolint end
     get_24hr_stats = function(symbol) {
       assert_args_BinanceMarketData__get_24hr_stats(symbol)
       assert::assert_nonempty_strings(symbol)
@@ -718,6 +732,7 @@ BinanceMarketData <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get 24hr Ticker Statistics for All Symbols
     #'
@@ -739,6 +754,7 @@ BinanceMarketData <- R6::R6Class(
     #' all_stats <- market$get_all_24hr_stats()
     #' print(all_stats[1:5, .(symbol, last_price, price_change_percent, volume)])
     #' }
+    # nolint end
     get_all_24hr_stats = function() {
       res <- private$.request(
         endpoint = "/api/v3/ticker/24hr",
@@ -760,6 +776,7 @@ BinanceMarketData <- R6::R6Class(
 
     # ---- Average Price ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Average Price
     #'
@@ -794,6 +811,7 @@ BinanceMarketData <- R6::R6Class(
     #' avg <- market$get_avg_price("BTCUSDT")
     #' print(avg)
     #' }
+    # nolint end
     get_avg_price = function(symbol) {
       assert_args_BinanceMarketData__get_avg_price(symbol)
       assert::assert_nonempty_strings(symbol)
@@ -816,6 +834,7 @@ BinanceMarketData <- R6::R6Class(
 
     # ---- Order Book ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Order Book Depth
     #'
@@ -860,6 +879,7 @@ BinanceMarketData <- R6::R6Class(
     #' depth <- market$get_depth("BTCUSDT", limit = 20)
     #' print(depth)
     #' }
+    # nolint end
     get_depth = function(symbol, limit = NULL) {
       assert_args_BinanceMarketData__get_depth(symbol, limit)
       assert::assert_nonempty_strings(symbol)
@@ -878,6 +898,7 @@ BinanceMarketData <- R6::R6Class(
 
     # ---- Recent Trades ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Recent Trades
     #'
@@ -920,6 +941,7 @@ BinanceMarketData <- R6::R6Class(
     #' trades <- market$get_trades("BTCUSDT", limit = 10)
     #' print(trades)
     #' }
+    # nolint end
     get_trades = function(symbol, limit = NULL) {
       assert_args_BinanceMarketData__get_trades(symbol, limit)
       assert::assert_nonempty_strings(symbol)
@@ -947,6 +969,7 @@ BinanceMarketData <- R6::R6Class(
 
     # ---- Klines ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Klines (Candlestick Data)
     #'
@@ -1032,6 +1055,7 @@ BinanceMarketData <- R6::R6Class(
     #'   fetch_all = TRUE, sleep = 0.5
     #' )
     #' }
+    # nolint end
     get_klines = function(
       symbol,
       interval = "1h",
@@ -1113,9 +1137,10 @@ BinanceMarketData <- R6::R6Class(
         .parser = function(data) {
           dt <- parse_klines(data)
           if (nrow(dt) >= 1000L && is.null(limit)) {
-            rlang::warn(
-              "Binance returned 1000 candles (the maximum). Results may be truncated. Use `fetch_all = TRUE` for large date ranges, or pass an explicit `limit`."
-            )
+            rlang::warn(paste0(
+              "Binance returned 1000 candles (the maximum). Results may be truncated. ",
+              "Use `fetch_all = TRUE` for large date ranges, or pass an explicit `limit`."
+            ))
           }
           return(dt[])
         }

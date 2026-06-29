@@ -77,6 +77,7 @@ BinanceMargin <- R6::R6Class(
   public = list(
     # ---- Borrowing / Repaying ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Borrow on Margin
     #'
@@ -129,6 +130,7 @@ BinanceMargin <- R6::R6Class(
     #' result <- margin$add_borrow(asset = "USDT", amount = 100)
     #' print(result)
     #' }
+    # nolint end
     add_borrow = function(asset, amount, isIsolated = "FALSE", symbol = NULL, recvWindow = NULL) {
       assert_args_BinanceMargin__add_borrow(asset, amount, isIsolated, symbol, recvWindow)
       assert::assert_nonempty_strings(asset)
@@ -157,6 +159,7 @@ BinanceMargin <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Repay Margin Loan
     #'
@@ -209,6 +212,7 @@ BinanceMargin <- R6::R6Class(
     #' result <- margin$add_repay(asset = "USDT", amount = 100)
     #' print(result)
     #' }
+    # nolint end
     add_repay = function(asset, amount, isIsolated = "FALSE", symbol = NULL, recvWindow = NULL) {
       assert_args_BinanceMargin__add_repay(asset, amount, isIsolated, symbol, recvWindow)
       assert::assert_nonempty_strings(asset)
@@ -239,6 +243,7 @@ BinanceMargin <- R6::R6Class(
 
     # ---- Order Management ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Place a Margin Order
     #'
@@ -326,6 +331,7 @@ BinanceMargin <- R6::R6Class(
     #' )
     #' print(order)
     #' }
+    # nolint end
     add_order = function(
       symbol,
       side,
@@ -418,6 +424,7 @@ BinanceMargin <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Cancel a Margin Order
     #'
@@ -484,6 +491,7 @@ BinanceMargin <- R6::R6Class(
     #' cancelled <- margin$cancel_order("BTCUSDT", orderId = 28)
     #' print(cancelled)
     #' }
+    # nolint end
     cancel_order = function(symbol, orderId = NULL, origClientOrderId = NULL, isIsolated = NULL, recvWindow = NULL) {
       assert_args_BinanceMargin__cancel_order(symbol, orderId, origClientOrderId, isIsolated, recvWindow)
       assert::assert_nonempty_strings(symbol)
@@ -517,6 +525,7 @@ BinanceMargin <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Cancel All Open Margin Orders on a Symbol
     #'
@@ -585,6 +594,7 @@ BinanceMargin <- R6::R6Class(
     #' cancelled <- margin$cancel_all_orders("BTCUSDT")
     #' print(cancelled)
     #' }
+    # nolint end
     cancel_all_orders = function(symbol, isIsolated = NULL, recvWindow = NULL) {
       assert_args_BinanceMargin__cancel_all_orders(symbol, isIsolated, recvWindow)
       assert::assert_nonempty_strings(symbol)
@@ -618,6 +628,7 @@ BinanceMargin <- R6::R6Class(
 
     # ---- Order Queries ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Query a Margin Order
     #'
@@ -684,6 +695,7 @@ BinanceMargin <- R6::R6Class(
     #' order <- margin$get_order("BTCUSDT", orderId = 28)
     #' print(order)
     #' }
+    # nolint end
     get_order = function(symbol, orderId = NULL, origClientOrderId = NULL, isIsolated = NULL, recvWindow = NULL) {
       assert_args_BinanceMargin__get_order(symbol, orderId, origClientOrderId, isIsolated, recvWindow)
       assert::assert_nonempty_strings(symbol)
@@ -716,6 +728,7 @@ BinanceMargin <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Open Margin Orders
     #'
@@ -783,6 +796,7 @@ BinanceMargin <- R6::R6Class(
     #' open <- margin$get_open_orders("BTCUSDT")
     #' print(open)
     #' }
+    # nolint end
     get_open_orders = function(symbol = NULL, isIsolated = NULL, recvWindow = NULL) {
       assert_args_BinanceMargin__get_open_orders(symbol, isIsolated, recvWindow)
       assert::assert_nonempty_strings(symbol, null_ok = TRUE)
@@ -811,6 +825,7 @@ BinanceMargin <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get All Margin Orders
     #'
@@ -900,6 +915,7 @@ BinanceMargin <- R6::R6Class(
     #' all <- margin$get_all_orders("BTCUSDT", limit = 50)
     #' print(all)
     #' }
+    # nolint end
     get_all_orders = function(
       symbol,
       orderId = NULL,
@@ -942,6 +958,7 @@ BinanceMargin <- R6::R6Class(
 
     # ---- Account Queries ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Margin Account Information
     #'
@@ -1013,6 +1030,7 @@ BinanceMargin <- R6::R6Class(
     #' account <- margin$get_account()
     #' print(account)
     #' }
+    # nolint end
     get_account = function(recvWindow = NULL) {
       assert_args_BinanceMargin__get_account(recvWindow)
       res <- private$.request(
@@ -1102,6 +1120,7 @@ BinanceMargin <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Max Transferable Amount
     #'
@@ -1142,6 +1161,7 @@ BinanceMargin <- R6::R6Class(
     #' max_transfer <- margin$get_max_transferable(asset = "USDT")
     #' print(max_transfer)
     #' }
+    # nolint end
     get_max_transferable = function(asset, isolatedSymbol = NULL, recvWindow = NULL) {
       assert_args_BinanceMargin__get_max_transferable(asset, isolatedSymbol, recvWindow)
       assert::assert_nonempty_strings(asset)
@@ -1166,6 +1186,7 @@ BinanceMargin <- R6::R6Class(
 
     # ---- History ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Margin Interest History
     #'
@@ -1235,6 +1256,7 @@ BinanceMargin <- R6::R6Class(
     #' history <- margin$get_interest_history(asset = "USDT")
     #' print(history)
     #' }
+    # nolint end
     get_interest_history = function(
       asset = NULL,
       startTime = NULL,
@@ -1272,6 +1294,7 @@ BinanceMargin <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Force Liquidation History
     #'
@@ -1338,6 +1361,7 @@ BinanceMargin <- R6::R6Class(
     #' liquidations <- margin$get_force_liquidation_history()
     #' print(liquidations)
     #' }
+    # nolint end
     get_force_liquidation_history = function(
       startTime = NULL,
       endTime = NULL,
@@ -1384,6 +1408,7 @@ BinanceMargin <- R6::R6Class(
 
     # ---- Trades ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Margin Trades
     #'
@@ -1451,6 +1476,7 @@ BinanceMargin <- R6::R6Class(
     #' trades <- margin$get_trades("BTCUSDT")
     #' print(trades)
     #' }
+    # nolint end
     get_trades = function(
       symbol,
       orderId = NULL,
@@ -1495,6 +1521,7 @@ BinanceMargin <- R6::R6Class(
 
     # ---- Isolated Margin ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Isolated Margin Account Info
     #'
@@ -1581,6 +1608,7 @@ BinanceMargin <- R6::R6Class(
     #' isolated <- margin$get_isolated_account()
     #' print(isolated)
     #' }
+    # nolint end
     get_isolated_account = function(symbols = NULL, recvWindow = NULL) {
       assert_args_BinanceMargin__get_isolated_account(symbols, recvWindow)
       assert::assert_nonempty_strings(symbols, null_ok = TRUE)
@@ -1617,6 +1645,7 @@ BinanceMargin <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Isolated Margin Transfer
     #'
@@ -1678,6 +1707,7 @@ BinanceMargin <- R6::R6Class(
     #' )
     #' print(result)
     #' }
+    # nolint end
     add_isolated_transfer = function(asset, symbol, transFrom, transTo, amount, recvWindow = NULL) {
       assert_args_BinanceMargin__add_isolated_transfer(asset, symbol, transFrom, transTo, amount, recvWindow)
       assert::assert_nonempty_strings(asset)

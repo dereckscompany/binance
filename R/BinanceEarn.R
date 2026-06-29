@@ -65,6 +65,7 @@ BinanceEarn <- R6::R6Class(
   public = list(
     # ---- Product Listing ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Flexible Products
     #'
@@ -136,6 +137,7 @@ BinanceEarn <- R6::R6Class(
     #' products <- earn$get_flexible_products(asset = "USDT")
     #' print(products)
     #' }
+    # nolint end
     get_flexible_products = function(asset = NULL, current = NULL, size = NULL, recvWindow = NULL) {
       assert_args_BinanceEarn__get_flexible_products(asset, current, size, recvWindow)
       assert::assert_nonempty_strings(asset, null_ok = TRUE)
@@ -182,6 +184,7 @@ BinanceEarn <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Locked Products
     #'
@@ -273,6 +276,7 @@ BinanceEarn <- R6::R6Class(
     #' products <- earn$get_locked_products(asset = "BTC")
     #' print(products)
     #' }
+    # nolint end
     get_locked_products = function(asset = NULL, current = NULL, size = NULL, recvWindow = NULL) {
       assert_args_BinanceEarn__get_locked_products(asset, current, size, recvWindow)
       assert::assert_nonempty_strings(asset, null_ok = TRUE)
@@ -403,6 +407,7 @@ BinanceEarn <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Subscribe to Locked Product
     #'
@@ -455,6 +460,7 @@ BinanceEarn <- R6::R6Class(
     #' result <- earn$add_locked_subscription(projectId = "BTC30d001", amount = 0.01)
     #' print(result)
     #' }
+    # nolint end
     add_locked_subscription = function(projectId, amount, autoSubscribe = NULL, recvWindow = NULL) {
       assert_args_BinanceEarn__add_locked_subscription(projectId, amount, autoSubscribe, recvWindow)
       assert::assert_nonempty_strings(projectId)
@@ -483,6 +489,7 @@ BinanceEarn <- R6::R6Class(
 
     # ---- Redemptions ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Redeem Flexible Product
     #'
@@ -535,6 +542,7 @@ BinanceEarn <- R6::R6Class(
     #' result <- earn$add_flexible_redemption(productId = "USDT001", amount = 50)
     #' print(result)
     #' }
+    # nolint end
     add_flexible_redemption = function(
       productId,
       amount = NULL,
@@ -568,6 +576,7 @@ BinanceEarn <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Redeem Locked Product
     #'
@@ -614,6 +623,7 @@ BinanceEarn <- R6::R6Class(
     #' result <- earn$add_locked_redemption(positionId = "12345")
     #' print(result)
     #' }
+    # nolint end
     add_locked_redemption = function(positionId, recvWindow = NULL) {
       assert_args_BinanceEarn__add_locked_redemption(positionId, recvWindow)
       assert::assert_nonempty_strings(positionId)
@@ -640,6 +650,7 @@ BinanceEarn <- R6::R6Class(
 
     # ---- Positions ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Flexible Position
     #'
@@ -725,6 +736,7 @@ BinanceEarn <- R6::R6Class(
     #' positions <- earn$get_flexible_position(asset = "USDT")
     #' print(positions)
     #' }
+    # nolint end
     get_flexible_position = function(asset = NULL, productId = NULL, current = NULL, size = NULL, recvWindow = NULL) {
       assert_args_BinanceEarn__get_flexible_position(asset, productId, current, size, recvWindow)
       assert::assert_nonempty_strings(asset, null_ok = TRUE)
@@ -769,6 +781,7 @@ BinanceEarn <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Locked Position
     #'
@@ -862,6 +875,7 @@ BinanceEarn <- R6::R6Class(
     #' positions <- earn$get_locked_position(asset = "BTC")
     #' print(positions)
     #' }
+    # nolint end
     get_locked_position = function(
       asset = NULL,
       positionId = NULL,
@@ -910,6 +924,7 @@ BinanceEarn <- R6::R6Class(
 
     # ---- History ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Flexible Subscription History
     #'
@@ -970,6 +985,7 @@ BinanceEarn <- R6::R6Class(
     #' history <- earn$get_flexible_subscription_history(asset = "USDT")
     #' print(history)
     #' }
+    # nolint end
     get_flexible_subscription_history = function(
       productId = NULL,
       purchaseId = NULL,
@@ -1021,6 +1037,7 @@ BinanceEarn <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Locked Subscription History
     #'
@@ -1084,6 +1101,7 @@ BinanceEarn <- R6::R6Class(
     #' history <- earn$get_locked_subscription_history(asset = "BTC")
     #' print(history)
     #' }
+    # nolint end
     get_locked_subscription_history = function(
       purchaseId = NULL,
       asset = NULL,
@@ -1131,6 +1149,7 @@ BinanceEarn <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Flexible Redemption History
     #'
@@ -1191,6 +1210,7 @@ BinanceEarn <- R6::R6Class(
     #' history <- earn$get_flexible_redemption_history(asset = "USDT")
     #' print(history)
     #' }
+    # nolint end
     get_flexible_redemption_history = function(
       productId = NULL,
       redeemId = NULL,
@@ -1242,6 +1262,7 @@ BinanceEarn <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Locked Redemption History
     #'
@@ -1302,6 +1323,7 @@ BinanceEarn <- R6::R6Class(
     #' history <- earn$get_locked_redemption_history(asset = "BTC")
     #' print(history)
     #' }
+    # nolint end
     get_locked_redemption_history = function(
       positionId = NULL,
       redeemId = NULL,

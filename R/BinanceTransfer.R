@@ -197,6 +197,7 @@ BinanceTransfer <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Query Universal Transfer History
     #'
@@ -258,6 +259,7 @@ BinanceTransfer <- R6::R6Class(
     #' history <- transfer$get_transfer_history(type = "MAIN_UMFUTURE")
     #' print(history)
     #' }
+    # nolint end
     get_transfer_history = function(
       type,
       startTime = NULL,

@@ -388,8 +388,9 @@ Binance returns no symbols). Key columns include:
 Recover via \code{strsplit(dt$order_types[1], ";", fixed = TRUE)[[1]]}.
 \item time_in_force (character) Semicolon-separated allowed
 time-in-force values.
-\item underlying_sub_type (character) Semicolon-separated underlying
-sub-types.
+\item underlying_sub_type (character | NA) Semicolon-separated underlying
+sub-types (\code{NA} when the symbol omits the field, as many
+non-coin / index-style contracts do).
 \item permission_sets (character | NA) Semicolon-separated permission sets
 (\code{NA} when the symbol omits the field).
 \item lot_min_qty (numeric | NA) Minimum order quantity (from LOT_SIZE
