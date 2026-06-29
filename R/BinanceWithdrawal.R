@@ -204,6 +204,7 @@ BinanceWithdrawal <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Withdrawal History
     #'
@@ -299,6 +300,7 @@ BinanceWithdrawal <- R6::R6Class(
     #'   endTime = now_ms
     #' )
     #' }
+    # nolint end
     get_withdrawal_history = function(
       coin = NULL,
       withdrawOrderId = NULL,

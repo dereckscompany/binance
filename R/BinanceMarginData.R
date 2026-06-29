@@ -63,6 +63,7 @@ BinanceMarginData <- R6::R6Class(
   public = list(
     # ---- All Cross Margin Pairs ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get All Cross Margin Pairs
     #'
@@ -122,6 +123,7 @@ BinanceMarginData <- R6::R6Class(
     #' pairs <- margin$get_all_pairs()
     #' print(pairs)
     #' }
+    # nolint end
     get_all_pairs = function(recvWindow = NULL) {
       assert_args_BinanceMarginData__get_all_pairs(recvWindow)
       query <- list(recvWindow = recvWindow)
@@ -148,6 +150,7 @@ BinanceMarginData <- R6::R6Class(
 
     # ---- All Isolated Margin Pairs ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get All Isolated Margin Pairs
     #'
@@ -204,6 +207,7 @@ BinanceMarginData <- R6::R6Class(
     #' pairs <- margin$get_isolated_pairs()
     #' print(pairs)
     #' }
+    # nolint end
     get_isolated_pairs = function(recvWindow = NULL) {
       assert_args_BinanceMarginData__get_isolated_pairs(recvWindow)
       query <- list(recvWindow = recvWindow)
@@ -227,6 +231,7 @@ BinanceMarginData <- R6::R6Class(
 
     # ---- Price Index ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Margin Price Index
     #'
@@ -263,6 +268,7 @@ BinanceMarginData <- R6::R6Class(
     #' idx <- margin$get_price_index("BTCUSDT")
     #' print(idx)
     #' }
+    # nolint end
     get_price_index = function(symbol) {
       assert_args_BinanceMarginData__get_price_index(symbol)
       assert::assert_nonempty_strings(symbol)
@@ -285,6 +291,7 @@ BinanceMarginData <- R6::R6Class(
 
     # ---- Interest Rate History ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Interest Rate History
     #'
@@ -339,6 +346,7 @@ BinanceMarginData <- R6::R6Class(
     #' history <- margin$get_interest_rate_history("BTC")
     #' print(history)
     #' }
+    # nolint end
     get_interest_rate_history = function(asset, vipLevel = NULL, startTime = NULL, endTime = NULL, recvWindow = NULL) {
       assert_args_BinanceMarginData__get_interest_rate_history(asset, vipLevel, startTime, endTime, recvWindow)
       assert::assert_nonempty_strings(asset)
@@ -371,6 +379,7 @@ BinanceMarginData <- R6::R6Class(
 
     # ---- Cross Margin Data ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Cross Margin Data
     #'
@@ -437,6 +446,7 @@ BinanceMarginData <- R6::R6Class(
     #' data <- margin$get_cross_margin_data()
     #' print(data)
     #' }
+    # nolint end
     get_cross_margin_data = function(vipLevel = NULL, coin = NULL, recvWindow = NULL) {
       assert_args_BinanceMarginData__get_cross_margin_data(vipLevel, coin, recvWindow)
       assert::assert_nonempty_strings(coin, null_ok = TRUE)
@@ -477,6 +487,7 @@ BinanceMarginData <- R6::R6Class(
 
     # ---- Isolated Margin Data ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Isolated Margin Data
     #'
@@ -551,6 +562,7 @@ BinanceMarginData <- R6::R6Class(
     #' data <- margin$get_isolated_margin_data()
     #' print(data)
     #' }
+    # nolint end
     get_isolated_margin_data = function(vipLevel = NULL, symbol = NULL, recvWindow = NULL) {
       assert_args_BinanceMarginData__get_isolated_margin_data(vipLevel, symbol, recvWindow)
       assert::assert_nonempty_strings(symbol, null_ok = TRUE)

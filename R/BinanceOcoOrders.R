@@ -55,6 +55,7 @@ BinanceOcoOrders <- R6::R6Class(
   public = list(
     # ---- OCO Order Placement ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Place an OCO Order
     #'
@@ -159,6 +160,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' )
     #' print(result)
     #' }
+    # nolint end
     add_oco_order = function(
       symbol,
       side,
@@ -258,6 +260,7 @@ BinanceOcoOrders <- R6::R6Class(
 
     # ---- OCO Order Cancellation ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Cancel an OCO Order
     #'
@@ -376,6 +379,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' cancelled <- oco$cancel_oco_order("BTCUSDT", orderListId = 0)
     #' print(cancelled)
     #' }
+    # nolint end
     cancel_oco_order = function(symbol, orderListId = NULL, listClientOrderId = NULL, recvWindow = NULL) {
       assert_args_BinanceOcoOrders__cancel_oco_order(symbol, orderListId, listClientOrderId, recvWindow)
       assert::assert_nonempty_strings(symbol)
@@ -432,6 +436,7 @@ BinanceOcoOrders <- R6::R6Class(
 
     # ---- OCO Order Queries ----
 
+    # nolint start: line_length_linter.
     #' @description
     #' Query an OCO Order
     #'
@@ -498,6 +503,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' order <- oco$get_oco_order(orderListId = 0)
     #' print(order)
     #' }
+    # nolint end
     get_oco_order = function(orderListId = NULL, origClientOrderId = NULL, recvWindow = NULL) {
       assert_args_BinanceOcoOrders__get_oco_order(orderListId, origClientOrderId, recvWindow)
       assert::assert_nonempty_strings(origClientOrderId, null_ok = TRUE)
@@ -540,6 +546,7 @@ BinanceOcoOrders <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get Open OCO Orders
     #'
@@ -605,6 +612,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' open <- oco$get_open_oco_orders()
     #' print(open)
     #' }
+    # nolint end
     get_open_oco_orders = function(recvWindow = NULL) {
       assert_args_BinanceOcoOrders__get_open_oco_orders(recvWindow)
       res <- private$.request(
@@ -642,6 +650,7 @@ BinanceOcoOrders <- R6::R6Class(
       ))
     },
 
+    # nolint start: line_length_linter.
     #' @description
     #' Get All OCO Orders
     #'
@@ -734,6 +743,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' all <- oco$get_all_oco_orders(limit = 50)
     #' print(all)
     #' }
+    # nolint end
     get_all_oco_orders = function(
       fromId = NULL,
       startTime = NULL,

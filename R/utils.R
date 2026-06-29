@@ -49,9 +49,10 @@ get_api_keys <- function(
 ) {
   assert_args_get_api_keys(api_key, api_secret)
   if (!nzchar(api_key) || !nzchar(api_secret)) {
-    rlang::warn(
-      "Binance API credentials are empty. Set BINANCE_API_KEY and BINANCE_API_SECRET environment variables or pass them explicitly."
-    )
+    rlang::warn(paste0(
+      "Binance API credentials are empty. ",
+      "Set BINANCE_API_KEY and BINANCE_API_SECRET environment variables or pass them explicitly."
+    ))
   }
   return(assert_return_get_api_keys(list(
     api_key = api_key,

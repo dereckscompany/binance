@@ -152,8 +152,10 @@ total assets, and liabilities:
 
 ```{r margin-account, eval = TRUE}
 account <- margin$get_account()
-print(account[, .(borrow_enabled, margin_level, total_asset_of_btc,
-                   total_liability_of_btc, total_net_asset_of_btc)])
+print(account[, .(
+  borrow_enabled, margin_level, total_asset_of_btc,
+  total_liability_of_btc, total_net_asset_of_btc
+)])
 ```
 
 ### Margin Trade History
@@ -218,9 +220,11 @@ Query your futures account summary and current positions:
 
 ```{r futures-account, eval = TRUE}
 account <- futures$get_account()
-print(account[, .(total_initial_margin, total_maint_margin,
-                   total_wallet_balance, total_unrealized_profit,
-                   available_balance)])
+print(account[, .(
+  total_initial_margin, total_maint_margin,
+  total_wallet_balance, total_unrealized_profit,
+  available_balance
+)])
 ```
 
 ```{r futures-positions, eval = TRUE}
