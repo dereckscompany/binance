@@ -49,7 +49,7 @@ test_that("binance_fetch_klines rejects invalid timeframe", {
   )
 })
 
-test_that("binance_fetch_klines returns empty data.table for zero-width range", {
+test_that("binance_fetch_klines returns the typed zero-row OHLCV schema for an empty range", {
   fake_fn <- function(...) stop("Should not be called")
   result <- binance_fetch_klines(
     symbol = "BTCUSDT",
@@ -60,6 +60,11 @@ test_that("binance_fetch_klines returns empty data.table for zero-width range", 
   )
   expect_s3_class(result, "data.table")
   expect_equal(nrow(result), 0L)
+  # The empty range must still carry the full typed OHLCV schema (not a
+  # column-less data.table), so it satisfies get_klines()'s strict @return
+  # contract instead of aborting on assert_has_columns.
+  expect_identical(result, empty_dt_ohlcv())
+  expect_silent(assert_return_BinanceMarketData__get_klines(result))
 })
 
 # -- binance_fetch_klines with mock .req_fn --

@@ -3,6 +3,7 @@
 ## Bug fixes
 
 * **Two over-strict `get_exchange_info()` return contracts rejected real live responses.** The synthetic fixtures hid a divergence the real Binance API exposes: on the spot endpoint every symbol now returns an empty `permissions` array (the data has moved to `permission_sets`), and on the futures endpoint many non-coin / index-style contracts return no `underlyingSubType` — in both cases the parser correctly emits `NA`, but the `@type` contract still asserted no missing values and aborted. Loosened `permissions` (spot) and `underlying_sub_type` (futures) to `character | NA` in the `@return` grammar and regenerated `R/contracts-generated.R`; the parser already round-tripped the empty array to `NA` via `collapse_string_array_fields()`, so no parser change was needed. Surfaced by the public live-integration tests (`BINANCE_LIVE_TESTS=true`) run against the real API.
+* **An empty kline range returned a column-less table and would abort `get_klines()`'s contract.** `binance_fetch_klines()` / `combine_klines()` returned a bare `data.table()` for a zero-width / inverted range or a window with no candles, but `get_klines()`'s `@return` requires the twelve OHLCV columns (`assert_has_columns`), so an empty range aborted instead of returning empty. Both now return the typed zero-row schema via the existing `empty_dt_ohlcv()` constructor; the zero-width-range regression test is upgraded to pin the result to that schema and assert it passes the generated `get_klines` contract.
 
 ## Internal
 

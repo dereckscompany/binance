@@ -72,14 +72,14 @@ binance_fetch_klines <- function(
 
   # Nothing to fetch for a zero-width or inverted range.
   if (from_ms >= to_ms) {
-    return(if (streaming) invisible(NULL) else data.table::data.table()[])
+    return(if (streaming) invisible(NULL) else empty_dt_ohlcv())
   }
 
   # Combine buffered pages: stack, de-dup by open_time, sort ascending.
   combine_klines <- function(results_list) {
     dts <- Filter(function(x) !is.null(x) && nrow(x) > 0L, results_list)
     if (length(dts) == 0L) {
-      return(data.table::data.table()[])
+      return(empty_dt_ohlcv())
     }
     dt <- data.table::rbindlist(dts)
     dt <- unique(dt, by = "open_time")
