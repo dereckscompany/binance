@@ -1,3 +1,10 @@
+# binance 0.5.3
+
+## Internal
+
+* **Table-returning methods with a fixed schema now document their columns as typed nested bullets.** The handful of methods still typed as a bare `(data.table)` despite returning a known, fixed column set are now refined per the cross-package roxyassert convention: each `@return` lists one nested bullet per column carrying that column's element type, which generates an `assert_has_columns()` plus a per-column `assert_<type>()` in `R/contracts-generated.R`. Covered: `BinanceMarketData$get_all_24hr_stats()` (the full 24hr ticker schema, the same columns as `get_24hr_stats()`), `BinanceFuturesData$get_rate_limits()` (`rate_limit_type`, `interval`, `interval_num`, `limit`), the single-row `validated` confirmation returned by `add_order_test()` on both `BinanceFutures` and `BinanceTrading`, and the internal `parse_klines()` OHLCV helper. The genuinely payload-shaped tables (sub-account futures/margin account, locked-earn position, the schemaless exchange-wide filters) keep their bare `(data.table)` contract, as do the generic parsing helpers (`as_dt_row()`, `as_dt_list()`, `coerce_cols()`, `parse_paginated()`) whose columns follow the caller.
+* **`get_all_24hr_stats()`'s empty path returns the typed zero-row schema.** With no symbols the parser previously returned a column-less `data.table`, which would abort the new column contract; it now returns the typed empty `empty_dt_ticker_24hr()` so the schema holds whether or not Binance returns any rows.
+
 # binance 0.5.2
 
 ## Bug fixes

@@ -745,8 +745,29 @@ BinanceMarketData <- R6::R6Class(
     #' ### Official Documentation
     #' [Binance 24hr Ticker Price Change Statistics](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#24hr-ticker-price-change-statistics)
     #'
-    #' @return (data.table | promise<data.table>) one row per symbol, with the
-    #'   same columns as `get_24hr_stats()`.
+    #' @return (data.table | promise<data.table>) one row per symbol, the same
+    #'   columns as `get_24hr_stats()`.
+    #'   - symbol (character) Trading pair identifier.
+    #'   - price_change (character) Absolute price change over 24h.
+    #'   - price_change_percent (character) Percentage price change over 24h.
+    #'   - weighted_avg_price (character) Volume-weighted average price over 24h.
+    #'   - prev_close_price (character) Previous day's closing price.
+    #'   - last_price (character) Most recent trade price.
+    #'   - last_qty (character) Most recent trade quantity.
+    #'   - bid_price (character) Current best bid price.
+    #'   - bid_qty (character) Current best bid quantity.
+    #'   - ask_price (character) Current best ask price.
+    #'   - ask_qty (character) Current best ask quantity.
+    #'   - open_price (character) Price at 24h window open.
+    #'   - high_price (character) Highest price in 24h.
+    #'   - low_price (character) Lowest price in 24h.
+    #'   - volume (character) Total base asset volume in 24h.
+    #'   - quote_volume (character) Total quote asset volume in 24h.
+    #'   - open_time (POSIXct) Start of the 24h window.
+    #'   - close_time (POSIXct) End of the 24h window.
+    #'   - first_id (numeric) First trade ID in the window.
+    #'   - last_id (numeric) Last trade ID in the window.
+    #'   - count (integer) Total number of trades in 24h.
     #'
     #' @examples
     #' \dontrun{
@@ -761,6 +782,9 @@ BinanceMarketData <- R6::R6Class(
         auth = FALSE,
         .parser = function(data) {
           dt <- as_dt_list(data)
+          if (nrow(dt) == 0L) {
+            return(empty_dt_ticker_24hr())
+          }
           coerce_cols(dt, c("open_time", "close_time"), ms_to_datetime)
           # 64-bit trade ids -> numeric so a large id never overflows int32.
           coerce_cols(dt, c("first_id", "last_id"), as.numeric)

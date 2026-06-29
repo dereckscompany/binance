@@ -866,8 +866,31 @@ in a single request.
 }
 
 \subsection{Returns}{
-(data.table | promise<data.table>) one row per symbol, with the
-same columns as \code{get_24hr_stats()}.
+(data.table | promise<data.table>) one row per symbol, the same
+columns as \code{get_24hr_stats()}.
+\itemize{
+\item symbol (character) Trading pair identifier.
+\item price_change (character) Absolute price change over 24h.
+\item price_change_percent (character) Percentage price change over 24h.
+\item weighted_avg_price (character) Volume-weighted average price over 24h.
+\item prev_close_price (character) Previous day's closing price.
+\item last_price (character) Most recent trade price.
+\item last_qty (character) Most recent trade quantity.
+\item bid_price (character) Current best bid price.
+\item bid_qty (character) Current best bid quantity.
+\item ask_price (character) Current best ask price.
+\item ask_qty (character) Current best ask quantity.
+\item open_price (character) Price at 24h window open.
+\item high_price (character) Highest price in 24h.
+\item low_price (character) Lowest price in 24h.
+\item volume (character) Total base asset volume in 24h.
+\item quote_volume (character) Total quote asset volume in 24h.
+\item open_time (POSIXct) Start of the 24h window.
+\item close_time (POSIXct) End of the 24h window.
+\item first_id (numeric) First trade ID in the window.
+\item last_id (numeric) Last trade ID in the window.
+\item count (integer) Total number of trades in 24h.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

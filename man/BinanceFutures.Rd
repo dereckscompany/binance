@@ -607,10 +607,12 @@ Verified: 2026-05-22
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-(data.table | promise<data.table>) a single row with a single
-\code{validated} (logical) column,
-set to \code{TRUE} on success. Binance returns \code{{}} on a successful
-test order; the absence of an error is the validation signal.
+(data.table | promise<data.table>) a single row. Binance returns
+\code{{}} on a successful test order; the absence of an error is the
+validation signal.
+\itemize{
+\item validated (logical) \code{TRUE} on a successful test order.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
