@@ -378,10 +378,10 @@ BinanceFutures <- R6::R6Class(
     #' @param workingType (scalar<character>?) `"MARK_PRICE"` or `"CONTRACT_PRICE"`.
     #' @param newOrderRespType (scalar<character>?) `"ACK"`, `"RESULT"`.
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (data.table | promise<data.table>) a single row with a single
-    #'   `validated` (logical) column,
-    #'   set to `TRUE` on success. Binance returns `{}` on a successful
-    #'   test order; the absence of an error is the validation signal.
+    #' @return (data.table | promise<data.table>) a single row. Binance returns
+    #'   `{}` on a successful test order; the absence of an error is the
+    #'   validation signal.
+    #'   - validated (logical) `TRUE` on a successful test order.
     #'
     #' @examples
     #' \dontrun{

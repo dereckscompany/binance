@@ -331,12 +331,11 @@ BinanceTrading <- R6::R6Class(
     #' @param newOrderRespType (scalar<character>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
     #' @param selfTradePreventionMode (scalar<character>?)
     #' @param recvWindow (scalar<count>?) max 60000.
-    #' @return (data.table | promise<data.table>) a single row with a single
-    #'   `validated` (logical) column,
-    #'   set to `TRUE` on success. Binance returns `{}` on a successful
-    #'   test order — the absence of an error is the validation
-    #'   signal, so we don't fabricate a stub row echoing the request
+    #' @return (data.table | promise<data.table>) a single row. Binance returns
+    #'   `{}` on a successful test order — the absence of an error is the
+    #'   validation signal, so we don't fabricate a stub row echoing the request
     #'   parameters (per the cross-package "no stub rows" convention).
+    #'   - validated (logical) `TRUE` on a successful test order.
     #'
     #' @examples
     #' \dontrun{

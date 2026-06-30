@@ -452,9 +452,16 @@ pattern as \code{BinanceMarketData$get_rate_limits()}.
 }
 
 \subsection{Returns}{
-(data.table | promise<data.table>) one row per rate-limit rule,
-with columns \code{rate_limit_type}, \code{interval}, \code{interval_num}, \code{limit}
-(schemaless empty when Binance returned no \code{rateLimits} block).
+(data.table | promise<data.table>) one row per rate-limit rule
+(empty when Binance returned no \code{rateLimits} block):
+\itemize{
+\item rate_limit_type (character) \code{"REQUEST_WEIGHT"}, \code{"ORDERS"},
+\code{"RAW_REQUESTS"}.
+\item interval (character) \code{"SECOND"}, \code{"MINUTE"}, \code{"DAY"}.
+\item interval_num (integer) Multiplier for \code{interval}.
+\item limit (integer) Maximum requests / orders permitted in the
+interval.
+}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}

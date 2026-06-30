@@ -1421,9 +1421,19 @@ empty_dt_ticker_24hr <- function() {
 #'
 #' @param data (list?) the parsed Binance klines response: a list of 12-element
 #'   candle arrays, or NULL/empty.
-#' @return (data.table) OHLCV candles with snake_case columns (`open_time`,
-#'   `open`, `high`, `low`, `close`, `volume`, `close_time`, `quote_volume`,
-#'   `trades`, `taker_buy_base_volume`, `taker_buy_quote_volume`, `ignore`).
+#' @return (data.table) OHLCV candles with snake_case columns.
+#'   - open_time (POSIXct) Candle open time.
+#'   - open (numeric) Open price.
+#'   - high (numeric) High price.
+#'   - low (numeric) Low price.
+#'   - close (numeric) Close price.
+#'   - volume (numeric) Base asset volume.
+#'   - close_time (POSIXct) Candle close time.
+#'   - quote_volume (numeric) Quote asset volume.
+#'   - trades (integer) Number of trades in the candle.
+#'   - taker_buy_base_volume (numeric) Taker buy base asset volume.
+#'   - taker_buy_quote_volume (numeric) Taker buy quote asset volume.
+#'   - ignore (character) Unused field Binance reserves.
 #'
 #' @importFrom lubridate as_datetime
 #' @keywords internal

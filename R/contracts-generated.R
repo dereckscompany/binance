@@ -819,6 +819,9 @@ assert_args_BinanceFutures__add_order_test <- function(symbol, side, type, quant
 
 assert_return_BinanceFutures__add_order_test <- function(value) {
   assert_data_table(value)
+  assert_has_columns(value, c("validated"))
+  assert_logical(value[["validated"]])
+  assert_no_missing_values(value[["validated"]])
   return(value)
 }
 
@@ -1432,6 +1435,15 @@ assert_return_BinanceFuturesData__get_exchange_info <- function(value) {
 
 assert_return_BinanceFuturesData__get_rate_limits <- function(value) {
   assert_data_table(value)
+  assert_has_columns(value, c("rate_limit_type", "interval", "interval_num", "limit"))
+  assert_character(value[["rate_limit_type"]])
+  assert_no_missing_values(value[["rate_limit_type"]])
+  assert_character(value[["interval"]])
+  assert_no_missing_values(value[["interval"]])
+  assert_integer(value[["interval_num"]])
+  assert_no_missing_values(value[["interval_num"]])
+  assert_integer(value[["limit"]])
+  assert_no_missing_values(value[["limit"]])
   return(value)
 }
 
@@ -2794,6 +2806,49 @@ assert_return_BinanceMarketData__get_24hr_stats <- function(value) {
 
 assert_return_BinanceMarketData__get_all_24hr_stats <- function(value) {
   assert_data_table(value)
+  assert_has_columns(value, c("symbol", "price_change", "price_change_percent", "weighted_avg_price", "prev_close_price", "last_price", "last_qty", "bid_price", "bid_qty", "ask_price", "ask_qty", "open_price", "high_price", "low_price", "volume", "quote_volume", "open_time", "close_time", "first_id", "last_id", "count"))
+  assert_character(value[["symbol"]])
+  assert_no_missing_values(value[["symbol"]])
+  assert_character(value[["price_change"]])
+  assert_no_missing_values(value[["price_change"]])
+  assert_character(value[["price_change_percent"]])
+  assert_no_missing_values(value[["price_change_percent"]])
+  assert_character(value[["weighted_avg_price"]])
+  assert_no_missing_values(value[["weighted_avg_price"]])
+  assert_character(value[["prev_close_price"]])
+  assert_no_missing_values(value[["prev_close_price"]])
+  assert_character(value[["last_price"]])
+  assert_no_missing_values(value[["last_price"]])
+  assert_character(value[["last_qty"]])
+  assert_no_missing_values(value[["last_qty"]])
+  assert_character(value[["bid_price"]])
+  assert_no_missing_values(value[["bid_price"]])
+  assert_character(value[["bid_qty"]])
+  assert_no_missing_values(value[["bid_qty"]])
+  assert_character(value[["ask_price"]])
+  assert_no_missing_values(value[["ask_price"]])
+  assert_character(value[["ask_qty"]])
+  assert_no_missing_values(value[["ask_qty"]])
+  assert_character(value[["open_price"]])
+  assert_no_missing_values(value[["open_price"]])
+  assert_character(value[["high_price"]])
+  assert_no_missing_values(value[["high_price"]])
+  assert_character(value[["low_price"]])
+  assert_no_missing_values(value[["low_price"]])
+  assert_character(value[["volume"]])
+  assert_no_missing_values(value[["volume"]])
+  assert_character(value[["quote_volume"]])
+  assert_no_missing_values(value[["quote_volume"]])
+  assert_datetime(value[["open_time"]])
+  assert_no_missing_values(value[["open_time"]])
+  assert_datetime(value[["close_time"]])
+  assert_no_missing_values(value[["close_time"]])
+  assert_double(value[["first_id"]])
+  assert_no_missing_values(value[["first_id"]])
+  assert_double(value[["last_id"]])
+  assert_no_missing_values(value[["last_id"]])
+  assert_integer(value[["count"]])
+  assert_no_missing_values(value[["count"]])
   return(value)
 }
 
@@ -3574,6 +3629,9 @@ assert_args_BinanceTrading__add_order_test <- function(type, symbol, side, quant
 
 assert_return_BinanceTrading__add_order_test <- function(value) {
   assert_data_table(value)
+  assert_has_columns(value, c("validated"))
+  assert_logical(value[["validated"]])
+  assert_no_missing_values(value[["validated"]])
   return(value)
 }
 
@@ -4237,6 +4295,31 @@ assert_args_parse_klines <- function(data) {
 
 assert_return_parse_klines <- function(value) {
   assert_data_table(value)
+  assert_has_columns(value, c("open_time", "open", "high", "low", "close", "volume", "close_time", "quote_volume", "trades", "taker_buy_base_volume", "taker_buy_quote_volume", "ignore"))
+  assert_datetime(value[["open_time"]])
+  assert_no_missing_values(value[["open_time"]])
+  assert_double(value[["open"]])
+  assert_no_missing_values(value[["open"]])
+  assert_double(value[["high"]])
+  assert_no_missing_values(value[["high"]])
+  assert_double(value[["low"]])
+  assert_no_missing_values(value[["low"]])
+  assert_double(value[["close"]])
+  assert_no_missing_values(value[["close"]])
+  assert_double(value[["volume"]])
+  assert_no_missing_values(value[["volume"]])
+  assert_datetime(value[["close_time"]])
+  assert_no_missing_values(value[["close_time"]])
+  assert_double(value[["quote_volume"]])
+  assert_no_missing_values(value[["quote_volume"]])
+  assert_integer(value[["trades"]])
+  assert_no_missing_values(value[["trades"]])
+  assert_double(value[["taker_buy_base_volume"]])
+  assert_no_missing_values(value[["taker_buy_base_volume"]])
+  assert_double(value[["taker_buy_quote_volume"]])
+  assert_no_missing_values(value[["taker_buy_quote_volume"]])
+  assert_character(value[["ignore"]])
+  assert_no_missing_values(value[["ignore"]])
   return(value)
 }
 

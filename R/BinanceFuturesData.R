@@ -295,9 +295,14 @@ BinanceFuturesData <- R6::R6Class(
     #' ### API Endpoint
     #' `GET https://fapi.binance.com/fapi/v1/exchangeInfo`
     #'
-    #' @return (data.table | promise<data.table>) one row per rate-limit rule,
-    #'   with columns `rate_limit_type`, `interval`, `interval_num`, `limit`
-    #'   (schemaless empty when Binance returned no `rateLimits` block).
+    #' @return (data.table | promise<data.table>) one row per rate-limit rule
+    #'   (empty when Binance returned no `rateLimits` block):
+    #'   - rate_limit_type (character) `"REQUEST_WEIGHT"`, `"ORDERS"`,
+    #'     `"RAW_REQUESTS"`.
+    #'   - interval (character) `"SECOND"`, `"MINUTE"`, `"DAY"`.
+    #'   - interval_num (integer) Multiplier for `interval`.
+    #'   - limit (integer) Maximum requests / orders permitted in the
+    #'     interval.
     #'
     #' @examples
     #' \dontrun{
@@ -311,7 +316,7 @@ BinanceFuturesData <- R6::R6Class(
         .parser = function(data) {
           rl <- data$rateLimits
           if (is.null(rl) || length(rl) == 0L) {
-            return(data.table::data.table()[])
+            return(empty_dt_rate_limit())
           }
           return(as_dt_list(rl)[])
         }
