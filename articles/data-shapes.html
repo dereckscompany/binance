@@ -64,7 +64,7 @@
 Mezquita</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.5.3/vignettes/data-shapes.Rmd" class="external-link"><code>vignettes/data-shapes.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/chore/data-shapes-execute/vignettes/data-shapes.Rmd" class="external-link"><code>vignettes/data-shapes.Rmd</code></a></small>
       <div class="d-none name"><code>data-shapes.Rmd</code></div>
     </div>
 
@@ -1235,18 +1235,68 @@ displays the whole list, collapse with <code>;</code> into a single
 character column. Filter with <code>grepl</code>, recover the original
 vector with <code>strsplit(x, ";", fixed = TRUE)[[1]]</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">market</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/BinanceMarketData.html">BinanceMarketData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">info</span> <span class="op">&lt;-</span> <span class="va">market</span><span class="op">$</span><span class="fu">get_exchange_info</span><span class="op">(</span><span class="st">"BTCUSDT"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="va">market</span><span class="op">$</span><span class="fu">get_exchange_info</span><span class="op">(</span><span class="st">"BTCUSDT"</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># An array of plain strings, collapsed into one `;`-separated column:</span></span>
 <span><span class="va">info</span><span class="op">$</span><span class="va">order_types</span></span>
-<span><span class="co">#&gt; "LIMIT;LIMIT_MAKER;MARKET;STOP_LOSS_LIMIT;TAKE_PROFIT_LIMIT"</span></span>
+<span><span class="co">#&gt; [1] "LIMIT;LIMIT_MAKER;MARKET;STOP_LOSS_LIMIT;TAKE_PROFIT_LIMIT"</span></span>
+<span><span class="co">#&gt; [2] "LIMIT;MARKET"</span></span>
 <span></span>
-<span><span class="co"># Filter</span></span>
+<span><span class="co"># Filter with grepl()</span></span>
 <span><span class="va">info</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"MARKET"</span>, <span class="va">order_types</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;     symbol  status base_asset base_asset_precision quote_asset</span></span>
+<span><span class="co">#&gt;     &lt;char&gt;  &lt;char&gt;     &lt;char&gt;                &lt;int&gt;      &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1: BTCUSDT TRADING        BTC                    8        USDT</span></span>
+<span><span class="co">#&gt; 2: ETHUSDT TRADING        ETH                    8        USDT</span></span>
+<span><span class="co">#&gt;    quote_asset_precision quote_precision base_commission_precision</span></span>
+<span><span class="co">#&gt;                    &lt;int&gt;           &lt;int&gt;                     &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:                     8               8                         8</span></span>
+<span><span class="co">#&gt; 2:                     8               8                         8</span></span>
+<span><span class="co">#&gt;    quote_commission_precision</span></span>
+<span><span class="co">#&gt;                         &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:                          8</span></span>
+<span><span class="co">#&gt; 2:                          8</span></span>
+<span><span class="co">#&gt;                                                   order_types iceberg_allowed</span></span>
+<span><span class="co">#&gt;                                                        &lt;char&gt;          &lt;lgcl&gt;</span></span>
+<span><span class="co">#&gt; 1: LIMIT;LIMIT_MAKER;MARKET;STOP_LOSS_LIMIT;TAKE_PROFIT_LIMIT            TRUE</span></span>
+<span><span class="co">#&gt; 2:                                               LIMIT;MARKET           FALSE</span></span>
+<span><span class="co">#&gt;    oco_allowed oto_allowed opo_allowed quote_order_qty_market_allowed</span></span>
+<span><span class="co">#&gt;         &lt;lgcl&gt;      &lt;lgcl&gt;      &lt;lgcl&gt;                         &lt;lgcl&gt;</span></span>
+<span><span class="co">#&gt; 1:        TRUE        TRUE        TRUE                           TRUE</span></span>
+<span><span class="co">#&gt; 2:       FALSE       FALSE       FALSE                           TRUE</span></span>
+<span><span class="co">#&gt;    allow_trailing_stop cancel_replace_allowed amend_allowed</span></span>
+<span><span class="co">#&gt;                 &lt;lgcl&gt;                 &lt;lgcl&gt;        &lt;lgcl&gt;</span></span>
+<span><span class="co">#&gt; 1:                TRUE                   TRUE          TRUE</span></span>
+<span><span class="co">#&gt; 2:               FALSE                  FALSE         FALSE</span></span>
+<span><span class="co">#&gt;    peg_instructions_allowed is_spot_trading_allowed is_margin_trading_allowed</span></span>
+<span><span class="co">#&gt;                      &lt;lgcl&gt;                  &lt;lgcl&gt;                    &lt;lgcl&gt;</span></span>
+<span><span class="co">#&gt; 1:                     TRUE                    TRUE                      TRUE</span></span>
+<span><span class="co">#&gt; 2:                    FALSE                    TRUE                     FALSE</span></span>
+<span><span class="co">#&gt;    permissions                   permission_sets</span></span>
+<span><span class="co">#&gt;         &lt;char&gt;                            &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1: SPOT;MARGIN [["SPOT","MARGIN","TRD_GRP_004"]]</span></span>
+<span><span class="co">#&gt; 2:        SPOT                              &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;    default_self_trade_prevention_mode   allowed_self_trade_prevention_modes</span></span>
+<span><span class="co">#&gt;                                &lt;char&gt;                                &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:                       EXPIRE_MAKER EXPIRE_TAKER;EXPIRE_MAKER;EXPIRE_BOTH</span></span>
+<span><span class="co">#&gt; 2:                               NONE                                  NONE</span></span>
+<span><span class="co">#&gt;    lot_min_qty lot_max_qty lot_step_size price_min price_max price_tick_size</span></span>
+<span><span class="co">#&gt;          &lt;num&gt;       &lt;num&gt;         &lt;num&gt;     &lt;num&gt;     &lt;num&gt;           &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:       1e-05        9000         1e-05      0.01     1e+06            0.01</span></span>
+<span><span class="co">#&gt; 2:          NA          NA            NA      0.01     1e+05            0.01</span></span>
+<span><span class="co">#&gt;    min_notional</span></span>
+<span><span class="co">#&gt;           &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:           NA</span></span>
+<span><span class="co">#&gt; 2:           NA</span></span>
+<span><span class="co">#&gt;                                                                                                                                                                                                 filters_raw</span></span>
+<span><span class="co">#&gt;                                                                                                                                                                                                      &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1: [{"filterType":"PRICE_FILTER","minPrice":"0.01000000","maxPrice":"1000000.00","tickSize":"0.01000000"},{"filterType":"LOT_SIZE","minQty":"0.00001000","maxQty":"9000.00000000","stepSize":"0.00001000"}]</span></span>
+<span><span class="co">#&gt; 2:                                                                                                   [{"filterType":"PRICE_FILTER","minPrice":"0.01000000","maxPrice":"100000.00","tickSize":"0.01000000"}]</span></span>
 <span></span>
-<span><span class="co"># Recover the vector</span></span>
+<span><span class="co"># Recover the original vector</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html" class="external-link">strsplit</a></span><span class="op">(</span><span class="va">info</span><span class="op">$</span><span class="va">order_types</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="st">";"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; "LIMIT" "LIMIT_MAKER" "MARKET" "STOP_LOSS_LIMIT" "TAKE_PROFIT_LIMIT"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "LIMIT"             "LIMIT_MAKER"       "MARKET"           </span></span>
+<span><span class="co">#&gt; [4] "STOP_LOSS_LIMIT"   "TAKE_PROFIT_LIMIT"</span></span></code></pre></div>
 <p>Where this is used: <code>exchange_info</code> (spot + futures) for
 <code>order_types</code>, <code>permissions</code>,
 <code>allowed_self_trade_prevention_modes</code>,
@@ -1267,19 +1317,27 @@ fields), explode to one row per element with parent fields replicated. A
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># `add_order` returns one row per fill, with the order-level fields</span></span>
 <span><span class="co"># replicated. `fill_index` runs 1..N.</span></span>
-<span><span class="va">trading</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/BinanceTrading.html">BinanceTrading</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">order</span> <span class="op">&lt;-</span> <span class="va">trading</span><span class="op">$</span><span class="fu">add_order</span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"MARKET"</span>, symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, side <span class="op">=</span> <span class="st">"BUY"</span>,</span>
 <span>  quantity <span class="op">=</span> <span class="fl">0.0001</span>, newOrderRespType <span class="op">=</span> <span class="st">"FULL"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">order</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">order_id</span>, <span class="va">status</span>, <span class="va">fill_index</span>, <span class="va">fill_price</span>, <span class="va">fill_qty</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;    order_id  status  fill_index  fill_price  fill_qty</span></span>
-<span><span class="co">#&gt; 1: 28        FILLED  1           50000.00    0.00005000</span></span>
-<span><span class="co">#&gt; 2: 28        FILLED  2           50001.00    0.00005000</span></span>
+<span><span class="co">#&gt;    order_id status fill_index     fill_price   fill_qty</span></span>
+<span><span class="co">#&gt;       &lt;num&gt; &lt;char&gt;      &lt;int&gt;         &lt;char&gt;     &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:       28 FILLED          1 50000.00000000 0.00005000</span></span>
+<span><span class="co">#&gt; 2:       28 FILLED          2 50001.00000000 0.00005000</span></span>
 <span></span>
 <span><span class="co"># `get_depth` returns one row per (side, price level).</span></span>
 <span><span class="va">depth</span> <span class="op">&lt;-</span> <span class="va">market</span><span class="op">$</span><span class="fu">get_depth</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="va">depth</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">side</span>, <span class="va">price</span>, <span class="va">size</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<span><span class="va">depth</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">side</span>, <span class="va">price</span>, <span class="va">size</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;      side   price      size</span></span>
+<span><span class="co">#&gt;    &lt;char&gt;   &lt;num&gt;     &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:    bid 67232.8 0.4186184</span></span>
+<span><span class="co">#&gt; 2:    bid 67232.5 1.5000000</span></span>
+<span><span class="co">#&gt; 3:    bid 67230.0 0.8000000</span></span>
+<span><span class="co">#&gt; 4:    ask 67232.9 1.2480899</span></span>
+<span><span class="co">#&gt; 5:    ask 67233.5 0.5000000</span></span>
+<span><span class="co">#&gt; 6:    ask 67235.0 2.1000000</span></span></code></pre></div>
 <p>Where this is used: order <code>fills</code>, OCO
 <code>orderReports</code>, futures account <code>assets</code>, margin
 account <code>userAssets</code>, sub-account
@@ -1297,12 +1355,17 @@ whether the order had fills or not.</p>
 <p>When the field is a single nested object with a known fixed key set,
 flatten it to <code>parent_child</code> columns.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">account</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/BinanceAccount.html">BinanceAccount</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">info</span> <span class="op">&lt;-</span> <span class="va">account</span><span class="op">$</span><span class="fu">get_account_info</span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="va">acct</span><span class="op">$</span><span class="fu">get_account_info</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># `commissionRates` was a nested object — now wide-prefixed.</span></span>
 <span><span class="va">info</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">commission_rates_maker</span>, <span class="va">commission_rates_taker</span>,</span>
-<span>         <span class="va">commission_rates_buyer</span>, <span class="va">commission_rates_seller</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<span>         <span class="va">commission_rates_buyer</span>, <span class="va">commission_rates_seller</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;    commission_rates_maker commission_rates_taker commission_rates_buyer</span></span>
+<span><span class="co">#&gt;                    &lt;char&gt;                 &lt;char&gt;                 &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:             0.00150000             0.00150000             0.00000000</span></span>
+<span><span class="co">#&gt;    commission_rates_seller</span></span>
+<span><span class="co">#&gt;                     &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:              0.00000000</span></span></code></pre></div>
 <p>Where this is used: <code>get_account_info</code>‘s
 <code>commissionRates</code>, Earn <code>get_locked_products</code>’
 <code>detail_*</code> / <code>quota_*</code>, the extracted numeric
@@ -1328,17 +1391,95 @@ via a dedicated sibling method. Every method still returns one
 <span><span class="co"># Binance also returns a `positions` array alongside `assets`; rather</span></span>
 <span><span class="co"># than Cartesian-joining them, `positions` is parsed by the dedicated</span></span>
 <span><span class="co"># method that hits `/fapi/v2/positionRisk`:</span></span>
-<span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/BinanceFutures.html">BinanceFutures</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">acct</span>      <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_account</span><span class="op">(</span><span class="op">)</span>    <span class="co"># one row per asset</span></span>
-<span><span class="va">positions</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_positions</span><span class="op">(</span><span class="op">)</span>  <span class="co"># one row per open position</span></span></code></pre></div>
+<span><span class="va">fut_acct</span>  <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_account</span><span class="op">(</span><span class="op">)</span>    <span class="co"># one row per asset</span></span>
+<span><span class="va">positions</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_positions</span><span class="op">(</span><span class="op">)</span>  <span class="co"># one row per open position</span></span>
+<span><span class="va">fut_acct</span></span>
+<span><span class="co">#&gt;    fee_tier can_trade can_deposit can_withdraw update_time multi_assets_margin</span></span>
+<span><span class="co">#&gt;       &lt;int&gt;    &lt;lgcl&gt;      &lt;lgcl&gt;       &lt;lgcl&gt;       &lt;int&gt;              &lt;lgcl&gt;</span></span>
+<span><span class="co">#&gt; 1:        0      TRUE        TRUE         TRUE           0               FALSE</span></span>
+<span><span class="co">#&gt;    total_initial_margin total_maint_margin total_wallet_balance</span></span>
+<span><span class="co">#&gt;                  &lt;char&gt;             &lt;char&gt;               &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:           0.00000000         0.00000000        1000.00000000</span></span>
+<span><span class="co">#&gt;    total_unrealized_profit total_margin_balance total_position_initial_margin</span></span>
+<span><span class="co">#&gt;                     &lt;char&gt;               &lt;char&gt;                        &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:              0.00000000        1000.00000000                    0.00000000</span></span>
+<span><span class="co">#&gt;    total_open_order_initial_margin total_cross_wallet_balance</span></span>
+<span><span class="co">#&gt;                             &lt;char&gt;                     &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:                      0.00000000              1000.00000000</span></span>
+<span><span class="co">#&gt;    total_cross_un_pnl available_balance max_withdraw_amount asset_asset</span></span>
+<span><span class="co">#&gt;                &lt;char&gt;            &lt;char&gt;              &lt;char&gt;      &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:         0.00000000     1000.00000000       1000.00000000        USDT</span></span>
+<span><span class="co">#&gt;    asset_wallet_balance asset_unrealized_profit asset_margin_balance</span></span>
+<span><span class="co">#&gt;                  &lt;char&gt;                  &lt;char&gt;               &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:        1000.00000000              0.00000000        1000.00000000</span></span>
+<span><span class="co">#&gt;    asset_maint_margin asset_initial_margin asset_position_initial_margin</span></span>
+<span><span class="co">#&gt;                &lt;char&gt;               &lt;char&gt;                        &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:         0.00000000           0.00000000                    0.00000000</span></span>
+<span><span class="co">#&gt;    asset_open_order_initial_margin asset_cross_wallet_balance</span></span>
+<span><span class="co">#&gt;                             &lt;char&gt;                     &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:                      0.00000000              1000.00000000</span></span>
+<span><span class="co">#&gt;    asset_cross_un_pnl asset_available_balance asset_max_withdraw_amount</span></span>
+<span><span class="co">#&gt;                &lt;char&gt;                  &lt;char&gt;                    &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:         0.00000000           1000.00000000             1000.00000000</span></span>
+<span><span class="co">#&gt;    asset_margin_available asset_update_time</span></span>
+<span><span class="co">#&gt;                    &lt;lgcl&gt;             &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:                   TRUE                 0</span></span></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># `/exchangeInfo` bundles per-symbol rows + exchange-wide rate-limit</span></span>
 <span><span class="co"># rules + exchange-wide filter rules. Per-symbol stays on the main</span></span>
 <span><span class="co"># method; the rest moves to siblings.</span></span>
-<span><span class="va">market</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/BinanceMarketData.html">BinanceMarketData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">info</span>        <span class="op">&lt;-</span> <span class="va">market</span><span class="op">$</span><span class="fu">get_exchange_info</span><span class="op">(</span><span class="op">)</span>       <span class="co"># one row per symbol</span></span>
 <span><span class="va">rate_limits</span> <span class="op">&lt;-</span> <span class="va">market</span><span class="op">$</span><span class="fu">get_rate_limits</span><span class="op">(</span><span class="op">)</span>         <span class="co"># one row per rate-limit rule</span></span>
-<span><span class="va">ex_filters</span>  <span class="op">&lt;-</span> <span class="va">market</span><span class="op">$</span><span class="fu">get_exchange_filters</span><span class="op">(</span><span class="op">)</span>    <span class="co"># one row per exchange-wide filter (usually empty)</span></span></code></pre></div>
+<span><span class="va">ex_filters</span>  <span class="op">&lt;-</span> <span class="va">market</span><span class="op">$</span><span class="fu">get_exchange_filters</span><span class="op">(</span><span class="op">)</span>    <span class="co"># one row per exchange-wide filter (usually empty)</span></span>
+<span><span class="va">info</span></span>
+<span><span class="co">#&gt;     symbol  status base_asset base_asset_precision quote_asset</span></span>
+<span><span class="co">#&gt;     &lt;char&gt;  &lt;char&gt;     &lt;char&gt;                &lt;int&gt;      &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1: BTCUSDT TRADING        BTC                    8        USDT</span></span>
+<span><span class="co">#&gt; 2: ETHUSDT TRADING        ETH                    8        USDT</span></span>
+<span><span class="co">#&gt;    quote_asset_precision quote_precision base_commission_precision</span></span>
+<span><span class="co">#&gt;                    &lt;int&gt;           &lt;int&gt;                     &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:                     8               8                         8</span></span>
+<span><span class="co">#&gt; 2:                     8               8                         8</span></span>
+<span><span class="co">#&gt;    quote_commission_precision</span></span>
+<span><span class="co">#&gt;                         &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:                          8</span></span>
+<span><span class="co">#&gt; 2:                          8</span></span>
+<span><span class="co">#&gt;                                                   order_types iceberg_allowed</span></span>
+<span><span class="co">#&gt;                                                        &lt;char&gt;          &lt;lgcl&gt;</span></span>
+<span><span class="co">#&gt; 1: LIMIT;LIMIT_MAKER;MARKET;STOP_LOSS_LIMIT;TAKE_PROFIT_LIMIT            TRUE</span></span>
+<span><span class="co">#&gt; 2:                                               LIMIT;MARKET           FALSE</span></span>
+<span><span class="co">#&gt;    oco_allowed oto_allowed opo_allowed quote_order_qty_market_allowed</span></span>
+<span><span class="co">#&gt;         &lt;lgcl&gt;      &lt;lgcl&gt;      &lt;lgcl&gt;                         &lt;lgcl&gt;</span></span>
+<span><span class="co">#&gt; 1:        TRUE        TRUE        TRUE                           TRUE</span></span>
+<span><span class="co">#&gt; 2:       FALSE       FALSE       FALSE                           TRUE</span></span>
+<span><span class="co">#&gt;    allow_trailing_stop cancel_replace_allowed amend_allowed</span></span>
+<span><span class="co">#&gt;                 &lt;lgcl&gt;                 &lt;lgcl&gt;        &lt;lgcl&gt;</span></span>
+<span><span class="co">#&gt; 1:                TRUE                   TRUE          TRUE</span></span>
+<span><span class="co">#&gt; 2:               FALSE                  FALSE         FALSE</span></span>
+<span><span class="co">#&gt;    peg_instructions_allowed is_spot_trading_allowed is_margin_trading_allowed</span></span>
+<span><span class="co">#&gt;                      &lt;lgcl&gt;                  &lt;lgcl&gt;                    &lt;lgcl&gt;</span></span>
+<span><span class="co">#&gt; 1:                     TRUE                    TRUE                      TRUE</span></span>
+<span><span class="co">#&gt; 2:                    FALSE                    TRUE                     FALSE</span></span>
+<span><span class="co">#&gt;    permissions                   permission_sets</span></span>
+<span><span class="co">#&gt;         &lt;char&gt;                            &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1: SPOT;MARGIN [["SPOT","MARGIN","TRD_GRP_004"]]</span></span>
+<span><span class="co">#&gt; 2:        SPOT                              &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;    default_self_trade_prevention_mode   allowed_self_trade_prevention_modes</span></span>
+<span><span class="co">#&gt;                                &lt;char&gt;                                &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:                       EXPIRE_MAKER EXPIRE_TAKER;EXPIRE_MAKER;EXPIRE_BOTH</span></span>
+<span><span class="co">#&gt; 2:                               NONE                                  NONE</span></span>
+<span><span class="co">#&gt;    lot_min_qty lot_max_qty lot_step_size price_min price_max price_tick_size</span></span>
+<span><span class="co">#&gt;          &lt;num&gt;       &lt;num&gt;         &lt;num&gt;     &lt;num&gt;     &lt;num&gt;           &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:       1e-05        9000         1e-05      0.01     1e+06            0.01</span></span>
+<span><span class="co">#&gt; 2:          NA          NA            NA      0.01     1e+05            0.01</span></span>
+<span><span class="co">#&gt;    min_notional</span></span>
+<span><span class="co">#&gt;           &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:           NA</span></span>
+<span><span class="co">#&gt; 2:           NA</span></span>
+<span><span class="co">#&gt;                                                                                                                                                                                                 filters_raw</span></span>
+<span><span class="co">#&gt;                                                                                                                                                                                                      &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1: [{"filterType":"PRICE_FILTER","minPrice":"0.01000000","maxPrice":"1000000.00","tickSize":"0.01000000"},{"filterType":"LOT_SIZE","minQty":"0.00001000","maxQty":"9000.00000000","stepSize":"0.00001000"}]</span></span>
+<span><span class="co">#&gt; 2:                                                                                                   [{"filterType":"PRICE_FILTER","minPrice":"0.01000000","maxPrice":"100000.00","tickSize":"0.01000000"}]</span></span></code></pre></div>
 <p>The cases:</p>
 <ul>
 <li>
@@ -1375,25 +1516,34 @@ string; recover with <code><a href="https://jeroen.r-universe.dev/jsonlite/refer
 <span><span class="co"># the same `"A;B"`, losing the grouping.</span></span>
 <span><span class="va">info</span> <span class="op">&lt;-</span> <span class="va">market</span><span class="op">$</span><span class="fu">get_exchange_info</span><span class="op">(</span><span class="st">"BTCUSDT"</span><span class="op">)</span></span>
 <span><span class="va">info</span><span class="op">$</span><span class="va">permission_sets</span></span>
-<span><span class="co">#&gt; '[["SPOT","MARGIN","TRD_GRP_004", ...]]'</span></span>
+<span><span class="co">#&gt; [1] "[[\"SPOT\",\"MARGIN\",\"TRD_GRP_004\"]]"</span></span>
+<span><span class="co">#&gt; [2] NA</span></span>
 <span></span>
 <span><span class="co"># Recover the structure</span></span>
 <span><span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html" class="external-link">fromJSON</a></span><span class="op">(</span><span class="va">info</span><span class="op">$</span><span class="va">permission_sets</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, simplifyVector <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [[1]][[1]] "SPOT"</span></span>
-<span><span class="co">#&gt; [[1]][[2]] "MARGIN"</span></span>
-<span><span class="co">#&gt; [[1]][[3]] "TRD_GRP_004"</span></span></code></pre></div>
+<span><span class="co">#&gt; [[1]][[1]]</span></span>
+<span><span class="co">#&gt; [1] "SPOT"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[1]][[2]]</span></span>
+<span><span class="co">#&gt; [1] "MARGIN"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[1]][[3]]</span></span>
+<span><span class="co">#&gt; [1] "TRD_GRP_004"</span></span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Earn `tierAnnualPercentageRate` has dynamic keys per product</span></span>
 <span><span class="co"># (different size tiers).</span></span>
-<span><span class="va">earn</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/BinanceEarn.html">BinanceEarn</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">products</span> <span class="op">&lt;-</span> <span class="va">earn</span><span class="op">$</span><span class="fu">get_flexible_products</span><span class="op">(</span>asset <span class="op">=</span> <span class="st">"USDT"</span><span class="op">)</span></span>
 <span><span class="va">products</span><span class="op">$</span><span class="va">tier_annual_percentage_rate</span></span>
-<span><span class="co">#&gt; '{"0-5BTC":0.05,"5-10BTC":0.03}'</span></span>
+<span><span class="co">#&gt; [1] "{\"0-5BTC\":0.05,\"5-10BTC\":0.03}"</span></span>
 <span></span>
 <span><span class="va">tiers</span> <span class="op">&lt;-</span> <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html" class="external-link">fromJSON</a></span><span class="op">(</span><span class="va">products</span><span class="op">$</span><span class="va">tier_annual_percentage_rate</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="va">tiers</span><span class="op">$</span><span class="va">`0-5BTC`</span></span>
-<span><span class="co">#&gt; 0.05</span></span></code></pre></div>
+<span><span class="va">tiers</span></span>
+<span><span class="co">#&gt; $`0-5BTC`</span></span>
+<span><span class="co">#&gt; [1] 0.05</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $`5-10BTC`</span></span>
+<span><span class="co">#&gt; [1] 0.03</span></span></code></pre></div>
 <p>Where this is used: spot <code>exchangeInfo</code>
 <code>permission_sets</code>, Earn <code>get_flexible_products</code> /
 <code>get_flexible_position</code>’s

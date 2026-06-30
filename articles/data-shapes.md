@@ -407,18 +407,68 @@ column. Filter with `grepl`, recover the original vector with
 
 ``` r
 
-market <- BinanceMarketData$new()
 info <- market$get_exchange_info("BTCUSDT")
 
+# An array of plain strings, collapsed into one `;`-separated column:
 info$order_types
-#> "LIMIT;LIMIT_MAKER;MARKET;STOP_LOSS_LIMIT;TAKE_PROFIT_LIMIT"
+#> [1] "LIMIT;LIMIT_MAKER;MARKET;STOP_LOSS_LIMIT;TAKE_PROFIT_LIMIT"
+#> [2] "LIMIT;MARKET"
 
-# Filter
+# Filter with grepl()
 info[grepl("MARKET", order_types)]
+#>     symbol  status base_asset base_asset_precision quote_asset
+#>     <char>  <char>     <char>                <int>      <char>
+#> 1: BTCUSDT TRADING        BTC                    8        USDT
+#> 2: ETHUSDT TRADING        ETH                    8        USDT
+#>    quote_asset_precision quote_precision base_commission_precision
+#>                    <int>           <int>                     <int>
+#> 1:                     8               8                         8
+#> 2:                     8               8                         8
+#>    quote_commission_precision
+#>                         <int>
+#> 1:                          8
+#> 2:                          8
+#>                                                   order_types iceberg_allowed
+#>                                                        <char>          <lgcl>
+#> 1: LIMIT;LIMIT_MAKER;MARKET;STOP_LOSS_LIMIT;TAKE_PROFIT_LIMIT            TRUE
+#> 2:                                               LIMIT;MARKET           FALSE
+#>    oco_allowed oto_allowed opo_allowed quote_order_qty_market_allowed
+#>         <lgcl>      <lgcl>      <lgcl>                         <lgcl>
+#> 1:        TRUE        TRUE        TRUE                           TRUE
+#> 2:       FALSE       FALSE       FALSE                           TRUE
+#>    allow_trailing_stop cancel_replace_allowed amend_allowed
+#>                 <lgcl>                 <lgcl>        <lgcl>
+#> 1:                TRUE                   TRUE          TRUE
+#> 2:               FALSE                  FALSE         FALSE
+#>    peg_instructions_allowed is_spot_trading_allowed is_margin_trading_allowed
+#>                      <lgcl>                  <lgcl>                    <lgcl>
+#> 1:                     TRUE                    TRUE                      TRUE
+#> 2:                    FALSE                    TRUE                     FALSE
+#>    permissions                   permission_sets
+#>         <char>                            <char>
+#> 1: SPOT;MARGIN [["SPOT","MARGIN","TRD_GRP_004"]]
+#> 2:        SPOT                              <NA>
+#>    default_self_trade_prevention_mode   allowed_self_trade_prevention_modes
+#>                                <char>                                <char>
+#> 1:                       EXPIRE_MAKER EXPIRE_TAKER;EXPIRE_MAKER;EXPIRE_BOTH
+#> 2:                               NONE                                  NONE
+#>    lot_min_qty lot_max_qty lot_step_size price_min price_max price_tick_size
+#>          <num>       <num>         <num>     <num>     <num>           <num>
+#> 1:       1e-05        9000         1e-05      0.01     1e+06            0.01
+#> 2:          NA          NA            NA      0.01     1e+05            0.01
+#>    min_notional
+#>           <num>
+#> 1:           NA
+#> 2:           NA
+#>                                                                                                                                                                                                 filters_raw
+#>                                                                                                                                                                                                      <char>
+#> 1: [{"filterType":"PRICE_FILTER","minPrice":"0.01000000","maxPrice":"1000000.00","tickSize":"0.01000000"},{"filterType":"LOT_SIZE","minQty":"0.00001000","maxQty":"9000.00000000","stepSize":"0.00001000"}]
+#> 2:                                                                                                   [{"filterType":"PRICE_FILTER","minPrice":"0.01000000","maxPrice":"100000.00","tickSize":"0.01000000"}]
 
-# Recover the vector
+# Recover the original vector
 strsplit(info$order_types[1], ";", fixed = TRUE)[[1]]
-#> "LIMIT" "LIMIT_MAKER" "MARKET" "STOP_LOSS_LIMIT" "TAKE_PROFIT_LIMIT"
+#> [1] "LIMIT"             "LIMIT_MAKER"       "MARKET"           
+#> [4] "STOP_LOSS_LIMIT"   "TAKE_PROFIT_LIMIT"
 ```
 
 Where this is used: `exchange_info` (spot + futures) for `order_types`,
@@ -441,19 +491,27 @@ fields), explode to one row per element with parent fields replicated. A
 
 # `add_order` returns one row per fill, with the order-level fields
 # replicated. `fill_index` runs 1..N.
-trading <- BinanceTrading$new()
 order <- trading$add_order(
   type = "MARKET", symbol = "BTCUSDT", side = "BUY",
   quantity = 0.0001, newOrderRespType = "FULL"
 )
 order[, .(order_id, status, fill_index, fill_price, fill_qty)]
-#>    order_id  status  fill_index  fill_price  fill_qty
-#> 1: 28        FILLED  1           50000.00    0.00005000
-#> 2: 28        FILLED  2           50001.00    0.00005000
+#>    order_id status fill_index     fill_price   fill_qty
+#>       <num> <char>      <int>         <char>     <char>
+#> 1:       28 FILLED          1 50000.00000000 0.00005000
+#> 2:       28 FILLED          2 50001.00000000 0.00005000
 
 # `get_depth` returns one row per (side, price level).
 depth <- market$get_depth("BTCUSDT", limit = 5)
 depth[, .(side, price, size)]
+#>      side   price      size
+#>    <char>   <num>     <num>
+#> 1:    bid 67232.8 0.4186184
+#> 2:    bid 67232.5 1.5000000
+#> 3:    bid 67230.0 0.8000000
+#> 4:    ask 67232.9 1.2480899
+#> 5:    ask 67233.5 0.5000000
+#> 6:    ask 67235.0 2.1000000
 ```
 
 Where this is used: order `fills`, OCO `orderReports`, futures account
@@ -473,12 +531,17 @@ flatten it to `parent_child` columns.
 
 ``` r
 
-account <- BinanceAccount$new()
-info <- account$get_account_info()
+info <- acct$get_account_info()
 
 # `commissionRates` was a nested object — now wide-prefixed.
 info[, .(commission_rates_maker, commission_rates_taker,
          commission_rates_buyer, commission_rates_seller)]
+#>    commission_rates_maker commission_rates_taker commission_rates_buyer
+#>                    <char>                 <char>                 <char>
+#> 1:             0.00150000             0.00150000             0.00000000
+#>    commission_rates_seller
+#>                     <char>
+#> 1:              0.00000000
 ```
 
 Where this is used: `get_account_info`‘s `commissionRates`, Earn
@@ -502,9 +565,39 @@ method. Every method still returns one `data.table`; no data is lost.
 # Binance also returns a `positions` array alongside `assets`; rather
 # than Cartesian-joining them, `positions` is parsed by the dedicated
 # method that hits `/fapi/v2/positionRisk`:
-futures <- BinanceFutures$new()
-acct      <- futures$get_account()    # one row per asset
+fut_acct  <- futures$get_account()    # one row per asset
 positions <- futures$get_positions()  # one row per open position
+fut_acct
+#>    fee_tier can_trade can_deposit can_withdraw update_time multi_assets_margin
+#>       <int>    <lgcl>      <lgcl>       <lgcl>       <int>              <lgcl>
+#> 1:        0      TRUE        TRUE         TRUE           0               FALSE
+#>    total_initial_margin total_maint_margin total_wallet_balance
+#>                  <char>             <char>               <char>
+#> 1:           0.00000000         0.00000000        1000.00000000
+#>    total_unrealized_profit total_margin_balance total_position_initial_margin
+#>                     <char>               <char>                        <char>
+#> 1:              0.00000000        1000.00000000                    0.00000000
+#>    total_open_order_initial_margin total_cross_wallet_balance
+#>                             <char>                     <char>
+#> 1:                      0.00000000              1000.00000000
+#>    total_cross_un_pnl available_balance max_withdraw_amount asset_asset
+#>                <char>            <char>              <char>      <char>
+#> 1:         0.00000000     1000.00000000       1000.00000000        USDT
+#>    asset_wallet_balance asset_unrealized_profit asset_margin_balance
+#>                  <char>                  <char>               <char>
+#> 1:        1000.00000000              0.00000000        1000.00000000
+#>    asset_maint_margin asset_initial_margin asset_position_initial_margin
+#>                <char>               <char>                        <char>
+#> 1:         0.00000000           0.00000000                    0.00000000
+#>    asset_open_order_initial_margin asset_cross_wallet_balance
+#>                             <char>                     <char>
+#> 1:                      0.00000000              1000.00000000
+#>    asset_cross_un_pnl asset_available_balance asset_max_withdraw_amount
+#>                <char>                  <char>                    <char>
+#> 1:         0.00000000           1000.00000000             1000.00000000
+#>    asset_margin_available asset_update_time
+#>                    <lgcl>             <int>
+#> 1:                   TRUE                 0
 ```
 
 ``` r
@@ -512,10 +605,58 @@ positions <- futures$get_positions()  # one row per open position
 # `/exchangeInfo` bundles per-symbol rows + exchange-wide rate-limit
 # rules + exchange-wide filter rules. Per-symbol stays on the main
 # method; the rest moves to siblings.
-market <- BinanceMarketData$new()
 info        <- market$get_exchange_info()       # one row per symbol
 rate_limits <- market$get_rate_limits()         # one row per rate-limit rule
 ex_filters  <- market$get_exchange_filters()    # one row per exchange-wide filter (usually empty)
+info
+#>     symbol  status base_asset base_asset_precision quote_asset
+#>     <char>  <char>     <char>                <int>      <char>
+#> 1: BTCUSDT TRADING        BTC                    8        USDT
+#> 2: ETHUSDT TRADING        ETH                    8        USDT
+#>    quote_asset_precision quote_precision base_commission_precision
+#>                    <int>           <int>                     <int>
+#> 1:                     8               8                         8
+#> 2:                     8               8                         8
+#>    quote_commission_precision
+#>                         <int>
+#> 1:                          8
+#> 2:                          8
+#>                                                   order_types iceberg_allowed
+#>                                                        <char>          <lgcl>
+#> 1: LIMIT;LIMIT_MAKER;MARKET;STOP_LOSS_LIMIT;TAKE_PROFIT_LIMIT            TRUE
+#> 2:                                               LIMIT;MARKET           FALSE
+#>    oco_allowed oto_allowed opo_allowed quote_order_qty_market_allowed
+#>         <lgcl>      <lgcl>      <lgcl>                         <lgcl>
+#> 1:        TRUE        TRUE        TRUE                           TRUE
+#> 2:       FALSE       FALSE       FALSE                           TRUE
+#>    allow_trailing_stop cancel_replace_allowed amend_allowed
+#>                 <lgcl>                 <lgcl>        <lgcl>
+#> 1:                TRUE                   TRUE          TRUE
+#> 2:               FALSE                  FALSE         FALSE
+#>    peg_instructions_allowed is_spot_trading_allowed is_margin_trading_allowed
+#>                      <lgcl>                  <lgcl>                    <lgcl>
+#> 1:                     TRUE                    TRUE                      TRUE
+#> 2:                    FALSE                    TRUE                     FALSE
+#>    permissions                   permission_sets
+#>         <char>                            <char>
+#> 1: SPOT;MARGIN [["SPOT","MARGIN","TRD_GRP_004"]]
+#> 2:        SPOT                              <NA>
+#>    default_self_trade_prevention_mode   allowed_self_trade_prevention_modes
+#>                                <char>                                <char>
+#> 1:                       EXPIRE_MAKER EXPIRE_TAKER;EXPIRE_MAKER;EXPIRE_BOTH
+#> 2:                               NONE                                  NONE
+#>    lot_min_qty lot_max_qty lot_step_size price_min price_max price_tick_size
+#>          <num>       <num>         <num>     <num>     <num>           <num>
+#> 1:       1e-05        9000         1e-05      0.01     1e+06            0.01
+#> 2:          NA          NA            NA      0.01     1e+05            0.01
+#>    min_notional
+#>           <num>
+#> 1:           NA
+#> 2:           NA
+#>                                                                                                                                                                                                 filters_raw
+#>                                                                                                                                                                                                      <char>
+#> 1: [{"filterType":"PRICE_FILTER","minPrice":"0.01000000","maxPrice":"1000000.00","tickSize":"0.01000000"},{"filterType":"LOT_SIZE","minQty":"0.00001000","maxQty":"9000.00000000","stepSize":"0.00001000"}]
+#> 2:                                                                                                   [{"filterType":"PRICE_FILTER","minPrice":"0.01000000","maxPrice":"100000.00","tickSize":"0.01000000"}]
 ```
 
 The cases:
@@ -547,28 +688,37 @@ structure. Serialise the whole field as a JSON string; recover with
 # the same `"A;B"`, losing the grouping.
 info <- market$get_exchange_info("BTCUSDT")
 info$permission_sets
-#> '[["SPOT","MARGIN","TRD_GRP_004", ...]]'
+#> [1] "[[\"SPOT\",\"MARGIN\",\"TRD_GRP_004\"]]"
+#> [2] NA
 
 # Recover the structure
 jsonlite::fromJSON(info$permission_sets[1], simplifyVector = FALSE)
 #> [[1]]
-#> [[1]][[1]] "SPOT"
-#> [[1]][[2]] "MARGIN"
-#> [[1]][[3]] "TRD_GRP_004"
+#> [[1]][[1]]
+#> [1] "SPOT"
+#> 
+#> [[1]][[2]]
+#> [1] "MARGIN"
+#> 
+#> [[1]][[3]]
+#> [1] "TRD_GRP_004"
 ```
 
 ``` r
 
 # Earn `tierAnnualPercentageRate` has dynamic keys per product
 # (different size tiers).
-earn <- BinanceEarn$new()
 products <- earn$get_flexible_products(asset = "USDT")
 products$tier_annual_percentage_rate
-#> '{"0-5BTC":0.05,"5-10BTC":0.03}'
+#> [1] "{\"0-5BTC\":0.05,\"5-10BTC\":0.03}"
 
 tiers <- jsonlite::fromJSON(products$tier_annual_percentage_rate[1])
-tiers$`0-5BTC`
-#> 0.05
+tiers
+#> $`0-5BTC`
+#> [1] 0.05
+#> 
+#> $`5-10BTC`
+#> [1] 0.03
 ```
 
 Where this is used: spot `exchangeInfo` `permission_sets`, Earn
