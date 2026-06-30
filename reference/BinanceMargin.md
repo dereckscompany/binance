@@ -38,25 +38,25 @@ Trading](https://developers.binance.com/docs/margin_trading/Introduction)
 
 ### Endpoints Covered
 
-|                               |                                                 |        |
-|-------------------------------|-------------------------------------------------|--------|
-| Method                        | Endpoint                                        | HTTP   |
-| add_borrow                    | POST /sapi/v1/margin/borrow-repay (type=BORROW) | POST   |
-| add_repay                     | POST /sapi/v1/margin/borrow-repay (type=REPAY)  | POST   |
-| add_order                     | POST /sapi/v1/margin/order                      | POST   |
-| cancel_order                  | DELETE /sapi/v1/margin/order                    | DELETE |
-| cancel_all_orders             | DELETE /sapi/v1/margin/openOrders               | DELETE |
-| get_order                     | GET /sapi/v1/margin/order                       | GET    |
-| get_open_orders               | GET /sapi/v1/margin/openOrders                  | GET    |
-| get_all_orders                | GET /sapi/v1/margin/allOrders                   | GET    |
-| get_account                   | GET /sapi/v1/margin/account                     | GET    |
-| get_max_borrowable            | GET /sapi/v1/margin/maxBorrowable               | GET    |
-| get_max_transferable          | GET /sapi/v1/margin/maxTransferable             | GET    |
-| get_interest_history          | GET /sapi/v1/margin/interestHistory             | GET    |
-| get_force_liquidation_history | GET /sapi/v1/margin/forceLiquidationRec         | GET    |
-| get_trades                    | GET /sapi/v1/margin/myTrades                    | GET    |
-| get_isolated_account          | GET /sapi/v1/margin/isolated/account            | GET    |
-| add_isolated_transfer         | POST /sapi/v1/margin/isolated/transfer          | POST   |
+|  |  |  |
+|----|----|----|
+| Method | Endpoint | HTTP |
+| add_borrow | POST /sapi/v1/margin/borrow-repay (type=BORROW) | POST |
+| add_repay | POST /sapi/v1/margin/borrow-repay (type=REPAY) | POST |
+| add_order | POST /sapi/v1/margin/order | POST |
+| cancel_order | DELETE /sapi/v1/margin/order | DELETE |
+| cancel_all_orders | DELETE /sapi/v1/margin/openOrders | DELETE |
+| get_order | GET /sapi/v1/margin/order | GET |
+| get_open_orders | GET /sapi/v1/margin/openOrders | GET |
+| get_all_orders | GET /sapi/v1/margin/allOrders | GET |
+| get_account | GET /sapi/v1/margin/account | GET |
+| get_max_borrowable | GET /sapi/v1/margin/maxBorrowable | GET |
+| get_max_transferable | GET /sapi/v1/margin/maxTransferable | GET |
+| get_interest_history | GET /sapi/v1/margin/interestHistory | GET |
+| get_force_liquidation_history | GET /sapi/v1/margin/forceLiquidationRec | GET |
+| get_trades | GET /sapi/v1/margin/myTrades | GET |
+| get_isolated_account | GET /sapi/v1/margin/isolated/account | GET |
+| add_isolated_transfer | POST /sapi/v1/margin/isolated/transfer | POST |
 
 ## Order Types
 
@@ -78,8 +78,10 @@ Trading](https://developers.binance.com/docs/margin_trading/Introduction)
 
 - `"AUTO_REPAY"`: Margin trade order with auto-repay.
 
-## Super class
+## Super classes
 
+[`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
+-\>
 [`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceMargin`
 
@@ -143,7 +145,7 @@ consolidated borrow-repay endpoint with `type = "BORROW"`.
 [Binance Margin
 Borrow-Repay](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -179,30 +181,31 @@ Verified: 2026-03-10
 
 - `asset`:
 
-  Character; asset to borrow (e.g., `"USDT"`).
+  (scalar\<character\>) asset to borrow (e.g., `"USDT"`).
 
 - `amount`:
 
-  Numeric; amount to borrow.
+  (scalar\<numeric\>) amount to borrow.
 
 - `isIsolated`:
 
-  Character; `"TRUE"` or `"FALSE"` for isolated margin. Default
-  `"FALSE"`.
+  (scalar\<character\>) `"TRUE"` or `"FALSE"` for isolated margin.
+  Default `"FALSE"`.
 
 - `symbol`:
 
-  Character or NULL; required when `isIsolated = "TRUE"`.
+  (scalar\<character\>?) required when `isIsolated = "TRUE"`.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and the following columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `tran_id` (integer): Transaction identifier.
+- tran_id (numeric) Transaction identifier (a large integer that
+  overflows R's 32-bit `integer`, so it is coerced to a double).
 
 #### Examples
 
@@ -230,7 +233,7 @@ consolidated borrow-repay endpoint with `type = "REPAY"`.
 [Binance Margin
 Borrow-Repay](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Margin-Account-Borrow-Repay)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -266,30 +269,31 @@ Verified: 2026-03-10
 
 - `asset`:
 
-  Character; asset to repay (e.g., `"USDT"`).
+  (scalar\<character\>) asset to repay (e.g., `"USDT"`).
 
 - `amount`:
 
-  Numeric; amount to repay.
+  (scalar\<numeric\>) amount to repay.
 
 - `isIsolated`:
 
-  Character; `"TRUE"` or `"FALSE"` for isolated margin. Default
-  `"FALSE"`.
+  (scalar\<character\>) `"TRUE"` or `"FALSE"` for isolated margin.
+  Default `"FALSE"`.
 
 - `symbol`:
 
-  Character or NULL; required when `isIsolated = "TRUE"`.
+  (scalar\<character\>?) required when `isIsolated = "TRUE"`.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and the following columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `tran_id` (integer): Transaction identifier.
+- tran_id (numeric) Transaction identifier (a large integer that
+  overflows R's 32-bit `integer`, so it is coerced to a double).
 
 #### Examples
 
@@ -316,7 +320,7 @@ Places a new margin order on Binance.
 [Binance Margin New
 Order](https://developers.binance.com/docs/margin_trading/trade/Margin-Account-New-Order)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -375,83 +379,84 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `side`:
 
-  Character; `"BUY"` or `"SELL"`.
+  (scalar\<character\>) `"BUY"` or `"SELL"`.
 
 - `type`:
 
-  Character; order type: `"LIMIT"`, `"MARKET"`, `"STOP_LOSS"`,
-  `"STOP_LOSS_LIMIT"`, `"TAKE_PROFIT"`, `"TAKE_PROFIT_LIMIT"`,
-  `"LIMIT_MAKER"`.
+  (scalar\<character\>) order type: `"LIMIT"`, `"MARKET"`,
+  `"STOP_LOSS"`, `"STOP_LOSS_LIMIT"`, `"TAKE_PROFIT"`,
+  `"TAKE_PROFIT_LIMIT"`, `"LIMIT_MAKER"`.
 
 - `quantity`:
 
-  Numeric or NULL; base asset quantity.
+  (scalar\<numeric\>?) base asset quantity.
 
 - `quoteOrderQty`:
 
-  Numeric or NULL; quote asset quantity (market orders only).
+  (scalar\<numeric\>?) quote asset quantity (market orders only).
 
 - `price`:
 
-  Numeric or NULL; price for limit orders.
+  (scalar\<numeric\>?) price for limit orders.
 
 - `stopPrice`:
 
-  Numeric or NULL; trigger price for stop orders.
+  (scalar\<numeric\>?) trigger price for stop orders.
 
 - `timeInForce`:
 
-  Character or NULL; `"GTC"`, `"IOC"`, `"FOK"`.
+  (scalar\<character\>?) `"GTC"`, `"IOC"`, `"FOK"`.
 
 - `newClientOrderId`:
 
-  Character or NULL; unique client order ID.
+  (scalar\<character\>?) unique client order ID.
 
 - `newOrderRespType`:
 
-  Character or NULL; `"ACK"`, `"RESULT"`, or `"FULL"`.
+  (scalar\<character\>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
 
 - `sideEffectType`:
 
-  Character or NULL; `"NO_SIDE_EFFECT"`, `"MARGIN_BUY"`, `"AUTO_REPAY"`.
+  (scalar\<character\>?) `"NO_SIDE_EFFECT"`, `"MARGIN_BUY"`,
+  `"AUTO_REPAY"`.
 
 - `isIsolated`:
 
-  Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+  (scalar\<character\>?) `"TRUE"` or `"FALSE"` for isolated margin.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and columns including:
+(data.table \| promise\<data.table\>) one row:
 
-- `symbol` (character): Trading pair.
+- symbol (character) Trading pair.
 
-- `order_id` (integer): Unique order identifier.
+- order_id (numeric) Unique order identifier.
 
-- `client_order_id` (character): Client-assigned order ID.
+- client_order_id (character) Client-assigned order ID.
 
-- `transact_time` (POSIXct): Transaction time.
+- transact_time (POSIXct) Transaction time.
 
-- `price` (character): Order price.
+- price (character) Order price.
 
-- `orig_qty` (character): Original requested quantity.
+- orig_qty (character) Original requested quantity.
 
-- `executed_qty` (character): Quantity filled so far.
+- executed_qty (character) Quantity filled so far.
 
-- `status` (character): Order status.
+- status (character) Order status.
 
-- `type` (character): Order type.
+- type (character) Order type.
 
-- `side` (character): `"BUY"` or `"SELL"`.
+- side (character) `"BUY"` or `"SELL"`.
 
-- `is_isolated` (logical): Whether this is an isolated margin order.
+- is_isolated (logical) Whether this is an isolated margin order.
 
 #### Examples
 
@@ -481,7 +486,7 @@ Cancels an active margin order by order ID or client order ID.
 [Binance Margin Cancel
 Order](https://developers.binance.com/docs/margin_trading/trade/Margin-Account-Cancel-Order)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -528,39 +533,39 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `orderId`:
 
-  Integer or NULL; the order ID to cancel.
+  (scalar\<count\>?) the order ID to cancel.
 
 - `origClientOrderId`:
 
-  Character or NULL; the client order ID to cancel.
+  (scalar\<character\>?) the client order ID to cancel.
 
 - `isIsolated`:
 
-  Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+  (scalar\<character\>?) `"TRUE"` or `"FALSE"` for isolated margin.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and columns including:
+(data.table \| promise\<data.table\>) one row:
 
-- `symbol` (character): Trading pair.
+- symbol (character) Trading pair.
 
-- `order_id` (integer): Unique order identifier.
+- order_id (numeric) Unique order identifier.
 
-- `orig_client_order_id` (character): Original client order ID.
+- orig_client_order_id (character) Original client order ID.
 
-- `status` (character): Order status (typically `"CANCELED"`).
+- status (character) Order status (typically `"CANCELED"`).
 
-- `transact_time` (POSIXct): Cancellation time.
+- transact_time (POSIXct) Cancellation time.
 
-- `is_isolated` (logical): Whether this is an isolated margin order.
+- is_isolated (logical) Whether this is an isolated margin order.
 
 #### Examples
 
@@ -587,7 +592,7 @@ Cancels all active margin orders on a trading pair.
 [Binance Margin Cancel All
 Orders](https://developers.binance.com/docs/margin_trading/trade/Margin-Account-Cancel-All-Open-Orders)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -629,38 +634,33 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `isIsolated`:
 
-  Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+  (scalar\<character\>?) `"TRUE"` or `"FALSE"` for isolated margin.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`). When orders
-are cancelled, one row per order with columns:
+(data.table \| promise\<data.table\>) one row per cancelled order (empty
+when there were no open orders to cancel, per the cross-package "no stub
+rows" convention — the absence of an error is the success signal):
 
-- `symbol` (character): Trading pair.
+- symbol (character) Trading pair.
 
-- `order_id` (integer): Unique order identifier.
+- order_id (numeric) Unique order identifier.
 
-- `orig_client_order_id` (character): Original client order ID.
+- orig_client_order_id (character) Original client order ID.
 
-- `status` (character): Order status (typically `"CANCELED"`).
+- status (character) Order status (typically `"CANCELED"`).
 
-- `transact_time` (POSIXct): Cancellation time.
+- transact_time (POSIXct) Cancellation time.
 
-- `is_isolated` (logical): Whether this is an isolated margin order.
-
-When no open orders exist, a single confirmation row with columns:
-
-- `symbol` (character): The requested trading pair.
-
-- `status` (character): `"cancelled"`.
+- is_isolated (logical) Whether this is an isolated margin order.
 
 #### Examples
 
@@ -688,7 +688,7 @@ order ID.
 [Binance Margin Query
 Order](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Order)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -730,51 +730,51 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `orderId`:
 
-  Integer or NULL; the order ID.
+  (scalar\<count\>?) the order ID.
 
 - `origClientOrderId`:
 
-  Character or NULL; the client order ID.
+  (scalar\<character\>?) the client order ID.
 
 - `isIsolated`:
 
-  Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+  (scalar\<character\>?) `"TRUE"` or `"FALSE"` for isolated margin.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and columns including:
+(data.table \| promise\<data.table\>) one row:
 
-- `symbol` (character): Trading pair.
+- symbol (character) Trading pair.
 
-- `order_id` (integer): Unique order identifier.
+- order_id (numeric) Unique order identifier.
 
-- `client_order_id` (character): Client-assigned order ID.
+- client_order_id (character) Client-assigned order ID.
 
-- `price` (character): Order price.
+- price (character) Order price.
 
-- `orig_qty` (character): Original requested quantity.
+- orig_qty (character) Original requested quantity.
 
-- `executed_qty` (character): Quantity filled so far.
+- executed_qty (character) Quantity filled so far.
 
-- `status` (character): Order status.
+- status (character) Order status.
 
-- `type` (character): Order type.
+- type (character) Order type.
 
-- `side` (character): `"BUY"` or `"SELL"`.
+- side (character) `"BUY"` or `"SELL"`.
 
-- `time` (POSIXct): Order creation time.
+- time (POSIXct) Order creation time.
 
-- `update_time` (POSIXct): Last update time.
+- update_time (POSIXct) Last update time.
 
-- `is_isolated` (logical): Whether this is an isolated margin order.
+- is_isolated (logical) Whether this is an isolated margin order.
 
 #### Examples
 
@@ -802,7 +802,7 @@ symbol.
 [Binance Margin Open
 Orders](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Open-Orders)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -844,43 +844,44 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character or NULL; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>?) trading pair (e.g., `"BTCUSDT"`).
 
 - `isIsolated`:
 
-  Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+  (scalar\<character\>?) `"TRUE"` or `"FALSE"` for isolated margin.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per open order and the following columns:
+(data.table \| promise\<data.table\>) one row per open order (empty when
+there are none):
 
-- `symbol` (character): Trading pair.
+- symbol (character) Trading pair.
 
-- `order_id` (integer): Unique order identifier.
+- order_id (numeric) Unique order identifier.
 
-- `client_order_id` (character): Client-assigned order ID.
+- client_order_id (character) Client-assigned order ID.
 
-- `price` (character): Order price.
+- price (character) Order price.
 
-- `orig_qty` (character): Original requested quantity.
+- orig_qty (character) Original requested quantity.
 
-- `executed_qty` (character): Quantity filled so far.
+- executed_qty (character) Quantity filled so far.
 
-- `status` (character): Order status.
+- status (character) Order status.
 
-- `type` (character): Order type.
+- type (character) Order type.
 
-- `side` (character): `"BUY"` or `"SELL"`.
+- side (character) `"BUY"` or `"SELL"`.
 
-- `time` (POSIXct): Order creation time.
+- time (POSIXct) Order creation time.
 
-- `update_time` (POSIXct): Last update time.
+- update_time (POSIXct) Last update time.
 
-- `is_isolated` (logical): Whether this is an isolated margin order.
+- is_isolated (logical) Whether this is an isolated margin order.
 
 #### Examples
 
@@ -907,7 +908,7 @@ Retrieves all margin orders for a symbol (open, cancelled, filled).
 [Binance Margin All
 Orders](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-All-Orders)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -971,59 +972,60 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `orderId`:
 
-  Integer or NULL; pagination cursor.
+  (scalar\<count\>?) pagination cursor.
 
 - `startTime`:
 
-  Integer or NULL; start timestamp in milliseconds.
+  (scalar\<count\>?) start timestamp in milliseconds.
 
 - `endTime`:
 
-  Integer or NULL; end timestamp in milliseconds.
+  (scalar\<count\>?) end timestamp in milliseconds.
 
 - `limit`:
 
-  Integer or NULL; max results (default 500, max 500).
+  (scalar\<count\>?) max results (default 500, max 500).
 
 - `isIsolated`:
 
-  Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+  (scalar\<character\>?) `"TRUE"` or `"FALSE"` for isolated margin.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per order and the following columns:
+(data.table \| promise\<data.table\>) one row per order (empty when
+there are no matching orders):
 
-- `symbol` (character): Trading pair.
+- symbol (character) Trading pair.
 
-- `order_id` (integer): Unique order identifier.
+- order_id (numeric) Unique order identifier.
 
-- `client_order_id` (character): Client-assigned order ID.
+- client_order_id (character) Client-assigned order ID.
 
-- `price` (character): Order price.
+- price (character) Order price.
 
-- `orig_qty` (character): Original requested quantity.
+- orig_qty (character) Original requested quantity.
 
-- `executed_qty` (character): Quantity filled so far.
+- executed_qty (character) Quantity filled so far.
 
-- `status` (character): Order status.
+- status (character) Order status.
 
-- `type` (character): Order type.
+- type (character) Order type.
 
-- `side` (character): `"BUY"` or `"SELL"`.
+- side (character) `"BUY"` or `"SELL"`.
 
-- `time` (POSIXct): Order creation time.
+- time (POSIXct) Order creation time.
 
-- `update_time` (POSIXct): Last update time.
+- update_time (POSIXct) Last update time.
 
-- `is_isolated` (logical): Whether this is an isolated margin order.
+- is_isolated (logical) Whether this is an isolated margin order.
 
 #### Examples
 
@@ -1051,7 +1053,7 @@ level.
 [Binance Margin
 Account](https://developers.binance.com/docs/margin_trading/account/Query-Cross-Margin-Account-Details)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -1097,29 +1099,31 @@ Verified: 2026-03-10
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and columns including:
+(data.table \| promise\<data.table\>) one row per user asset:
 
-- `borrow_enabled` (logical): Whether borrowing is enabled.
+- borrow_enabled (logical) Whether borrowing is enabled.
 
-- `margin_level` (character): Current margin level.
+- margin_level (character) Current margin level.
 
-- `total_asset_of_btc` (character): Total asset value in BTC.
+- total_asset_of_btc (character) Total asset value in BTC.
 
-- `total_liability_of_btc` (character): Total liability in BTC.
+- total_liability_of_btc (character) Total liability in BTC.
 
-- `total_net_asset_of_btc` (character): Net asset value in BTC.
+- total_net_asset_of_btc (character) Net asset value in BTC.
 
-- `trade_enabled` (logical): Whether trading is enabled.
+- trade_enabled (logical) Whether trading is enabled.
 
-- `transfer_enabled` (logical): Whether transfers are enabled.
+- transfer_enabled (logical) Whether transfers are enabled.
 
-- `account_type` (character): Account type (`"MARGIN"`).
+- account_type (character) Account type (`"MARGIN"`).
 
-- `user_assets` (list): List of asset balance objects.
+Per-asset fields are prefixed with `user_asset_`, one row per asset.
+When the account has multiple assets, account-level fields are repeated
+on each row.
 
 #### Examples
 
@@ -1146,7 +1150,7 @@ Queries the maximum borrowable amount for an asset on margin.
 [Binance Max
 Borrowable](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Query-Max-Borrow)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -1172,23 +1176,23 @@ Verified: 2026-03-10
 
 - `asset`:
 
-  Character; asset to query (e.g., `"USDT"`).
+  (scalar\<character\>) asset to query (e.g., `"USDT"`).
 
 - `isolatedSymbol`:
 
-  Character or NULL; isolated margin pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>?) isolated margin pair (e.g., `"BTCUSDT"`).
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and the following columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `amount` (character): Maximum borrowable amount.
+- amount (character) Maximum borrowable amount.
 
-- `borrow_limit` (character): Borrow limit.
+- borrow_limit (character) Borrow limit.
 
 #### Examples
 
@@ -1215,7 +1219,7 @@ Queries the maximum transferable-out amount for an asset on margin.
 [Binance Max
 Transferable](https://developers.binance.com/docs/margin_trading/transfer/Query-Max-Transfer-Out-Amount)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -1240,21 +1244,24 @@ Verified: 2026-03-10
 
 - `asset`:
 
-  Character; asset to query (e.g., `"USDT"`).
+  (scalar\<character\>) asset to query (e.g., `"USDT"`).
 
 - `isolatedSymbol`:
 
-  Character or NULL; isolated margin pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>?) isolated margin pair (e.g., `"BTCUSDT"`).
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and the following columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `amount` (character): Maximum transferable-out amount.
+- amount (character) Maximum transferable-out amount.
+
+- borrow_limit (character) Remaining borrow limit for the account, in
+  the same asset units as `amount`.
 
 #### Examples
 
@@ -1281,7 +1288,7 @@ Retrieves margin interest accrual history with pagination.
 [Binance Interest
 History](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Get-Interest-History)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -1330,49 +1337,50 @@ Verified: 2026-03-10
 
 - `asset`:
 
-  Character or NULL; filter by asset (e.g., `"USDT"`).
+  (scalar\<character\>?) filter by asset (e.g., `"USDT"`).
 
 - `startTime`:
 
-  Integer or NULL; start timestamp in milliseconds.
+  (scalar\<count\>?) start timestamp in milliseconds.
 
 - `endTime`:
 
-  Integer or NULL; end timestamp in milliseconds.
+  (scalar\<count\>?) end timestamp in milliseconds.
 
 - `current`:
 
-  Integer or NULL; current page (default 1).
+  (scalar\<count\>?) current page (default 1).
 
 - `size`:
 
-  Integer or NULL; page size (default 10, max 100).
+  (scalar\<count\>?) page size (default 10, max 100).
 
 - `archived`:
 
-  Character or NULL; `"true"` to query 6-month archived data.
+  (scalar\<character\>?) `"true"` to query 6-month archived data.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per interest record and the following columns:
+(data.table \| promise\<data.table\>) one row per interest record (empty
+when there are none):
 
-- `asset` (character): Asset charged interest.
+- asset (character) Asset charged interest.
 
-- `interest` (character): Interest amount accrued.
+- interest (character) Interest amount accrued.
 
-- `interest_accured_time` (POSIXct): Time of interest accrual.
+- interest_accured_time (POSIXct) Time of interest accrual.
 
-- `interest_rate` (character): Applied interest rate.
+- interest_rate (character) Applied interest rate.
 
-- `principal` (character): Principal amount borrowed.
+- principal (character) Principal amount borrowed.
 
-- `type` (character): Margin type (`"ON_BORROW"`, `"PERIODIC"`, etc.).
+- type (character) Margin type (`"ON_BORROW"`, `"PERIODIC"`, etc.).
 
-- `isolated_symbol` (character): Isolated margin pair (if applicable).
+- isolated_symbol (character) Isolated margin pair (if applicable).
 
 #### Examples
 
@@ -1399,7 +1407,7 @@ Retrieves margin force liquidation records with pagination.
 [Binance Force
 Liquidation](https://developers.binance.com/docs/margin_trading/trade/Get-Force-Liquidation-Record)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -1442,53 +1450,52 @@ Verified: 2026-03-10
 
 - `startTime`:
 
-  Integer or NULL; start timestamp in milliseconds.
+  (scalar\<count\>?) start timestamp in milliseconds.
 
 - `endTime`:
 
-  Integer or NULL; end timestamp in milliseconds.
+  (scalar\<count\>?) end timestamp in milliseconds.
 
 - `isolatedSymbol`:
 
-  Character or NULL; isolated margin pair.
+  (scalar\<character\>?) isolated margin pair.
 
 - `current`:
 
-  Integer or NULL; current page (default 1).
+  (scalar\<count\>?) current page (default 1).
 
 - `size`:
 
-  Integer or NULL; page size (default 10, max 100).
+  (scalar\<count\>?) page size (default 10, max 100).
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per liquidation record and the following
-columns:
+(data.table \| promise\<data.table\>) one row per liquidation record
+(empty when there are none):
 
-- `avg_price` (character): Average liquidation price.
+- avg_price (character) Average liquidation price.
 
-- `executed_qty` (character): Liquidated quantity.
+- executed_qty (character) Liquidated quantity.
 
-- `order_id` (integer): Liquidation order identifier.
+- order_id (numeric) Liquidation order identifier.
 
-- `price` (character): Liquidation price.
+- price (character) Liquidation price.
 
-- `qty` (character): Total quantity.
+- qty (character) Total quantity.
 
-- `side` (character): `"BUY"` or `"SELL"`.
+- side (character) `"BUY"` or `"SELL"`.
 
-- `symbol` (character): Trading pair.
+- symbol (character) Trading pair.
 
-- `time` (POSIXct): Liquidation time.
+- time (POSIXct) Liquidation time.
 
-- `is_isolated` (logical): Whether this was an isolated margin
-  liquidation.
+- is_isolated (logical) Whether this was an isolated margin liquidation.
 
-- `updated_time` (POSIXct): Last update time.
+- updated_time (POSIXct) Last update time.
 
 #### Examples
 
@@ -1515,7 +1522,7 @@ Retrieves margin trade history for a symbol.
 [Binance Margin
 Trades](https://developers.binance.com/docs/margin_trading/trade/Query-Margin-Account-Trade-List)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -1558,61 +1565,62 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `orderId`:
 
-  Integer or NULL; filter by order ID.
+  (scalar\<count\>?) filter by order ID.
 
 - `startTime`:
 
-  Integer or NULL; start timestamp in milliseconds.
+  (scalar\<count\>?) start timestamp in milliseconds.
 
 - `endTime`:
 
-  Integer or NULL; end timestamp in milliseconds.
+  (scalar\<count\>?) end timestamp in milliseconds.
 
 - `fromId`:
 
-  Integer or NULL; trade ID to fetch from.
+  (scalar\<count\>?) trade ID to fetch from.
 
 - `limit`:
 
-  Integer or NULL; max results (default 500, max 1000).
+  (scalar\<count\>?) max results (default 500, max 1000).
 
 - `isIsolated`:
 
-  Character or NULL; `"TRUE"` or `"FALSE"` for isolated margin.
+  (scalar\<character\>?) `"TRUE"` or `"FALSE"` for isolated margin.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per trade and columns including:
+(data.table \| promise\<data.table\>) one row per trade (empty when
+there are none):
 
-- `symbol` (character): Trading pair.
+- symbol (character) Trading pair.
 
-- `id` (integer): Trade ID.
+- id (numeric) Trade ID.
 
-- `order_id` (integer): Order ID.
+- order_id (numeric) Order ID.
 
-- `price` (character): Trade price.
+- price (character) Trade price.
 
-- `qty` (character): Trade quantity.
+- qty (character) Trade quantity.
 
-- `commission` (character): Commission paid.
+- commission (character) Commission paid.
 
-- `commission_asset` (character): Commission asset.
+- commission_asset (character) Commission asset.
 
-- `time` (POSIXct): Trade execution time.
+- time (POSIXct) Trade execution time.
 
-- `is_buyer` (logical): Whether the trade was a buy.
+- is_buyer (logical) Whether the trade was a buy.
 
-- `is_maker` (logical): Whether the trade was a maker.
+- is_maker (logical) Whether the trade was a maker.
 
-- `is_isolated` (logical): Whether this is an isolated margin trade.
+- is_isolated (logical) Whether this is an isolated margin trade.
 
 #### Examples
 
@@ -1639,7 +1647,7 @@ Retrieves isolated margin account details.
 [Binance Isolated Margin
 Account](https://developers.binance.com/docs/margin_trading/account/Query-Isolated-Margin-Account-Info)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -1699,43 +1707,42 @@ Verified: 2026-03-10
 
 - `symbols`:
 
-  Character or NULL; comma-separated symbols (max 5, e.g.,
+  (scalar\<character\>?) comma-separated symbols (max 5, e.g.,
   `"BTCUSDT,ETHUSDT"`).
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per isolated margin pair (long format) and
-columns including:
+(data.table \| promise\<data.table\>) one row per isolated margin pair
+(long format):
 
-- `total_asset_of_btc` (character): Total asset value in BTC (repeated
+- total_asset_of_btc (character) Total asset value in BTC (repeated per
+  pair).
+
+- total_liability_of_btc (character) Total liability in BTC (repeated
   per pair).
 
-- `total_liability_of_btc` (character): Total liability in BTC (repeated
+- total_net_asset_of_btc (character) Net asset value in BTC (repeated
   per pair).
 
-- `total_net_asset_of_btc` (character): Net asset value in BTC (repeated
-  per pair).
-
-- `base_asset` (list): Base asset details (nested object kept as
+- base_asset (list) Base asset details (nested object kept as
   list-column).
 
-- `quote_asset` (list): Quote asset details (nested object kept as
+- quote_asset (list) Quote asset details (nested object kept as
   list-column).
 
-- `symbol` (character): Isolated margin pair symbol.
+- symbol (character) Isolated margin pair symbol.
 
-- `isolated_created` (logical): Whether the isolated pair has been
-  created.
+- isolated_created (logical) Whether the isolated pair has been created.
 
-- `enabled` (logical): Whether the pair is enabled.
+- enabled (logical) Whether the pair is enabled.
 
-- `margin_level` (character): Current margin level.
+- margin_level (character) Current margin level.
 
-- `trade_enabled` (logical): Whether trading is enabled.
+- trade_enabled (logical) Whether trading is enabled.
 
 #### Examples
 
@@ -1759,10 +1766,14 @@ Transfers assets between spot and isolated margin accounts.
 
 #### Official Documentation
 
-[Binance Isolated Margin
-Transfer](https://developers.binance.com/docs/margin_trading/transfer/Isolated-Margin-Account-Transfer)
+[Binance Universal
+Transfer](https://developers.binance.com/docs/wallet/asset/user-universal-transfer)
+(Binance retired the dedicated isolated-margin-transfer doc page; the
+universal-transfer endpoint subsumes it. The
+`sapi/v1/margin/isolated/transfer` REST endpoint this wrapper calls
+still works at the time of writing.)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -1800,33 +1811,35 @@ Verified: 2026-03-10
 
 - `asset`:
 
-  Character; asset to transfer (e.g., `"USDT"`).
+  (scalar\<character\>) asset to transfer (e.g., `"USDT"`).
 
 - `symbol`:
 
-  Character; isolated margin pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) isolated margin pair (e.g., `"BTCUSDT"`).
 
 - `transFrom`:
 
-  Character; source account: `"SPOT"` or `"ISOLATED_MARGIN"`.
+  (scalar\<character\>) source account: `"SPOT"` or `"ISOLATED_MARGIN"`.
 
 - `transTo`:
 
-  Character; destination account: `"SPOT"` or `"ISOLATED_MARGIN"`.
+  (scalar\<character\>) destination account: `"SPOT"` or
+  `"ISOLATED_MARGIN"`.
 
 - `amount`:
 
-  Numeric; amount to transfer.
+  (scalar\<numeric\>) amount to transfer.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and the following columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `tran_id` (integer): Transaction identifier.
+- tran_id (numeric) Transaction identifier (a large integer that
+  overflows R's 32-bit `integer`, so it is coerced to a double).
 
 #### Examples
 

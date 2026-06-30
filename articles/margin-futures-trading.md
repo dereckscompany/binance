@@ -8,18 +8,19 @@ they run without a live API connection.
 
 The package provides four classes for margin and futures operations:
 
-| Class                | Purpose                                                                     |
-|----------------------|-----------------------------------------------------------------------------|
-| `BinanceMarginData`  | Query margin pairs, price index, interest rates, cross/isolated margin data |
-| `BinanceMargin`      | Borrow, repay, place margin orders, query margin account                    |
-| `BinanceFuturesData` | Futures exchange info, mark price, funding rates, klines, open interest     |
-| `BinanceFutures`     | Place futures orders, manage positions, leverage, account queries           |
+| Class | Purpose |
+|----|----|
+| `BinanceMarginData` | Query margin pairs, price index, interest rates, cross/isolated margin data |
+| `BinanceMargin` | Borrow, repay, place margin orders, query margin account |
+| `BinanceFuturesData` | Futures exchange info, mark price, funding rates, klines, open interest |
+| `BinanceFutures` | Place futures orders, manage positions, leverage, account queries |
 
 ------------------------------------------------------------------------
 
 ## Setup
 
 ``` r
+
 library(binance)
 
 keys <- get_api_keys(
@@ -46,12 +47,13 @@ Retrieve all cross margin trading pairs to see which symbols support
 margin trading:
 
 ``` r
+
 pairs <- margin_data$get_all_pairs()
 print(pairs)
 ```
 
     #>      base        id is_buy_allowed is_margin_trade is_sell_allowed  quote
-    #>    <char>     <int>         <lgcl>          <lgcl>          <lgcl> <char>
+    #>    <char>     <num>         <lgcl>          <lgcl>          <lgcl> <char>
     #> 1:    BTC 351637150           TRUE            TRUE            TRUE   USDT
     #> 2:    ETH 351637151           TRUE            TRUE            TRUE   USDT
     #>     symbol
@@ -65,6 +67,7 @@ The margin price index is a public endpoint (no authentication
 required). It returns the index price used for margin calculations:
 
 ``` r
+
 idx <- margin_data$get_price_index(symbol = "BTCUSDT")
 print(idx)
 ```
@@ -79,6 +82,7 @@ Query cross margin fee data including daily/yearly interest rates and
 borrowing limits per coin:
 
 ``` r
+
 cm_data <- margin_data$get_cross_margin_data()
 print(cm_data)
 ```
@@ -86,15 +90,18 @@ print(cm_data)
     #>    vip_level   coin transfer_in transfer_out borrowable daily_interest
     #>        <int> <char>      <lgcl>       <lgcl>     <lgcl>         <char>
     #> 1:         0    BTC        TRUE         TRUE       TRUE     0.00015000
-    #>    yearly_interest marginable_pairs
-    #>             <char>           <list>
-    #> 1:      0.05475000        <list[2]>
+    #> 2:         0    BTC        TRUE         TRUE       TRUE     0.00015000
+    #>    yearly_interest marginable_pair
+    #>             <char>          <char>
+    #> 1:      0.05475000         BTCUSDT
+    #> 2:      0.05475000         BTCBUSD
 
 ### Interest Rate History
 
 Check historical interest rates for a specific asset:
 
 ``` r
+
 rate_history <- margin_data$get_interest_rate_history(asset = "BTC")
 print(rate_history)
 ```
@@ -110,6 +117,7 @@ Borrow assets against your margin collateral and repay loans. These are
 write operations that modify account state:
 
 ``` r
+
 # Borrow 100 USDT on cross margin
 loan <- margin$add_borrow(asset = "USDT", amount = 100)
 print(loan)
@@ -133,6 +141,7 @@ controls auto-borrowing behaviour:
 - `"AUTO_REPAY"` – auto-repay after the trade fills.
 
 ``` r
+
 order <- margin$add_order(
   symbol = "BTCUSDT",
   side = "BUY",
@@ -146,7 +155,7 @@ print(order)
 ```
 
     #>     symbol order_id        client_order_id       transact_time          price
-    #>     <char>    <int>                 <char>              <POSc>         <char>
+    #>     <char>    <num>                 <char>              <POSc>         <char>
     #> 1: BTCUSDT       28 6gCrw2kRUAF9CvJDGP16IP 2017-10-11 12:32:56 50000.00000000
     #>      orig_qty executed_qty cummulative_quote_qty status time_in_force   type
     #>        <char>       <char>                <char> <char>        <char> <char>
@@ -158,19 +167,23 @@ print(order)
 Query open margin orders:
 
 ``` r
+
 open <- margin$get_open_orders(symbol = "BTCUSDT")
 print(open)
 ```
 
-    #>     symbol order_id        client_order_id transact_time          price
-    #>     <char>    <int>                 <char>         <num>         <char>
-    #> 1: BTCUSDT       28 6gCrw2kRUAF9CvJDGP16IP  1.507725e+12 50000.00000000
-    #>      orig_qty executed_qty cummulative_quote_qty status time_in_force   type
-    #>        <char>       <char>                <char> <char>        <char> <char>
-    #> 1: 0.00010000   0.00000000            0.00000000    NEW           GTC  LIMIT
-    #>      side is_isolated self_trade_prevention_mode
-    #>    <char>      <lgcl>                     <char>
-    #> 1:    BUY       FALSE                       NONE
+    #>     symbol order_id       client_order_id          price   orig_qty
+    #>     <char>    <num>                <char>         <char>     <char>
+    #> 1: BTCUSDT    1e+08 mock_margin_open_0001 50000.00000000 0.00100000
+    #>    executed_qty cummulative_quote_qty status time_in_force   type   side
+    #>          <char>                <char> <char>        <char> <char> <char>
+    #> 1:   0.00000000            0.00000000    NEW           GTC  LIMIT    BUY
+    #>    stop_price iceberg_qty                time         update_time is_working
+    #>        <char>      <char>              <POSc>              <POSc>     <lgcl>
+    #> 1: 0.00000000  0.00000000 2024-06-10 06:13:20 2024-06-10 06:13:25       TRUE
+    #>    is_isolated self_trade_prevention_mode
+    #>         <lgcl>                     <char>
+    #> 1:       FALSE                       NONE
 
 ### Margin Account Information
 
@@ -178,29 +191,35 @@ Get a summary of your cross margin account including margin level, total
 assets, and liabilities:
 
 ``` r
+
 account <- margin$get_account()
-print(account[, .(borrow_enabled, margin_level, total_asset_of_btc,
-                   total_liability_of_btc, total_net_asset_of_btc)])
+print(account[, .(
+  borrow_enabled, margin_level, total_asset_of_btc,
+  total_liability_of_btc, total_net_asset_of_btc
+)])
 ```
 
     #>    borrow_enabled margin_level total_asset_of_btc total_liability_of_btc
     #>            <lgcl>       <char>             <char>                 <char>
     #> 1:           TRUE  11.64405625         6.82000000             0.58633215
+    #> 2:           TRUE  11.64405625         6.82000000             0.58633215
     #>    total_net_asset_of_btc
     #>                    <char>
     #> 1:             6.23366785
+    #> 2:             6.23366785
 
 ### Margin Trade History
 
 Retrieve executed margin trades for a symbol:
 
 ``` r
+
 trades <- margin$get_trades(symbol = "BTCUSDT")
 print(trades)
 ```
 
     #>     symbol    id order_id          price        qty   quote_qty commission
-    #>     <char> <int>    <int>         <char>     <char>      <char>     <char>
+    #>     <char> <num>    <num>         <char>     <char>      <char>     <char>
     #> 1: BTCUSDT 28457   100234 67232.90000000 0.00100000 67.23290000 0.00000100
     #>    commission_asset                time is_buyer is_maker is_best_match
     #>              <char>              <POSc>   <lgcl>   <lgcl>        <lgcl>
@@ -219,6 +238,7 @@ Retrieve futures trading pair metadata including contract type,
 precision, and filters:
 
 ``` r
+
 info <- futures_data$get_exchange_info()
 print(info[, .(symbol, contract_type, status, base_asset, quote_asset)])
 ```
@@ -233,6 +253,7 @@ The mark price is used for liquidation and unrealised PnL calculations.
 Funding rates are periodic payments between long and short positions:
 
 ``` r
+
 mark <- futures_data$get_mark_price(symbol = "BTCUSDT")
 print(mark)
 ```
@@ -245,6 +266,7 @@ print(mark)
     #> 1:        0.00010000 2022-08-26 06:00:00    0.00010000 2022-08-26 05:52:26
 
 ``` r
+
 rates <- futures_data$get_funding_rate(symbol = "BTCUSDT", limit = 5)
 print(rates)
 ```
@@ -259,6 +281,7 @@ print(rates)
 Fetch historical candlestick data for futures contracts:
 
 ``` r
+
 klines <- futures_data$get_klines(symbol = "BTCUSDT", interval = "1h", limit = 5)
 print(klines)
 ```
@@ -279,6 +302,7 @@ print(klines)
 Check the total open interest for a futures symbol:
 
 ``` r
+
 oi <- futures_data$get_open_interest(symbol = "BTCUSDT")
 print(oi)
 ```
@@ -292,10 +316,13 @@ print(oi)
 Query your futures account summary and current positions:
 
 ``` r
+
 account <- futures$get_account()
-print(account[, .(total_initial_margin, total_maint_margin,
-                   total_wallet_balance, total_unrealized_profit,
-                   available_balance)])
+print(account[, .(
+  total_initial_margin, total_maint_margin,
+  total_wallet_balance, total_unrealized_profit,
+  available_balance
+)])
 ```
 
     #>    total_initial_margin total_maint_margin total_wallet_balance
@@ -306,6 +333,7 @@ print(account[, .(total_initial_margin, total_maint_margin,
     #> 1:              0.00000000     1000.00000000
 
 ``` r
+
 positions <- futures$get_positions(symbol = "BTCUSDT")
 print(positions)
 ```
@@ -328,6 +356,7 @@ print(positions)
 Retrieve per-asset balances in the futures account:
 
 ``` r
+
 balances <- futures$get_balances()
 print(balances)
 ```
@@ -344,6 +373,7 @@ print(balances)
 Adjust the initial leverage for a futures symbol (1-125x):
 
 ``` r
+
 result <- futures$set_leverage(symbol = "BTCUSDT", leverage = 10)
 print(result)
 ```
@@ -358,6 +388,7 @@ Use the test endpoint to validate order parameters without creating a
 real order:
 
 ``` r
+
 test <- futures$add_order_test(
   symbol = "BTCUSDT",
   side = "BUY",
@@ -369,13 +400,14 @@ test <- futures$add_order_test(
 print(test)
 ```
 
-    #>     symbol   side   type    status
-    #>     <char> <char> <char>    <char>
-    #> 1: BTCUSDT    BUY  LIMIT validated
+    #>    validated
+    #>       <lgcl>
+    #> 1:      TRUE
 
 Place a real futures order (use with caution on a live account):
 
 ``` r
+
 order <- futures$add_order(
   symbol = "BTCUSDT",
   side = "BUY",
@@ -390,6 +422,7 @@ print(order)
 Market orders require only the quantity:
 
 ``` r
+
 order <- futures$add_order(
   symbol = "BTCUSDT",
   side = "BUY",
@@ -405,6 +438,7 @@ Switch between crossed and isolated margin, and between one-way and
 hedge mode:
 
 ``` r
+
 # Switch to isolated margin
 futures$set_margin_type(symbol = "BTCUSDT", marginType = "ISOLATED")
 
@@ -418,13 +452,14 @@ Retrieve funding fees, realised PnL, commissions, and other income
 entries:
 
 ``` r
+
 income <- futures$get_income_history(symbol = "BTCUSDT")
 print(income)
 ```
 
-    #>     symbol income_type      income  asset   info                time   tran_id
-    #>     <char>      <char>      <char> <char> <char>              <POSc>     <int>
-    #> 1: BTCUSDT FUNDING_FEE -0.01200000   USDT        2022-08-26 05:52:26 100000001
+    #>     symbol income_type      income  asset   info                time tran_id
+    #>     <char>      <char>      <char> <char> <char>              <POSc>   <num>
+    #> 1: BTCUSDT FUNDING_FEE -0.01200000   USDT        2022-08-26 05:52:26   1e+08
     #>    trade_id
     #>      <char>
     #> 1:
@@ -434,12 +469,13 @@ print(income)
 Query executed trades on the futures account:
 
 ``` r
+
 trades <- futures$get_trades(symbol = "BTCUSDT")
 print(trades)
 ```
 
     #>     symbol     id  order_id   side    price    qty realized_pnl margin_asset
-    #>     <char>  <int>     <int> <char>   <char> <char>       <char>       <char>
+    #>     <char>  <num>     <num> <char>   <char> <char>       <char>       <char>
     #> 1: BTCUSDT 100001 283194212    BUY 50000.00  0.001   0.00000000         USDT
     #>      quote_qty commission commission_asset                time position_side
     #>         <char>     <char>           <char>              <POSc>        <char>
@@ -485,39 +521,39 @@ print(trades)
 
 ### BinanceFuturesData
 
-| Method                                    | Description                           |
-|-------------------------------------------|---------------------------------------|
-| `get_exchange_info()`                     | Futures trading pair metadata         |
-| `get_klines(symbol, interval)`            | Historical candlestick data           |
-| `get_mark_price(symbol)`                  | Mark price, index price, funding rate |
-| `get_funding_rate(symbol)`                | Historical funding rates              |
-| `get_24hr_stats(symbol)`                  | 24h price change statistics           |
-| `get_ticker(symbol)`                      | Latest price ticker                   |
-| `get_book_ticker(symbol)`                 | Best bid/ask prices                   |
-| `get_open_interest(symbol)`               | Current open interest                 |
-| `get_depth(symbol)`                       | Order book depth                      |
-| `get_trades(symbol)`                      | Recent trades                         |
-| `get_index_price_klines(pair, interval)`  | Index price klines                    |
-| `get_mark_price_klines(symbol, interval)` | Mark price klines                     |
+| Method | Description |
+|----|----|
+| `get_exchange_info()` | Futures trading pair metadata |
+| `get_klines(symbol, interval)` | Historical candlestick data |
+| `get_mark_price(symbol)` | Mark price, index price, funding rate |
+| `get_funding_rate(symbol)` | Historical funding rates |
+| `get_24hr_stats(symbol)` | 24h price change statistics |
+| `get_ticker(symbol)` | Latest price ticker |
+| `get_book_ticker(symbol)` | Best bid/ask prices |
+| `get_open_interest(symbol)` | Current open interest |
+| `get_depth(symbol)` | Order book depth |
+| `get_trades(symbol)` | Recent trades |
+| `get_index_price_klines(pair, interval)` | Index price klines |
+| `get_mark_price_klines(symbol, interval)` | Mark price klines |
 
 ### BinanceFutures
 
-| Method                                         | Description                         |
-|------------------------------------------------|-------------------------------------|
-| `add_order(...)`                               | Place a futures order               |
-| `add_order_test(...)`                          | Validate order without placing      |
-| `cancel_order(symbol, orderId)`                | Cancel a futures order              |
-| `cancel_all_orders(symbol)`                    | Cancel all open futures orders      |
-| `get_order(symbol, orderId)`                   | Query a specific order              |
-| `get_open_orders(symbol)`                      | List open futures orders            |
-| `get_all_orders(symbol)`                       | List all futures orders             |
-| `get_account()`                                | Futures account info                |
-| `get_balances()`                               | Per-asset balances                  |
-| `get_positions(symbol)`                        | Position risk info                  |
-| `set_leverage(symbol, leverage)`               | Set initial leverage (1-125x)       |
-| `set_margin_type(symbol, marginType)`          | Set crossed or isolated margin      |
-| `modify_position_margin(symbol, amount, type)` | Add or reduce position margin       |
-| `get_trades(symbol)`                           | Futures trade history               |
-| `get_income_history(symbol)`                   | Income history (funding, PnL, etc.) |
-| `set_position_mode(dualSidePosition)`          | Switch one-way / hedge mode         |
-| `get_position_mode()`                          | Query current position mode         |
+| Method | Description |
+|----|----|
+| `add_order(...)` | Place a futures order |
+| `add_order_test(...)` | Validate order without placing |
+| `cancel_order(symbol, orderId)` | Cancel a futures order |
+| `cancel_all_orders(symbol)` | Cancel all open futures orders |
+| `get_order(symbol, orderId)` | Query a specific order |
+| `get_open_orders(symbol)` | List open futures orders |
+| `get_all_orders(symbol)` | List all futures orders |
+| `get_account()` | Futures account info |
+| `get_balances()` | Per-asset balances |
+| `get_positions(symbol)` | Position risk info |
+| `set_leverage(symbol, leverage)` | Set initial leverage (1-125x) |
+| `set_margin_type(symbol, marginType)` | Set crossed or isolated margin |
+| `modify_position_margin(symbol, amount, type)` | Add or reduce position margin |
+| `get_trades(symbol)` | Futures trade history |
+| `get_income_history(symbol)` | Income history (funding, PnL, etc.) |
+| `set_position_mode(dualSidePosition)` | Switch one-way / hedge mode |
+| `get_position_mode()` | Query current position mode |

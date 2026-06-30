@@ -48,8 +48,10 @@ Endpoints](https://developers.binance.com/docs/wallet/capital)
 
 - `8`: Waiting user confirm
 
-## Super class
+## Super classes
 
+[`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
+-\>
 [`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceDeposit`
 
@@ -84,7 +86,7 @@ specified, returns the address for the coin's default network.
 
 [Binance Deposit
 Address](https://developers.binance.com/docs/wallet/capital/deposite-address)
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### Automated Trading Usage
 
@@ -119,28 +121,28 @@ Verified: 2026-03-10
 
 - `coin`:
 
-  Character; coin symbol (e.g., `"BTC"`, `"ETH"`, `"USDT"`).
+  (scalar\<character\>) coin symbol (e.g., `"BTC"`, `"ETH"`, `"USDT"`).
 
 - `network`:
 
-  Character or NULL; blockchain network (e.g., `"ETH"`, `"TRX"`,
+  (scalar\<character\>?) blockchain network (e.g., `"ETH"`, `"TRX"`,
   `"BSC"`). If NULL, uses the coin's default network.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count in \[1, Inf\[\>?) max 60000.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `address` (character): The deposit wallet address.
+- address (character) the deposit wallet address.
 
-- `coin` (character): Coin symbol (e.g., `"BTC"`).
+- coin (character) coin symbol (e.g., `"BTC"`).
 
-- `tag` (character): Address tag/memo (empty string if not applicable).
+- tag (character) address tag/memo (empty string if not applicable).
 
-- `url` (character): Blockchain explorer URL for the address.
+- url (character) blockchain explorer URL for the address.
 
 #### Examples
 
@@ -173,7 +175,7 @@ status, and time range. Converts `insertTime` timestamps to POSIXct.
 
 [Binance Deposit
 History](https://developers.binance.com/docs/wallet/capital/deposite-history)
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### Automated Trading Usage
 
@@ -229,70 +231,70 @@ Verified: 2026-03-10
 
 - `coin`:
 
-  Character or NULL; filter by coin (e.g., `"BTC"`, `"USDT"`).
+  (scalar\<character\>?) filter by coin (e.g., `"BTC"`, `"USDT"`).
 
 - `status`:
 
-  Integer or NULL; filter by status: `0` (pending), `1` (success), `6`
+  (scalar\<count\>?) filter by status: `0` (pending), `1` (success), `6`
   (credited), `7` (wrong), `8` (waiting confirm).
 
 - `startTime`:
 
-  Integer or NULL; start timestamp in milliseconds.
+  (scalar\<count\>?) start timestamp in milliseconds.
 
 - `endTime`:
 
-  Integer or NULL; end timestamp in milliseconds.
+  (scalar\<count\>?) end timestamp in milliseconds.
 
 - `offset`:
 
-  Integer or NULL; pagination offset (default 0).
+  (scalar\<count\>?) pagination offset (default 0).
 
 - `limit`:
 
-  Integer or NULL; max results (default 1000, max 1000).
+  (scalar\<count\>?) max results (default 1000, max 1000).
 
 - `txId`:
 
-  Character or NULL; filter by transaction ID.
+  (scalar\<character\>?) filter by transaction ID.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row per deposit (empty when
+there are no matching deposits):
 
-- `id` (character): Unique deposit identifier.
+- id (character) unique deposit identifier.
 
-- `amount` (character): Deposit amount.
+- amount (character) deposit amount.
 
-- `coin` (character): Deposited coin symbol.
+- coin (character) deposited coin symbol.
 
-- `network` (character): Blockchain network used.
+- network (character) blockchain network used.
 
-- `status` (integer): Deposit status code (0=pending, 1=success,
+- status (integer) deposit status code (0=pending, 1=success,
   6=credited).
 
-- `address` (character): Deposit address.
+- address (character) deposit address.
 
-- `address_tag` (character): Address tag/memo.
+- address_tag (character) address tag/memo.
 
-- `tx_id` (character): On-chain transaction hash.
+- tx_id (character) on-chain transaction hash.
 
-- `transfer_type` (integer): 0=external, 1=internal.
+- transfer_type (integer) 0=external, 1=internal.
 
-- `confirm_times` (character): Confirmation progress (e.g., `"1/1"`).
+- confirm_times (character) confirmation progress (e.g., `"1/1"`).
 
-- `unlock_confirm` (integer): Confirmations needed to unlock.
+- unlock_confirm (integer) confirmations needed to unlock.
 
-- `wallet_type` (integer): 0=spot, 1=funding.
+- wallet_type (integer) 0=spot, 1=funding.
 
-- `insert_time` (POSIXct): Deposit time converted from `insertTime`.
+- insert_time (POSIXct) deposit time converted from `insertTime`.
 
-- `complete_time` (POSIXct): Completion time converted from
-  `completeTime`.
+- complete_time (POSIXct) completion time converted from `completeTime`.
 
 #### Examples
 

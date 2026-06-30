@@ -40,26 +40,30 @@ All methods are public endpoints requiring no authentication.
 ### Official Documentation
 
 [Binance Spot Market
-Data](https://binance-docs.github.io/apidocs/spot/en/#market-data-endpoints)
+Data](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints)
 
 ### Endpoints Covered
 
-|                   |                               |      |
-|-------------------|-------------------------------|------|
-| Method            | Endpoint                      | Auth |
-| get_server_time   | GET /api/v3/time              | No   |
-| get_exchange_info | GET /api/v3/exchangeInfo      | No   |
-| get_ticker        | GET /api/v3/ticker/price      | No   |
-| get_all_tickers   | GET /api/v3/ticker/price      | No   |
-| get_book_ticker   | GET /api/v3/ticker/bookTicker | No   |
-| get_24hr_stats    | GET /api/v3/ticker/24hr       | No   |
-| get_avg_price     | GET /api/v3/avgPrice          | No   |
-| get_depth         | GET /api/v3/depth             | No   |
-| get_trades        | GET /api/v3/trades            | No   |
-| get_klines        | GET /api/v3/klines            | No   |
+|                      |                               |      |
+|----------------------|-------------------------------|------|
+| Method               | Endpoint                      | Auth |
+| get_server_time      | GET /api/v3/time              | No   |
+| get_exchange_info    | GET /api/v3/exchangeInfo      | No   |
+| get_rate_limits      | GET /api/v3/exchangeInfo      | No   |
+| get_exchange_filters | GET /api/v3/exchangeInfo      | No   |
+| get_ticker           | GET /api/v3/ticker/price      | No   |
+| get_all_tickers      | GET /api/v3/ticker/price      | No   |
+| get_book_ticker      | GET /api/v3/ticker/bookTicker | No   |
+| get_24hr_stats       | GET /api/v3/ticker/24hr       | No   |
+| get_avg_price        | GET /api/v3/avgPrice          | No   |
+| get_depth            | GET /api/v3/depth             | No   |
+| get_trades           | GET /api/v3/trades            | No   |
+| get_klines           | GET /api/v3/klines            | No   |
 
-## Super class
+## Super classes
 
+[`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
+-\>
 [`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceMarketData`
 
@@ -71,6 +75,10 @@ Data](https://binance-docs.github.io/apidocs/spot/en/#market-data-endpoints)
 
 - [`BinanceMarketData$get_exchange_info()`](#method-BinanceMarketData-get_exchange_info)
 
+- [`BinanceMarketData$get_rate_limits()`](#method-BinanceMarketData-get_rate_limits)
+
+- [`BinanceMarketData$get_exchange_filters()`](#method-BinanceMarketData-get_exchange_filters)
+
 - [`BinanceMarketData$get_ticker()`](#method-BinanceMarketData-get_ticker)
 
 - [`BinanceMarketData$get_all_tickers()`](#method-BinanceMarketData-get_all_tickers)
@@ -78,6 +86,8 @@ Data](https://binance-docs.github.io/apidocs/spot/en/#market-data-endpoints)
 - [`BinanceMarketData$get_book_ticker()`](#method-BinanceMarketData-get_book_ticker)
 
 - [`BinanceMarketData$get_24hr_stats()`](#method-BinanceMarketData-get_24hr_stats)
+
+- [`BinanceMarketData$get_all_24hr_stats()`](#method-BinanceMarketData-get_all_24hr_stats)
 
 - [`BinanceMarketData$get_avg_price()`](#method-BinanceMarketData-get_avg_price)
 
@@ -109,8 +119,8 @@ Useful for detecting clock drift and ensuring HMAC signatures are valid.
 #### Official Documentation
 
 [Binance Check Server
-Time](https://binance-docs.github.io/apidocs/spot/en/#check-server-time)
-Verified: 2026-03-10
+Time](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints#check-server-time)
+Verified: 2026-05-22
 
 #### Automated Trading Usage
 
@@ -137,9 +147,9 @@ Verified: 2026-03-10
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `server_time` (POSIXct): Server time as UTC datetime.
+- server_time (POSIXct) Server time as UTC datetime.
 
 #### Examples
 
@@ -166,8 +176,8 @@ precision, order types, filters, and trading status for each symbol.
 #### Official Documentation
 
 [Binance Exchange
-Info](https://binance-docs.github.io/apidocs/spot/en/#exchange-information)
-Verified: 2026-03-10
+Info](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints#exchange-information)
+Verified: 2026-05-22
 
 #### Automated Trading Usage
 
@@ -226,67 +236,105 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character or NULL; specific symbol (e.g., `"BTCUSDT"`).
+  (scalar\<character\>?) specific symbol (e.g., `"BTCUSDT"`).
 
 - `symbols`:
 
-  Character vector or NULL; multiple symbols.
+  (character?) multiple symbols.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with all
-symbol fields returned by the API, converted to snake_case. Key columns
-include:
+(data.table \| promise\<data.table\>) one row per symbol, with all
+symbol fields returned by the API, converted to snake_case (empty when
+Binance returns no symbols). Key columns include:
 
-- `symbol` (character): Trading pair identifier (e.g., `"BTCUSDT"`).
+- symbol (character) Trading pair identifier (e.g., `"BTCUSDT"`).
 
-- `status` (character): Trading status (`"TRADING"`, `"HALT"`,
-  `"BREAK"`).
+- status (character) Trading status (`"TRADING"`, `"HALT"`, `"BREAK"`).
 
-- `base_asset` (character): Base asset code (e.g., `"BTC"`).
+- base_asset (character) Base asset code (e.g., `"BTC"`).
 
-- `base_asset_precision` (integer): Decimal precision for base asset
+- base_asset_precision (integer) Decimal precision for base asset
   quantities.
 
-- `quote_asset` (character): Quote asset code (e.g., `"USDT"`).
+- quote_asset (character) Quote asset code (e.g., `"USDT"`).
 
-- `quote_asset_precision` (integer): Decimal precision for quote asset
+- quote_asset_precision (integer) Decimal precision for quote asset
   quantities.
 
-- `quote_precision` (integer): Decimal precision for quote asset prices.
+- quote_precision (integer) Decimal precision for quote asset prices.
 
-- `order_types` (character): Comma-separated allowed order types (e.g.,
-  `"LIMIT,MARKET"`).
+- order_types (character) Semicolon-separated allowed order types (e.g.,
+  `"LIMIT;MARKET"`). Recover the vector via
+  `strsplit(dt$order_types[1], ";", fixed = TRUE)[[1]]`.
 
-- `iceberg_allowed` (logical): Whether iceberg orders are allowed.
+- iceberg_allowed (logical) Whether iceberg orders are allowed.
 
-- `oco_allowed` (logical): Whether OCO orders are allowed.
+- oco_allowed (logical) Whether OCO orders are allowed.
 
-- `oto_allowed` (logical): Whether OTO orders are allowed.
+- oto_allowed (logical) Whether OTO orders are allowed.
 
-- `quote_order_qty_market_allowed` (logical): Whether quote quantity
-  market orders are allowed.
+- quote_order_qty_market_allowed (logical) Whether quote quantity market
+  orders are allowed.
 
-- `allow_trailing_stop` (logical): Whether trailing stop orders are
+- allow_trailing_stop (logical) Whether trailing stop orders are
   allowed.
 
-- `cancel_replace_allowed` (logical): Whether cancel-replace is allowed.
+- cancel_replace_allowed (logical) Whether cancel-replace is allowed.
 
-- `is_spot_trading_allowed` (logical): Whether spot trading is enabled.
+- is_spot_trading_allowed (logical) Whether spot trading is enabled.
 
-- `is_margin_trading_allowed` (logical): Whether margin trading is
-  enabled.
+- is_margin_trading_allowed (logical) Whether margin trading is enabled.
 
-- `filters` (list): List of filter objects (LOT_SIZE, PRICE_FILTER,
-  etc.) — kept as list-column due to heterogeneous schemas.
+- lot_min_qty (numeric \| NA) Minimum order quantity from LOT_SIZE
+  filter (`NA` when the symbol carries no LOT_SIZE filter).
 
-- `permissions` (character): Comma-separated trading permissions (e.g.,
-  `"SPOT,MARGIN"`).
+- lot_max_qty (numeric \| NA) Maximum order quantity from LOT_SIZE
+  filter.
 
-- `default_self_trade_prevention_mode` (character): Default STP mode.
+- lot_step_size (numeric \| NA) Quantity step size from LOT_SIZE filter.
 
-- `allowed_self_trade_prevention_modes` (character): Comma-separated
+- price_min (numeric) Minimum price from PRICE_FILTER.
+
+- price_max (numeric) Maximum price from PRICE_FILTER.
+
+- price_tick_size (numeric) Price tick size from PRICE_FILTER.
+
+- min_notional (numeric \| NA) Minimum notional value from MIN_NOTIONAL
+  filter (`NA` when the symbol carries no NOTIONAL filter).
+
+- filters_raw (character) JSON-encoded copy of the full per-symbol
+  `filters` array. Preserves filter types not pulled into curated
+  columns (`PERCENT_PRICE`, `PERCENT_PRICE_BY_SIDE`, `MARKET_LOT_SIZE`,
+  `MAX_NUM_ORDERS`, `MAX_NUM_ALGO_ORDERS`, `MAX_NUM_ICEBERG_ORDERS`,
+  `ICEBERG_PARTS`, `MAX_POSITION`, `TRAILING_DELTA`, ...). Recover with
+  `jsonlite::fromJSON(dt$filters_raw[1])`. `NA` if Binance returned no
+  filters for the symbol.
+
+- permissions (character \| NA) Semicolon-separated trading permissions
+  (e.g., `"SPOT;MARGIN"`). Recover via
+  `strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]`. **Note:** on
+  newer symbols Binance often returns `permissions = []` and populates
+  `permission_sets` instead, so this column is `NA` for those symbols.
+  Prefer `permission_sets` for new code.
+
+- permission_sets (character \| NA) JSON string preserving Binance's
+  array-of-arrays structure (e.g.
+  `'[["SPOT","MARGIN"],["TRD_GRP_004"]]'`). Inner groupings carry
+  semantic meaning — each inner array is an alternative permission set —
+  so we don't flatten with `;`. Recover with
+  `jsonlite::fromJSON(dt$permission_sets[1])`. `NA` when the symbol
+  omits the field.
+
+- default_self_trade_prevention_mode (character) Default STP mode.
+
+- allowed_self_trade_prevention_modes (character) Semicolon-separated
   allowed STP modes.
+
+Exchange-wide metadata returned by the same endpoint (`rateLimits`,
+`exchangeFilters`, `sors`) is exposed via sibling methods — see
+`get_rate_limits()` and `get_exchange_filters()`. The scalar
+`serverTime` is available via the existing `get_server_time()`.
 
 #### Examples
 
@@ -294,6 +342,99 @@ include:
     market <- BinanceMarketData$new()
     info <- market$get_exchange_info("BTCUSDT")
     print(info[, .(symbol, status, base_asset, quote_asset)])
+
+    # Recover filter types not in curated columns
+    jsonlite::fromJSON(info$filters_raw[1])
+
+    # Exchange-wide metadata via sibling methods
+    market$get_rate_limits()
+    market$get_exchange_filters()
+    }
+
+------------------------------------------------------------------------
+
+### Method `get_rate_limits()`
+
+Get Exchange Rate Limits
+
+Retrieves the exchange-wide API rate-limit rules (request weight per
+minute, orders per second / per day, etc.). These rules apply to every
+method that hits the API, not to any single symbol — so they live on a
+dedicated sibling method rather than being replicated on each row of
+`get_exchange_info()`.
+
+#### API Endpoint
+
+`GET https://api.binance.com/api/v3/exchangeInfo` (returns the same
+payload as `get_exchange_info()`; this method extracts the `rateLimits`
+slice.)
+
+#### Official Documentation
+
+[Binance Exchange
+Info](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints#exchange-information)
+Verified: 2026-05-22
+
+#### Usage
+
+    BinanceMarketData$get_rate_limits()
+
+#### Returns
+
+(data.table \| promise\<data.table\>) one row per rate-limit rule (empty
+when Binance returned no `rateLimits` block):
+
+- rate_limit_type (character) `"REQUEST_WEIGHT"`, `"ORDERS"`,
+  `"RAW_REQUESTS"`.
+
+- interval (character) `"SECOND"`, `"MINUTE"`, `"DAY"`.
+
+- interval_num (integer) Multiplier for `interval`.
+
+- limit (integer) Maximum requests / orders permitted in the interval.
+
+#### Examples
+
+    \dontrun{
+    market <- BinanceMarketData$new()
+    market$get_rate_limits()
+    }
+
+------------------------------------------------------------------------
+
+### Method `get_exchange_filters()`
+
+Get Exchange-Wide Filters
+
+Retrieves the exchange-wide filter rules (e.g.
+`EXCHANGE_MAX_NUM_ORDERS`, `EXCHANGE_MAX_NUM_ALGO_ORDERS`). These
+constrain the user across all symbols rather than per-symbol, so they're
+a sibling method to `get_exchange_info()`.
+
+Almost always empty in practice — Binance reserves the field for future
+use but currently leaves it as `[]` on most accounts.
+
+#### API Endpoint
+
+`GET https://api.binance.com/api/v3/exchangeInfo` (returns the same
+payload as `get_exchange_info()`; this method extracts the
+`exchangeFilters` slice.)
+
+#### Usage
+
+    BinanceMarketData$get_exchange_filters()
+
+#### Returns
+
+(data.table \| promise\<data.table\>) one row per exchange-wide filter
+rule. Empty when Binance returns no `exchangeFilters` (the common case),
+so this return is schemaless (no fixed columns).
+
+#### Examples
+
+    \dontrun{
+    market <- BinanceMarketData$new()
+    market$get_exchange_filters()
     }
 
 ------------------------------------------------------------------------
@@ -311,8 +452,8 @@ Retrieves the latest price for a specific symbol.
 #### Official Documentation
 
 [Binance Symbol Price
-Ticker](https://binance-docs.github.io/apidocs/spot/en/#symbol-price-ticker)
-Verified: 2026-03-10
+Ticker](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#symbol-price-ticker)
+Verified: 2026-05-22
 
 #### curl
 
@@ -330,15 +471,15 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `symbol` (character): Trading pair identifier.
+- symbol (character) Trading pair identifier.
 
-- `price` (character): Latest traded price as string.
+- price (character) Latest traded price as string.
 
 #### Examples
 
@@ -363,8 +504,8 @@ Retrieves the latest price for all trading pairs in a single request.
 #### Official Documentation
 
 [Binance Symbol Price
-Ticker](https://binance-docs.github.io/apidocs/spot/en/#symbol-price-ticker)
-Verified: 2026-03-10
+Ticker](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#symbol-price-ticker)
+Verified: 2026-05-22
 
 #### curl
 
@@ -384,11 +525,11 @@ Verified: 2026-03-10
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row per symbol:
 
-- `symbol` (character): Trading pair identifier.
+- symbol (character) Trading pair identifier.
 
-- `price` (character): Latest traded price as string.
+- price (character) Latest traded price as string.
 
 #### Examples
 
@@ -413,8 +554,8 @@ Retrieves the best bid and ask price and quantity for a symbol.
 #### Official Documentation
 
 [Binance Symbol Order Book
-Ticker](https://binance-docs.github.io/apidocs/spot/en/#symbol-order-book-ticker)
-Verified: 2026-03-10
+Ticker](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#symbol-order-book-ticker)
+Verified: 2026-05-22
 
 #### curl
 
@@ -438,21 +579,11 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-
-- `symbol` (character): Trading pair identifier.
-
-- `bid_price` (character): Best bid price.
-
-- `bid_qty` (character): Quantity available at best bid.
-
-- `ask_price` (character): Best ask price.
-
-- `ask_qty` (character): Quantity available at best ask.
+(BookTicker \| promise\<BookTicker\>) one row, best bid/ask.
 
 #### Examples
 
@@ -477,8 +608,8 @@ Retrieves rolling 24-hour price change statistics for a symbol.
 #### Official Documentation
 
 [Binance 24hr Ticker Price Change
-Statistics](https://binance-docs.github.io/apidocs/spot/en/#24hr-ticker-price-change-statistics)
-Verified: 2026-03-10
+Statistics](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#24hr-ticker-price-change-statistics)
+Verified: 2026-05-22
 
 #### curl
 
@@ -518,54 +649,53 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `symbol` (character): Trading pair identifier.
+- symbol (character) Trading pair identifier.
 
-- `price_change` (character): Absolute price change over 24h.
+- price_change (character) Absolute price change over 24h.
 
-- `price_change_percent` (character): Percentage price change over 24h.
+- price_change_percent (character) Percentage price change over 24h.
 
-- `weighted_avg_price` (character): Volume-weighted average price over
-  24h.
+- weighted_avg_price (character) Volume-weighted average price over 24h.
 
-- `prev_close_price` (character): Previous day's closing price.
+- prev_close_price (character) Previous day's closing price.
 
-- `last_price` (character): Most recent trade price.
+- last_price (character) Most recent trade price.
 
-- `last_qty` (character): Most recent trade quantity.
+- last_qty (character) Most recent trade quantity.
 
-- `bid_price` (character): Current best bid price.
+- bid_price (character) Current best bid price.
 
-- `bid_qty` (character): Current best bid quantity.
+- bid_qty (character) Current best bid quantity.
 
-- `ask_price` (character): Current best ask price.
+- ask_price (character) Current best ask price.
 
-- `ask_qty` (character): Current best ask quantity.
+- ask_qty (character) Current best ask quantity.
 
-- `open_price` (character): Price at 24h window open.
+- open_price (character) Price at 24h window open.
 
-- `high_price` (character): Highest price in 24h.
+- high_price (character) Highest price in 24h.
 
-- `low_price` (character): Lowest price in 24h.
+- low_price (character) Lowest price in 24h.
 
-- `volume` (character): Total base asset volume in 24h.
+- volume (character) Total base asset volume in 24h.
 
-- `quote_volume` (character): Total quote asset volume in 24h.
+- quote_volume (character) Total quote asset volume in 24h.
 
-- `open_time` (POSIXct): Start of the 24h window.
+- open_time (POSIXct) Start of the 24h window.
 
-- `close_time` (POSIXct): End of the 24h window.
+- close_time (POSIXct) End of the 24h window.
 
-- `first_id` (integer): First trade ID in the window.
+- first_id (numeric) First trade ID in the window.
 
-- `last_id` (integer): Last trade ID in the window.
+- last_id (numeric) Last trade ID in the window.
 
-- `count` (integer): Total number of trades in 24h.
+- count (integer) Total number of trades in 24h.
 
 #### Examples
 
@@ -573,6 +703,83 @@ Verified: 2026-03-10
     market <- BinanceMarketData$new()
     stats <- market$get_24hr_stats("BTCUSDT")
     print(stats[, .(symbol, last_price, price_change_percent, volume)])
+    }
+
+------------------------------------------------------------------------
+
+### Method `get_all_24hr_stats()`
+
+Get 24hr Ticker Statistics for All Symbols
+
+Retrieves rolling 24-hour price change statistics for all trading pairs
+in a single request.
+
+#### API Endpoint
+
+`GET https://api.binance.com/api/v3/ticker/24hr` (no symbol parameter)
+
+#### Official Documentation
+
+[Binance 24hr Ticker Price Change
+Statistics](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#24hr-ticker-price-change-statistics)
+
+#### Usage
+
+    BinanceMarketData$get_all_24hr_stats()
+
+#### Returns
+
+(data.table \| promise\<data.table\>) one row per symbol, the same
+columns as `get_24hr_stats()`.
+
+- symbol (character) Trading pair identifier.
+
+- price_change (character) Absolute price change over 24h.
+
+- price_change_percent (character) Percentage price change over 24h.
+
+- weighted_avg_price (character) Volume-weighted average price over 24h.
+
+- prev_close_price (character) Previous day's closing price.
+
+- last_price (character) Most recent trade price.
+
+- last_qty (character) Most recent trade quantity.
+
+- bid_price (character) Current best bid price.
+
+- bid_qty (character) Current best bid quantity.
+
+- ask_price (character) Current best ask price.
+
+- ask_qty (character) Current best ask quantity.
+
+- open_price (character) Price at 24h window open.
+
+- high_price (character) Highest price in 24h.
+
+- low_price (character) Lowest price in 24h.
+
+- volume (character) Total base asset volume in 24h.
+
+- quote_volume (character) Total quote asset volume in 24h.
+
+- open_time (POSIXct) Start of the 24h window.
+
+- close_time (POSIXct) End of the 24h window.
+
+- first_id (numeric) First trade ID in the window.
+
+- last_id (numeric) Last trade ID in the window.
+
+- count (integer) Total number of trades in 24h.
+
+#### Examples
+
+    \dontrun{
+    market <- BinanceMarketData$new()
+    all_stats <- market$get_all_24hr_stats()
+    print(all_stats[1:5, .(symbol, last_price, price_change_percent, volume)])
     }
 
 ------------------------------------------------------------------------
@@ -591,8 +798,8 @@ average).
 #### Official Documentation
 
 [Binance Current Average
-Price](https://binance-docs.github.io/apidocs/spot/en/#current-average-price)
-Verified: 2026-03-10
+Price](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#current-average-price)
+Verified: 2026-05-22
 
 #### curl
 
@@ -610,17 +817,17 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `mins` (integer): Number of minutes in the averaging window.
+- mins (integer) Number of minutes in the averaging window.
 
-- `price` (character): Weighted average price over the window.
+- price (character) Weighted average price over the window.
 
-- `close_time` (POSIXct): End of the averaging window.
+- close_time (POSIXct) End of the averaging window.
 
 #### Examples
 
@@ -645,8 +852,8 @@ Retrieves the order book (bids and asks) for a symbol.
 #### Official Documentation
 
 [Binance Order
-Book](https://binance-docs.github.io/apidocs/spot/en/#order-book)
-Verified: 2026-03-10
+Book](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#order-book)
+Verified: 2026-05-22
 
 #### curl
 
@@ -674,25 +881,17 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `limit`:
 
-  Integer or NULL; depth limit. Valid values: 5, 10, 20, 50, 100, 500,
+  (scalar\<count\>?) depth limit. Valid values: 5, 10, 20, 50, 100, 500,
   1000, 5000. Default 100.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-
-- `last_update_id` (character): Sequence ID for orderbook
-  synchronisation.
-
-- `side` (character): `"bid"` or `"ask"`.
-
-- `price` (numeric): Price level.
-
-- `size` (numeric): Available size at this price level.
+(OrderBook \| promise\<OrderBook\>) one row per price level (bids first,
+then asks).
 
 #### Examples
 
@@ -717,8 +916,8 @@ Retrieves the most recent trades for a symbol.
 #### Official Documentation
 
 [Binance Recent Trades
-List](https://binance-docs.github.io/apidocs/spot/en/#recent-trades-list)
-Verified: 2026-03-10
+List](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#recent-trades-list)
+Verified: 2026-05-22
 
 #### curl
 
@@ -746,31 +945,15 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `limit`:
 
-  Integer or NULL; max results (default 500, max 1000).
+  (scalar\<count\>?) max results (default 500, max 1000).
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-
-- `id` (integer): Unique trade identifier.
-
-- `price` (character): Trade execution price.
-
-- `qty` (character): Base asset quantity traded.
-
-- `quote_qty` (character): Quote asset quantity traded.
-
-- `time` (POSIXct): Trade execution time.
-
-- `is_buyer_maker` (logical): `TRUE` if the buyer was the maker (passive
-  side).
-
-- `is_best_match` (logical): `TRUE` if this trade was at the best
-  available price.
+(Trade \| promise\<Trade\>) one row per public trade.
 
 #### Examples
 
@@ -795,8 +978,8 @@ Retrieves historical kline/candlestick data for a symbol.
 #### Official Documentation
 
 [Binance Kline/Candlestick
-Data](https://binance-docs.github.io/apidocs/spot/en/#kline-candlestick-data)
-Verified: 2026-03-10
+Data](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#klinecandlestick-data)
+Verified: 2026-05-22
 
 #### curl
 
@@ -840,77 +1023,67 @@ Verified: 2026-03-10
       endTime = NULL,
       limit = NULL,
       fetch_all = FALSE,
-      sleep = 0.2
+      sleep = 0.2,
+      on_page = NULL
     )
 
 #### Arguments
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `interval`:
 
-  Character; candle interval. Valid values: `"1s"`, `"1m"`, `"3m"`,
-  `"5m"`, `"15m"`, `"30m"`, `"1h"`, `"2h"`, `"4h"`, `"6h"`, `"8h"`,
-  `"12h"`, `"1d"`, `"3d"`, `"1w"`, `"1M"`.
+  (scalar\<character\>) candle interval. Valid values: `"1s"`, `"1m"`,
+  `"3m"`, `"5m"`, `"15m"`, `"30m"`, `"1h"`, `"2h"`, `"4h"`, `"6h"`,
+  `"8h"`, `"12h"`, `"1d"`, `"3d"`, `"1w"`, `"1M"`.
 
 - `startTime`:
 
-  POSIXct or numeric or NULL; start time (ms or POSIXct).
+  (scalar\<POSIXct\> \| scalar\<numeric\>?) start time (ms or POSIXct).
 
 - `endTime`:
 
-  POSIXct or numeric or NULL; end time (ms or POSIXct).
+  (scalar\<POSIXct\> \| scalar\<numeric\>?) end time (ms or POSIXct).
 
 - `limit`:
 
-  Integer or NULL; max results (default 500, max 1000).
+  (scalar\<count\>?) max results (default 500, max 1000).
 
 - `fetch_all`:
 
-  Logical; if `TRUE`, automatically segments the time range into
-  multiple API calls of up to 1000 candles each, fetches all segments,
-  deduplicates overlapping boundaries, and returns the combined result
-  sorted by `open_time`. Both `startTime` and `endTime` are required
-  when enabled. **Warning**: large date ranges will consume multiple API
-  requests and may impact your rate-limit quota. Default `FALSE`.
+  (scalar\<logical\>) if `TRUE`, automatically pages forward through the
+  time range — following the data and stopping at the first empty or
+  short page — and returns the combined result sorted by `open_time`.
+  Both `startTime` and `endTime` are required when enabled. **Warning**:
+  large date ranges will consume multiple API requests and may impact
+  your rate-limit quota. Default `FALSE`.
 
 - `sleep`:
 
-  Numeric; seconds to wait between consecutive API calls when
+  (scalar\<numeric\>) seconds to wait between consecutive API calls when
   `fetch_all = TRUE`. Use this to avoid hitting Binance rate limits.
   Only applies in synchronous mode; async mode chains requests
   sequentially via promises. Default `0.2`.
 
+- `on_page`:
+
+  (function?) optional `function(page)` called with each page (a
+  `data.table`) as it is fetched, when `fetch_all = TRUE`. When
+  supplied, pages are streamed to the callback and **not** accumulated —
+  the method returns invisibly, so the callback owns the data (e.g.
+  writes it to disk). Use it to process arbitrarily large ranges without
+  holding everything in memory. Ignored in single-call mode
+  (`fetch_all = FALSE`), where there is only one page. Default `NULL`
+  (buffer and return the combined table).
+
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-
-- `open_time` (POSIXct): Candle open time.
-
-- `open` (numeric): Opening price.
-
-- `high` (numeric): Highest price during the interval.
-
-- `low` (numeric): Lowest price during the interval.
-
-- `close` (numeric): Closing price.
-
-- `volume` (numeric): Base asset volume traded.
-
-- `close_time` (POSIXct): Candle close time.
-
-- `quote_volume` (numeric): Quote asset volume traded.
-
-- `trades` (integer): Number of trades during the interval.
-
-- `taker_buy_base_volume` (numeric): Base asset volume bought by takers.
-
-- `taker_buy_quote_volume` (numeric): Quote asset volume bought by
-  takers.
-
-- `ignore` (character): Unused field from Binance API.
+(Ohlcv \| promise\<Ohlcv\>) one row per candle. When `fetch_all = TRUE`
+with an `on_page` callback the pages are streamed to the callback and
+the method returns invisibly (`NULL`); the contract below describes the
+buffered (returned) case.
 
 #### Examples
 
@@ -982,6 +1155,31 @@ if (FALSE) { # \dontrun{
 market <- BinanceMarketData$new()
 info <- market$get_exchange_info("BTCUSDT")
 print(info[, .(symbol, status, base_asset, quote_asset)])
+
+# Recover filter types not in curated columns
+jsonlite::fromJSON(info$filters_raw[1])
+
+# Exchange-wide metadata via sibling methods
+market$get_rate_limits()
+market$get_exchange_filters()
+} # }
+
+## ------------------------------------------------
+## Method `BinanceMarketData$get_rate_limits`
+## ------------------------------------------------
+
+if (FALSE) { # \dontrun{
+market <- BinanceMarketData$new()
+market$get_rate_limits()
+} # }
+
+## ------------------------------------------------
+## Method `BinanceMarketData$get_exchange_filters`
+## ------------------------------------------------
+
+if (FALSE) { # \dontrun{
+market <- BinanceMarketData$new()
+market$get_exchange_filters()
 } # }
 
 ## ------------------------------------------------
@@ -1022,6 +1220,16 @@ if (FALSE) { # \dontrun{
 market <- BinanceMarketData$new()
 stats <- market$get_24hr_stats("BTCUSDT")
 print(stats[, .(symbol, last_price, price_change_percent, volume)])
+} # }
+
+## ------------------------------------------------
+## Method `BinanceMarketData$get_all_24hr_stats`
+## ------------------------------------------------
+
+if (FALSE) { # \dontrun{
+market <- BinanceMarketData$new()
+all_stats <- market$get_all_24hr_stats()
+print(all_stats[1:5, .(symbol, last_price, price_change_percent, volume)])
 } # }
 
 ## ------------------------------------------------

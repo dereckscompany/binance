@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Asynchronous Usage with binance • binance</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Asynchronous Usage with binance">
 </head>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,7 +35,9 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with binance</a></li>
     <li><a class="dropdown-item" href="../articles/async-usage.html">Asynchronous Usage with binance</a></li>
+    <li><a class="dropdown-item" href="../articles/websocket-streams.html">Live WebSocket Streams with binance</a></li>
     <li><a class="dropdown-item" href="../articles/margin-futures-trading.html">Margin and Futures Trading with binance</a></li>
+    <li><a class="dropdown-item" href="../articles/data-shapes.html">Package Tour and Data-Shape Conventions</a></li>
   </ul>
 </li>
       </ul>
@@ -62,7 +64,7 @@
 Mezquita</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.0.1/vignettes/async-usage.Rmd" class="external-link"><code>vignettes/async-usage.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/chore/pkgdown-dev-deps/vignettes/async-usage.Rmd" class="external-link"><code>vignettes/async-usage.Rmd</code></a></small>
       <div class="d-none name"><code>async-usage.Rmd</code></div>
     </div>
 
@@ -86,7 +88,7 @@ place orders in parallel.</p>
 <h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="http://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
 <span>  <span class="va">binance</span><span class="op">[</span><span class="va">BinanceMarketData</span>, <span class="va">BinanceTrading</span>, <span class="va">BinanceAccount</span>, <span class="va">get_api_keys</span><span class="op">]</span>,</span>
 <span>  <span class="va">coro</span><span class="op">[</span><span class="va">async</span>, <span class="va">await</span><span class="op">]</span>,</span>
 <span>  <span class="va">later</span><span class="op">[</span><span class="va">run_now</span>, <span class="va">loop_empty</span><span class="op">]</span>,</span>
@@ -139,6 +141,7 @@ the next begins:</p>
 <span>  <span class="va">btc</span> <span class="op">&lt;-</span> <span class="fu">await</span><span class="op">(</span><span class="va">market</span><span class="op">$</span><span class="fu">get_ticker</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">eth</span> <span class="op">&lt;-</span> <span class="fu">await</span><span class="op">(</span><span class="va">market</span><span class="op">$</span><span class="fu">get_ticker</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"ETHUSDT"</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">results</span> <span class="op">&lt;&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>btc <span class="op">=</span> <span class="va">btc</span>, eth <span class="op">=</span> <span class="va">eth</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fetch_tickers</span><span class="op">(</span><span class="op">)</span></span>
@@ -167,6 +170,7 @@ in JavaScript:</p>
 <span>  <span class="co"># Await them together</span></span>
 <span>  <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">await</span><span class="op">(</span><span class="fu">promises</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/promises/reference/promise_all.html" class="external-link">promise_all</a></span><span class="op">(</span>btc <span class="op">=</span> <span class="va">btc_promise</span>, eth <span class="op">=</span> <span class="va">eth_promise</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">results</span> <span class="op">&lt;&lt;-</span> <span class="va">res</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fetch_parallel</span><span class="op">(</span><span class="op">)</span></span>
@@ -189,9 +193,11 @@ in JavaScript:</p>
 <span><span class="va">market</span><span class="op">$</span><span class="fu">get_24hr_stats</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">promises</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/promises/reference/then.html" class="external-link">then</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">stats</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">chain_result</span> <span class="op">&lt;&lt;-</span> <span class="va">stats</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">promises</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/promises/reference/then.html" class="external-link">catch</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">err</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Error: "</span>, <span class="fu"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">conditionMessage</a></span><span class="op">(</span><span class="va">err</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw">while</span> <span class="op">(</span><span class="op">!</span><span class="fu">later</span><span class="fu">::</span><span class="fu"><a href="https://later.r-lib.org/reference/loop_empty.html" class="external-link">loop_empty</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -214,13 +220,14 @@ sequentially:</p>
 <span><span class="va">fetch_watchlist</span> <span class="op">&lt;-</span> <span class="fu">coro</span><span class="fu">::</span><span class="fu"><a href="https://coro.r-lib.org/reference/async.html" class="external-link">async</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Fire all requests concurrently</span></span>
 <span>  <span class="va">ticker_promises</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">symbols</span>, <span class="kw">function</span><span class="op">(</span><span class="va">sym</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">market</span><span class="op">$</span><span class="fu">get_ticker</span><span class="op">(</span>symbol <span class="op">=</span> <span class="va">sym</span><span class="op">)</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">market</span><span class="op">$</span><span class="fu">get_ticker</span><span class="op">(</span>symbol <span class="op">=</span> <span class="va">sym</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ticker_promises</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">symbols</span></span>
 <span></span>
 <span>  <span class="co"># Await all at once</span></span>
 <span>  <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">await</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="fu">promises</span><span class="fu">::</span><span class="va"><a href="https://rstudio.github.io/promises/reference/promise_all.html" class="external-link">promise_all</a></span>, <span class="va">ticker_promises</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">all_tickers</span> <span class="op">&lt;&lt;-</span> <span class="va">res</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">fetch_watchlist</span><span class="op">(</span><span class="op">)</span></span>

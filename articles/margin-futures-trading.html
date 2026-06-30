@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Margin and Futures Trading with binance • binance</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Margin and Futures Trading with binance">
 </head>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,7 +35,9 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with binance</a></li>
     <li><a class="dropdown-item" href="../articles/async-usage.html">Asynchronous Usage with binance</a></li>
+    <li><a class="dropdown-item" href="../articles/websocket-streams.html">Live WebSocket Streams with binance</a></li>
     <li><a class="dropdown-item" href="../articles/margin-futures-trading.html">Margin and Futures Trading with binance</a></li>
+    <li><a class="dropdown-item" href="../articles/data-shapes.html">Package Tour and Data-Shape Conventions</a></li>
   </ul>
 </li>
       </ul>
@@ -62,7 +64,7 @@
 Mezquita</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.0.1/vignettes/margin-futures-trading.Rmd" class="external-link"><code>vignettes/margin-futures-trading.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/chore/pkgdown-dev-deps/vignettes/margin-futures-trading.Rmd" class="external-link"><code>vignettes/margin-futures-trading.Rmd</code></a></small>
       <div class="d-none name"><code>margin-futures-trading.Rmd</code></div>
     </div>
 
@@ -141,7 +143,7 @@ margin trading:</p>
 <code class="sourceCode R"><span><span class="va">pairs</span> <span class="op">&lt;-</span> <span class="va">margin_data</span><span class="op">$</span><span class="fu">get_all_pairs</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">pairs</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;      base        id is_buy_allowed is_margin_trade is_sell_allowed  quote</span></span>
-<span><span class="co">#&gt;    &lt;char&gt;     &lt;int&gt;         &lt;lgcl&gt;          &lt;lgcl&gt;          &lt;lgcl&gt; &lt;char&gt;</span></span>
+<span><span class="co">#&gt;    &lt;char&gt;     &lt;num&gt;         &lt;lgcl&gt;          &lt;lgcl&gt;          &lt;lgcl&gt; &lt;char&gt;</span></span>
 <span><span class="co">#&gt; 1:    BTC 351637150           TRUE            TRUE            TRUE   USDT</span></span>
 <span><span class="co">#&gt; 2:    ETH 351637151           TRUE            TRUE            TRUE   USDT</span></span>
 <span><span class="co">#&gt;     symbol</span></span>
@@ -172,9 +174,11 @@ borrowing limits per coin:</p>
 <pre><code><span><span class="co">#&gt;    vip_level   coin transfer_in transfer_out borrowable daily_interest</span></span>
 <span><span class="co">#&gt;        &lt;int&gt; &lt;char&gt;      &lt;lgcl&gt;       &lt;lgcl&gt;     &lt;lgcl&gt;         &lt;char&gt;</span></span>
 <span><span class="co">#&gt; 1:         0    BTC        TRUE         TRUE       TRUE     0.00015000</span></span>
-<span><span class="co">#&gt;    yearly_interest marginable_pairs</span></span>
-<span><span class="co">#&gt;             &lt;char&gt;           &lt;list&gt;</span></span>
-<span><span class="co">#&gt; 1:      0.05475000        &lt;list[2]&gt;</span></span></code></pre>
+<span><span class="co">#&gt; 2:         0    BTC        TRUE         TRUE       TRUE     0.00015000</span></span>
+<span><span class="co">#&gt;    yearly_interest marginable_pair</span></span>
+<span><span class="co">#&gt;             &lt;char&gt;          &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:      0.05475000         BTCUSDT</span></span>
+<span><span class="co">#&gt; 2:      0.05475000         BTCBUSD</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="interest-rate-history">Interest Rate History<a class="anchor" aria-label="anchor" href="#interest-rate-history"></a>
@@ -233,7 +237,7 @@ balance.</li>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">order</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;     symbol order_id        client_order_id       transact_time          price</span></span>
-<span><span class="co">#&gt;     &lt;char&gt;    &lt;int&gt;                 &lt;char&gt;              &lt;POSc&gt;         &lt;char&gt;</span></span>
+<span><span class="co">#&gt;     &lt;char&gt;    &lt;num&gt;                 &lt;char&gt;              &lt;POSc&gt;         &lt;char&gt;</span></span>
 <span><span class="co">#&gt; 1: BTCUSDT       28 6gCrw2kRUAF9CvJDGP16IP 2017-10-11 12:32:56 50000.00000000</span></span>
 <span><span class="co">#&gt;      orig_qty executed_qty cummulative_quote_qty status time_in_force   type</span></span>
 <span><span class="co">#&gt;        &lt;char&gt;       &lt;char&gt;                &lt;char&gt; &lt;char&gt;        &lt;char&gt; &lt;char&gt;</span></span>
@@ -245,15 +249,18 @@ balance.</li>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">open</span> <span class="op">&lt;-</span> <span class="va">margin</span><span class="op">$</span><span class="fu">get_open_orders</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">open</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt;     symbol order_id        client_order_id transact_time          price</span></span>
-<span><span class="co">#&gt;     &lt;char&gt;    &lt;int&gt;                 &lt;char&gt;         &lt;num&gt;         &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1: BTCUSDT       28 6gCrw2kRUAF9CvJDGP16IP  1.507725e+12 50000.00000000</span></span>
-<span><span class="co">#&gt;      orig_qty executed_qty cummulative_quote_qty status time_in_force   type</span></span>
-<span><span class="co">#&gt;        &lt;char&gt;       &lt;char&gt;                &lt;char&gt; &lt;char&gt;        &lt;char&gt; &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1: 0.00010000   0.00000000            0.00000000    NEW           GTC  LIMIT</span></span>
-<span><span class="co">#&gt;      side is_isolated self_trade_prevention_mode</span></span>
-<span><span class="co">#&gt;    &lt;char&gt;      &lt;lgcl&gt;                     &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1:    BUY       FALSE                       NONE</span></span></code></pre>
+<pre><code><span><span class="co">#&gt;     symbol order_id       client_order_id          price   orig_qty</span></span>
+<span><span class="co">#&gt;     &lt;char&gt;    &lt;num&gt;                &lt;char&gt;         &lt;char&gt;     &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1: BTCUSDT    1e+08 mock_margin_open_0001 50000.00000000 0.00100000</span></span>
+<span><span class="co">#&gt;    executed_qty cummulative_quote_qty status time_in_force   type   side</span></span>
+<span><span class="co">#&gt;          &lt;char&gt;                &lt;char&gt; &lt;char&gt;        &lt;char&gt; &lt;char&gt; &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:   0.00000000            0.00000000    NEW           GTC  LIMIT    BUY</span></span>
+<span><span class="co">#&gt;    stop_price iceberg_qty                time         update_time is_working</span></span>
+<span><span class="co">#&gt;        &lt;char&gt;      &lt;char&gt;              &lt;POSc&gt;              &lt;POSc&gt;     &lt;lgcl&gt;</span></span>
+<span><span class="co">#&gt; 1: 0.00000000  0.00000000 2024-06-10 06:13:20 2024-06-10 06:13:25       TRUE</span></span>
+<span><span class="co">#&gt;    is_isolated self_trade_prevention_mode</span></span>
+<span><span class="co">#&gt;         &lt;lgcl&gt;                     &lt;char&gt;</span></span>
+<span><span class="co">#&gt; 1:       FALSE                       NONE</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="margin-account-information">Margin Account Information<a class="anchor" aria-label="anchor" href="#margin-account-information"></a>
@@ -262,14 +269,18 @@ balance.</li>
 total assets, and liabilities:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">account</span> <span class="op">&lt;-</span> <span class="va">margin</span><span class="op">$</span><span class="fu">get_account</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">account</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">borrow_enabled</span>, <span class="va">margin_level</span>, <span class="va">total_asset_of_btc</span>,</span>
-<span>                   <span class="va">total_liability_of_btc</span>, <span class="va">total_net_asset_of_btc</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">account</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span></span>
+<span>  <span class="va">borrow_enabled</span>, <span class="va">margin_level</span>, <span class="va">total_asset_of_btc</span>,</span>
+<span>  <span class="va">total_liability_of_btc</span>, <span class="va">total_net_asset_of_btc</span></span>
+<span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;    borrow_enabled margin_level total_asset_of_btc total_liability_of_btc</span></span>
 <span><span class="co">#&gt;            &lt;lgcl&gt;       &lt;char&gt;             &lt;char&gt;                 &lt;char&gt;</span></span>
 <span><span class="co">#&gt; 1:           TRUE  11.64405625         6.82000000             0.58633215</span></span>
+<span><span class="co">#&gt; 2:           TRUE  11.64405625         6.82000000             0.58633215</span></span>
 <span><span class="co">#&gt;    total_net_asset_of_btc</span></span>
 <span><span class="co">#&gt;                    &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1:             6.23366785</span></span></code></pre>
+<span><span class="co">#&gt; 1:             6.23366785</span></span>
+<span><span class="co">#&gt; 2:             6.23366785</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="margin-trade-history">Margin Trade History<a class="anchor" aria-label="anchor" href="#margin-trade-history"></a>
@@ -279,7 +290,7 @@ total assets, and liabilities:</p>
 <code class="sourceCode R"><span><span class="va">trades</span> <span class="op">&lt;-</span> <span class="va">margin</span><span class="op">$</span><span class="fu">get_trades</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">trades</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;     symbol    id order_id          price        qty   quote_qty commission</span></span>
-<span><span class="co">#&gt;     &lt;char&gt; &lt;int&gt;    &lt;int&gt;         &lt;char&gt;     &lt;char&gt;      &lt;char&gt;     &lt;char&gt;</span></span>
+<span><span class="co">#&gt;     &lt;char&gt; &lt;num&gt;    &lt;num&gt;         &lt;char&gt;     &lt;char&gt;      &lt;char&gt;     &lt;char&gt;</span></span>
 <span><span class="co">#&gt; 1: BTCUSDT 28457   100234 67232.90000000 0.00100000 67.23290000 0.00000100</span></span>
 <span><span class="co">#&gt;    commission_asset                time is_buyer is_maker is_best_match</span></span>
 <span><span class="co">#&gt;              &lt;char&gt;              &lt;POSc&gt;   &lt;lgcl&gt;   &lt;lgcl&gt;        &lt;lgcl&gt;</span></span>
@@ -363,9 +374,11 @@ positions:</p>
 <p>Query your futures account summary and current positions:</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">account</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_account</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">account</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">total_initial_margin</span>, <span class="va">total_maint_margin</span>,</span>
-<span>                   <span class="va">total_wallet_balance</span>, <span class="va">total_unrealized_profit</span>,</span>
-<span>                   <span class="va">available_balance</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">account</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span></span>
+<span>  <span class="va">total_initial_margin</span>, <span class="va">total_maint_margin</span>,</span>
+<span>  <span class="va">total_wallet_balance</span>, <span class="va">total_unrealized_profit</span>,</span>
+<span>  <span class="va">available_balance</span></span>
+<span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;    total_initial_margin total_maint_margin total_wallet_balance</span></span>
 <span><span class="co">#&gt;                  &lt;char&gt;             &lt;char&gt;               &lt;char&gt;</span></span>
 <span><span class="co">#&gt; 1:           0.00000000         0.00000000        1000.00000000</span></span>
@@ -428,9 +441,9 @@ real order:</p>
 <span>  timeInForce <span class="op">=</span> <span class="st">"GTC"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">test</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt;     symbol   side   type    status</span></span>
-<span><span class="co">#&gt;     &lt;char&gt; &lt;char&gt; &lt;char&gt;    &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1: BTCUSDT    BUY  LIMIT validated</span></span></code></pre>
+<pre><code><span><span class="co">#&gt;    validated</span></span>
+<span><span class="co">#&gt;       &lt;lgcl&gt;</span></span>
+<span><span class="co">#&gt; 1:      TRUE</span></span></code></pre>
 <p>Place a real futures order (use with caution on a live account):</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">order</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">add_order</span><span class="op">(</span></span>
@@ -472,9 +485,9 @@ entries:</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">income</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_income_history</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">income</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt;     symbol income_type      income  asset   info                time   tran_id</span></span>
-<span><span class="co">#&gt;     &lt;char&gt;      &lt;char&gt;      &lt;char&gt; &lt;char&gt; &lt;char&gt;              &lt;POSc&gt;     &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1: BTCUSDT FUNDING_FEE -0.01200000   USDT        2022-08-26 05:52:26 100000001</span></span>
+<pre><code><span><span class="co">#&gt;     symbol income_type      income  asset   info                time tran_id</span></span>
+<span><span class="co">#&gt;     &lt;char&gt;      &lt;char&gt;      &lt;char&gt; &lt;char&gt; &lt;char&gt;              &lt;POSc&gt;   &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1: BTCUSDT FUNDING_FEE -0.01200000   USDT        2022-08-26 05:52:26   1e+08</span></span>
 <span><span class="co">#&gt;    trade_id</span></span>
 <span><span class="co">#&gt;      &lt;char&gt;</span></span>
 <span><span class="co">#&gt; 1:</span></span></code></pre>
@@ -487,7 +500,7 @@ entries:</p>
 <code class="sourceCode R"><span><span class="va">trades</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_trades</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">trades</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;     symbol     id  order_id   side    price    qty realized_pnl margin_asset</span></span>
-<span><span class="co">#&gt;     &lt;char&gt;  &lt;int&gt;     &lt;int&gt; &lt;char&gt;   &lt;char&gt; &lt;char&gt;       &lt;char&gt;       &lt;char&gt;</span></span>
+<span><span class="co">#&gt;     &lt;char&gt;  &lt;num&gt;     &lt;num&gt; &lt;char&gt;   &lt;char&gt; &lt;char&gt;       &lt;char&gt;       &lt;char&gt;</span></span>
 <span><span class="co">#&gt; 1: BTCUSDT 100001 283194212    BUY 50000.00  0.001   0.00000000         USDT</span></span>
 <span><span class="co">#&gt;      quote_qty commission commission_asset                time position_side</span></span>
 <span><span class="co">#&gt;         &lt;char&gt;     &lt;char&gt;           &lt;char&gt;              &lt;POSc&gt;        &lt;char&gt;</span></span>

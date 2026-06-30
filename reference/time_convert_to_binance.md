@@ -12,16 +12,17 @@ time_convert_to_binance(datetime, unit = c("ms", "ns", "s"))
 
 - datetime:
 
-  POSIXct object to convert.
+  (scalar\<POSIXct\>) POSIXct object to convert.
 
 - unit:
 
-  Character; output unit: `"ms"` (milliseconds, default), `"ns"`
-  (nanoseconds), or `"s"` (seconds).
+  (scalar\<character in c("ms", "ns", "s")\>) output unit: `"ms"`
+  (milliseconds, default), `"ns"` (nanoseconds), or `"s"` (seconds).
 
 ## Value
 
-Numeric UNIX timestamp in the specified unit.
+(scalar\<numeric\> \| scalar\<integer\>) UNIX timestamp in the specified
+unit (an integer for `"s"`, a double otherwise).
 
 ## Examples
 

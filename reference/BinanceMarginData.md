@@ -36,7 +36,7 @@ Most methods require authentication (valid API key and secret).
 ### Official Documentation
 
 [Binance Margin
-Account/Trade](https://binance-docs.github.io/apidocs/spot/en/#margin-account-trade)
+Account/Trade](https://developers.binance.com/docs/margin_trading/trade)
 
 ### Endpoints Covered
 
@@ -50,8 +50,10 @@ Account/Trade](https://binance-docs.github.io/apidocs/spot/en/#margin-account-tr
 | get_cross_margin_data     | GET /sapi/v1/margin/crossMarginData     | Yes  |
 | get_isolated_margin_data  | GET /sapi/v1/margin/isolatedMarginData  | Yes  |
 
-## Super class
+## Super classes
 
+[`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
+-\>
 [`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceMarginData`
 
@@ -92,9 +94,9 @@ Retrieves a list of all cross margin trading pairs available on Binance.
 #### Official Documentation
 
 [Binance Get All Cross Margin
-Pairs](https://binance-docs.github.io/apidocs/spot/en/#get-all-cross-margin-pairs-market_data)
+Pairs](https://developers.binance.com/docs/margin_trading/market-data/Get-All-Cross-Margin-Pairs)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -132,25 +134,25 @@ Verified: 2026-03-10
 
 - `recvWindow`:
 
-  Integer or NULL; request validity window in milliseconds.
+  (scalar\<count\>?) request validity window in milliseconds.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row per pair:
 
-- `base` (character): Base asset code (e.g., `"BTC"`).
+- base (character) Base asset code (e.g., `"BTC"`).
 
-- `id` (integer): Pair identifier.
+- id (numeric) Pair identifier.
 
-- `is_buy_allowed` (logical): Whether buying is allowed.
+- is_buy_allowed (logical) Whether buying is allowed.
 
-- `is_margin_trade` (logical): Whether margin trading is enabled.
+- is_margin_trade (logical) Whether margin trading is enabled.
 
-- `is_sell_allowed` (logical): Whether selling is allowed.
+- is_sell_allowed (logical) Whether selling is allowed.
 
-- `quote` (character): Quote asset code (e.g., `"USDT"`).
+- quote (character) Quote asset code (e.g., `"USDT"`).
 
-- `symbol` (character): Trading pair identifier (e.g., `"BTCUSDT"`).
+- symbol (character) Trading pair identifier (e.g., `"BTCUSDT"`).
 
 #### Examples
 
@@ -176,9 +178,9 @@ Binance.
 #### Official Documentation
 
 [Binance Get All Isolated Margin
-Symbol](https://binance-docs.github.io/apidocs/spot/en/#get-all-isolated-margin-symbol-user_data)
+Symbol](https://developers.binance.com/docs/margin_trading/market-data/Get-All-Isolated-Margin-Symbol)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -214,23 +216,23 @@ Verified: 2026-03-10
 
 - `recvWindow`:
 
-  Integer or NULL; request validity window in milliseconds.
+  (scalar\<count\>?) request validity window in milliseconds.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row per pair:
 
-- `symbol` (character): Trading pair identifier (e.g., `"BTCUSDT"`).
+- symbol (character) Trading pair identifier (e.g., `"BTCUSDT"`).
 
-- `base` (character): Base asset code (e.g., `"BTC"`).
+- base (character) Base asset code (e.g., `"BTC"`).
 
-- `quote` (character): Quote asset code (e.g., `"USDT"`).
+- quote (character) Quote asset code (e.g., `"USDT"`).
 
-- `is_margin_trade` (logical): Whether margin trading is enabled.
+- is_margin_trade (logical) Whether margin trading is enabled.
 
-- `is_buy_allowed` (logical): Whether buying is allowed.
+- is_buy_allowed (logical) Whether buying is allowed.
 
-- `is_sell_allowed` (logical): Whether selling is allowed.
+- is_sell_allowed (logical) Whether selling is allowed.
 
 #### Examples
 
@@ -256,9 +258,9 @@ endpoint that does not require authentication.
 #### Official Documentation
 
 [Binance Query Margin
-PriceIndex](https://binance-docs.github.io/apidocs/spot/en/#query-margin-priceindex-market_data)
+PriceIndex](https://developers.binance.com/docs/margin_trading/market-data/Query-Margin-PriceIndex)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -276,17 +278,17 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `calc_time` (POSIXct): Calculation time as UTC datetime.
+- calc_time (POSIXct) Calculation time as UTC datetime.
 
-- `price` (character): Margin price index value.
+- price (character) Margin price index value.
 
-- `symbol` (character): Trading pair identifier.
+- symbol (character) Trading pair identifier.
 
 #### Examples
 
@@ -311,9 +313,9 @@ Retrieves historical interest rate data for a given asset.
 #### Official Documentation
 
 [Binance Query Margin Interest Rate
-History](https://binance-docs.github.io/apidocs/spot/en/#query-margin-interest-rate-history-user_data)
+History](https://developers.binance.com/docs/margin_trading/borrow-and-repay/Query-Margin-Interest-Rate-History)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -351,35 +353,35 @@ Verified: 2026-03-10
 
 - `asset`:
 
-  Character; asset code (e.g., `"BTC"`).
+  (scalar\<character\>) asset code (e.g., `"BTC"`).
 
 - `vipLevel`:
 
-  Integer or NULL; VIP level to query. Defaults to user's VIP level.
+  (scalar\<count\>?) VIP level to query. Defaults to user's VIP level.
 
 - `startTime`:
 
-  Numeric or NULL; start time in milliseconds.
+  (scalar\<numeric\>?) start time in milliseconds.
 
 - `endTime`:
 
-  Numeric or NULL; end time in milliseconds.
+  (scalar\<numeric\>?) end time in milliseconds.
 
 - `recvWindow`:
 
-  Integer or NULL; request validity window in milliseconds.
+  (scalar\<count\>?) request validity window in milliseconds.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row per rate record:
 
-- `asset` (character): Asset code (e.g., `"BTC"`).
+- asset (character) Asset code (e.g., `"BTC"`).
 
-- `daily_interest_rate` (character): Daily interest rate as string.
+- daily_interest_rate (character) Daily interest rate as string.
 
-- `timestamp` (POSIXct): Record timestamp as UTC datetime.
+- timestamp (POSIXct) Record timestamp as UTC datetime.
 
-- `vip_level` (integer): VIP level for this rate.
+- vip_level (integer) VIP level for this rate.
 
 #### Examples
 
@@ -405,9 +407,9 @@ rates.
 #### Official Documentation
 
 [Binance Query Cross Margin Fee
-Data](https://binance-docs.github.io/apidocs/spot/en/#query-cross-margin-fee-data-user_data)
+Data](https://developers.binance.com/docs/margin_trading/account/Query-Cross-Margin-Fee-Data)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -451,35 +453,39 @@ Verified: 2026-03-10
 
 - `vipLevel`:
 
-  Integer or NULL; VIP level to query. Defaults to user's VIP level.
+  (scalar\<count\>?) VIP level to query. Defaults to user's VIP level.
 
 - `coin`:
 
-  Character or NULL; specific coin to query (e.g., `"BTC"`).
+  (scalar\<character\>?) specific coin to query (e.g., `"BTC"`).
 
 - `recvWindow`:
 
-  Integer or NULL; request validity window in milliseconds.
+  (scalar\<count\>?) request validity window in milliseconds.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row per coin-pair combination:
 
-- `vip_level` (integer): VIP level tier.
+- vip_level (integer) VIP level tier.
 
-- `coin` (character): Coin code (e.g., `"BTC"`).
+- coin (character) Coin code (e.g., `"BTC"`).
 
-- `transfer_in` (logical): Whether transfer in is allowed.
+- transfer_in (logical) Whether transfer in is allowed.
 
-- `transfer_out` (logical): Whether transfer out is allowed.
+- transfer_out (logical) Whether transfer out is allowed.
 
-- `borrowable` (logical): Whether borrowing is allowed.
+- borrowable (logical) Whether borrowing is allowed.
 
-- `daily_interest` (character): Daily interest rate as string.
+- daily_interest (character) Daily interest rate as string.
 
-- `yearly_interest` (character): Yearly interest rate as string.
+- yearly_interest (character) Yearly interest rate as string.
 
-- `marginable_pairs` (list): List of marginable trading pairs.
+- marginable_pair (character) Marginable trading pair (one row per
+  coin-pair combination).
+
+When a coin has multiple marginable pairs, coin-level fields are
+repeated on each row.
 
 #### Examples
 
@@ -504,9 +510,9 @@ Retrieves isolated margin data including leverage and borrowing limits.
 #### Official Documentation
 
 [Binance Query Isolated Margin Fee
-Data](https://binance-docs.github.io/apidocs/spot/en/#query-isolated-margin-fee-data-user_data)
+Data](https://developers.binance.com/docs/margin_trading/account/Query-Isolated-Margin-Fee-Data)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -564,27 +570,27 @@ Verified: 2026-03-10
 
 - `vipLevel`:
 
-  Integer or NULL; VIP level to query. Defaults to user's VIP level.
+  (scalar\<count\>?) VIP level to query. Defaults to user's VIP level.
 
 - `symbol`:
 
-  Character or NULL; specific symbol to query (e.g., `"BTCUSDT"`).
+  (scalar\<character\>?) specific symbol to query (e.g., `"BTCUSDT"`).
 
 - `recvWindow`:
 
-  Integer or NULL; request validity window in milliseconds.
+  (scalar\<count\>?) request validity window in milliseconds.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row per symbol:
 
-- `vip_level` (integer): VIP level tier.
+- vip_level (integer) VIP level tier.
 
-- `symbol` (character): Trading pair identifier.
+- symbol (character) Trading pair identifier.
 
-- `leverage` (character): Maximum leverage available.
+- leverage (character) Maximum leverage available.
 
-- `data` (list): Nested list of coin-level margin details.
+- data (list) Nested list of coin-level margin details.
 
 #### Examples
 

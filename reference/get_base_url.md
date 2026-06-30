@@ -18,12 +18,12 @@ get_base_url(url = Sys.getenv("BINANCE_API_ENDPOINT"))
 
 - url:
 
-  Character string; explicit base URL. Defaults to
+  (scalar\<character\>?) explicit base URL. Defaults to
   `Sys.getenv("BINANCE_API_ENDPOINT")`.
 
 ## Value
 
-Character string; the API base URL.
+(scalar\<character\>) the API base URL.
 
 ## Examples
 

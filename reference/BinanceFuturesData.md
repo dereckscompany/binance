@@ -47,7 +47,7 @@ URL defaults to `https://fapi.binance.com` via
 ### Official Documentation
 
 [Binance USD-M Futures Market
-Data](https://binance-docs.github.io/apidocs/futures/en/#market-data-endpoints)
+Data](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api)
 
 ### Endpoints Covered
 
@@ -55,6 +55,9 @@ Data](https://binance-docs.github.io/apidocs/futures/en/#market-data-endpoints)
 |------------------------|--------------------------------|------|
 | Method                 | Endpoint                       | Auth |
 | get_exchange_info      | GET /fapi/v1/exchangeInfo      | No   |
+| get_rate_limits        | GET /fapi/v1/exchangeInfo      | No   |
+| get_exchange_filters   | GET /fapi/v1/exchangeInfo      | No   |
+| get_futures_assets     | GET /fapi/v1/exchangeInfo      | No   |
 | get_klines             | GET /fapi/v1/klines            | No   |
 | get_mark_price         | GET /fapi/v1/premiumIndex      | No   |
 | get_funding_rate       | GET /fapi/v1/fundingRate       | No   |
@@ -67,8 +70,10 @@ Data](https://binance-docs.github.io/apidocs/futures/en/#market-data-endpoints)
 | get_index_price_klines | GET /fapi/v1/indexPriceKlines  | No   |
 | get_mark_price_klines  | GET /fapi/v1/markPriceKlines   | No   |
 
-## Super class
+## Super classes
 
+[`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
+-\>
 [`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceFuturesData`
 
@@ -79,6 +84,12 @@ Data](https://binance-docs.github.io/apidocs/futures/en/#market-data-endpoints)
 - [`BinanceFuturesData$new()`](#method-BinanceFuturesData-new)
 
 - [`BinanceFuturesData$get_exchange_info()`](#method-BinanceFuturesData-get_exchange_info)
+
+- [`BinanceFuturesData$get_rate_limits()`](#method-BinanceFuturesData-get_rate_limits)
+
+- [`BinanceFuturesData$get_exchange_filters()`](#method-BinanceFuturesData-get_exchange_filters)
+
+- [`BinanceFuturesData$get_futures_assets()`](#method-BinanceFuturesData-get_futures_assets)
 
 - [`BinanceFuturesData$get_klines()`](#method-BinanceFuturesData-get_klines)
 
@@ -127,30 +138,31 @@ configures the server time endpoint for futures when
 
 - `keys`:
 
-  List; API credentials from
+  (list) API credentials from
   [`get_api_keys()`](https://dereckscompany.github.io/binance/reference/get_api_keys.md).
   Defaults to
   [`get_api_keys()`](https://dereckscompany.github.io/binance/reference/get_api_keys.md).
 
 - `base_url`:
 
-  Character; API base URL. Defaults to
+  (scalar\<character\>) API base URL. Defaults to
   [`get_futures_base_url()`](https://dereckscompany.github.io/binance/reference/get_futures_base_url.md).
 
 - `async`:
 
-  Logical; if `TRUE`, methods return promises. Default `FALSE`.
+  (scalar\<logical\>) if `TRUE`, methods return promises. Default
+  `FALSE`.
 
 - `time_source`:
 
-  Character; clock source for HMAC request signing. `"local"` (default)
-  uses [`Sys.time()`](https://rdrr.io/r/base/Sys.time.html). `"server"`
-  fetches the Binance Futures server time before each authenticated
-  request.
+  (scalar\<character\>) clock source for HMAC request signing. `"local"`
+  (default) uses [`Sys.time()`](https://rdrr.io/r/base/Sys.time.html).
+  `"server"` fetches the Binance Futures server time before each
+  authenticated request.
 
 #### Returns
 
-Invisible self.
+(class\<BinanceFuturesData\>) invisibly, self.
 
 ------------------------------------------------------------------------
 
@@ -169,8 +181,8 @@ trading status.
 #### Official Documentation
 
 [Binance Futures Exchange
-Info](https://binance-docs.github.io/apidocs/futures/en/#exchange-information)
-Verified: 2026-03-10
+Info](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Exchange-Information)
+Verified: 2026-05-22
 
 #### curl
 
@@ -216,31 +228,70 @@ Verified: 2026-03-10
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with all
-symbol fields returned by the API, converted to snake_case. Key columns
-include:
+(data.table \| promise\<data.table\>) one row per symbol, with all
+symbol fields returned by the API, converted to snake_case (empty when
+Binance returns no symbols). Key columns include:
 
-- `symbol` (character): Trading pair identifier (e.g., `"BTCUSDT"`).
+- symbol (character) Trading pair identifier (e.g., `"BTCUSDT"`).
 
-- `pair` (character): Underlying pair.
+- pair (character) Underlying pair.
 
-- `contract_type` (character): Contract type (e.g., `"PERPETUAL"`).
+- contract_type (character) Contract type (e.g., `"PERPETUAL"`).
 
-- `status` (character): Trading status (`"TRADING"`, etc.).
+- status (character) Trading status (`"TRADING"`, etc.).
 
-- `base_asset` (character): Base asset code (e.g., `"BTC"`).
+- base_asset (character) Base asset code (e.g., `"BTC"`).
 
-- `quote_asset` (character): Quote asset code (e.g., `"USDT"`).
+- quote_asset (character) Quote asset code (e.g., `"USDT"`).
 
-- `margin_asset` (character): Margin asset code (e.g., `"USDT"`).
+- margin_asset (character) Margin asset code (e.g., `"USDT"`).
 
-- `price_precision` (integer): Decimal precision for prices.
+- price_precision (integer) Decimal precision for prices.
 
-- `quantity_precision` (integer): Decimal precision for quantities.
+- quantity_precision (integer) Decimal precision for quantities.
 
-- `order_types` (list): Allowed order types for this symbol.
+- order_types (character) Semicolon-separated allowed order types.
+  Recover via `strsplit(dt$order_types[1], ";", fixed = TRUE)[[1]]`.
 
-- `filters` (list): List of filter objects.
+- time_in_force (character) Semicolon-separated allowed time-in-force
+  values.
+
+- underlying_sub_type (character \| NA) Semicolon-separated underlying
+  sub-types (`NA` when the symbol omits the field, as many non-coin /
+  index-style contracts do).
+
+- permission_sets (character \| NA) Semicolon-separated permission sets
+  (`NA` when the symbol omits the field).
+
+- lot_min_qty (numeric \| NA) Minimum order quantity (from LOT_SIZE
+  filter; `NA` when the symbol carries no LOT_SIZE filter).
+
+- lot_max_qty (numeric \| NA) Maximum order quantity (from LOT_SIZE
+  filter).
+
+- lot_step_size (numeric \| NA) Quantity step size (from LOT_SIZE
+  filter).
+
+- price_min (numeric) Minimum price (from PRICE_FILTER).
+
+- price_max (numeric) Maximum price (from PRICE_FILTER).
+
+- price_tick_size (numeric) Price tick size (from PRICE_FILTER).
+
+- min_notional (numeric \| NA) Minimum notional value (from MIN_NOTIONAL
+  filter; `NA` when the symbol carries no MIN_NOTIONAL filter).
+
+- filters_raw (character) JSON-encoded copy of the full per-symbol
+  `filters` array. Preserves filter types not pulled into curated
+  columns (`PERCENT_PRICE`, `MARKET_LOT_SIZE`, `MAX_NUM_ORDERS`,
+  `MAX_NUM_ALGO_ORDERS`, `MIN_NOTIONAL`'s extra fields, ...). Recover
+  with `jsonlite::fromJSON(dt$filters_raw[1])`. `NA` if Binance returned
+  no filters for the symbol.
+
+Exchange-wide metadata returned by the same endpoint is exposed via
+sibling methods: `get_rate_limits()`, `get_exchange_filters()`,
+`get_futures_assets()`. Server time is available via
+`BinanceMarketData$get_server_time()`.
 
 #### Examples
 
@@ -248,6 +299,116 @@ include:
     futures <- BinanceFuturesData$new()
     info <- futures$get_exchange_info()
     print(info[, .(symbol, contract_type, status, base_asset)])
+
+    # Recover filter types not in curated columns
+    jsonlite::fromJSON(info$filters_raw[1])
+
+    # Exchange-wide metadata via sibling methods
+    futures$get_rate_limits()
+    futures$get_futures_assets()
+    }
+
+------------------------------------------------------------------------
+
+### Method `get_rate_limits()`
+
+Get Futures Exchange Rate Limits
+
+Retrieves the USDⓈ-M futures API rate-limit rules. Same sibling pattern
+as `BinanceMarketData$get_rate_limits()`.
+
+#### API Endpoint
+
+`GET https://fapi.binance.com/fapi/v1/exchangeInfo`
+
+#### Usage
+
+    BinanceFuturesData$get_rate_limits()
+
+#### Returns
+
+(data.table \| promise\<data.table\>) one row per rate-limit rule (empty
+when Binance returned no `rateLimits` block):
+
+- rate_limit_type (character) `"REQUEST_WEIGHT"`, `"ORDERS"`,
+  `"RAW_REQUESTS"`.
+
+- interval (character) `"SECOND"`, `"MINUTE"`, `"DAY"`.
+
+- interval_num (integer) Multiplier for `interval`.
+
+- limit (integer) Maximum requests / orders permitted in the interval.
+
+#### Examples
+
+    \dontrun{
+    futures <- BinanceFuturesData$new()
+    futures$get_rate_limits()
+    }
+
+------------------------------------------------------------------------
+
+### Method `get_exchange_filters()`
+
+Get Futures Exchange-Wide Filters
+
+Retrieves the exchange-wide filter rules. Almost always empty. Sibling
+to `get_exchange_info()`.
+
+#### API Endpoint
+
+`GET https://fapi.binance.com/fapi/v1/exchangeInfo`
+
+#### Usage
+
+    BinanceFuturesData$get_exchange_filters()
+
+#### Returns
+
+(data.table \| promise\<data.table\>) one row per exchange-wide filter
+rule (schemaless empty when none, the common case).
+
+#### Examples
+
+    \dontrun{
+    futures <- BinanceFuturesData$new()
+    futures$get_exchange_filters()
+    }
+
+------------------------------------------------------------------------
+
+### Method `get_futures_assets()`
+
+Get Futures Margin Assets
+
+Retrieves the margin-asset configuration returned at the top level of
+futures `/fapi/v1/exchangeInfo` (one row per asset usable as margin —
+USDT, BNFCR, etc.).
+
+#### API Endpoint
+
+`GET https://fapi.binance.com/fapi/v1/exchangeInfo`
+
+#### Usage
+
+    BinanceFuturesData$get_futures_assets()
+
+#### Returns
+
+(data.table \| promise\<data.table\>) one row per margin asset (empty
+when Binance returned no `assets` block):
+
+- asset (character) Asset symbol (e.g., `"USDT"`).
+
+- margin_available (logical) Whether the asset can be used as margin.
+
+- auto_asset_exchange (character) Auto-exchange threshold.
+
+#### Examples
+
+    \dontrun{
+    futures <- BinanceFuturesData$new()
+    futures$get_futures_assets()
     }
 
 ------------------------------------------------------------------------
@@ -265,8 +426,8 @@ Retrieves historical kline/candlestick data for a futures symbol.
 #### Official Documentation
 
 [Binance Futures Kline/Candlestick
-Data](https://binance-docs.github.io/apidocs/futures/en/#kline-candlestick-data)
-Verified: 2026-03-10
+Data](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Kline-Candlestick-Data)
+Verified: 2026-05-22
 
 #### curl
 
@@ -300,77 +461,66 @@ Verified: 2026-03-10
       endTime = NULL,
       limit = NULL,
       fetch_all = FALSE,
-      sleep = 0.2
+      sleep = 0.2,
+      on_page = NULL
     )
 
 #### Arguments
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `interval`:
 
-  Character; candle interval. Valid values: `"1s"`, `"1m"`, `"3m"`,
-  `"5m"`, `"15m"`, `"30m"`, `"1h"`, `"2h"`, `"4h"`, `"6h"`, `"8h"`,
-  `"12h"`, `"1d"`, `"3d"`, `"1w"`, `"1M"`.
+  (scalar\<character\>) candle interval. Valid values: `"1s"`, `"1m"`,
+  `"3m"`, `"5m"`, `"15m"`, `"30m"`, `"1h"`, `"2h"`, `"4h"`, `"6h"`,
+  `"8h"`, `"12h"`, `"1d"`, `"3d"`, `"1w"`, `"1M"`.
 
 - `startTime`:
 
-  POSIXct or numeric or NULL; start time (ms or POSIXct).
+  (scalar\<POSIXct\> \| scalar\<numeric\>?) start time (ms or POSIXct).
 
 - `endTime`:
 
-  POSIXct or numeric or NULL; end time (ms or POSIXct).
+  (scalar\<POSIXct\> \| scalar\<numeric\>?) end time (ms or POSIXct).
 
 - `limit`:
 
-  Integer or NULL; max results (default 500, max 1500).
+  (scalar\<count\>?) max results (default 500, max 1500).
 
 - `fetch_all`:
 
-  Logical; if `TRUE`, automatically segments the time range into
-  multiple API calls of up to 1500 candles each, fetches all segments,
-  deduplicates overlapping boundaries, and returns the combined result
-  sorted by `open_time`. Both `startTime` and `endTime` are required
-  when enabled. **Warning**: large date ranges will consume multiple API
-  requests and may impact your rate-limit quota. Default `FALSE`.
+  (scalar\<logical\>) if `TRUE`, automatically pages forward through the
+  time range — following the data and stopping at the first empty or
+  short page — and returns the combined result sorted by `open_time`.
+  Both `startTime` and `endTime` are required when enabled. **Warning**:
+  large date ranges will consume multiple API requests and may impact
+  your rate-limit quota. Default `FALSE`.
 
 - `sleep`:
 
-  Numeric; seconds to wait between consecutive API calls when
+  (scalar\<numeric\>) seconds to wait between consecutive API calls when
   `fetch_all = TRUE`. Use this to avoid hitting Binance rate limits.
   Only applies in synchronous mode; async mode chains requests
   sequentially via promises. Default `0.2`.
 
+- `on_page`:
+
+  (function?) optional `function(page)` called with each page (a
+  `data.table`) as it is fetched, when `fetch_all = TRUE`. When
+  supplied, pages are streamed to the callback and **not** accumulated —
+  the method returns invisibly, so the callback owns the data (e.g.
+  writes it to disk). Use it to process arbitrarily large ranges without
+  holding everything in memory. Ignored in single-call mode
+  (`fetch_all = FALSE`). Default `NULL`.
+
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-
-- `open_time` (POSIXct): Candle open time.
-
-- `open` (numeric): Opening price.
-
-- `high` (numeric): Highest price during the interval.
-
-- `low` (numeric): Lowest price during the interval.
-
-- `close` (numeric): Closing price.
-
-- `volume` (numeric): Base asset volume traded.
-
-- `close_time` (POSIXct): Candle close time.
-
-- `quote_volume` (numeric): Quote asset volume traded.
-
-- `trades` (integer): Number of trades during the interval.
-
-- `taker_buy_base_volume` (numeric): Base asset volume bought by takers.
-
-- `taker_buy_quote_volume` (numeric): Quote asset volume bought by
-  takers.
-
-- `ignore` (character): Unused field from Binance API.
+(Ohlcv \| promise\<Ohlcv\>) one row per candle. When `fetch_all = TRUE`
+with an `on_page` callback the pages are streamed to the callback and
+the method returns invisibly (`NULL`); the contract describes the
+buffered (returned) case.
 
 #### Examples
 
@@ -403,8 +553,8 @@ a specific symbol or all symbols.
 #### Official Documentation
 
 [Binance Futures Mark
-Price](https://binance-docs.github.io/apidocs/futures/en/#mark-price)
-Verified: 2026-03-10
+Price](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Mark-Price)
+Verified: 2026-05-22
 
 #### curl
 
@@ -431,28 +581,29 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character or NULL; trading pair (e.g., `"BTCUSDT"`). If NULL, returns
-  data for all symbols.
+  (scalar\<character\>?) trading pair (e.g., `"BTCUSDT"`). If NULL,
+  returns data for all symbols.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row per symbol (a single row
+when `symbol` is given):
 
-- `symbol` (character): Trading pair identifier.
+- symbol (character) Trading pair identifier.
 
-- `mark_price` (character): Current mark price.
+- mark_price (character) Current mark price.
 
-- `index_price` (character): Current index price.
+- index_price (character) Current index price.
 
-- `estimated_settle_price` (character): Estimated settlement price.
+- estimated_settle_price (character) Estimated settlement price.
 
-- `last_funding_rate` (character): Last funding rate.
+- last_funding_rate (character) Last funding rate.
 
-- `next_funding_time` (POSIXct): Next funding time.
+- next_funding_time (POSIXct) Next funding time.
 
-- `interest_rate` (character): Interest rate.
+- interest_rate (character) Interest rate.
 
-- `time` (POSIXct): Data timestamp.
+- time (POSIXct) Data timestamp.
 
 #### Examples
 
@@ -481,8 +632,8 @@ Retrieves historical funding rate data for a symbol.
 #### Official Documentation
 
 [Binance Futures Funding Rate
-History](https://binance-docs.github.io/apidocs/futures/en/#get-funding-rate-history)
-Verified: 2026-03-10
+History](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Get-Funding-Rate-History)
+Verified: 2026-05-22
 
 #### curl
 
@@ -518,31 +669,32 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `startTime`:
 
-  POSIXct or numeric or NULL; start time (ms or POSIXct).
+  (scalar\<POSIXct\> \| scalar\<numeric\>?) start time (ms or POSIXct).
 
 - `endTime`:
 
-  POSIXct or numeric or NULL; end time (ms or POSIXct).
+  (scalar\<POSIXct\> \| scalar\<numeric\>?) end time (ms or POSIXct).
 
 - `limit`:
 
-  Integer or NULL; max results (default 100, max 1000).
+  (scalar\<count\>?) max results (default 100, max 1000).
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row per funding event (empty
+when there are none):
 
-- `symbol` (character): Trading pair identifier.
+- symbol (character) Trading pair identifier.
 
-- `funding_rate` (character): Funding rate value.
+- funding_rate (character) Funding rate value.
 
-- `funding_time` (POSIXct): Funding timestamp.
+- funding_time (POSIXct) Funding timestamp.
 
-- `mark_price` (character): Mark price at funding time.
+- mark_price (character) Mark price at funding time.
 
 #### Examples
 
@@ -568,8 +720,8 @@ or all symbols.
 #### Official Documentation
 
 [Binance Futures 24hr
-Ticker](https://binance-docs.github.io/apidocs/futures/en/#24hr-ticker-price-change-statistics)
-Verified: 2026-03-10
+Ticker](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/24hr-Ticker-Price-Change-Statistics)
+Verified: 2026-05-22
 
 #### curl
 
@@ -604,31 +756,31 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character or NULL; trading pair (e.g., `"BTCUSDT"`). If NULL, returns
-  data for all symbols.
+  (scalar\<character\>?) trading pair (e.g., `"BTCUSDT"`). If NULL,
+  returns data for all symbols.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row per symbol (a single row
+when `symbol` is given):
 
-- `symbol` (character): Trading pair identifier.
+- symbol (character) Trading pair identifier.
 
-- `price_change` (character): Absolute price change over 24h.
+- price_change (character) Absolute price change over 24h.
 
-- `price_change_percent` (character): Percentage price change over 24h.
+- price_change_percent (character) Percentage price change over 24h.
 
-- `weighted_avg_price` (character): Volume-weighted average price over
-  24h.
+- weighted_avg_price (character) Volume-weighted average price over 24h.
 
-- `last_price` (character): Most recent trade price.
+- last_price (character) Most recent trade price.
 
-- `volume` (character): Total base asset volume in 24h.
+- volume (character) Total base asset volume in 24h.
 
-- `quote_volume` (character): Total quote asset volume in 24h.
+- quote_volume (character) Total quote asset volume in 24h.
 
-- `open_time` (POSIXct): Start of the 24h window.
+- open_time (POSIXct) Start of the 24h window.
 
-- `close_time` (POSIXct): End of the 24h window.
+- close_time (POSIXct) End of the 24h window.
 
 #### Examples
 
@@ -653,8 +805,8 @@ Retrieves the latest price for a specific futures symbol or all symbols.
 #### Official Documentation
 
 [Binance Futures Symbol Price
-Ticker](https://binance-docs.github.io/apidocs/futures/en/#symbol-price-ticker)
-Verified: 2026-03-10
+Ticker](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Symbol-Price-Ticker)
+Verified: 2026-05-22
 
 #### curl
 
@@ -676,18 +828,19 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character or NULL; trading pair (e.g., `"BTCUSDT"`). If NULL, returns
-  data for all symbols.
+  (scalar\<character\>?) trading pair (e.g., `"BTCUSDT"`). If NULL,
+  returns data for all symbols.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row per symbol (a single row
+when `symbol` is given):
 
-- `symbol` (character): Trading pair identifier.
+- symbol (character) Trading pair identifier.
 
-- `price` (character): Latest traded price as string.
+- price (character) Latest traded price as string.
 
-- `time` (POSIXct): Timestamp (if present in response).
+- time (POSIXct) Timestamp (if present in response).
 
 #### Examples
 
@@ -713,8 +866,8 @@ or all symbols.
 #### Official Documentation
 
 [Binance Futures Symbol Order Book
-Ticker](https://binance-docs.github.io/apidocs/futures/en/#symbol-order-book-ticker)
-Verified: 2026-03-10
+Ticker](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Symbol-Order-Book-Ticker)
+Verified: 2026-05-22
 
 #### curl
 
@@ -739,24 +892,23 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character or NULL; trading pair (e.g., `"BTCUSDT"`). If NULL, returns
-  data for all symbols.
+  (scalar\<character\>?) trading pair (e.g., `"BTCUSDT"`). If NULL,
+  returns data for all symbols.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row per symbol (a single row
+when `symbol` is given):
 
-- `symbol` (character): Trading pair identifier.
+- symbol (character) Trading pair identifier.
 
-- `bid_price` (character): Best bid price.
+- bid_price (character) Best bid price.
 
-- `bid_qty` (character): Quantity available at best bid.
+- bid_qty (character) Quantity available at best bid.
 
-- `ask_price` (character): Best ask price.
+- ask_price (character) Best ask price.
 
-- `ask_qty` (character): Quantity available at best ask.
-
-- `time` (POSIXct): Timestamp (if present in response).
+- ask_qty (character) Quantity available at best ask.
 
 #### Examples
 
@@ -781,8 +933,8 @@ Retrieves the current open interest for a futures symbol.
 #### Official Documentation
 
 [Binance Futures Open
-Interest](https://binance-docs.github.io/apidocs/futures/en/#open-interest)
-Verified: 2026-03-10
+Interest](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Open-Interest)
+Verified: 2026-05-22
 
 #### curl
 
@@ -804,17 +956,17 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `symbol` (character): Trading pair identifier.
+- symbol (character) Trading pair identifier.
 
-- `open_interest` (character): Current open interest.
+- open_interest (character) Current open interest.
 
-- `time` (POSIXct): Timestamp (if present in response).
+- time (POSIXct) Timestamp (if present in response).
 
 #### Examples
 
@@ -839,8 +991,8 @@ Retrieves the order book (bids and asks) for a futures symbol.
 #### Official Documentation
 
 [Binance Futures Order
-Book](https://binance-docs.github.io/apidocs/futures/en/#order-book)
-Verified: 2026-03-10
+Book](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Order-Book)
+Verified: 2026-05-22
 
 #### curl
 
@@ -872,25 +1024,17 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `limit`:
 
-  Integer or NULL; depth limit. Valid values: 5, 10, 20, 50, 100,
+  (scalar\<count\>?) depth limit. Valid values: 5, 10, 20, 50, 100,
   500, 1000. Default 500.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-
-- `last_update_id` (character): Sequence ID for orderbook
-  synchronisation.
-
-- `side` (character): `"bid"` or `"ask"`.
-
-- `price` (numeric): Price level.
-
-- `size` (numeric): Available size at this price level.
+(OrderBook \| promise\<OrderBook\>) one row per price level (bids first,
+then asks).
 
 #### Examples
 
@@ -915,8 +1059,8 @@ Retrieves the most recent trades for a futures symbol.
 #### Official Documentation
 
 [Binance Futures Recent Trades
-List](https://binance-docs.github.io/apidocs/futures/en/#recent-trades-list)
-Verified: 2026-03-10
+List](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Recent-Trades-List)
+Verified: 2026-05-22
 
 #### curl
 
@@ -951,27 +1095,28 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `limit`:
 
-  Integer or NULL; max results (default 500, max 1000).
+  (scalar\<count\>?) max results (default 500, max 1000).
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row per public trade (empty
+when there are none):
 
-- `id` (integer): Unique trade identifier.
+- id (numeric) Unique trade identifier.
 
-- `price` (character): Trade execution price.
+- price (character) Trade execution price.
 
-- `qty` (character): Base asset quantity traded.
+- qty (character) Base asset quantity traded.
 
-- `quote_qty` (character): Quote asset quantity traded.
+- quote_qty (character) Quote asset quantity traded.
 
-- `time` (POSIXct): Trade execution time.
+- time (POSIXct) Trade execution time.
 
-- `is_buyer_maker` (logical): `TRUE` if the buyer was the maker.
+- is_buyer_maker (logical) `TRUE` if the buyer was the maker.
 
 #### Examples
 
@@ -996,8 +1141,8 @@ Retrieves historical index price kline/candlestick data for a pair.
 #### Official Documentation
 
 [Binance Futures Index Price Kline/Candlestick
-Data](https://binance-docs.github.io/apidocs/futures/en/#index-price-kline-candlestick-data)
-Verified: 2026-03-10
+Data](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Index-Price-Kline-Candlestick-Data)
+Verified: 2026-05-22
 
 #### curl
 
@@ -1036,53 +1181,29 @@ Verified: 2026-03-10
 
 - `pair`:
 
-  Character; underlying pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) underlying pair (e.g., `"BTCUSDT"`).
 
 - `interval`:
 
-  Character; candle interval. Valid values: `"1s"`, `"1m"`, `"3m"`,
-  `"5m"`, `"15m"`, `"30m"`, `"1h"`, `"2h"`, `"4h"`, `"6h"`, `"8h"`,
-  `"12h"`, `"1d"`, `"3d"`, `"1w"`, `"1M"`.
+  (scalar\<character\>) candle interval. Valid values: `"1s"`, `"1m"`,
+  `"3m"`, `"5m"`, `"15m"`, `"30m"`, `"1h"`, `"2h"`, `"4h"`, `"6h"`,
+  `"8h"`, `"12h"`, `"1d"`, `"3d"`, `"1w"`, `"1M"`.
 
 - `startTime`:
 
-  POSIXct or numeric or NULL; start time (ms or POSIXct).
+  (scalar\<POSIXct\> \| scalar\<numeric\>?) start time (ms or POSIXct).
 
 - `endTime`:
 
-  POSIXct or numeric or NULL; end time (ms or POSIXct).
+  (scalar\<POSIXct\> \| scalar\<numeric\>?) end time (ms or POSIXct).
 
 - `limit`:
 
-  Integer or NULL; max results (default 500, max 1500).
+  (scalar\<count\>?) max results (default 500, max 1500).
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-
-- `open_time` (POSIXct): Candle open time.
-
-- `open` (numeric): Opening price.
-
-- `high` (numeric): Highest price.
-
-- `low` (numeric): Lowest price.
-
-- `close` (numeric): Closing price.
-
-- `volume` (numeric): Trading volume.
-
-- `close_time` (POSIXct): Candle close time.
-
-- `quote_volume` (numeric): Quote asset volume.
-
-- `trades` (integer): Number of trades.
-
-- `taker_buy_base_volume` (numeric): Taker buy base asset volume.
-
-- `taker_buy_quote_volume` (numeric): Taker buy quote asset volume.
-
-- `ignore` (character): Unused field.
+(Ohlcv \| promise\<Ohlcv\>) one row per candle.
 
 #### Examples
 
@@ -1107,8 +1228,8 @@ Retrieves historical mark price kline/candlestick data for a symbol.
 #### Official Documentation
 
 [Binance Futures Mark Price Kline/Candlestick
-Data](https://binance-docs.github.io/apidocs/futures/en/#mark-price-kline-candlestick-data)
-Verified: 2026-03-10
+Data](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Mark-Price-Kline-Candlestick-Data)
+Verified: 2026-05-22
 
 #### curl
 
@@ -1147,53 +1268,29 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `interval`:
 
-  Character; candle interval. Valid values: `"1s"`, `"1m"`, `"3m"`,
-  `"5m"`, `"15m"`, `"30m"`, `"1h"`, `"2h"`, `"4h"`, `"6h"`, `"8h"`,
-  `"12h"`, `"1d"`, `"3d"`, `"1w"`, `"1M"`.
+  (scalar\<character\>) candle interval. Valid values: `"1s"`, `"1m"`,
+  `"3m"`, `"5m"`, `"15m"`, `"30m"`, `"1h"`, `"2h"`, `"4h"`, `"6h"`,
+  `"8h"`, `"12h"`, `"1d"`, `"3d"`, `"1w"`, `"1M"`.
 
 - `startTime`:
 
-  POSIXct or numeric or NULL; start time (ms or POSIXct).
+  (scalar\<POSIXct\> \| scalar\<numeric\>?) start time (ms or POSIXct).
 
 - `endTime`:
 
-  POSIXct or numeric or NULL; end time (ms or POSIXct).
+  (scalar\<POSIXct\> \| scalar\<numeric\>?) end time (ms or POSIXct).
 
 - `limit`:
 
-  Integer or NULL; max results (default 500, max 1500).
+  (scalar\<count\>?) max results (default 500, max 1500).
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
-
-- `open_time` (POSIXct): Candle open time.
-
-- `open` (numeric): Opening price.
-
-- `high` (numeric): Highest price.
-
-- `low` (numeric): Lowest price.
-
-- `close` (numeric): Closing price.
-
-- `volume` (numeric): Trading volume.
-
-- `close_time` (POSIXct): Candle close time.
-
-- `quote_volume` (numeric): Quote asset volume.
-
-- `trades` (integer): Number of trades.
-
-- `taker_buy_base_volume` (numeric): Taker buy base asset volume.
-
-- `taker_buy_quote_volume` (numeric): Taker buy quote asset volume.
-
-- `ignore` (character): Unused field.
+(Ohlcv \| promise\<Ohlcv\>) one row per candle.
 
 #### Examples
 
@@ -1247,6 +1344,40 @@ if (FALSE) { # \dontrun{
 futures <- BinanceFuturesData$new()
 info <- futures$get_exchange_info()
 print(info[, .(symbol, contract_type, status, base_asset)])
+
+# Recover filter types not in curated columns
+jsonlite::fromJSON(info$filters_raw[1])
+
+# Exchange-wide metadata via sibling methods
+futures$get_rate_limits()
+futures$get_futures_assets()
+} # }
+
+## ------------------------------------------------
+## Method `BinanceFuturesData$get_rate_limits`
+## ------------------------------------------------
+
+if (FALSE) { # \dontrun{
+futures <- BinanceFuturesData$new()
+futures$get_rate_limits()
+} # }
+
+## ------------------------------------------------
+## Method `BinanceFuturesData$get_exchange_filters`
+## ------------------------------------------------
+
+if (FALSE) { # \dontrun{
+futures <- BinanceFuturesData$new()
+futures$get_exchange_filters()
+} # }
+
+## ------------------------------------------------
+## Method `BinanceFuturesData$get_futures_assets`
+## ------------------------------------------------
+
+if (FALSE) { # \dontrun{
+futures <- BinanceFuturesData$new()
+futures$get_futures_assets()
 } # }
 
 ## ------------------------------------------------

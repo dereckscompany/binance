@@ -1,0 +1,147 @@
+# Live WebSocket Streams with binance
+
+The REST classes (e.g. \[`BinanceMarketData`\]) give you a *snapshot* —
+the order book at the instant you ask. The WebSocket classes give you
+the *stream* — every change as it happens. Binance only archives
+snapshots, so the live order-book diff stream is the one piece of market
+data that is lost forever if you do not record it.
+
+`binance` exposes streams with a **Node.js-style event API**: you
+register a handler and the library calls it as messages arrive. This is
+the same shape as JavaScript’s `ws.on("message", ...)` and as Binance’s
+own official connectors.
+
+> Built on the `websocket` (the client) and `later` (R’s libuv event
+> loop) packages — both hard dependencies of `binance`, so they are
+> already installed.
+
+## The event API
+
+``` r
+
+box::use(binance[BinanceMarketStream])
+
+stream <- BinanceMarketStream$new()
+
+# ws.on("message", ...) — handlers receive the RAW JSON string
+stream$on("message", function(msg) cat(msg, "\n"))
+
+stream$depth("BTCUSDT", speed = "100ms") # subscribe to the order-book diff stream
+stream$run()                             # keep the process alive; interrupt to stop
+```
+
+`$run()` is the only thing R needs that Node gives for free — see
+**Driving the event loop** below for what it does and when to drive the
+loop yourself instead.
+
+## No `async` flag (unlike the REST classes)
+
+A REST call has a single result, so it can be synchronous (returns a
+value) or asynchronous (returns a promise). A socket is an **endless
+push stream** with no single result — so the only sensible shape is a
+callback, and there is nothing to dualise. Streams are always
+event-driven.
+
+## Driving the event loop: two ways
+
+The class never owns the loop — `$on()`, `$connect()`, and `$depth()`
+just register callbacks on `later` and return immediately. *Something*
+has to pump `later` so those callbacks fire (R has no always-on loop
+like Node.js). You have two options.
+
+### 1. Drive the loop yourself — recommended when embedding
+
+Register your handlers, `$connect()` (non-blocking), then pump
+[`later::run_now()`](https://later.r-lib.org/reference/run_now.html):
+
+``` r
+
+stream <- BinanceMarketStream$new()
+stream$on("message", function(msg) record(msg))
+stream$depth("BTCUSDT", speed = "100ms")
+stream$connect() # non-blocking: wires up + starts connecting, returns immediately
+
+while (!later::loop_empty()) later::run_now(0.1) # you own the loop
+```
+
+This is the right approach when the client lives **inside a program that
+already runs a `later` loop** — a Shiny app, or a trading engine that
+also drives REST promises, timers, and other components on the same
+loop. There you don’t even write the loop: just `$connect()`, and the
+host loop fires your handlers alongside everything else. Driving the
+loop yourself also lets you do your own work each tick, add other tasks,
+or set your own stop condition.
+
+### 2. `$run()` — syntactic sugar for a standalone recorder
+
+When the client is the *only* thing running, `$run()` connects, pumps
+the loop, and tears down cleanly for you:
+
+``` r
+
+stream$run() # = connect() + pump later::run_now() + clean close on Ctrl-C / error
+```
+
+`$run()` is approach 1 wrapped up, plus guaranteed teardown: a normal
+close, an error, or an **interrupt (Ctrl-C)** all close the socket and
+cancel timers on the way out (via
+[`on.exit()`](https://rdrr.io/r/base/on.exit.html)), so you never leave
+a half-open connection.
+
+## Recording the order book to disk
+
+The order book is a firehose; write it compressed, one file per symbol
+per day, and let a separate step turn it into Parquet later. The
+recorder itself is tiny:
+
+``` r
+
+box::use(binance[BinanceMarketStream])
+
+con <- gzfile("btcusdt-depth.ndjson.gz", open = "ab")
+on.exit(close(con))
+
+stream <- BinanceMarketStream$new()
+stream$on("message", function(msg) cat(msg, "\n", file = con, sep = ""))
+stream$depth("BTCUSDT", speed = "100ms")
+stream$run()
+```
+
+The raw message is written verbatim — faithful bronze data from which
+the full book can be reconstructed later.
+
+## Many symbols, one connection
+
+Up to 1024 streams share a single connection, so recording 100 order
+books is one socket, not 100. Just subscribe to each:
+
+``` r
+
+stream <- BinanceMarketStream$new()
+stream$on("message", function(msg) write_somewhere(msg))
+for (sym in c("BTCUSDT", "ETHUSDT", "SOLUSDT")) {
+  stream$depth(sym, speed = "100ms")
+}
+stream$run()
+```
+
+## Reconnection is automatic
+
+You do not manage reconnection. On an unexpected disconnect the client
+reconnects with exponential backoff (plus jitter, so it can never trip
+Binance’s connection-rate limit), reconnects proactively at 23 hours to
+beat Binance’s 24-hour forced disconnect, and re-subscribes every stream
+after reconnecting. If reconnects are exhausted, `$run()` returns — so
+an external supervisor (a cron + lock, a container restart policy) can
+bring the recorder back.
+
+``` r
+
+stream <- BinanceMarketStream$new(max_reconnects = 10) # then $run() returns; let the supervisor restart
+```
+
+## Stopping
+
+Interrupt the session (Ctrl-C), or call `stream$close()` from a handler
+— that stops auto-reconnect, cancels timers, closes the socket, and
+`$run()` returns.

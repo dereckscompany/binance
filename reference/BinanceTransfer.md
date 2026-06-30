@@ -73,8 +73,10 @@ Transfer](https://developers.binance.com/docs/wallet/asset/user-universal-transf
 
 - `ISOLATED_MARGIN_MAIN`: Isolated Margin to Spot
 
-## Super class
+## Super classes
 
+[`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
+-\>
 [`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceTransfer`
 
@@ -108,7 +110,7 @@ Transfers assets between wallet types (spot, margin, futures, funding).
 
 [Binance Universal
 Transfer](https://developers.binance.com/docs/wallet/asset/user-universal-transfer)
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -147,41 +149,41 @@ Verified: 2026-03-10
 
 - `type`:
 
-  Character; transfer type. One of `"MAIN_UMFUTURE"`, `"MAIN_CMFUTURE"`,
-  `"MAIN_MARGIN"`, `"UMFUTURE_MAIN"`, `"UMFUTURE_MARGIN"`,
-  `"CMFUTURE_MAIN"`, `"MARGIN_MAIN"`, `"MARGIN_UMFUTURE"`,
-  `"MAIN_FUNDING"`, `"FUNDING_MAIN"`, `"FUNDING_UMFUTURE"`,
-  `"UMFUTURE_FUNDING"`, `"MARGIN_FUNDING"`, `"FUNDING_MARGIN"`,
-  `"FUNDING_CMFUTURE"`, `"CMFUTURE_FUNDING"`, `"MAIN_ISOLATED_MARGIN"`,
-  `"ISOLATED_MARGIN_MAIN"`.
+  (scalar\<character\>) transfer type. One of `"MAIN_UMFUTURE"`,
+  `"MAIN_CMFUTURE"`, `"MAIN_MARGIN"`, `"UMFUTURE_MAIN"`,
+  `"UMFUTURE_MARGIN"`, `"CMFUTURE_MAIN"`, `"MARGIN_MAIN"`,
+  `"MARGIN_UMFUTURE"`, `"MAIN_FUNDING"`, `"FUNDING_MAIN"`,
+  `"FUNDING_UMFUTURE"`, `"UMFUTURE_FUNDING"`, `"MARGIN_FUNDING"`,
+  `"FUNDING_MARGIN"`, `"FUNDING_CMFUTURE"`, `"CMFUTURE_FUNDING"`,
+  `"MAIN_ISOLATED_MARGIN"`, `"ISOLATED_MARGIN_MAIN"`.
 
 - `asset`:
 
-  Character; asset to transfer (e.g., `"USDT"`).
+  (scalar\<character\>) asset to transfer (e.g., `"USDT"`).
 
 - `amount`:
 
-  Numeric; amount to transfer.
+  (scalar\<numeric\>) amount to transfer.
 
 - `fromSymbol`:
 
-  Character or NULL; mandatory when `type` involves isolated margin
+  (scalar\<character\>?) mandatory when `type` involves isolated margin
   (e.g., `"BNBUSDT"`).
 
 - `toSymbol`:
 
-  Character or NULL; mandatory when `type` involves isolated margin
+  (scalar\<character\>?) mandatory when `type` involves isolated margin
   (e.g., `"BNBUSDT"`).
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and the following columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `tran_id` (numeric): Unique transfer identifier assigned by Binance.
+- tran_id (numeric) Unique transfer identifier assigned by Binance.
 
 #### Examples
 
@@ -210,7 +212,7 @@ range and pagination.
 
 [Binance Universal
 Transfer](https://developers.binance.com/docs/wallet/asset/query-user-universal-transfer)
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -250,52 +252,55 @@ Verified: 2026-03-10
 
 - `type`:
 
-  Character; transfer type. Same options as `add_transfer()`.
+  (scalar\<character\>) transfer type. Same options as `add_transfer()`.
 
 - `startTime`:
 
-  Integer or NULL; start timestamp in milliseconds.
+  (scalar\<count\>?) start timestamp in milliseconds.
 
 - `endTime`:
 
-  Integer or NULL; end timestamp in milliseconds.
+  (scalar\<count\>?) end timestamp in milliseconds.
 
 - `current`:
 
-  Integer or NULL; current page (default 1, starting from 1).
+  (scalar\<count\>?) current page (default 1, starting from 1).
 
 - `size`:
 
-  Integer or NULL; page size (default 10, max 100).
+  (scalar\<count\>?) page size (default 10, max 100).
 
 - `fromSymbol`:
 
-  Character or NULL; must be sent when `type` involves isolated margin.
+  (scalar\<character\>?) must be sent when `type` involves isolated
+  margin.
 
 - `toSymbol`:
 
-  Character or NULL; must be sent when `type` involves isolated margin.
+  (scalar\<character\>?) must be sent when `type` involves isolated
+  margin.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per transfer and the following columns:
+(data.table \| promise\<data.table\>) one row per transfer (empty when
+there are no matching transfers):
 
-- `asset` (character): Transferred asset (e.g., `"USDT"`).
+- asset (character) Transferred asset (e.g., `"USDT"`).
 
-- `amount` (character): Amount transferred.
+- amount (character) Amount transferred.
 
-- `type` (character): Transfer type (e.g., `"MAIN_UMFUTURE"`).
+- type (character) Transfer type (e.g., `"MAIN_UMFUTURE"`).
 
-- `status` (character): Transfer status (`"CONFIRMED"`, `"FAILED"`,
+- status (character) Transfer status (`"CONFIRMED"`, `"FAILED"`,
   `"PENDING"`).
 
-- `tran_id` (numeric): Unique transfer identifier.
+- tran_id (numeric) Unique transfer identifier.
 
-- `timestamp` (POSIXct): Transfer time converted from milliseconds.
+- timestamp (POSIXct) Transfer time converted from milliseconds.
 
 #### Examples
 

@@ -18,6 +18,7 @@ place orders in parallel.
 ## Setup
 
 ``` r
+
 box::use(
   binance[BinanceMarketData, BinanceTrading, BinanceAccount, get_api_keys],
   coro[async, await],
@@ -42,6 +43,7 @@ Pass `async = TRUE` to any class constructor. Methods then return
 promises instead of data.tables:
 
 ``` r
+
 market <- BinanceMarketData$new(async = TRUE)
 
 get_ticker <- coro::async(function() {
@@ -67,6 +69,7 @@ Chain several awaited calls in sequence – each one resolves before the
 next begins:
 
 ``` r
+
 market <- BinanceMarketData$new(async = TRUE)
 results <- NULL
 
@@ -74,6 +77,7 @@ fetch_tickers <- coro::async(function() {
   btc <- await(market$get_ticker(symbol = "BTCUSDT"))
   eth <- await(market$get_ticker(symbol = "ETHUSDT"))
   results <<- list(btc = btc, eth = eth)
+  return(invisible(NULL))
 })
 
 fetch_tickers()
@@ -92,6 +96,7 @@ When requests are independent, fire them simultaneously and collect all
 results at once – the async equivalent of `Promise.all()` in JavaScript:
 
 ``` r
+
 market <- BinanceMarketData$new(async = TRUE)
 results <- NULL
 
@@ -103,6 +108,7 @@ fetch_parallel <- coro::async(function() {
   # Await them together
   res <- await(promises::promise_all(btc = btc_promise, eth = eth_promise))
   results <<- res
+  return(invisible(NULL))
 })
 
 fetch_parallel()
@@ -120,15 +126,18 @@ results$eth
 If you prefer the promise-pipeline style, use `then` and `catch`:
 
 ``` r
+
 market <- BinanceMarketData$new(async = TRUE)
 chain_result <- NULL
 
 market$get_24hr_stats(symbol = "BTCUSDT") |>
   promises::then(function(stats) {
     chain_result <<- stats
+    return(invisible(NULL))
   }) |>
   promises::catch(function(err) {
     message("Error: ", conditionMessage(err))
+    return(invisible(NULL))
   })
 
 while (!later::loop_empty()) {
@@ -145,6 +154,7 @@ A common use case is polling price data for a watchlist of symbols. With
 async mode, all requests fly in parallel rather than sequentially:
 
 ``` r
+
 market <- BinanceMarketData$new(async = TRUE)
 symbols <- c("BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT")
 all_tickers <- NULL
@@ -152,13 +162,14 @@ all_tickers <- NULL
 fetch_watchlist <- coro::async(function() {
   # Fire all requests concurrently
   ticker_promises <- lapply(symbols, function(sym) {
-    market$get_ticker(symbol = sym)
+    return(market$get_ticker(symbol = sym))
   })
   names(ticker_promises) <- symbols
 
   # Await all at once
   res <- await(do.call(promises::promise_all, ticker_promises))
   all_tickers <<- res
+  return(invisible(NULL))
 })
 
 fetch_watchlist()
@@ -181,6 +192,7 @@ app, the event loop runs automatically. In scripts or vignettes, you
 must drive it manually.
 
 ``` r
+
 # Idiomatic event loop drain
 while (!later::loop_empty()) {
   later::run_now()
@@ -190,6 +202,7 @@ while (!later::loop_empty()) {
 Or with a timeout guard:
 
 ``` r
+
 deadline <- Sys.time() + 30  # 30-second timeout
 while (!later::loop_empty() && Sys.time() < deadline) {
   later::run_now(timeoutSecs = 0.1)
@@ -207,6 +220,7 @@ Inside `async` functions, use `tryCatch` around `await` calls for
 structured error handling:
 
 ``` r
+
 market <- BinanceMarketData$new(async = TRUE)
 
 safe_fetch <- coro::async(function() {
@@ -230,14 +244,14 @@ while (!later::loop_empty()) {
 
 ## `coro::await` Cheat Sheet
 
-| Pattern                                | Works? | Notes                         |
-|----------------------------------------|--------|-------------------------------|
-| `x <- await(promise)`                  | Yes    | Standard pattern              |
-| `x <- await(obj$method(arg))`          | Yes    | Await wrapping a call is fine |
-| `await(promise)` (bare, no assignment) | Yes    | Side-effect only              |
-| `await` inside loops/if/tryCatch       | Yes    | Full control flow support     |
-| `x <<- await(promise)`                 | **No** | `<<-` not supported by coro   |
-| `f(await(promise))`                    | **No** | Nested inside function args   |
+| Pattern | Works? | Notes |
+|----|----|----|
+| `x <- await(promise)` | Yes | Standard pattern |
+| `x <- await(obj$method(arg))` | Yes | Await wrapping a call is fine |
+| `await(promise)` (bare, no assignment) | Yes | Side-effect only |
+| `await` inside loops/if/tryCatch | Yes | Full control flow support |
+| `x <<- await(promise)` | **No** | `<<-` not supported by coro |
+| `f(await(promise))` | **No** | Nested inside function args |
 
 > **Rule of thumb**: `await()` must appear as the RHS of a `<-` or as a
 > bare statement – never inside another expression.
@@ -246,10 +260,10 @@ while (!later::loop_empty()) {
 
 ## Choosing Sync vs Async
 
-| Scenario                      | Recommendation                                 |
-|-------------------------------|------------------------------------------------|
-| Interactive exploration       | **Sync** – simpler, results print immediately  |
-| Scripts fetching one endpoint | **Sync** – no event loop needed                |
+| Scenario | Recommendation |
+|----|----|
+| Interactive exploration | **Sync** – simpler, results print immediately |
+| Scripts fetching one endpoint | **Sync** – no event loop needed |
 | Bots polling multiple symbols | **Async** – concurrent requests reduce latency |
-| Shiny dashboards              | **Async** – keeps the UI responsive            |
-| Bulk kline downloads          | **Sync** – handle batching in a loop           |
+| Shiny dashboards | **Async** – keeps the UI responsive |
+| Bulk kline downloads | **Sync** – handle batching in a loop |

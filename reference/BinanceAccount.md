@@ -26,7 +26,7 @@ environment variables or passed to the constructor).
 ### Official Documentation
 
 [Binance Account
-Endpoints](https://binance-docs.github.io/apidocs/spot/en/#account-endpoints)
+Endpoints](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints)
 
 ### Endpoints Covered
 
@@ -37,8 +37,10 @@ Endpoints](https://binance-docs.github.io/apidocs/spot/en/#account-endpoints)
 | get_balances     | GET /api/v3/account  | GET  |
 | get_trades       | GET /api/v3/myTrades | GET  |
 
-## Super class
+## Super classes
 
+[`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
+-\>
 [`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceAccount`
 
@@ -74,8 +76,8 @@ permissions, and account type. For balances, use `get_balances()`.
 #### Official Documentation
 
 [Binance Account
-Information](https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data)
-Verified: 2026-03-10
+Information](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#account-information-user_data)
+Verified: 2026-05-22
 
 #### Automated Trading Usage
 
@@ -93,16 +95,38 @@ Verified: 2026-03-10
 
 #### JSON Response
 
+Shape captured 2026-05-22 from the live docs.
+
     {
       "makerCommission": 15,
       "takerCommission": 15,
+      "buyerCommission": 0,
+      "sellerCommission": 0,
+      "commissionRates": {
+        "maker": "0.00150000",
+        "taker": "0.00150000",
+        "buyer": "0.00000000",
+        "seller": "0.00000000"
+      },
       "canTrade": true,
       "canWithdraw": true,
       "canDeposit": true,
+      "brokered": false,
+      "requireSelfTradePrevention": false,
+      "preventSor": false,
+      "updateTime": 123456789,
       "accountType": "SPOT",
-      "balances": [...],
+      "balances": [
+        { "asset": "BTC", "free": "4723846.89208129", "locked": "0.00000000" }
+      ],
+      "permissions": ["SPOT", "MARGIN"],
       "uid": 354937868
     }
+
+Note: this parser drops the `balances` array — call `get_balances()` for
+the per-asset shape. `commissionRates` is flattened to wide
+`commission_rates_*` columns and `permissions` is `;`-collapsed so the
+return is always one row per account.
 
 #### Usage
 
@@ -112,47 +136,55 @@ Verified: 2026-03-10
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row per account:
 
-- `maker_commission` (integer): Maker commission rate (basis points).
+- maker_commission (integer) Maker commission rate (basis points).
 
-- `taker_commission` (integer): Taker commission rate (basis points).
+- taker_commission (integer) Taker commission rate (basis points).
 
-- `buyer_commission` (integer): Buyer commission rate (basis points).
+- buyer_commission (integer) Buyer commission rate (basis points).
 
-- `seller_commission` (integer): Seller commission rate (basis points).
+- seller_commission (integer) Seller commission rate (basis points).
 
-- `commission_rates` (list): Nested object with `maker`, `taker`,
-  `buyer`, `seller` as decimal strings.
+- commission_rates_maker (character) Maker commission rate as decimal
+  string.
 
-- `can_trade` (logical): Whether the account can place trades.
+- commission_rates_taker (character) Taker commission rate as decimal
+  string.
 
-- `can_withdraw` (logical): Whether the account can withdraw.
+- commission_rates_buyer (character) Buyer commission rate as decimal
+  string.
 
-- `can_deposit` (logical): Whether the account can deposit.
+- commission_rates_seller (character) Seller commission rate as decimal
+  string.
 
-- `brokered` (logical): Whether this is a brokered account.
+- can_trade (logical) Whether the account can place trades.
 
-- `require_self_trade_prevention` (logical): Whether STP is required.
+- can_withdraw (logical) Whether the account can withdraw.
 
-- `prevent_sor` (logical): Whether smart order routing is prevented.
+- can_deposit (logical) Whether the account can deposit.
 
-- `update_time` (numeric): Last account update timestamp in
-  milliseconds.
+- brokered (logical) Whether this is a brokered account.
 
-- `account_type` (character): Account type (e.g., `"SPOT"`).
+- require_self_trade_prevention (logical) Whether STP is required.
 
-- `permission` (character): Account permission (one row per permission,
-  e.g., `"SPOT"`, `"MARGIN"`).
+- prevent_sor (logical) Whether smart order routing is prevented.
 
-- `uid` (integer): Unique account identifier.
+- update_time (POSIXct) Last account update time.
 
-When the account has multiple permissions, account fields are repeated
-on each row.
+- account_type (character) Account type (e.g., `"SPOT"`).
+
+- permissions (character) `;`-separated account permissions (e.g.,
+  `"SPOT;MARGIN"`). Recover the vector with
+  `strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]`. Single row per
+  account — collapsed via the shared `collapse_string_array_fields()`
+  helper for cross-package consistency.
+
+- uid (numeric) Unique account identifier.
 
 #### Examples
 
@@ -177,8 +209,8 @@ Retrieves asset balances for the account.
 #### Official Documentation
 
 [Binance Account
-Information](https://binance-docs.github.io/apidocs/spot/en/#account-information-user_data)
-Verified: 2026-03-10
+Information](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#account-information-user_data)
+Verified: 2026-05-22
 
 #### Automated Trading Usage
 
@@ -215,21 +247,21 @@ Verified: 2026-03-10
 
 - `omitZeroBalances`:
 
-  Logical or NULL; if TRUE, omit assets with zero balance.
+  (scalar\<logical\>?) if TRUE, omit assets with zero balance.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row per asset:
 
-- `asset` (character): Asset ticker (e.g., `"BTC"`, `"USDT"`).
+- asset (character) Asset ticker (e.g., `"BTC"`, `"USDT"`).
 
-- `free` (character): Available balance for trading.
+- free (character) Available balance for trading.
 
-- `locked` (character): Balance locked in open orders.
+- locked (character) Balance locked in open orders.
 
 #### Examples
 
@@ -254,8 +286,8 @@ Retrieves trades for a specific symbol. Requires authentication.
 #### Official Documentation
 
 [Binance Account Trade
-List](https://binance-docs.github.io/apidocs/spot/en/#account-trade-list-user_data)
-Verified: 2026-03-10
+List](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#account-trade-list-user_data)
+Verified: 2026-05-22
 
 #### Automated Trading Usage
 
@@ -306,62 +338,62 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `orderId`:
 
-  Integer or NULL; filter by order ID.
+  (scalar\<count\>?) filter by order ID.
 
 - `startTime`:
 
-  Integer or NULL; start timestamp in milliseconds.
+  (scalar\<count\>?) start timestamp in milliseconds.
 
 - `endTime`:
 
-  Integer or NULL; end timestamp in milliseconds.
+  (scalar\<count\>?) end timestamp in milliseconds.
 
 - `fromId`:
 
-  Integer or NULL; trade ID to fetch from.
+  (scalar\<count\>?) trade ID to fetch from.
 
 - `limit`:
 
-  Integer or NULL; max results (default 500, max 1000).
+  (scalar\<count\>?) max results (default 500, max 1000).
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per trade and the following columns:
+(data.table \| promise\<data.table\>) one row per trade:
 
-- `symbol` (character): Trading pair (e.g., `"BTCUSDT"`).
+- symbol (character) Trading pair (e.g., `"BTCUSDT"`).
 
-- `id` (integer): Unique trade identifier.
+- id (numeric) Unique trade identifier.
 
-- `order_id` (integer): Order that generated this trade.
+- order_id (numeric) Order that generated this trade.
 
-- `order_list_id` (integer): OCO order list ID; `-1` if not an OCO.
+- order_list_id (numeric) OCO order list ID; `-1` if not an OCO.
 
-- `price` (character): Execution price.
+- price (character) Execution price.
 
-- `qty` (character): Quantity traded.
+- qty (character) Quantity traded.
 
-- `quote_qty` (character): Quote asset amount transacted.
+- quote_qty (character) Quote asset amount transacted.
 
-- `commission` (character): Commission charged.
+- commission (character) Commission charged.
 
-- `commission_asset` (character): Asset used for commission (e.g.,
+- commission_asset (character) Asset used for commission (e.g.,
   `"BNB"`).
 
-- `is_buyer` (logical): `TRUE` if you were the buyer.
+- is_buyer (logical) `TRUE` if you were the buyer.
 
-- `is_maker` (logical): `TRUE` if you were the maker.
+- is_maker (logical) `TRUE` if you were the maker.
 
-- `is_best_match` (logical): `TRUE` if this was the best price match.
+- is_best_match (logical) `TRUE` if this was the best price match.
 
-- `time` (POSIXct): Trade execution time converted from `time`.
+- time (POSIXct) Trade execution time converted from `time`.
 
 #### Examples
 

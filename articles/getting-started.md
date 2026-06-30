@@ -5,6 +5,7 @@ This vignette demonstrates how to use `binance` in **synchronous** mode.
 ## Setup
 
 ``` r
+
 box::use(
   binance[
     BinanceMarketData, BinanceTrading, BinanceOcoOrders,
@@ -28,6 +29,7 @@ The `BinanceMarketData` class covers all public (no auth) market
 endpoints.
 
 ``` r
+
 market <- BinanceMarketData$new()
 ```
 
@@ -37,6 +39,7 @@ market <- BinanceMarketData$new()
 ### Exchange Info
 
 ``` r
+
 info <- market$get_exchange_info(symbol = "BTCUSDT")
 info[, .(symbol, status, base_asset, quote_asset)]
 ```
@@ -49,6 +52,7 @@ info[, .(symbol, status, base_asset, quote_asset)]
 ### Ticker
 
 ``` r
+
 ticker <- market$get_ticker(symbol = "BTCUSDT")
 ticker
 ```
@@ -60,20 +64,22 @@ ticker
 ### All Tickers
 
 ``` r
+
 tickers <- market$get_all_tickers()
 tickers
 ```
 
-    #>                v1
-    #>            <char>
-    #> 1:        BTCUSDT
-    #> 2: 67232.90000000
+    #>     symbol          price
+    #>     <char>         <char>
+    #> 1: BTCUSDT 67232.90000000
+    #> 2: ETHUSDT  2530.60000000
 
 ### Book Ticker
 
 Best bid/ask prices and quantities:
 
 ``` r
+
 book <- market$get_book_ticker(symbol = "BTCUSDT")
 book
 ```
@@ -85,6 +91,7 @@ book
 ### Average Price
 
 ``` r
+
 avg <- market$get_avg_price(symbol = "BTCUSDT")
 avg
 ```
@@ -96,6 +103,7 @@ avg
 ### 24hr Statistics
 
 ``` r
+
 stats <- market$get_24hr_stats(symbol = "BTCUSDT")
 stats[, .(symbol, last_price, price_change_percent, volume)]
 ```
@@ -107,6 +115,7 @@ stats[, .(symbol, last_price, price_change_percent, volume)]
 ### Order Book Depth
 
 ``` r
+
 depth <- market$get_depth(symbol = "BTCUSDT", limit = 5)
 depth
 ```
@@ -123,12 +132,13 @@ depth
 ### Recent Trades
 
 ``` r
+
 trades <- market$get_trades(symbol = "BTCUSDT")
 trades
 ```
 
     #>       id          price        qty    quote_qty                time
-    #>    <int>         <char>     <char>       <char>              <POSc>
+    #>    <num>         <char>     <char>       <char>              <POSc>
     #> 1: 28457 67232.90000000 0.00007682   5.16527540 2017-07-12 13:19:09
     #> 2: 28458 67231.50000000 0.01234000 829.63251000 2017-07-12 13:19:10
     #> 3: 28459 67233.00000000 0.00500000 336.16500000 2017-07-12 13:19:11
@@ -141,6 +151,7 @@ trades
 ### Klines (Candlestick Data)
 
 ``` r
+
 klines <- market$get_klines(symbol = "BTCUSDT", interval = "1h", limit = 5)
 klines[, .(open_time, open, high, low, close, volume)]
 ```
@@ -153,33 +164,83 @@ klines[, .(open_time, open, high, low, close, volume)]
 
 ### Fetch All Klines (Large Date Ranges)
 
-When you need more than 1000 candles, use `fetch_all = TRUE` to
-automatically segment the time range into multiple API calls,
-deduplicate boundaries, and return the combined result:
+When you need more than 1000 candles, pass `fetch_all = TRUE`. The
+method pages forward through the range — following the data and stopping
+at the first empty or short page — then returns the combined result.
+Because Binance returns candles from the first one on or after
+`startTime`, an empty leading stretch (e.g. dates before a symbol was
+listed) is skipped in a **single** request rather than probed piece by
+piece:
 
 ``` r
-# Fetch all 1h klines across a 5-month date range (multiple API calls)
+
+# Fetch all 1h klines across a date range (paged automatically)
 all_klines <- market$get_klines(
   symbol = "BTCUSDT",
   interval = "1h",
   startTime = as.POSIXct("2024-01-01", tz = "UTC"),
   endTime = as.POSIXct("2024-06-01", tz = "UTC"),
   fetch_all = TRUE,
-  sleep = 0.5
+  sleep = 0
 )
 
 nrow(all_klines)
 head(all_klines[, .(open_time, open, high, low, close, volume)])
 ```
 
+    #> [1] 3
+    #>     open_time      open   high      low    close   volume
+    #>        <POSc>     <num>  <num>    <num>    <num>    <num>
+    #> 1: 2017-07-03 0.0163479 0.8000 0.015758 0.015771 148976.1
+    #> 2: 2017-07-10 0.0157710 0.0158 0.015730 0.015788  95432.0
+    #> 3: 2017-07-17 0.0157880 0.0159 0.015700 0.015850 120000.0
+
 > **Note:** Large date ranges consume multiple API requests. Use the
 > `sleep` parameter to respect Binance rate limits. For bulk
 > multi-symbol downloads, see
 > [`?binance_backfill_klines`](https://dereckscompany.github.io/binance/reference/binance_backfill_klines.md).
 
+### Streaming Pages with `on_page`
+
+For very large pulls you may not want to hold the whole result in
+memory. Pass an `on_page` callback (used only when `fetch_all = TRUE`)
+and each page is handed to it **as it is fetched** — nothing is
+accumulated, and the method returns invisibly, so the callback owns the
+data (write it to disk, append to a database, and so on):
+
+``` r
+
+pages <- 0L
+candles <- 0L
+
+market$get_klines(
+  symbol = "BTCUSDT",
+  interval = "1h",
+  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
+  endTime = as.POSIXct("2024-02-01", tz = "UTC"),
+  fetch_all = TRUE,
+  on_page = function(page) {
+    pages <<- pages + 1L
+    candles <<- candles + nrow(page)
+    # e.g. data.table::fwrite(page, "klines.csv", append = TRUE)
+    return(invisible(NULL))
+  }
+)
+
+cat("streamed", pages, "page(s),", candles, "candle(s)\n")
+```
+
+    #> streamed 1 page(s), 3 candle(s)
+
+This is exactly how
+[`binance_backfill_klines()`](https://dereckscompany.github.io/binance/reference/binance_backfill_klines.md)
+writes to disk page by page, so an interrupted download loses at most
+one page.
+
 ### Server Time
 
 ``` r
+
 st <- market$get_server_time()
 st
 ```
@@ -196,6 +257,7 @@ The `BinanceTrading` class manages spot orders. All trading endpoints
 require authentication.
 
 ``` r
+
 trading <- BinanceTrading$new()
 ```
 
@@ -207,6 +269,7 @@ trading <- BinanceTrading$new()
 Test orders validate parameters without executing:
 
 ``` r
+
 result <- trading$add_order_test(
   type = "LIMIT",
   symbol = "BTCUSDT",
@@ -217,13 +280,14 @@ result <- trading$add_order_test(
 result
 ```
 
-    #>     symbol   side   type    status
-    #>     <char> <char> <char>    <char>
-    #> 1: BTCUSDT    BUY  LIMIT validated
+    #>    validated
+    #>       <lgcl>
+    #> 1:      TRUE
 
 ### Place a Real Order
 
 ``` r
+
 order <- trading$add_order(
   type = "LIMIT",
   symbol = "BTCUSDT",
@@ -238,12 +302,13 @@ order
 ### Query an Order
 
 ``` r
+
 order <- trading$get_order(symbol = "BTCUSDT", orderId = 12345)
 order
 ```
 
     #>     symbol order_id order_list_id        client_order_id          price
-    #>     <char>    <int>         <int>                 <char>         <char>
+    #>     <char>    <num>         <num>                 <char>         <char>
     #> 1: BTCUSDT       28            -1 6gCrw2kRUAF9CvJDGP16IP 50000.00000000
     #>      orig_qty executed_qty cummulative_quote_qty status time_in_force   type
     #>        <char>       <char>                <char> <char>        <char> <char>
@@ -251,19 +316,23 @@ order
     #>      side stop_price iceberg_qty                time         update_time
     #>    <char>     <char>      <char>              <POSc>              <POSc>
     #> 1:    BUY 0.00000000  0.00000000 2017-10-11 12:32:56 2017-10-11 12:32:56
-    #>    is_working orig_quote_order_qty working_time self_trade_prevention_mode
-    #>        <lgcl>               <char>        <num>                     <char>
-    #> 1:       TRUE           0.00000000 1.507725e+12                       NONE
+    #>    is_working orig_quote_order_qty        working_time
+    #>        <lgcl>               <char>              <POSc>
+    #> 1:       TRUE           0.00000000 2017-10-11 12:32:56
+    #>    self_trade_prevention_mode
+    #>                        <char>
+    #> 1:                       NONE
 
 ### Get Open Orders
 
 ``` r
+
 open_orders <- trading$get_open_orders(symbol = "BTCUSDT")
 open_orders
 ```
 
     #>     symbol order_id order_list_id        client_order_id          price
-    #>     <char>    <int>         <int>                 <char>         <char>
+    #>     <char>    <num>         <num>                 <char>         <char>
     #> 1: BTCUSDT       28            -1 6gCrw2kRUAF9CvJDGP16IP 50000.00000000
     #>      orig_qty executed_qty cummulative_quote_qty status time_in_force   type
     #>        <char>       <char>                <char> <char>        <char> <char>
@@ -271,13 +340,14 @@ open_orders
     #>      side stop_price iceberg_qty                time is_working
     #>    <char>     <char>      <char>              <POSc>     <lgcl>
     #> 1:    BUY 0.00000000  0.00000000 2017-10-11 12:32:56       TRUE
-    #>    orig_quote_order_qty working_time self_trade_prevention_mode
-    #>                  <char>        <num>                     <char>
-    #> 1:           0.00000000 1.507725e+12                       NONE
+    #>    orig_quote_order_qty        working_time self_trade_prevention_mode
+    #>                  <char>              <POSc>                     <char>
+    #> 1:           0.00000000 2017-10-11 12:32:56                       NONE
 
 ### Cancel an Order
 
 ``` r
+
 cancelled <- trading$cancel_order(symbol = "BTCUSDT", orderId = 12345)
 cancelled
 ```
@@ -290,6 +360,7 @@ An OCO (One-Cancels-Other) order pairs a limit order with a stop-limit
 order; when one side fills, the other is cancelled automatically.
 
 ``` r
+
 oco <- BinanceOcoOrders$new()
 ```
 
@@ -297,6 +368,7 @@ oco <- BinanceOcoOrders$new()
     #> BINANCE_API_SECRET environment variables or pass them explicitly.
 
 ``` r
+
 result <- oco$add_order(
   symbol = "BTCUSDT",
   side = "SELL",
@@ -312,12 +384,13 @@ result
 ### Query OCO Orders
 
 ``` r
+
 open_oco <- oco$get_open_oco_orders()
 open_oco
 ```
 
     #>    order_list_id contingency_type list_status_type list_order_status
-    #>            <int>           <char>           <char>            <char>
+    #>            <num>           <char>           <char>            <char>
     #> 1:             0              OCO         ALL_DONE          ALL_DONE
     #> 2:             0              OCO         ALL_DONE          ALL_DONE
     #>      list_client_order_id    transaction_time  symbol order_symbol
@@ -325,7 +398,7 @@ open_oco
     #> 1: JYVpp3F0f5CAG15DhtrqLp 2019-07-18 02:38:00 BTCUSDT      BTCUSDT
     #> 2: JYVpp3F0f5CAG15DhtrqLp 2019-07-18 02:38:00 BTCUSDT      BTCUSDT
     #>    order_order_id  order_client_order_id
-    #>             <int>                 <char>
+    #>             <num>                 <char>
     #> 1:             12 bX5wROblo6YeDwa9iTLeyY
     #> 2:             13 Tnu2IP0J5Y4mxw3IATBfmW
 
@@ -336,6 +409,7 @@ open_oco
 ### Account Info
 
 ``` r
+
 account <- BinanceAccount$new()
 ```
 
@@ -343,6 +417,7 @@ account <- BinanceAccount$new()
     #> BINANCE_API_SECRET environment variables or pass them explicitly.
 
 ``` r
+
 info <- account$get_account_info()
 info[, .(maker_commission, taker_commission, can_trade, account_type)]
 ```
@@ -354,12 +429,13 @@ info[, .(maker_commission, taker_commission, can_trade, account_type)]
 ### Trade History
 
 ``` r
+
 trades <- account$get_trades(symbol = "BTCUSDT")
 trades
 ```
 
     #>     symbol    id order_id order_list_id          price        qty   quote_qty
-    #>     <char> <int>    <int>         <int>         <char>     <char>      <char>
+    #>     <char> <num>    <num>         <num>         <char>     <char>      <char>
     #> 1: BTCUSDT 28457   100234            -1 67232.90000000 0.00100000 67.23290000
     #> 2: BTCUSDT 28458   100235            -1 67200.00000000 0.00050000 33.60000000
     #>    commission commission_asset                time is_buyer is_maker
@@ -376,6 +452,7 @@ trades
 ## Deposits
 
 ``` r
+
 deposit <- BinanceDeposit$new()
 ```
 
@@ -385,6 +462,7 @@ deposit <- BinanceDeposit$new()
 ### Get Deposit Address
 
 ``` r
+
 addr <- deposit$get_deposit_address(coin = "BTC")
 addr
 ```
@@ -399,6 +477,7 @@ addr
 ### Deposit History
 
 ``` r
+
 history <- deposit$get_deposit_history(coin = "BTC")
 history
 ```
@@ -429,6 +508,7 @@ history
 ## Withdrawals
 
 ``` r
+
 withdrawal <- BinanceWithdrawal$new()
 ```
 
@@ -438,6 +518,7 @@ withdrawal <- BinanceWithdrawal$new()
 ### Withdrawal History
 
 ``` r
+
 history <- withdrawal$get_withdrawal_history(coin = "USDT")
 history
 ```
@@ -455,17 +536,18 @@ history
     #> 1: 0xb5ef8c13b968a406cc62a93a8bd80f9e9a906ef1b3fcf20a2e48573c17659268
     #> 2:                                                                   
     #>             apply_time network transfer_type withdraw_order_id   info
-    #>                 <char>  <char>         <int>            <char> <char>
+    #>                 <POSc>  <char>         <int>            <char> <char>
     #> 1: 2019-10-12 11:12:02     ETH             0   WITHDRAWtest123       
     #> 2: 2023-05-01 08:30:00     BTC             0                         
     #>    confirm_no wallet_type tx_key       complete_time
-    #>         <int>       <int> <char>              <char>
+    #>         <int>       <int> <char>              <POSc>
     #> 1:          3           1        2023-03-23 16:52:41
-    #> 2:          0           0
+    #> 2:          0           0                       <NA>
 
 ### Submit a Withdrawal
 
 ``` r
+
 result <- withdrawal$add_withdrawal(
   coin = "USDT",
   address = "your-trc20-address",
@@ -483,10 +565,12 @@ Use `BinanceTransfer` to move assets between wallet types (spot, margin,
 futures, funding).
 
 ``` r
+
 transfer <- BinanceTransfer$new()
 ```
 
 ``` r
+
 # Transfer 100 USDT from spot to futures
 result <- transfer$add_transfer(
   type = "MAIN_UMFUTURE",
@@ -507,6 +591,7 @@ history
 Use `BinanceEarn` to subscribe to flexible savings products:
 
 ``` r
+
 earn <- BinanceEarn$new()
 ```
 
@@ -516,20 +601,25 @@ earn <- BinanceEarn$new()
 ### List Available Products
 
 ``` r
+
 products <- earn$get_flexible_products()
 products
 ```
 
-    #>     asset latest_annual_percentage_rate can_purchase can_redeem is_sold_out
-    #>    <char>                        <char>       <lgcl>     <lgcl>      <lgcl>
-    #> 1:   USDT                    0.03250000         TRUE       TRUE       FALSE
-    #>       hot min_purchase_amount product_id subscription_start_time     status
-    #>    <lgcl>              <char>     <char>                   <num>     <char>
-    #> 1:   TRUE          0.10000000    USDT001            1.661493e+12 PURCHASING
+    #>     asset latest_annual_percentage_rate    tier_annual_percentage_rate
+    #>    <char>                        <char>                         <char>
+    #> 1:   USDT                    0.03250000 {"0-5BTC":0.05,"5-10BTC":0.03}
+    #>    can_purchase can_redeem is_sold_out    hot min_purchase_amount product_id
+    #>          <lgcl>     <lgcl>      <lgcl> <lgcl>              <char>     <char>
+    #> 1:         TRUE       TRUE       FALSE   TRUE          0.10000000    USDT001
+    #>    subscription_start_time     status
+    #>                     <POSc>     <char>
+    #> 1:     2022-08-26 05:52:26 PURCHASING
 
 ### Subscribe
 
 ``` r
+
 result <- earn$subscribe_flexible(productId = "BTC001", amount = 0.01)
 result
 ```
@@ -537,13 +627,14 @@ result
 ### Check Positions
 
 ``` r
+
 positions <- earn$get_flexible_position()
 positions
 ```
 
     #>    total_amount tier_annual_percentage_rate latest_annual_percentage_rate
-    #>          <char>                      <lgcl>                        <char>
-    #> 1: 100.00000000                          NA                    0.03250000
+    #>          <char>                      <char>                        <char>
+    #> 1: 100.00000000                        <NA>                    0.03250000
     #>    yesterday_airdrop_percentage_rate  asset air_drop_asset can_redeem
     #>                               <char> <char>         <char>     <lgcl>
     #> 1:                        0.00008000   USDT           USDT       TRUE
@@ -562,6 +653,7 @@ positions
 ## Sub-Account Management
 
 ``` r
+
 sub <- BinanceSubAccount$new()
 ```
 
@@ -569,6 +661,7 @@ sub <- BinanceSubAccount$new()
     #> BINANCE_API_SECRET environment variables or pass them explicitly.
 
 ``` r
+
 subs <- sub$get_sub_accounts()
 subs
 ```
@@ -592,6 +685,7 @@ requests may fail with timestamp errors. You can configure any class to
 fetch the server time before each authenticated request:
 
 ``` r
+
 # Use server time for signing (adds one round trip per request)
 trading <- BinanceTrading$new(time_source = "server")
 
@@ -612,20 +706,24 @@ The `time_source` parameter is available on all class constructors:
 
 ## Bulk Historical Data: Backfill Klines
 
-Download historical kline data across multiple symbols and intervals,
-with automatic CSV-based resume support:
+Download historical kline data across multiple symbols and timeframes,
+written to CSV **page by page** with automatic resume — an interrupted
+download loses at most one page, and re-running continues each series
+from its last saved candle:
 
 ``` r
+
 binance_backfill_klines(
   symbols = c("BTCUSDT", "ETHUSDT"),
-  intervals = c("1d", "4h"),
+  timeframes = c("1d", "4h"),
   from = lubridate::as_datetime("2020-01-01"),
   to = lubridate::now("UTC"),
   file = "my_klines.csv"
 )
 
-# Resume an interrupted download — just run the same call again
-# It reads the existing CSV and skips completed symbol-interval combos
+# Resume an interrupted download — just run the same call again.
+# It reads the existing CSV and continues each symbol/timeframe from its last
+# saved candle.
 ```
 
 ------------------------------------------------------------------------

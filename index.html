@@ -7,12 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>API Wrapper to Binance Cryptocurrency Exchange • binance</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="API Wrapper to Binance Cryptocurrency Exchange">
-<meta name="description" content="R API wrapper to the Binance cryptocurrency exchange supporting both synchronous and asynchronous (promise based) operations. Provides R6 classes for spot market data, trading (including OCO orders), account management, deposits, withdrawals, internal transfers, margin trading, margin data, sub-accounts, Simple Earn, and USD-M futures (market data and trading). Includes bulk kline backfill with CSV resume support and timestamp conversion utilities.">
-<meta property="og:description" content="R API wrapper to the Binance cryptocurrency exchange supporting both synchronous and asynchronous (promise based) operations. Provides R6 classes for spot market data, trading (including OCO orders), account management, deposits, withdrawals, internal transfers, margin trading, margin data, sub-accounts, Simple Earn, and USD-M futures (market data and trading). Includes bulk kline backfill with CSV resume support and timestamp conversion utilities.">
+<meta name="description" content="R API wrapper to the Binance cryptocurrency exchange supporting both synchronous and asynchronous (promise based) operations. Provides R6 classes for spot market data, trading (including OCO orders), account management, deposits, withdrawals, internal transfers, margin trading, margin data, sub-accounts, Simple Earn, and USD-M futures (market data and trading). Includes bulk kline backfill with CSV resume support, live event-driven WebSocket market-data streams (order book depth), and timestamp conversion utilities.">
+<meta property="og:description" content="R API wrapper to the Binance cryptocurrency exchange supporting both synchronous and asynchronous (promise based) operations. Provides R6 classes for spot market data, trading (including OCO orders), account management, deposits, withdrawals, internal transfers, margin trading, margin data, sub-accounts, Simple Earn, and USD-M futures (market data and trading). Includes bulk kline backfill with CSV resume support, live event-driven WebSocket market-data streams (order book depth), and timestamp conversion utilities.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,7 +37,9 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/getting-started.html">Getting Started with binance</a></li>
     <li><a class="dropdown-item" href="articles/async-usage.html">Asynchronous Usage with binance</a></li>
+    <li><a class="dropdown-item" href="articles/websocket-streams.html">Live WebSocket Streams with binance</a></li>
     <li><a class="dropdown-item" href="articles/margin-futures-trading.html">Margin and Futures Trading with binance</a></li>
+    <li><a class="dropdown-item" href="articles/data-shapes.html">Package Tour and Data-Shape Conventions</a></li>
   </ul>
 </li>
       </ul>
@@ -68,17 +70,38 @@
 <div class="section level2">
 <h2 id="design-philosophy">Design Philosophy<a class="anchor" aria-label="anchor" href="#design-philosophy"></a>
 </h2>
-<p>All API responses are returned as <code>data.table</code> objects with two transformations applied:</p>
+<p>All API responses are returned as <code>data.table</code> objects. The package targets a consistent “one entity = one row, no list columns” shape, but the exact transformation is endpoint-specific. See each method’s <code>@return</code> block for the precise list of columns and any per-endpoint behaviour.</p>
+<p>The transformations the parsers apply:</p>
 <ol style="list-style-type: decimal">
+<li><p><strong>snake_case column names</strong> - camelCase keys from the JSON response (e.g. <code>insertTime</code>, <code>quoteQty</code>) are converted to snake_case (<code>insert_time</code>, <code>quote_qty</code>). A handful of endpoints additionally rename for clarity (e.g. nested objects are wide-prefixed to <code>parent_child</code> columns; collapsed array fields land under the plural form like <code>permissions</code>).</p></li>
+<li><p><strong>Type coercion</strong> for well-known columns - millisecond timestamps become <code>POSIXct</code>; selected nested numeric <code>filters</code> are extracted into flat <code>lot_min_qty</code> / <code>price_tick_size</code> / <code>min_notional</code> columns.</p></li>
 <li>
-<strong>snake_case column names</strong> - camelCase keys from the JSON response (e.g. <code>insertTime</code>, <code>quoteQty</code>) are converted to snake_case (<code>insert_time</code>, <code>quote_qty</code>). No columns are renamed beyond.</li>
-<li>
-<strong>type coercion</strong> - known columns are type coerced in <code>data.table</code> before return.</li>
-</ol>
-<p>That’s it. <strong>No fields are dropped and no columns are renamed</strong> beyond snake case conversion. If a column exists in the Binance API response, it will exist in the returned <code>data.table</code>. If you don’t need a column, drop it yourself.</p>
+<p><strong>Shape normalisation</strong> for nested arrays and objects, applied per endpoint:</p>
 <ul>
-<li>The only exception is klines (candlestick data), where Binance returns positional arrays instead of named objects. These are assigned descriptive column names (<code>open_time</code>, <code>open</code>, <code>high</code>, <code>low</code>, <code>close</code>, <code>volume</code>, <code>close_time</code>, etc.) matching the Binance documentation.</li>
+<li>
+<strong>Arrays of plain strings</strong> (e.g. <code>orderTypes</code>, <code>permissions</code>, <code>allowedSelfTradePreventionModes</code>) → collapsed into one <code>;</code>-separated character column. Recover via <code>strsplit(x, ";", fixed = TRUE)[[1]]</code>.</li>
+<li>
+<strong>Arrays of objects with a fixed schema</strong> (e.g. order <code>fills</code>, account <code>assets</code>, OCO <code>orderReports</code>, sub-account <code>spotSubUserAssetBtcVoList</code>) → exploded to long format with parent fields replicated and a <code>&lt;child&gt;_</code> prefix on the child columns. A 1-indexed position column is added where order matters.</li>
+<li>
+<strong>Single nested objects with a fixed schema</strong> (e.g. account <code>commissionRates</code>, locked-earn <code>detail</code> / <code>quota</code>) → flattened to wide <code>parent_child</code> columns.</li>
+<li>
+<strong>Nested objects with dynamic keys</strong> (e.g. spot exchange-info <code>permissionSets</code>, flexible-earn <code>tierAnnualPercentageRate</code>) → serialised as a JSON string column so the inner structure is preserved; recover via <code>jsonlite::fromJSON(x)</code>.</li>
 </ul>
+</li>
+</ol>
+<p><strong>Endpoints that reshape rather than drop:</strong></p>
+<p>The parsers never discard API data — every field is either on the row, on a sibling row, on a sibling method’s return, or attached as an attribute on the returned <code>data.table</code>.</p>
+<ul>
+<li>
+<code>get_account_info()</code> (spot) - account-level fields are returned as a single row; the companion <code>balances</code> array is parsed by the sibling <code>get_balances()</code> (both methods hit <code>/api/v3/account</code> and parse different halves).</li>
+<li>
+<code>get_account()</code> (futures) - one row per asset balance; the companion <code>positions</code> array is parsed by the sibling <code>get_positions()</code> (which hits <code>/fapi/v2/positionRisk</code>).</li>
+<li>
+<code>get_exchange_info()</code> (spot and futures) - one row per symbol. The full per-symbol <code>filters</code> array is preserved as a JSON-encoded <code>filters_raw</code> column alongside the curated <code>lot_*</code> / <code>price_*</code> / <code>min_notional</code> columns (recover with <code>jsonlite::fromJSON(dt$filters_raw[1])</code>). Exchange-wide blocks (rate limits, exchange-wide filter rules, and on futures the margin-asset config) are exposed via sibling methods on the same class: <code>get_rate_limits()</code>, <code>get_exchange_filters()</code>, and (futures only) <code>get_futures_assets()</code>. <code>serverTime</code> is the long-standing <code>get_server_time()</code>. The constants (<code>timezone = "UTC"</code>, <code>futuresType = "U_M"</code>) are not re-exposed.</li>
+<li>The OCO endpoints (<code>add_oco_order()</code>, <code>cancel_oco_order()</code>) expand the richer <code>orderReports</code> payload; the thinner <code>orders</code> duplicate is a strict subset of the same data and so is omitted.</li>
+</ul>
+<p><strong>Klines</strong> are a special case: Binance returns positional arrays instead of named objects, so we assign descriptive column names (<code>open_time</code>, <code>open</code>, <code>high</code>, <code>low</code>, <code>close</code>, <code>volume</code>, <code>close_time</code>, etc.) matching the Binance documentation.</p>
+<p>If a column you expect is missing, check the method’s <code>@return</code>; if it still looks wrong, please file an issue.</p>
 </div>
 <div class="section level2">
 <h2 id="available-classes">Available Classes<a class="anchor" aria-label="anchor" href="#available-classes"></a>
@@ -89,85 +112,95 @@
 <col width="33%">
 <col width="33%">
 </colgroup>
-<thead><tr class="header">
+<thead><tr>
 <th>Class</th>
 <th>Purpose</th>
 <th align="center">Auth Required</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>BinanceMarketData</code></td>
 <td>Spot market data: tickers, klines, depth, trades, exchange info</td>
 <td align="center">No</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>BinanceTrading</code></td>
 <td>Spot order placement, query, and cancellation</td>
 <td align="center">Yes</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>BinanceOcoOrders</code></td>
 <td>One-Cancels-Other order management</td>
 <td align="center">Yes</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>BinanceAccount</code></td>
 <td>Account info and trade history</td>
 <td align="center">Yes</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>BinanceDeposit</code></td>
 <td>Deposit addresses and deposit history</td>
 <td align="center">Yes</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>BinanceWithdrawal</code></td>
 <td>Withdrawal submission and history</td>
 <td align="center">Yes</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>BinanceTransfer</code></td>
 <td>Internal transfers between wallet types (spot, margin, futures)</td>
 <td align="center">Yes</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>BinanceSubAccount</code></td>
 <td>Sub-account listing and management</td>
 <td align="center">Yes</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>BinanceEarn</code></td>
 <td>Simple Earn: flexible savings products and positions</td>
 <td align="center">Yes</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>BinanceMarginData</code></td>
 <td>Margin pairs, price index, interest rates, cross/isolated data</td>
 <td align="center">Mixed</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>BinanceMargin</code></td>
 <td>Margin borrowing, repayment, orders, and account queries</td>
 <td align="center">Yes</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>BinanceFuturesData</code></td>
 <td>Futures exchange info, mark price, funding rates, klines</td>
 <td align="center">No</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>BinanceFutures</code></td>
 <td>Futures order placement, positions, leverage, account queries</td>
 <td align="center">Yes</td>
 </tr>
-<tr class="even">
+<tr>
+<td><code>BinanceMarketStream</code></td>
+<td>Live spot market-data WebSocket streams (order-book depth)</td>
+<td align="center">No</td>
+</tr>
+<tr>
 <td><code>BinanceBase</code></td>
 <td>Internal base class (not used directly)</td>
 <td align="center">—</td>
 </tr>
+<tr>
+<td><code>BinanceWsBase</code></td>
+<td>Internal base class for WebSocket streams (not used directly)</td>
+<td align="center">—</td>
+</tr>
 </tbody>
 </table>
-<p>All classes accept an <code>async = TRUE</code> argument at construction and share a common <code>time_source</code> parameter for clock drift correction.</p>
+<p>All REST classes accept an <code>async = TRUE</code> argument at construction and share a common <code>time_source</code> parameter for clock drift correction. The WebSocket classes are always event-driven (a socket is an endless push stream, not a single request) — see <a href="#websocket-streams">WebSocket Streams</a> below.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -181,7 +214,7 @@
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># special mock for local build</span></span>
-<span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="http://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
+<span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
 <span>  <span class="va">binance</span><span class="op">[</span></span>
 <span>    <span class="va">get_api_keys</span>,</span>
 <span>    <span class="va">get_futures_base_url</span></span>
@@ -200,7 +233,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>httr2_mock <span class="op">=</span> <span class="va">mock_router</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># normal imports</span></span>
-<span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="http://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
+<span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
 <span>  <span class="va">binance</span><span class="op">[</span></span>
 <span>    <span class="va">BinanceMarketData</span>,</span>
 <span>    <span class="va">BinanceTrading</span>,</span>
@@ -214,7 +247,7 @@
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="ex">BINANCE_API_ENDPOINT</span> = <span class="st">"https://api.binance.com"</span></span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="ex">BINANCE_API_KEY</span> = your-api-key</span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="ex">BINANCE_API_SECRET</span> = your-api-secret</span></code></pre></div>
-<p>If you don’t have a key, visit the <a href="https://binance-docs.github.io/apidocs/" class="external-link">Binance API documentation</a>.</p>
+<p>If you don’t have a key, visit the <a href="https://developers.binance.com/docs/binance-spot-api-docs" class="external-link">Binance API documentation</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="quick-start--market-data">Quick Start – Market Data<a class="anchor" aria-label="anchor" href="#quick-start--market-data"></a>
@@ -250,17 +283,30 @@
 <div class="section level3">
 <h3 id="fetch-all-klines-large-date-ranges">Fetch All Klines (Large Date Ranges)<a class="anchor" aria-label="anchor" href="#fetch-all-klines-large-date-ranges"></a>
 </h3>
-<p>When you need historical data spanning more than 1000 candles, use <code>fetch_all = TRUE</code>. This automatically segments the time range into multiple API calls, deduplicates overlapping boundaries, and returns the combined result:</p>
+<p>When you need more than 1000 candles, pass <code>fetch_all = TRUE</code>. The method pages forward through the range — following the data and stopping at the first empty or short page — and returns the combined result. Because Binance returns candles from the first one on or after <code>startTime</code>, an empty leading stretch (e.g. dates before a symbol was listed) is skipped in a single request:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Fetch all 1h klines across a 5-month date range (multiple API calls)</span></span>
-<span><span class="va">market</span><span class="op">$</span><span class="fu">get_klines</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">all_klines</span> <span class="op">&lt;-</span> <span class="va">market</span><span class="op">$</span><span class="fu">get_klines</span><span class="op">(</span></span>
 <span>  symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>,</span>
 <span>  interval <span class="op">=</span> <span class="st">"1h"</span>,</span>
 <span>  startTime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-01-01"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
 <span>  endTime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-06-01"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
 <span>  fetch_all <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  sleep <span class="op">=</span> <span class="fl">0.5</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span>  sleep <span class="op">=</span> <span class="fl">0</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">all_klines</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co">#&gt; [1] 3</span></span></code></pre></div>
+<p>Pass an <code>on_page</code> callback to <strong>stream</strong> each page as it is fetched instead of holding the whole result in memory — the method then returns invisibly and your callback owns the data (this is how <code><a href="reference/binance_backfill_klines.html">binance_backfill_klines()</a></code> writes to disk page by page):</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">candles</span> <span class="op">&lt;-</span> <span class="fl">0L</span></span>
+<span><span class="va">market</span><span class="op">$</span><span class="fu">get_klines</span><span class="op">(</span></span>
+<span>  symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, interval <span class="op">=</span> <span class="st">"1h"</span>,</span>
+<span>  startTime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-01-01"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
+<span>  endTime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-02-01"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
+<span>  fetch_all <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  on_page <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">page</span><span class="op">)</span> <span class="va">candles</span> <span class="op">&lt;&lt;-</span> <span class="va">candles</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">page</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">candles</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co">#&gt; [1] 3</span></span></code></pre></div>
 <blockquote>
 <p><strong>Note:</strong> Large date ranges consume multiple API requests. Use the <code>sleep</code> parameter to avoid hitting Binance rate limits. For bulk multi-symbol downloads, see <code><a href="reference/binance_backfill_klines.html">binance_backfill_klines()</a></code>.</p>
 </blockquote>
@@ -268,49 +314,49 @@
 <div class="section level3">
 <h3 id="order-book-depth">Order Book Depth<a class="anchor" aria-label="anchor" href="#order-book-depth"></a>
 </h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">market</span><span class="op">$</span><span class="fu">get_depth</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co">#&gt;    last_update_id   side   price      size</span></span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt;            &lt;char&gt; &lt;char&gt;   &lt;num&gt;     &lt;num&gt;</span></span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt; 1:        1027024    bid 67232.8 0.4186184</span></span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt; 2:        1027024    bid 67232.5 1.5000000</span></span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="co">#&gt; 3:        1027024    bid 67230.0 0.8000000</span></span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt; 4:        1027024    ask 67232.9 1.2480899</span></span>
-<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co">#&gt; 5:        1027024    ask 67233.5 0.5000000</span></span>
-<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co">#&gt; 6:        1027024    ask 67235.0 2.1000000</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co">#&gt;    last_update_id   side   price      size</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co">#&gt;            &lt;char&gt; &lt;char&gt;   &lt;num&gt;     &lt;num&gt;</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co">#&gt; 1:        1027024    bid 67232.8 0.4186184</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co">#&gt; 2:        1027024    bid 67232.5 1.5000000</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt; 3:        1027024    bid 67230.0 0.8000000</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt; 4:        1027024    ask 67232.9 1.2480899</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt; 5:        1027024    ask 67233.5 0.5000000</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt; 6:        1027024    ask 67235.0 2.1000000</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="id_24hr-statistics">24hr Statistics<a class="anchor" aria-label="anchor" href="#id_24hr-statistics"></a>
 </h3>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">market</span><span class="op">$</span><span class="fu">get_24hr_stats</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co">#&gt;     symbol  price_change price_change_percent weighted_avg_price</span></span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;        &lt;char&gt;               &lt;char&gt;             &lt;char&gt;</span></span>
-<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT -772.10000000               -1.140     67450.50000000</span></span>
-<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt;    prev_close_price     last_price   last_qty      bid_price    bid_qty</span></span>
-<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt;              &lt;char&gt;         &lt;char&gt;     &lt;char&gt;         &lt;char&gt;     &lt;char&gt;</span></span>
-<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt; 1:   68005.00000000 67232.90000000 0.00100000 67232.80000000 0.41861839</span></span>
-<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt;         ask_price    ask_qty     open_price     high_price      low_price</span></span>
-<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt;            &lt;char&gt;     &lt;char&gt;         &lt;char&gt;         &lt;char&gt;         &lt;char&gt;</span></span>
-<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt; 1: 67232.90000000 1.24808993 68005.00000000 68100.00000000 66800.00000000</span></span>
-<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt;           volume       quote_volume           open_time          close_time</span></span>
-<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt;           &lt;char&gt;             &lt;char&gt;              &lt;POSc&gt;              &lt;POSc&gt;</span></span>
-<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt; 1: 3456.78901234 232456789.12000000 2024-10-16 10:04:19 2024-10-17 10:04:19</span></span>
-<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="co">#&gt;    first_id last_id count</span></span>
-<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="co">#&gt;       &lt;int&gt;   &lt;int&gt; &lt;int&gt;</span></span>
-<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co">#&gt; 1:     1000    2000  1001</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co">#&gt;     symbol  price_change price_change_percent weighted_avg_price</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;        &lt;char&gt;               &lt;char&gt;             &lt;char&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT -772.10000000               -1.140     67450.50000000</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co">#&gt;    prev_close_price     last_price   last_qty      bid_price    bid_qty</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="co">#&gt;              &lt;char&gt;         &lt;char&gt;     &lt;char&gt;         &lt;char&gt;     &lt;char&gt;</span></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co">#&gt; 1:   68005.00000000 67232.90000000 0.00100000 67232.80000000 0.41861839</span></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co">#&gt;         ask_price    ask_qty     open_price     high_price      low_price</span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="co">#&gt;            &lt;char&gt;     &lt;char&gt;         &lt;char&gt;         &lt;char&gt;         &lt;char&gt;</span></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="co">#&gt; 1: 67232.90000000 1.24808993 68005.00000000 68100.00000000 66800.00000000</span></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co">#&gt;           volume       quote_volume           open_time          close_time</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="co">#&gt;           &lt;char&gt;             &lt;char&gt;              &lt;POSc&gt;              &lt;POSc&gt;</span></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a><span class="co">#&gt; 1: 3456.78901234 232456789.12000000 2024-10-16 10:04:19 2024-10-17 10:04:19</span></span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="co">#&gt;    first_id last_id count</span></span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a><span class="co">#&gt;       &lt;int&gt;   &lt;int&gt; &lt;int&gt;</span></span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a><span class="co">#&gt; 1:     1000    2000  1001</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="trading">Trading<a class="anchor" aria-label="anchor" href="#trading"></a>
 </h2>
 <p>Trading endpoints require authentication. Use <code>add_order_test()</code> to validate order parameters without placing a real order.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trading</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/BinanceTrading.html">BinanceTrading</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>keys <span class="op">=</span> <span class="va">KEYS</span>, base_url <span class="op">=</span> <span class="va">BASE</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="test-order-no-execution">Test Order (No Execution)<a class="anchor" aria-label="anchor" href="#test-order-no-execution"></a>
 </h3>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trading</span><span class="op">$</span><span class="fu">add_order_test</span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"LIMIT"</span>,</span>
 <span>  symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>,</span>
@@ -318,133 +364,146 @@
 <span>  price <span class="op">=</span> <span class="fl">50000</span>,</span>
 <span>  quantity <span class="op">=</span> <span class="fl">0.0001</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co">#&gt;     symbol   side   type    status</span></span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt; &lt;char&gt; &lt;char&gt;    &lt;char&gt;</span></span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT    BUY  LIMIT validated</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co">#&gt;    validated</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="co">#&gt;       &lt;lgcl&gt;</span></span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="co">#&gt; 1:      TRUE</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="query-an-order">Query an Order<a class="anchor" aria-label="anchor" href="#query-an-order"></a>
 </h3>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trading</span><span class="op">$</span><span class="fu">get_order</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, orderId <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co">#&gt;     symbol order_id order_list_id        client_order_id          price</span></span>
-<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;    &lt;int&gt;         &lt;int&gt;                 &lt;char&gt;         &lt;char&gt;</span></span>
-<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT       28            -1 6gCrw2kRUAF9CvJDGP16IP 50000.00000000</span></span>
-<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co">#&gt;      orig_qty executed_qty cummulative_quote_qty status time_in_force   type</span></span>
-<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="co">#&gt;        &lt;char&gt;       &lt;char&gt;                &lt;char&gt; &lt;char&gt;        &lt;char&gt; &lt;char&gt;</span></span>
-<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="co">#&gt; 1: 0.00010000   0.00010000            5.00000000 FILLED           GTC  LIMIT</span></span>
-<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a><span class="co">#&gt;      side stop_price iceberg_qty                time         update_time</span></span>
-<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="co">#&gt;    &lt;char&gt;     &lt;char&gt;      &lt;char&gt;              &lt;POSc&gt;              &lt;POSc&gt;</span></span>
-<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a><span class="co">#&gt; 1:    BUY 0.00000000  0.00000000 2017-10-11 12:32:56 2017-10-11 12:32:56</span></span>
-<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a><span class="co">#&gt;    is_working orig_quote_order_qty working_time self_trade_prevention_mode</span></span>
-<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a><span class="co">#&gt;        &lt;lgcl&gt;               &lt;char&gt;        &lt;num&gt;                     &lt;char&gt;</span></span>
-<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a><span class="co">#&gt; 1:       TRUE           0.00000000 1.507725e+12                       NONE</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="co">#&gt;     symbol order_id order_list_id        client_order_id          price</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;    &lt;int&gt;         &lt;int&gt;                 &lt;char&gt;         &lt;char&gt;</span></span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT       28            -1 6gCrw2kRUAF9CvJDGP16IP 50000.00000000</span></span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="co">#&gt;      orig_qty executed_qty cummulative_quote_qty status time_in_force   type</span></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="co">#&gt;        &lt;char&gt;       &lt;char&gt;                &lt;char&gt; &lt;char&gt;        &lt;char&gt; &lt;char&gt;</span></span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a><span class="co">#&gt; 1: 0.00010000   0.00010000            5.00000000 FILLED           GTC  LIMIT</span></span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a><span class="co">#&gt;      side stop_price iceberg_qty                time         update_time</span></span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a><span class="co">#&gt;    &lt;char&gt;     &lt;char&gt;      &lt;char&gt;              &lt;POSc&gt;              &lt;POSc&gt;</span></span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a><span class="co">#&gt; 1:    BUY 0.00000000  0.00000000 2017-10-11 12:32:56 2017-10-11 12:32:56</span></span>
+<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a><span class="co">#&gt;    is_working orig_quote_order_qty        working_time</span></span>
+<span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a><span class="co">#&gt;        &lt;lgcl&gt;               &lt;char&gt;              &lt;POSc&gt;</span></span>
+<span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a><span class="co">#&gt; 1:       TRUE           0.00000000 2017-10-11 12:32:56</span></span>
+<span id="cb21-13"><a href="#cb21-13" tabindex="-1"></a><span class="co">#&gt;    self_trade_prevention_mode</span></span>
+<span id="cb21-14"><a href="#cb21-14" tabindex="-1"></a><span class="co">#&gt;                        &lt;char&gt;</span></span>
+<span id="cb21-15"><a href="#cb21-15" tabindex="-1"></a><span class="co">#&gt; 1:                       NONE</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="get-open-orders">Get Open Orders<a class="anchor" aria-label="anchor" href="#get-open-orders"></a>
 </h3>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trading</span><span class="op">$</span><span class="fu">get_open_orders</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co">#&gt;     symbol order_id order_list_id        client_order_id          price</span></span>
-<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;    &lt;int&gt;         &lt;int&gt;                 &lt;char&gt;         &lt;char&gt;</span></span>
-<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT       28            -1 6gCrw2kRUAF9CvJDGP16IP 50000.00000000</span></span>
-<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="co">#&gt;      orig_qty executed_qty cummulative_quote_qty status time_in_force   type</span></span>
-<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="co">#&gt;        &lt;char&gt;       &lt;char&gt;                &lt;char&gt; &lt;char&gt;        &lt;char&gt; &lt;char&gt;</span></span>
-<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a><span class="co">#&gt; 1: 0.00010000   0.00000000            0.00000000    NEW           GTC  LIMIT</span></span>
-<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a><span class="co">#&gt;      side stop_price iceberg_qty                time is_working</span></span>
-<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a><span class="co">#&gt;    &lt;char&gt;     &lt;char&gt;      &lt;char&gt;              &lt;POSc&gt;     &lt;lgcl&gt;</span></span>
-<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a><span class="co">#&gt; 1:    BUY 0.00000000  0.00000000 2017-10-11 12:32:56       TRUE</span></span>
-<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a><span class="co">#&gt;    orig_quote_order_qty working_time self_trade_prevention_mode</span></span>
-<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a><span class="co">#&gt;                  &lt;char&gt;        &lt;num&gt;                     &lt;char&gt;</span></span>
-<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a><span class="co">#&gt; 1:           0.00000000 1.507725e+12                       NONE</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="co">#&gt;     symbol order_id order_list_id        client_order_id          price</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;    &lt;int&gt;         &lt;int&gt;                 &lt;char&gt;         &lt;char&gt;</span></span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT       28            -1 6gCrw2kRUAF9CvJDGP16IP 50000.00000000</span></span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a><span class="co">#&gt;      orig_qty executed_qty cummulative_quote_qty status time_in_force   type</span></span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a><span class="co">#&gt;        &lt;char&gt;       &lt;char&gt;                &lt;char&gt; &lt;char&gt;        &lt;char&gt; &lt;char&gt;</span></span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a><span class="co">#&gt; 1: 0.00010000   0.00000000            0.00000000    NEW           GTC  LIMIT</span></span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a><span class="co">#&gt;      side stop_price iceberg_qty                time is_working</span></span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a><span class="co">#&gt;    &lt;char&gt;     &lt;char&gt;      &lt;char&gt;              &lt;POSc&gt;     &lt;lgcl&gt;</span></span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a><span class="co">#&gt; 1:    BUY 0.00000000  0.00000000 2017-10-11 12:32:56       TRUE</span></span>
+<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a><span class="co">#&gt;    orig_quote_order_qty        working_time self_trade_prevention_mode</span></span>
+<span id="cb23-11"><a href="#cb23-11" tabindex="-1"></a><span class="co">#&gt;                  &lt;char&gt;              &lt;POSc&gt;                     &lt;char&gt;</span></span>
+<span id="cb23-12"><a href="#cb23-12" tabindex="-1"></a><span class="co">#&gt; 1:           0.00000000 2017-10-11 12:32:56                       NONE</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="account">Account<a class="anchor" aria-label="anchor" href="#account"></a>
 </h2>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">account</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/BinanceAccount.html">BinanceAccount</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>keys <span class="op">=</span> <span class="va">KEYS</span>, base_url <span class="op">=</span> <span class="va">BASE</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="account-info">Account Info<a class="anchor" aria-label="anchor" href="#account-info"></a>
 </h3>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">account</span><span class="op">$</span><span class="fu">get_account_info</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb23"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="co">#&gt;    maker_commission taker_commission buyer_commission seller_commission</span></span>
-<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="co">#&gt;               &lt;int&gt;            &lt;int&gt;            &lt;int&gt;             &lt;int&gt;</span></span>
-<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="co">#&gt; 1:               15               15                0                 0</span></span>
-<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a><span class="co">#&gt;    commission_rates can_trade can_withdraw can_deposit brokered</span></span>
-<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a><span class="co">#&gt;              &lt;list&gt;    &lt;lgcl&gt;       &lt;lgcl&gt;      &lt;lgcl&gt;   &lt;lgcl&gt;</span></span>
-<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a><span class="co">#&gt; 1:        &lt;list[4]&gt;      TRUE         TRUE        TRUE    FALSE</span></span>
-<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a><span class="co">#&gt;    require_self_trade_prevention prevent_sor update_time account_type       uid</span></span>
-<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a><span class="co">#&gt;                           &lt;lgcl&gt;      &lt;lgcl&gt;       &lt;int&gt;       &lt;char&gt;     &lt;int&gt;</span></span>
-<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a><span class="co">#&gt; 1:                         FALSE       FALSE   123456789         SPOT 354937868</span></span>
-<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a><span class="co">#&gt;    permission</span></span>
-<span id="cb23-11"><a href="#cb23-11" tabindex="-1"></a><span class="co">#&gt;        &lt;char&gt;</span></span>
-<span id="cb23-12"><a href="#cb23-12" tabindex="-1"></a><span class="co">#&gt; 1:       SPOT</span></span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co">#&gt;    maker_commission taker_commission buyer_commission seller_commission</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="co">#&gt;               &lt;int&gt;            &lt;int&gt;            &lt;int&gt;             &lt;int&gt;</span></span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="co">#&gt; 1:               15               15                0                 0</span></span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a><span class="co">#&gt;    can_trade can_withdraw can_deposit brokered require_self_trade_prevention</span></span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="co">#&gt;       &lt;lgcl&gt;       &lt;lgcl&gt;      &lt;lgcl&gt;   &lt;lgcl&gt;                        &lt;lgcl&gt;</span></span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a><span class="co">#&gt; 1:      TRUE         TRUE        TRUE    FALSE                         FALSE</span></span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a><span class="co">#&gt;    prevent_sor         update_time account_type permissions       uid</span></span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a><span class="co">#&gt;         &lt;lgcl&gt;              &lt;POSc&gt;       &lt;char&gt;      &lt;char&gt;     &lt;int&gt;</span></span>
+<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a><span class="co">#&gt; 1:       FALSE 1970-01-02 10:17:36         SPOT        SPOT 354937868</span></span>
+<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a><span class="co">#&gt;    commission_rates_maker commission_rates_taker commission_rates_buyer</span></span>
+<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a><span class="co">#&gt;                    &lt;char&gt;                 &lt;char&gt;                 &lt;char&gt;</span></span>
+<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a><span class="co">#&gt; 1:             0.00150000             0.00150000             0.00000000</span></span>
+<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a><span class="co">#&gt;    commission_rates_seller</span></span>
+<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a><span class="co">#&gt;                     &lt;char&gt;</span></span>
+<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a><span class="co">#&gt; 1:              0.00000000</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="trade-history">Trade History<a class="anchor" aria-label="anchor" href="#trade-history"></a>
 </h3>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">account</span><span class="op">$</span><span class="fu">get_trades</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb25"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="co">#&gt;     symbol    id order_id order_list_id          price        qty   quote_qty</span></span>
-<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt; &lt;int&gt;    &lt;int&gt;         &lt;int&gt;         &lt;char&gt;     &lt;char&gt;      &lt;char&gt;</span></span>
-<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT 28457   100234            -1 67232.90000000 0.00100000 67.23290000</span></span>
-<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a><span class="co">#&gt; 2: BTCUSDT 28458   100235            -1 67200.00000000 0.00050000 33.60000000</span></span>
-<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a><span class="co">#&gt;    commission commission_asset                time is_buyer is_maker</span></span>
-<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a><span class="co">#&gt;        &lt;char&gt;           &lt;char&gt;              &lt;POSc&gt;   &lt;lgcl&gt;   &lt;lgcl&gt;</span></span>
-<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a><span class="co">#&gt; 1: 0.00000100              BTC 2017-07-12 13:19:09     TRUE    FALSE</span></span>
-<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a><span class="co">#&gt; 2: 0.00000050              BTC 2017-07-12 13:19:10    FALSE     TRUE</span></span>
-<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a><span class="co">#&gt;    is_best_match</span></span>
-<span id="cb25-10"><a href="#cb25-10" tabindex="-1"></a><span class="co">#&gt;           &lt;lgcl&gt;</span></span>
-<span id="cb25-11"><a href="#cb25-11" tabindex="-1"></a><span class="co">#&gt; 1:          TRUE</span></span>
-<span id="cb25-12"><a href="#cb25-12" tabindex="-1"></a><span class="co">#&gt; 2:          TRUE</span></span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co">#&gt;     symbol    id order_id order_list_id          price        qty   quote_qty</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt; &lt;int&gt;    &lt;int&gt;         &lt;int&gt;         &lt;char&gt;     &lt;char&gt;      &lt;char&gt;</span></span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT 28457   100234            -1 67232.90000000 0.00100000 67.23290000</span></span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a><span class="co">#&gt; 2: BTCUSDT 28458   100235            -1 67200.00000000 0.00050000 33.60000000</span></span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a><span class="co">#&gt;    commission commission_asset                time is_buyer is_maker</span></span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a><span class="co">#&gt;        &lt;char&gt;           &lt;char&gt;              &lt;POSc&gt;   &lt;lgcl&gt;   &lt;lgcl&gt;</span></span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a><span class="co">#&gt; 1: 0.00000100              BTC 2017-07-12 13:19:09     TRUE    FALSE</span></span>
+<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a><span class="co">#&gt; 2: 0.00000050              BTC 2017-07-12 13:19:10    FALSE     TRUE</span></span>
+<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a><span class="co">#&gt;    is_best_match</span></span>
+<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a><span class="co">#&gt;           &lt;lgcl&gt;</span></span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a><span class="co">#&gt; 1:          TRUE</span></span>
+<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a><span class="co">#&gt; 2:          TRUE</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="margin-trading">Margin Trading<a class="anchor" aria-label="anchor" href="#margin-trading"></a>
 </h2>
 <p>Margin endpoints use the same credential setup. Here is a brief overview:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">margin</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/BinanceMargin.html">BinanceMargin</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>keys <span class="op">=</span> <span class="va">KEYS</span>, base_url <span class="op">=</span> <span class="va">BASE</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="margin-account">Margin Account<a class="anchor" aria-label="anchor" href="#margin-account"></a>
 </h3>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">margin</span><span class="op">$</span><span class="fu">get_account</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb28"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co">#&gt;    borrow_enabled margin_level total_asset_of_btc total_liability_of_btc</span></span>
-<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="co">#&gt;            &lt;lgcl&gt;       &lt;char&gt;             &lt;char&gt;                 &lt;char&gt;</span></span>
-<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a><span class="co">#&gt; 1:           TRUE  11.64405625         6.82000000             0.58633215</span></span>
-<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a><span class="co">#&gt;    total_net_asset_of_btc trade_enabled transfer_enabled account_type</span></span>
-<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a><span class="co">#&gt;                    &lt;char&gt;        &lt;lgcl&gt;           &lt;lgcl&gt;       &lt;char&gt;</span></span>
-<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a><span class="co">#&gt; 1:             6.23366785          TRUE             TRUE       MARGIN</span></span>
-<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a><span class="co">#&gt;    user_assets</span></span>
-<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a><span class="co">#&gt;         &lt;list&gt;</span></span>
-<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a><span class="co">#&gt; 1:   &lt;list[2]&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="co">#&gt;    borrow_enabled margin_level total_asset_of_btc total_liability_of_btc</span></span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a><span class="co">#&gt;            &lt;lgcl&gt;       &lt;char&gt;             &lt;char&gt;                 &lt;char&gt;</span></span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a><span class="co">#&gt; 1:           TRUE  11.64405625         6.82000000             0.58633215</span></span>
+<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a><span class="co">#&gt; 2:           TRUE  11.64405625         6.82000000             0.58633215</span></span>
+<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a><span class="co">#&gt;    total_net_asset_of_btc trade_enabled transfer_enabled account_type</span></span>
+<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a><span class="co">#&gt;                    &lt;char&gt;        &lt;lgcl&gt;           &lt;lgcl&gt;       &lt;char&gt;</span></span>
+<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a><span class="co">#&gt; 1:             6.23366785          TRUE             TRUE       MARGIN</span></span>
+<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a><span class="co">#&gt; 2:             6.23366785          TRUE             TRUE       MARGIN</span></span>
+<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a><span class="co">#&gt;    user_asset_asset user_asset_borrowed user_asset_free user_asset_interest</span></span>
+<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a><span class="co">#&gt;              &lt;char&gt;              &lt;char&gt;          &lt;char&gt;              &lt;char&gt;</span></span>
+<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a><span class="co">#&gt; 1:              BTC          0.00000000      0.00499500          0.00000000</span></span>
+<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a><span class="co">#&gt; 2:             USDT        100.00000000    200.00000000          0.01000000</span></span>
+<span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a><span class="co">#&gt;    user_asset_locked user_asset_net_asset</span></span>
+<span id="cb31-14"><a href="#cb31-14" tabindex="-1"></a><span class="co">#&gt;               &lt;char&gt;               &lt;char&gt;</span></span>
+<span id="cb31-15"><a href="#cb31-15" tabindex="-1"></a><span class="co">#&gt; 1:        0.00000000           0.00499500</span></span>
+<span id="cb31-16"><a href="#cb31-16" tabindex="-1"></a><span class="co">#&gt; 2:        0.00000000          99.99000000</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="max-borrowable">Max Borrowable<a class="anchor" aria-label="anchor" href="#max-borrowable"></a>
 </h3>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">margin</span><span class="op">$</span><span class="fu">get_max_borrowable</span><span class="op">(</span>asset <span class="op">=</span> <span class="st">"USDT"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb30"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="co">#&gt;        amount borrow_limit</span></span>
-<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a><span class="co">#&gt;        &lt;char&gt;       &lt;char&gt;</span></span>
-<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a><span class="co">#&gt; 1: 1.69248805           60</span></span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="co">#&gt;        amount borrow_limit</span></span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a><span class="co">#&gt;        &lt;char&gt;       &lt;char&gt;</span></span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a><span class="co">#&gt; 1: 1.69248805           60</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="margin-trades">Margin Trades<a class="anchor" aria-label="anchor" href="#margin-trades"></a>
 </h3>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">margin</span><span class="op">$</span><span class="fu">get_trades</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb32"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="co">#&gt;     symbol    id order_id          price        qty   quote_qty commission</span></span>
-<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt; &lt;int&gt;    &lt;int&gt;         &lt;char&gt;     &lt;char&gt;      &lt;char&gt;     &lt;char&gt;</span></span>
-<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT 28457   100234 67232.90000000 0.00100000 67.23290000 0.00000100</span></span>
-<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a><span class="co">#&gt;    commission_asset                time is_buyer is_maker is_best_match</span></span>
-<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a><span class="co">#&gt;              &lt;char&gt;              &lt;POSc&gt;   &lt;lgcl&gt;   &lt;lgcl&gt;        &lt;lgcl&gt;</span></span>
-<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a><span class="co">#&gt; 1:              BTC 2017-07-12 13:19:09     TRUE    FALSE          TRUE</span></span>
-<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a><span class="co">#&gt;    is_isolated</span></span>
-<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a><span class="co">#&gt;         &lt;lgcl&gt;</span></span>
-<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a><span class="co">#&gt; 1:       FALSE</span></span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="co">#&gt;     symbol    id order_id          price        qty   quote_qty commission</span></span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt; &lt;int&gt;    &lt;int&gt;         &lt;char&gt;     &lt;char&gt;      &lt;char&gt;     &lt;char&gt;</span></span>
+<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT 28457   100234 67232.90000000 0.00100000 67.23290000 0.00000100</span></span>
+<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a><span class="co">#&gt;    commission_asset                time is_buyer is_maker is_best_match</span></span>
+<span id="cb35-5"><a href="#cb35-5" tabindex="-1"></a><span class="co">#&gt;              &lt;char&gt;              &lt;POSc&gt;   &lt;lgcl&gt;   &lt;lgcl&gt;        &lt;lgcl&gt;</span></span>
+<span id="cb35-6"><a href="#cb35-6" tabindex="-1"></a><span class="co">#&gt; 1:              BTC 2017-07-12 13:19:09     TRUE    FALSE          TRUE</span></span>
+<span id="cb35-7"><a href="#cb35-7" tabindex="-1"></a><span class="co">#&gt;    is_isolated</span></span>
+<span id="cb35-8"><a href="#cb35-8" tabindex="-1"></a><span class="co">#&gt;         &lt;lgcl&gt;</span></span>
+<span id="cb35-9"><a href="#cb35-9" tabindex="-1"></a><span class="co">#&gt; 1:       FALSE</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -453,67 +512,67 @@
 <div class="section level3">
 <h3 id="futures-market-data">Futures Market Data<a class="anchor" aria-label="anchor" href="#futures-market-data"></a>
 </h3>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fdata</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/BinanceFuturesData.html">BinanceFuturesData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>keys <span class="op">=</span> <span class="va">KEYS</span>, base_url <span class="op">=</span> <span class="va">FBASE</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="mark-price-and-funding-rate">Mark Price and Funding Rate<a class="anchor" aria-label="anchor" href="#mark-price-and-funding-rate"></a>
 </h4>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fdata</span><span class="op">$</span><span class="fu">get_mark_price</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb35"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="co">#&gt;     symbol     mark_price    index_price estimated_settle_price</span></span>
-<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;         &lt;char&gt;         &lt;char&gt;                 &lt;char&gt;</span></span>
-<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT 67232.90000000 67230.50000000         67231.70000000</span></span>
-<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a><span class="co">#&gt;    last_funding_rate   next_funding_time interest_rate                time</span></span>
-<span id="cb35-5"><a href="#cb35-5" tabindex="-1"></a><span class="co">#&gt;               &lt;char&gt;              &lt;POSc&gt;        &lt;char&gt;              &lt;POSc&gt;</span></span>
-<span id="cb35-6"><a href="#cb35-6" tabindex="-1"></a><span class="co">#&gt; 1:        0.00010000 2022-08-26 06:00:00    0.00010000 2022-08-26 05:52:26</span></span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a><span class="co">#&gt;     symbol     mark_price    index_price estimated_settle_price</span></span>
+<span id="cb38-2"><a href="#cb38-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;         &lt;char&gt;         &lt;char&gt;                 &lt;char&gt;</span></span>
+<span id="cb38-3"><a href="#cb38-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT 67232.90000000 67230.50000000         67231.70000000</span></span>
+<span id="cb38-4"><a href="#cb38-4" tabindex="-1"></a><span class="co">#&gt;    last_funding_rate   next_funding_time interest_rate                time</span></span>
+<span id="cb38-5"><a href="#cb38-5" tabindex="-1"></a><span class="co">#&gt;               &lt;char&gt;              &lt;POSc&gt;        &lt;char&gt;              &lt;POSc&gt;</span></span>
+<span id="cb38-6"><a href="#cb38-6" tabindex="-1"></a><span class="co">#&gt; 1:        0.00010000 2022-08-26 06:00:00    0.00010000 2022-08-26 05:52:26</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="funding-rate-history">Funding Rate History<a class="anchor" aria-label="anchor" href="#funding-rate-history"></a>
 </h4>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fdata</span><span class="op">$</span><span class="fu">get_funding_rate</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, limit <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb37"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="co">#&gt;     symbol funding_rate        funding_time     mark_price</span></span>
-<span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;       &lt;char&gt;              &lt;POSc&gt;         &lt;char&gt;</span></span>
-<span id="cb37-3"><a href="#cb37-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT   0.00010000 2022-08-26 06:00:00 67232.90000000</span></span>
-<span id="cb37-4"><a href="#cb37-4" tabindex="-1"></a><span class="co">#&gt; 2: BTCUSDT   0.00012000 2022-08-26 14:00:00 67500.00000000</span></span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="co">#&gt;     symbol funding_rate        funding_time     mark_price</span></span>
+<span id="cb40-2"><a href="#cb40-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;       &lt;char&gt;              &lt;POSc&gt;         &lt;char&gt;</span></span>
+<span id="cb40-3"><a href="#cb40-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT   0.00010000 2022-08-26 06:00:00 67232.90000000</span></span>
+<span id="cb40-4"><a href="#cb40-4" tabindex="-1"></a><span class="co">#&gt; 2: BTCUSDT   0.00012000 2022-08-26 14:00:00 67500.00000000</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="open-interest">Open Interest<a class="anchor" aria-label="anchor" href="#open-interest"></a>
 </h4>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fdata</span><span class="op">$</span><span class="fu">get_open_interest</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb39"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="co">#&gt;     symbol open_interest                time</span></span>
-<span id="cb39-2"><a href="#cb39-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;        &lt;char&gt;              &lt;POSc&gt;</span></span>
-<span id="cb39-3"><a href="#cb39-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT     12345.678 2022-08-26 05:52:26</span></span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a><span class="co">#&gt;     symbol open_interest                time</span></span>
+<span id="cb42-2"><a href="#cb42-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;        &lt;char&gt;              &lt;POSc&gt;</span></span>
+<span id="cb42-3"><a href="#cb42-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT     12345.678 2022-08-26 05:52:26</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
 <h3 id="futures-trading">Futures Trading<a class="anchor" aria-label="anchor" href="#futures-trading"></a>
 </h3>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/BinanceFutures.html">BinanceFutures</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>keys <span class="op">=</span> <span class="va">KEYS</span>, base_url <span class="op">=</span> <span class="va">FBASE</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="positions">Positions<a class="anchor" aria-label="anchor" href="#positions"></a>
 </h4>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">futures</span><span class="op">$</span><span class="fu">get_positions</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb42"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a><span class="co">#&gt;     symbol position_amt entry_price break_even_price mark_price</span></span>
-<span id="cb42-2"><a href="#cb42-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;       &lt;char&gt;      &lt;char&gt;           &lt;char&gt;     &lt;char&gt;</span></span>
-<span id="cb42-3"><a href="#cb42-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT        0.001    50000.00         50025.00   67232.90</span></span>
-<span id="cb42-4"><a href="#cb42-4" tabindex="-1"></a><span class="co">#&gt;    un_realized_profit liquidation_price leverage max_notional_value margin_type</span></span>
-<span id="cb42-5"><a href="#cb42-5" tabindex="-1"></a><span class="co">#&gt;                &lt;char&gt;            &lt;char&gt;   &lt;char&gt;             &lt;char&gt;      &lt;char&gt;</span></span>
-<span id="cb42-6"><a href="#cb42-6" tabindex="-1"></a><span class="co">#&gt; 1:        17.23290000                 0       20           25000000       cross</span></span>
-<span id="cb42-7"><a href="#cb42-7" tabindex="-1"></a><span class="co">#&gt;    isolated_margin is_auto_add_margin position_side    notional isolated_wallet</span></span>
-<span id="cb42-8"><a href="#cb42-8" tabindex="-1"></a><span class="co">#&gt;             &lt;char&gt;             &lt;char&gt;        &lt;char&gt;      &lt;char&gt;          &lt;char&gt;</span></span>
-<span id="cb42-9"><a href="#cb42-9" tabindex="-1"></a><span class="co">#&gt; 1:      0.00000000              false          BOTH 67.23290000               0</span></span>
-<span id="cb42-10"><a href="#cb42-10" tabindex="-1"></a><span class="co">#&gt;            update_time</span></span>
-<span id="cb42-11"><a href="#cb42-11" tabindex="-1"></a><span class="co">#&gt;                 &lt;POSc&gt;</span></span>
-<span id="cb42-12"><a href="#cb42-12" tabindex="-1"></a><span class="co">#&gt; 1: 2022-08-26 05:52:26</span></span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a><span class="co">#&gt;     symbol position_amt entry_price break_even_price mark_price</span></span>
+<span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;       &lt;char&gt;      &lt;char&gt;           &lt;char&gt;     &lt;char&gt;</span></span>
+<span id="cb45-3"><a href="#cb45-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT        0.001    50000.00         50025.00   67232.90</span></span>
+<span id="cb45-4"><a href="#cb45-4" tabindex="-1"></a><span class="co">#&gt;    un_realized_profit liquidation_price leverage max_notional_value margin_type</span></span>
+<span id="cb45-5"><a href="#cb45-5" tabindex="-1"></a><span class="co">#&gt;                &lt;char&gt;            &lt;char&gt;   &lt;char&gt;             &lt;char&gt;      &lt;char&gt;</span></span>
+<span id="cb45-6"><a href="#cb45-6" tabindex="-1"></a><span class="co">#&gt; 1:        17.23290000                 0       20           25000000       cross</span></span>
+<span id="cb45-7"><a href="#cb45-7" tabindex="-1"></a><span class="co">#&gt;    isolated_margin is_auto_add_margin position_side    notional isolated_wallet</span></span>
+<span id="cb45-8"><a href="#cb45-8" tabindex="-1"></a><span class="co">#&gt;             &lt;char&gt;             &lt;char&gt;        &lt;char&gt;      &lt;char&gt;          &lt;char&gt;</span></span>
+<span id="cb45-9"><a href="#cb45-9" tabindex="-1"></a><span class="co">#&gt; 1:      0.00000000              false          BOTH 67.23290000               0</span></span>
+<span id="cb45-10"><a href="#cb45-10" tabindex="-1"></a><span class="co">#&gt;            update_time</span></span>
+<span id="cb45-11"><a href="#cb45-11" tabindex="-1"></a><span class="co">#&gt;                 &lt;POSc&gt;</span></span>
+<span id="cb45-12"><a href="#cb45-12" tabindex="-1"></a><span class="co">#&gt; 1: 2022-08-26 05:52:26</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="futures-test-order">Futures Test Order<a class="anchor" aria-label="anchor" href="#futures-test-order"></a>
 </h4>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">futures</span><span class="op">$</span><span class="fu">add_order_test</span><span class="op">(</span></span>
 <span>  symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>,</span>
 <span>  side <span class="op">=</span> <span class="st">"BUY"</span>,</span>
@@ -522,18 +581,18 @@
 <span>  price <span class="op">=</span> <span class="fl">50000</span>,</span>
 <span>  timeInForce <span class="op">=</span> <span class="st">"GTC"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb44"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a><span class="co">#&gt;     symbol   side   type    status</span></span>
-<span id="cb44-2"><a href="#cb44-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt; &lt;char&gt; &lt;char&gt;    &lt;char&gt;</span></span>
-<span id="cb44-3"><a href="#cb44-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT    BUY  LIMIT validated</span></span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="co">#&gt;    validated</span></span>
+<span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a><span class="co">#&gt;       &lt;lgcl&gt;</span></span>
+<span id="cb47-3"><a href="#cb47-3" tabindex="-1"></a><span class="co">#&gt; 1:      TRUE</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="set-leverage">Set Leverage<a class="anchor" aria-label="anchor" href="#set-leverage"></a>
 </h4>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">futures</span><span class="op">$</span><span class="fu">set_leverage</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, leverage <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb46"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a><span class="co">#&gt;    leverage max_notional_value  symbol</span></span>
-<span id="cb46-2"><a href="#cb46-2" tabindex="-1"></a><span class="co">#&gt;       &lt;int&gt;             &lt;char&gt;  &lt;char&gt;</span></span>
-<span id="cb46-3"><a href="#cb46-3" tabindex="-1"></a><span class="co">#&gt; 1:       20           25000000 BTCUSDT</span></span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a><span class="co">#&gt;    leverage max_notional_value  symbol</span></span>
+<span id="cb49-2"><a href="#cb49-2" tabindex="-1"></a><span class="co">#&gt;       &lt;int&gt;             &lt;char&gt;  &lt;char&gt;</span></span>
+<span id="cb49-3"><a href="#cb49-3" tabindex="-1"></a><span class="co">#&gt; 1:       20           25000000 BTCUSDT</span></span></code></pre></div>
 </div>
 </div>
 </div>
@@ -543,8 +602,8 @@
 <p>This package is meant to be used in an asynchronous non-blocking event loop (i.e. à la JavaScript) and is written around promises. Please use <code>later</code> to run your event loop. I recommend the pattern shown below.</p>
 <p>We offer a synchronous and asynchronous instance of the classes. All classes accept <code>async = TRUE</code>, this makes methods return promises instead of objects. You can resolve promises in whichever way you like, either <code>$then()</code> chaining or <code>async</code>/<code>await</code> patterns.</p>
 <p>I recommend use <code><a href="https://coro.r-lib.org/reference/async.html" class="external-link">coro::async()</a></code> to write sequential looking async code:</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="http://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span><span class="va">coro</span>, <span class="va">later</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span><span class="va">coro</span>, <span class="va">later</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">market_async</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/BinanceMarketData.html">BinanceMarketData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>async <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -561,51 +620,48 @@
 <span><span class="kw">while</span> <span class="op">(</span><span class="op">!</span><span class="va">later</span><span class="op">$</span><span class="fu">loop_empty</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">later</span><span class="op">$</span><span class="fu">run_now</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<div class="sourceCode" id="cb48"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" tabindex="-1"></a><span class="co">#&gt;     symbol          price</span></span>
-<span id="cb48-2"><a href="#cb48-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;         &lt;char&gt;</span></span>
-<span id="cb48-3"><a href="#cb48-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT 70588.67000000</span></span>
-<span id="cb48-4"><a href="#cb48-4" tabindex="-1"></a><span class="co">#&gt;               open_time     open     high      low    close    volume</span></span>
-<span id="cb48-5"><a href="#cb48-5" tabindex="-1"></a><span class="co">#&gt;                  &lt;POSc&gt;    &lt;num&gt;    &lt;num&gt;    &lt;num&gt;    &lt;num&gt;     &lt;num&gt;</span></span>
-<span id="cb48-6"><a href="#cb48-6" tabindex="-1"></a><span class="co">#&gt;  1: 2026-03-11 12:00:00 69172.99 69777.66 68977.91 69361.13 1045.6407</span></span>
-<span id="cb48-7"><a href="#cb48-7" tabindex="-1"></a><span class="co">#&gt;  2: 2026-03-11 13:00:00 69361.13 71091.18 69331.04 70186.09 2647.3215</span></span>
-<span id="cb48-8"><a href="#cb48-8" tabindex="-1"></a><span class="co">#&gt;  3: 2026-03-11 14:00:00 70186.08 70987.00 69906.77 70578.70 2251.7766</span></span>
-<span id="cb48-9"><a href="#cb48-9" tabindex="-1"></a><span class="co">#&gt;  4: 2026-03-11 15:00:00 70578.70 70654.43 69702.25 70227.91 1844.6963</span></span>
-<span id="cb48-10"><a href="#cb48-10" tabindex="-1"></a><span class="co">#&gt;  5: 2026-03-11 16:00:00 70227.92 70826.39 70161.78 70570.71 1837.9240</span></span>
-<span id="cb48-11"><a href="#cb48-11" tabindex="-1"></a><span class="co">#&gt;  6: 2026-03-11 17:00:00 70570.71 71321.00 70512.01 70785.99 2122.2065</span></span>
-<span id="cb48-12"><a href="#cb48-12" tabindex="-1"></a><span class="co">#&gt;  7: 2026-03-11 18:00:00 70785.99 70895.31 70415.27 70617.64 1134.1341</span></span>
-<span id="cb48-13"><a href="#cb48-13" tabindex="-1"></a><span class="co">#&gt;  8: 2026-03-11 19:00:00 70617.63 70742.38 70375.68 70641.82  644.2315</span></span>
-<span id="cb48-14"><a href="#cb48-14" tabindex="-1"></a><span class="co">#&gt;  9: 2026-03-11 20:00:00 70641.81 70700.00 70394.23 70634.96  383.3450</span></span>
-<span id="cb48-15"><a href="#cb48-15" tabindex="-1"></a><span class="co">#&gt; 10: 2026-03-11 21:00:00 70634.96 70776.71 70499.94 70588.67  177.7033</span></span>
-<span id="cb48-16"><a href="#cb48-16" tabindex="-1"></a><span class="co">#&gt;              close_time quote_volume trades taker_buy_base_volume</span></span>
-<span id="cb48-17"><a href="#cb48-17" tabindex="-1"></a><span class="co">#&gt;                  &lt;POSc&gt;        &lt;num&gt;  &lt;int&gt;                 &lt;num&gt;</span></span>
-<span id="cb48-18"><a href="#cb48-18" tabindex="-1"></a><span class="co">#&gt;  1: 2026-03-11 12:59:59     72482029 228899             510.41277</span></span>
-<span id="cb48-19"><a href="#cb48-19" tabindex="-1"></a><span class="co">#&gt;  2: 2026-03-11 13:59:59    185985831 529759            1327.90532</span></span>
-<span id="cb48-20"><a href="#cb48-20" tabindex="-1"></a><span class="co">#&gt;  3: 2026-03-11 14:59:59    158748246 515782            1118.16259</span></span>
-<span id="cb48-21"><a href="#cb48-21" tabindex="-1"></a><span class="co">#&gt;  4: 2026-03-11 15:59:59    129415293 427890             846.35834</span></span>
-<span id="cb48-22"><a href="#cb48-22" tabindex="-1"></a><span class="co">#&gt;  5: 2026-03-11 16:59:59    129634949 312976             946.41941</span></span>
-<span id="cb48-23"><a href="#cb48-23" tabindex="-1"></a><span class="co">#&gt;  6: 2026-03-11 17:59:59    150535351 401049            1188.53693</span></span>
-<span id="cb48-24"><a href="#cb48-24" tabindex="-1"></a><span class="co">#&gt;  7: 2026-03-11 18:59:59     80176342 225379             441.85105</span></span>
-<span id="cb48-25"><a href="#cb48-25" tabindex="-1"></a><span class="co">#&gt;  8: 2026-03-11 19:59:59     45451850 134850             278.53724</span></span>
-<span id="cb48-26"><a href="#cb48-26" tabindex="-1"></a><span class="co">#&gt;  9: 2026-03-11 20:59:59     27035744  84807             167.08903</span></span>
-<span id="cb48-27"><a href="#cb48-27" tabindex="-1"></a><span class="co">#&gt; 10: 2026-03-11 21:59:59     12553900  33826              94.14297</span></span>
-<span id="cb48-28"><a href="#cb48-28" tabindex="-1"></a><span class="co">#&gt;     taker_buy_quote_volume ignore</span></span>
-<span id="cb48-29"><a href="#cb48-29" tabindex="-1"></a><span class="co">#&gt;                      &lt;num&gt; &lt;char&gt;</span></span>
-<span id="cb48-30"><a href="#cb48-30" tabindex="-1"></a><span class="co">#&gt;  1:               35394305      0</span></span>
-<span id="cb48-31"><a href="#cb48-31" tabindex="-1"></a><span class="co">#&gt;  2:               93335113      0</span></span>
-<span id="cb48-32"><a href="#cb48-32" tabindex="-1"></a><span class="co">#&gt;  3:               78864177      0</span></span>
-<span id="cb48-33"><a href="#cb48-33" tabindex="-1"></a><span class="co">#&gt;  4:               59386903      0</span></span>
-<span id="cb48-34"><a href="#cb48-34" tabindex="-1"></a><span class="co">#&gt;  5:               66762796      0</span></span>
-<span id="cb48-35"><a href="#cb48-35" tabindex="-1"></a><span class="co">#&gt;  6:               84314438      0</span></span>
-<span id="cb48-36"><a href="#cb48-36" tabindex="-1"></a><span class="co">#&gt;  7:               31232309      0</span></span>
-<span id="cb48-37"><a href="#cb48-37" tabindex="-1"></a><span class="co">#&gt;  8:               19650193      0</span></span>
-<span id="cb48-38"><a href="#cb48-38" tabindex="-1"></a><span class="co">#&gt;  9:               11784374      0</span></span>
-<span id="cb48-39"><a href="#cb48-39" tabindex="-1"></a><span class="co">#&gt; 10:                6651493      0</span></span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a><span class="co">#&gt;     symbol          price</span></span>
+<span id="cb51-2"><a href="#cb51-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;         &lt;char&gt;</span></span>
+<span id="cb51-3"><a href="#cb51-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT 67232.90000000</span></span>
+<span id="cb51-4"><a href="#cb51-4" tabindex="-1"></a><span class="co">#&gt;     open_time      open   high      low    close   volume          close_time</span></span>
+<span id="cb51-5"><a href="#cb51-5" tabindex="-1"></a><span class="co">#&gt;        &lt;POSc&gt;     &lt;num&gt;  &lt;num&gt;    &lt;num&gt;    &lt;num&gt;    &lt;num&gt;              &lt;POSc&gt;</span></span>
+<span id="cb51-6"><a href="#cb51-6" tabindex="-1"></a><span class="co">#&gt; 1: 2017-07-03 0.0163479 0.8000 0.015758 0.015771 148976.1 2017-07-09 23:59:59</span></span>
+<span id="cb51-7"><a href="#cb51-7" tabindex="-1"></a><span class="co">#&gt; 2: 2017-07-10 0.0157710 0.0158 0.015730 0.015788  95432.0 2017-07-16 23:59:59</span></span>
+<span id="cb51-8"><a href="#cb51-8" tabindex="-1"></a><span class="co">#&gt; 3: 2017-07-17 0.0157880 0.0159 0.015700 0.015850 120000.0 2017-07-23 23:59:59</span></span>
+<span id="cb51-9"><a href="#cb51-9" tabindex="-1"></a><span class="co">#&gt;    quote_volume trades taker_buy_base_volume taker_buy_quote_volume ignore</span></span>
+<span id="cb51-10"><a href="#cb51-10" tabindex="-1"></a><span class="co">#&gt;           &lt;num&gt;  &lt;int&gt;                 &lt;num&gt;                  &lt;num&gt; &lt;char&gt;</span></span>
+<span id="cb51-11"><a href="#cb51-11" tabindex="-1"></a><span class="co">#&gt; 1:     2434.191    308             1756.8740               28.46694      0</span></span>
+<span id="cb51-12"><a href="#cb51-12" tabindex="-1"></a><span class="co">#&gt; 2:     1505.250    205              876.1235               13.82000      0</span></span>
+<span id="cb51-13"><a href="#cb51-13" tabindex="-1"></a><span class="co">#&gt; 3:     1899.600    250              950.0000               15.06750      0</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="websocket-streams">WebSocket Streams<a class="anchor" aria-label="anchor" href="#websocket-streams"></a>
+</h2>
+<p>Beyond the REST API, the package opens <strong>live market-data WebSocket streams</strong> — most importantly the order-book <strong>diff stream</strong>, the only order-book data Binance does not archive, so it has to be captured as it happens. The client is event-driven, modelled on the Node.js <code>ws</code> API: register handlers with <code>$on()</code>, then drive R’s <code>later</code> event loop yourself — the same explicit pattern as the async REST example above.</p>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span><span class="va">binance</span><span class="op">[</span><span class="va">BinanceMarketStream</span><span class="op">]</span>, <span class="va">later</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">stream</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/BinanceMarketStream.html">BinanceMarketStream</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># handlers receive the raw JSON message string</span></span>
+<span><span class="va">stream</span><span class="op">$</span><span class="fu">on</span><span class="op">(</span><span class="st">"open"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"connected"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">stream</span><span class="op">$</span><span class="fu">on</span><span class="op">(</span><span class="st">"message"</span>, <span class="kw">function</span><span class="op">(</span><span class="va">msg</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="va">msg</span>, <span class="st">"\n"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># subscribe to the BTC/USDT order-book diff stream at 100 ms</span></span>
+<span><span class="va">stream</span><span class="op">$</span><span class="fu">depth</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, speed <span class="op">=</span> <span class="st">"100ms"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># connect, then drive the event loop explicitly (interrupt to stop)</span></span>
+<span><span class="va">stream</span><span class="op">$</span><span class="fu">connect</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="kw">while</span> <span class="op">(</span><span class="op">!</span><span class="va">later</span><span class="op">$</span><span class="fu">loop_empty</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">later</span><span class="op">$</span><span class="fu">run_now</span><span class="op">(</span><span class="fl">0.1</span><span class="op">)</span> <span class="co"># the timeout makes each tick wait for work, not busy-spin</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p><code>$run()</code> is a convenience that wraps exactly that connect-and-pump loop and tears down cleanly on an interrupt — reach for it when the stream is the only thing running. Write each raw message straight to an append-only file and you have an order-book recorder; see <code><a href="articles/websocket-streams.html">vignette("websocket-streams")</a></code> for the recorder pattern and reconnection.</p>
 </div>
 <div class="section level2">
 <h2 id="sample-data">Sample Data<a class="anchor" aria-label="anchor" href="#sample-data"></a>
 </h2>
 <p>The package ships with a sample dataset of 500 BTC-USDT 4-hour candles for demonstration and testing:</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">binance_btc_usdt_4h_ohlcv</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">binance_btc_usdt_4h_ohlcv</span><span class="op">)</span></span></code></pre></div>
 <p>See <code><a href="reference/binance_btc_usdt_4h_ohlcv.html">?binance_btc_usdt_4h_ohlcv</a></code> for column descriptions. This data was produced by <code><a href="reference/binance_backfill_klines.html">binance_backfill_klines()</a></code>.</p>
@@ -614,7 +670,7 @@
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>If you use this package in your work, please cite it:</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"binance"</span><span class="op">)</span></span></code></pre></div>
 <blockquote>
 <p>Mezquita, D. (2026). binance: R API Wrapper to Binance Cryptocurrency Exchange. R package version 0.0.1.</p>
@@ -623,7 +679,7 @@
 <div class="section level2">
 <h2 id="licence">Licence<a class="anchor" aria-label="anchor" href="#licence"></a>
 </h2>
-<p>MIT © <a href="https://github.com/dereckmezquita" class="external-link">Dereck Mezquita</a> <a href="https://orcid.org/0000-0002-9307-6762" class="external-link"><img src="https://img.shields.io/badge/ORCID-0000--0002--9307--6762-green" alt="ORCID"></a>. See <a href="LICENSE.html">LICENSE.md</a> for the full text, including the citation clause.</p>
+<p>MIT © <a href="https://github.com/dereckmezquita" class="external-link">Dereck Mezquita</a> <a href="https://orcid.org/0000-0002-9307-6762" class="external-link"><img src="https://img.shields.io/badge/ORCID-0000--0002--9307--6762-green" alt="ORCID"></a>. See <a href="LICENSE">LICENSE</a> for the full text.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -637,8 +693,7 @@
 <div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a></li>
 </ul>
 </div>
 

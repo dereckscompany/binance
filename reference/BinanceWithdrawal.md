@@ -52,8 +52,10 @@ Endpoints](https://developers.binance.com/docs/wallet/capital)
 
 - `6`: Completed
 
-## Super class
+## Super classes
 
+[`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
+-\>
 [`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceWithdrawal`
 
@@ -88,7 +90,7 @@ permission enabled. Returns a withdrawal ID on success.
 
 [Binance
 Withdraw](https://developers.binance.com/docs/wallet/capital/withdraw)
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### Automated Trading Usage
 
@@ -141,53 +143,53 @@ Verified: 2026-03-10
 
 - `coin`:
 
-  Character; coin symbol (e.g., `"BTC"`, `"USDT"`).
+  (scalar\<character\>) coin symbol (e.g., `"BTC"`, `"USDT"`).
 
 - `address`:
 
-  Character; destination wallet address.
+  (scalar\<character\>) destination wallet address.
 
 - `amount`:
 
-  Numeric or character; withdrawal amount.
+  (scalar\<numeric\> \| scalar\<character\>) withdrawal amount.
 
 - `network`:
 
-  Character or NULL; blockchain network (e.g., `"ETH"`, `"TRX"`,
+  (scalar\<character\>?) blockchain network (e.g., `"ETH"`, `"TRX"`,
   `"BSC"`). If NULL, uses the coin's default network.
 
 - `withdrawOrderId`:
 
-  Character or NULL; client-side withdrawal ID for tracking.
+  (scalar\<character\>?) client-side withdrawal ID for tracking.
 
 - `addressTag`:
 
-  Character or NULL; secondary address identifier (required for coins
-  like XRP, XMR, XLM).
+  (scalar\<character\>?) secondary address identifier (required for
+  coins like XRP, XMR, XLM).
 
 - `transactionFeeFlag`:
 
-  Logical or NULL; for internal transfers: `TRUE` returns fee to
+  (scalar\<logical\>?) for internal transfers: `TRUE` returns fee to
   destination, `FALSE` to origin.
 
 - `name`:
 
-  Character or NULL; description for the address (max 200 entries in
+  (scalar\<character\>?) description for the address (max 200 entries in
   address book).
 
 - `walletType`:
 
-  Integer or NULL; `0` for spot wallet, `1` for funding wallet.
+  (scalar\<count\>?) `0` for spot wallet, `1` for funding wallet.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `id` (character): Unique withdrawal identifier assigned by Binance.
+- id (character) Unique withdrawal identifier assigned by Binance.
 
 #### Examples
 
@@ -221,7 +223,7 @@ coin, status, and time range. Max time range is 90 days.
 
 [Binance Withdraw
 History](https://developers.binance.com/docs/wallet/capital/withdraw-history)
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### Automated Trading Usage
 
@@ -279,74 +281,77 @@ Verified: 2026-03-10
 
 - `coin`:
 
-  Character or NULL; filter by coin (e.g., `"BTC"`, `"USDT"`).
+  (scalar\<character\>?) filter by coin (e.g., `"BTC"`, `"USDT"`).
 
 - `withdrawOrderId`:
 
-  Character or NULL; filter by client-side withdrawal ID.
+  (scalar\<character\>?) filter by client-side withdrawal ID.
 
 - `status`:
 
-  Integer or NULL; filter by status: `0` (email sent), `1` (cancelled),
-  `2` (awaiting approval), `3` (rejected), `4` (processing), `5`
-  (failure), `6` (completed).
+  (scalar\<count\>?) filter by status: `0` (email sent), `1`
+  (cancelled), `2` (awaiting approval), `3` (rejected), `4`
+  (processing), `5` (failure), `6` (completed).
 
 - `startTime`:
 
-  Integer or NULL; start timestamp in milliseconds.
+  (scalar\<count\>?) start timestamp in milliseconds.
 
 - `endTime`:
 
-  Integer or NULL; end timestamp in milliseconds.
+  (scalar\<count\>?) end timestamp in milliseconds.
 
 - `offset`:
 
-  Integer or NULL; pagination offset (default 0).
+  (scalar\<count\>?) pagination offset (default 0).
 
 - `limit`:
 
-  Integer or NULL; max results (default 1000, max 1000).
+  (scalar\<count\>?) max results (default 1000, max 1000).
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`) with columns:
+(data.table \| promise\<data.table\>) one row per withdrawal (empty when
+there are no matching withdrawals):
 
-- `id` (character): Unique withdrawal identifier.
+- id (character) Unique withdrawal identifier.
 
-- `amount` (character): Withdrawal amount.
+- amount (character) Withdrawal amount.
 
-- `transaction_fee` (character): Fee charged for the withdrawal.
+- transaction_fee (character) Fee charged for the withdrawal.
 
-- `coin` (character): Withdrawn coin symbol.
+- coin (character) Withdrawn coin symbol.
 
-- `status` (integer): Withdrawal status code (0-6).
+- status (integer) Withdrawal status code (0-6).
 
-- `address` (character): Destination address.
+- address (character) Destination address.
 
-- `tx_id` (character): On-chain transaction hash.
+- tx_id (character) On-chain transaction hash.
 
-- `apply_time` (character): Time the withdrawal was submitted (UTC
-  string).
+- apply_time (POSIXct) Time the withdrawal was submitted (parsed from
+  the UTC string Binance returns).
 
-- `network` (character): Blockchain network used.
+- network (character) Blockchain network used.
 
-- `transfer_type` (integer): 0=external, 1=internal.
+- transfer_type (integer) 0=external, 1=internal.
 
-- `withdraw_order_id` (character): Client-side withdrawal ID.
+- withdraw_order_id (character) Client-side withdrawal ID.
 
-- `info` (character): Additional info or error message.
+- info (character) Additional info or error message.
 
-- `confirm_no` (integer): Number of on-chain confirmations.
+- confirm_no (integer) Number of on-chain confirmations.
 
-- `wallet_type` (integer): 0=spot, 1=funding.
+- wallet_type (integer) 0=spot, 1=funding.
 
-- `tx_key` (character): Transaction key.
+- tx_key (character) Transaction key.
 
-- `complete_time` (character): Completion time (UTC string).
+- complete_time (POSIXct \| NA) Completion time (parsed from the UTC
+  string Binance returns; `NA` for in-progress withdrawals, which
+  Binance sends as an empty string).
 
 #### Examples
 

@@ -1,0 +1,205 @@
+# BinanceMarketStream: Spot Market-Data WebSocket Streams
+
+BinanceMarketStream: Spot Market-Data WebSocket Streams
+
+BinanceMarketStream: Spot Market-Data WebSocket Streams
+
+## Details
+
+Typed, event-driven client for Binance's **public** spot market-data
+streams. Inherits the Node.js-style event API and connection management
+from
+[BinanceWsBase](https://dereckscompany.github.io/binance/reference/BinanceWsBase.md)
+(`$on()`, `$subscribe()`, `$run()`, auto-reconnect). No API key is
+required — these are public streams.
+
+Many symbols ride a single connection (Binance allows up to 1024 streams
+per connection), so subscribing to 100 order books is one socket, not
+100.
+
+### Streams Covered
+
+|        |                                           |      |
+|--------|-------------------------------------------|------|
+| Method | Stream                                    | Auth |
+| depth  | `<symbol>@depth` / `<symbol>@depth@100ms` | No   |
+
+Handlers receive the **raw JSON message string** (parse with
+[`jsonlite::fromJSON()`](https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html),
+or write it straight to disk for archival). The `@depth` stream is the
+full diff stream — every order-book change — from which the complete
+book can be reconstructed; reconstruction is a separate concern (a
+future helper), this class faithfully captures the stream.
+
+## Super classes
+
+[`connectcore::StreamClient`](https://rdrr.io/pkg/connectcore/man/StreamClient.html)
+-\>
+[`binance::BinanceWsBase`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.md)
+-\> `BinanceMarketStream`
+
+## Methods
+
+### Public methods
+
+- [`BinanceMarketStream$new()`](#method-BinanceMarketStream-new)
+
+- [`BinanceMarketStream$depth()`](#method-BinanceMarketStream-depth)
+
+- [`BinanceMarketStream$clone()`](#method-BinanceMarketStream-clone)
+
+Inherited methods
+
+- [`connectcore::StreamClient$close()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-close)
+- [`connectcore::StreamClient$connect()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-connect)
+- [`connectcore::StreamClient$is_open()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-is_open)
+- [`connectcore::StreamClient$run()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-run)
+- [`connectcore::StreamClient$send()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-send)
+- [`binance::BinanceWsBase$on()`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.html#method-on)
+- [`binance::BinanceWsBase$subscribe()`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.html#method-subscribe)
+- [`binance::BinanceWsBase$subscriptions()`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.html#method-subscriptions)
+- [`binance::BinanceWsBase$unsubscribe()`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.html#method-unsubscribe)
+
+------------------------------------------------------------------------
+
+### Method `new()`
+
+Initialise a BinanceMarketStream Object
+
+#### Usage
+
+    BinanceMarketStream$new(
+      base_url = "wss://stream.binance.com:9443/stream",
+      auto_reconnect = TRUE,
+      max_reconnects = 10L,
+      proactive_reconnect = TRUE
+    )
+
+#### Arguments
+
+- `base_url`:
+
+  (scalar\<character\>) WebSocket base URL. Defaults to the spot
+  combined-stream endpoint.
+
+- `auto_reconnect`:
+
+  (scalar\<logical\>) auto-reconnect with backoff. Default `TRUE`.
+
+- `max_reconnects`:
+
+  (scalar\<count in \[1, Inf\[\>) give up after this many failed
+  reconnects. Default `10`.
+
+- `proactive_reconnect`:
+
+  (scalar\<logical\>) reconnect at 23h to beat the 24h cutoff. Default
+  `TRUE`.
+
+#### Returns
+
+(class\<BinanceMarketStream\>) invisibly, self.
+
+------------------------------------------------------------------------
+
+### Method `depth()`
+
+Subscribe to the Order-Book Diff-Depth Stream
+
+Subscribes to `<symbol>@depth` — the full stream of order-book changes
+(each message lists the bid/ask levels that changed; quantity `0` means
+the level was removed). This is the data needed to maintain a complete
+local order book, and the only order-book data Binance does **not**
+archive, so it must be streamed live.
+
+#### Official Documentation
+
+[Depth
+stream](https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams#diff-depth-stream)
+
+#### JSON Message
+
+    {
+      "stream": "btcusdt@depth",
+      "data": {
+        "e": "depthUpdate", "E": 1571889248277, "s": "BTCUSDT",
+        "U": 390497796, "u": 390497878,
+        "b": [["7403.89", "0.002"], ["7403.90", "3.906"]],
+        "a": [["7405.96", "3.340"], ["7406.63", "4.525"]]
+      }
+    }
+
+#### Usage
+
+    BinanceMarketStream$depth(symbol, speed = "1000ms", handler = NULL)
+
+#### Arguments
+
+- `symbol`:
+
+  (scalar\<character\>) trading pair (e.g. `"BTCUSDT"`).
+
+- `speed`:
+
+  (scalar\<character in c("1000ms", "100ms")\>) update cadence,
+  `"1000ms"` (Binance default) or `"100ms"` (full fidelity). Default
+  `"1000ms"`.
+
+- `handler`:
+
+  (function?) if supplied, called with the raw JSON string for **this**
+  stream only. If `NULL`, use a global `$on("message")` handler instead.
+  Default `NULL`.
+
+#### Returns
+
+(class\<BinanceMarketStream\>) invisibly, self (chainable).
+
+#### Examples
+
+    \dontrun{
+    stream <- BinanceMarketStream$new()
+    stream$depth("BTCUSDT", speed = "100ms", handler = function(msg) print(msg))
+    stream$run()
+    }
+
+------------------------------------------------------------------------
+
+### Method `clone()`
+
+The objects of this class are cloneable with this method.
+
+#### Usage
+
+    BinanceMarketStream$clone(deep = FALSE)
+
+#### Arguments
+
+- `deep`:
+
+  Whether to make a deep clone.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Record BTC + ETH order-book diffs at 100ms to disk:
+stream <- BinanceMarketStream$new()
+stream$on("message", function(msg) cat(msg, file = "orderbook.ndjson", append = TRUE))
+stream$on("message", function(msg) cat(msg, "\n"))
+stream$depth("BTCUSDT", speed = "100ms")
+stream$depth("ETHUSDT", speed = "100ms")
+stream$run() # blocks, pumping the event loop; interrupt to stop
+} # }
+
+
+## ------------------------------------------------
+## Method `BinanceMarketStream$depth`
+## ------------------------------------------------
+
+if (FALSE) { # \dontrun{
+stream <- BinanceMarketStream$new()
+stream$depth("BTCUSDT", speed = "100ms", handler = function(msg) print(msg))
+stream$run()
+} # }
+```

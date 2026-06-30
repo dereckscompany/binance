@@ -30,7 +30,7 @@ URL defaults to `https://fapi.binance.com` via
 ### Official Documentation
 
 [Binance Futures
-API](https://binance-docs.github.io/apidocs/futures/en/)
+API](https://developers.binance.com/docs/derivatives/usds-margined-futures/general-info)
 
 ### Endpoints Covered
 
@@ -75,8 +75,10 @@ API](https://binance-docs.github.io/apidocs/futures/en/)
 
 - `"LONG"`, `"SHORT"`: Hedge mode.
 
-## Super class
+## Super classes
 
+[`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
+-\>
 [`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceFutures`
 
@@ -146,28 +148,29 @@ futures-specific server time endpoint (`/fapi/v1/time`).
 
 - `keys`:
 
-  List; API credentials from
+  (list) API credentials from
   [`get_api_keys()`](https://dereckscompany.github.io/binance/reference/get_api_keys.md).
 
 - `base_url`:
 
-  Character; API base URL. Defaults to
+  (scalar\<character\>) API base URL. Defaults to
   [`get_futures_base_url()`](https://dereckscompany.github.io/binance/reference/get_futures_base_url.md).
 
 - `async`:
 
-  Logical; if `TRUE`, methods return promises. Default `FALSE`.
+  (scalar\<logical\>) if `TRUE`, methods return promises. Default
+  `FALSE`.
 
 - `time_source`:
 
-  Character; clock source for HMAC request signing. `"local"` (default)
-  uses [`Sys.time()`](https://rdrr.io/r/base/Sys.time.html). `"server"`
-  fetches the Binance Futures server time before each authenticated
-  request.
+  (scalar\<character\>) clock source for HMAC request signing. `"local"`
+  (default) uses [`Sys.time()`](https://rdrr.io/r/base/Sys.time.html).
+  `"server"` fetches the Binance Futures server time before each
+  authenticated request.
 
 #### Returns
 
-Invisible self.
+(class\<BinanceFutures\>) invisibly, self.
 
 ------------------------------------------------------------------------
 
@@ -186,7 +189,7 @@ Places a new USD-M futures order on Binance.
 [Binance Futures New
 Order](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/New-Order)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -256,95 +259,93 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `side`:
 
-  Character; `"BUY"` or `"SELL"`.
+  (scalar\<character\>) `"BUY"` or `"SELL"`.
 
 - `type`:
 
-  Character; order type: `"LIMIT"`, `"MARKET"`, `"STOP"`,
+  (scalar\<character\>) order type: `"LIMIT"`, `"MARKET"`, `"STOP"`,
   `"STOP_MARKET"`, `"TAKE_PROFIT"`, `"TAKE_PROFIT_MARKET"`,
   `"TRAILING_STOP_MARKET"`.
 
 - `quantity`:
 
-  Numeric or NULL; order quantity.
+  (scalar\<numeric\>?) order quantity.
 
 - `price`:
 
-  Numeric or NULL; price for limit orders.
+  (scalar\<numeric\>?) price for limit orders.
 
 - `stopPrice`:
 
-  Numeric or NULL; trigger price for stop orders.
+  (scalar\<numeric\>?) trigger price for stop orders.
 
 - `timeInForce`:
 
-  Character or NULL; `"GTC"`, `"IOC"`, `"FOK"`.
+  (scalar\<character\>?) `"GTC"`, `"IOC"`, `"FOK"`.
 
 - `positionSide`:
 
-  Character or NULL; `"BOTH"`, `"LONG"`, `"SHORT"`.
+  (scalar\<character\>?) `"BOTH"`, `"LONG"`, `"SHORT"`.
 
 - `reduceOnly`:
 
-  Logical or NULL; reduce-only flag.
+  (scalar\<logical\>?) reduce-only flag.
 
 - `newClientOrderId`:
 
-  Character or NULL; unique client order ID.
+  (scalar\<character\>?) unique client order ID.
 
 - `closePosition`:
 
-  Logical or NULL; close all position flag.
+  (scalar\<logical\>?) close all position flag.
 
 - `workingType`:
 
-  Character or NULL; `"MARK_PRICE"` or `"CONTRACT_PRICE"`.
+  (scalar\<character\>?) `"MARK_PRICE"` or `"CONTRACT_PRICE"`.
 
 - `newOrderRespType`:
 
-  Character or NULL; `"ACK"`, `"RESULT"`.
+  (scalar\<character\>?) `"ACK"`, `"RESULT"`.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and the following columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `symbol` (character): Trading pair (e.g., `"BTCUSDT"`).
+- symbol (character) Trading pair (e.g., `"BTCUSDT"`).
 
-- `order_id` (integer): Unique order identifier.
+- order_id (numeric) Unique order identifier.
 
-- `client_order_id` (character): Client-assigned order ID.
+- client_order_id (character) Client-assigned order ID.
 
-- `price` (character): Order price.
+- price (character) Order price.
 
-- `orig_qty` (character): Original requested quantity.
+- orig_qty (character) Original requested quantity.
 
-- `executed_qty` (character): Quantity filled so far.
+- executed_qty (character) Quantity filled so far.
 
-- `cum_qty` (character): Cumulative filled quantity.
+- cum_quote (character) Cumulative quote asset transacted.
 
-- `cum_quote` (character): Cumulative quote asset transacted.
-
-- `status` (character): Order status (`"NEW"`, `"FILLED"`, `"CANCELED"`,
+- status (character) Order status (`"NEW"`, `"FILLED"`, `"CANCELED"`,
   etc.).
 
-- `time_in_force` (character): Time-in-force policy.
+- time_in_force (character) Time-in-force policy.
 
-- `type` (character): Order type.
+- type (character) Order type.
 
-- `side` (character): `"BUY"` or `"SELL"`.
+- side (character) `"BUY"` or `"SELL"`.
 
-- `position_side` (character): Position side (`"BOTH"`, `"LONG"`,
+- position_side (character) Position side (`"BOTH"`, `"LONG"`,
   `"SHORT"`).
 
-- `update_time` (POSIXct): Last update time.
+- update_time (POSIXct) Last update time.
 
 #### Examples
 
@@ -376,7 +377,7 @@ actually created.
 [Binance Futures New Order
 Test](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/New-Order-Test)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -424,72 +425,67 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `side`:
 
-  Character; `"BUY"` or `"SELL"`.
+  (scalar\<character\>) `"BUY"` or `"SELL"`.
 
 - `type`:
 
-  Character; order type.
+  (scalar\<character\>) order type.
 
 - `quantity`:
 
-  Numeric or NULL; order quantity.
+  (scalar\<numeric\>?) order quantity.
 
 - `price`:
 
-  Numeric or NULL; price for limit orders.
+  (scalar\<numeric\>?) price for limit orders.
 
 - `stopPrice`:
 
-  Numeric or NULL; trigger price for stop orders.
+  (scalar\<numeric\>?) trigger price for stop orders.
 
 - `timeInForce`:
 
-  Character or NULL; `"GTC"`, `"IOC"`, `"FOK"`.
+  (scalar\<character\>?) `"GTC"`, `"IOC"`, `"FOK"`.
 
 - `positionSide`:
 
-  Character or NULL; `"BOTH"`, `"LONG"`, `"SHORT"`.
+  (scalar\<character\>?) `"BOTH"`, `"LONG"`, `"SHORT"`.
 
 - `reduceOnly`:
 
-  Logical or NULL; reduce-only flag.
+  (scalar\<logical\>?) reduce-only flag.
 
 - `newClientOrderId`:
 
-  Character or NULL; unique client order ID.
+  (scalar\<character\>?) unique client order ID.
 
 - `closePosition`:
 
-  Logical or NULL; close all position flag.
+  (scalar\<logical\>?) close all position flag.
 
 - `workingType`:
 
-  Character or NULL; `"MARK_PRICE"` or `"CONTRACT_PRICE"`.
+  (scalar\<character\>?) `"MARK_PRICE"` or `"CONTRACT_PRICE"`.
 
 - `newOrderRespType`:
 
-  Character or NULL; `"ACK"`, `"RESULT"`.
+  (scalar\<character\>?) `"ACK"`, `"RESULT"`.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` (or `promise<data.table>` if `async = TRUE`), single row
-with columns:
+(data.table \| promise\<data.table\>) a single row. Binance returns
+[`{}`](https://rdrr.io/r/base/Paren.html) on a successful test order;
+the absence of an error is the validation signal.
 
-- `symbol` (character): The validated trading pair.
-
-- `side` (character): `"BUY"` or `"SELL"`.
-
-- `type` (character): Order type.
-
-- `status` (character): `"validated"`.
+- validated (logical) `TRUE` on a successful test order.
 
 #### Examples
 
@@ -499,7 +495,7 @@ with columns:
       symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
       quantity = 0.001, price = 50000, timeInForce = "GTC"
     )
-    print(test)
+    stopifnot(test$validated)
     }
 
 ------------------------------------------------------------------------
@@ -519,7 +515,7 @@ Cancels an active futures order by order ID or client order ID.
 [Binance Futures Cancel
 Order](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Cancel-Order)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -572,41 +568,41 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `orderId`:
 
-  Integer or NULL; the order ID to cancel.
+  (scalar\<count\>?) the order ID to cancel.
 
 - `origClientOrderId`:
 
-  Character or NULL; the client order ID to cancel.
+  (scalar\<character\>?) the client order ID to cancel.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and the following columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `symbol` (character): Trading pair.
+- symbol (character) Trading pair.
 
-- `order_id` (integer): Unique order identifier.
+- order_id (numeric) Unique order identifier.
 
-- `client_order_id` (character): Client-assigned order ID.
+- client_order_id (character) Client-assigned order ID.
 
-- `orig_qty` (character): Original requested quantity.
+- orig_qty (character) Original requested quantity.
 
-- `executed_qty` (character): Quantity filled so far.
+- executed_qty (character) Quantity filled so far.
 
-- `status` (character): Order status (typically `"CANCELED"`).
+- status (character) Order status (typically `"CANCELED"`).
 
-- `type` (character): Order type.
+- type (character) Order type.
 
-- `side` (character): `"BUY"` or `"SELL"`.
+- side (character) `"BUY"` or `"SELL"`.
 
-- `update_time` (POSIXct): Cancellation time.
+- update_time (POSIXct) Cancellation time.
 
 #### Examples
 
@@ -633,7 +629,7 @@ Cancels all active futures orders on a trading pair.
 [Binance Futures Cancel All Open
 Orders](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Cancel-All-Open-Orders)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -663,19 +659,19 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and the following columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `code` (integer): Response code (`200` on success).
+- code (integer) Response code (`200` on success).
 
-- `msg` (character): Response message.
+- msg (character) Response message.
 
 #### Examples
 
@@ -703,7 +699,7 @@ order ID.
 [Binance Futures Query
 Order](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Query-Order)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -748,51 +744,51 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `orderId`:
 
-  Integer or NULL; the order ID.
+  (scalar\<count\>?) the order ID.
 
 - `origClientOrderId`:
 
-  Character or NULL; the client order ID.
+  (scalar\<character\>?) the client order ID.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and the following columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `symbol` (character): Trading pair.
+- symbol (character) Trading pair.
 
-- `order_id` (integer): Unique order identifier.
+- order_id (numeric) Unique order identifier.
 
-- `client_order_id` (character): Client-assigned order ID.
+- client_order_id (character) Client-assigned order ID.
 
-- `price` (character): Order price.
+- price (character) Order price.
 
-- `orig_qty` (character): Original requested quantity.
+- orig_qty (character) Original requested quantity.
 
-- `executed_qty` (character): Quantity filled so far.
+- executed_qty (character) Quantity filled so far.
 
-- `cum_quote` (character): Cumulative quote asset transacted.
+- cum_quote (character) Cumulative quote asset transacted.
 
-- `status` (character): Order status.
+- status (character) Order status.
 
-- `time_in_force` (character): Time-in-force policy.
+- time_in_force (character) Time-in-force policy.
 
-- `type` (character): Order type.
+- type (character) Order type.
 
-- `side` (character): `"BUY"` or `"SELL"`.
+- side (character) `"BUY"` or `"SELL"`.
 
-- `position_side` (character): Position side.
+- position_side (character) Position side.
 
-- `time` (POSIXct): Order creation time.
+- time (POSIXct) Order creation time.
 
-- `update_time` (POSIXct): Last update time.
+- update_time (POSIXct) Last update time.
 
 #### Examples
 
@@ -820,7 +816,7 @@ symbol.
 [Binance Futures Current Open
 Orders](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Current-All-Open-Orders)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -862,39 +858,40 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character or NULL; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>?) trading pair (e.g., `"BTCUSDT"`).
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per open order and the following columns:
+(data.table \| promise\<data.table\>) one row per open order (empty when
+there are none):
 
-- `symbol` (character): Trading pair.
+- symbol (character) Trading pair.
 
-- `order_id` (integer): Unique order identifier.
+- order_id (numeric) Unique order identifier.
 
-- `client_order_id` (character): Client-assigned order ID.
+- client_order_id (character) Client-assigned order ID.
 
-- `price` (character): Order price.
+- price (character) Order price.
 
-- `orig_qty` (character): Original requested quantity.
+- orig_qty (character) Original requested quantity.
 
-- `executed_qty` (character): Quantity filled so far.
+- executed_qty (character) Quantity filled so far.
 
-- `status` (character): Order status.
+- status (character) Order status.
 
-- `type` (character): Order type.
+- type (character) Order type.
 
-- `side` (character): `"BUY"` or `"SELL"`.
+- side (character) `"BUY"` or `"SELL"`.
 
-- `position_side` (character): Position side.
+- position_side (character) Position side.
 
-- `time` (POSIXct): Order creation time.
+- time (POSIXct) Order creation time.
 
-- `update_time` (POSIXct): Last update time.
+- update_time (POSIXct) Last update time.
 
 #### Examples
 
@@ -921,7 +918,7 @@ Retrieves all futures orders for a symbol (open, cancelled, filled).
 [Binance Futures All
 Orders](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/All-Orders)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -970,55 +967,56 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `orderId`:
 
-  Integer or NULL; pagination cursor.
+  (scalar\<count\>?) pagination cursor.
 
 - `startTime`:
 
-  Integer or NULL; start timestamp in milliseconds.
+  (scalar\<count\>?) start timestamp in milliseconds.
 
 - `endTime`:
 
-  Integer or NULL; end timestamp in milliseconds.
+  (scalar\<count\>?) end timestamp in milliseconds.
 
 - `limit`:
 
-  Integer or NULL; max results (default 500, max 1000).
+  (scalar\<count\>?) max results (default 500, max 1000).
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per order and the following columns:
+(data.table \| promise\<data.table\>) one row per order (empty when
+there are no matching orders):
 
-- `symbol` (character): Trading pair.
+- symbol (character) Trading pair.
 
-- `order_id` (integer): Unique order identifier.
+- order_id (numeric) Unique order identifier.
 
-- `client_order_id` (character): Client-assigned order ID.
+- client_order_id (character) Client-assigned order ID.
 
-- `price` (character): Order price.
+- price (character) Order price.
 
-- `orig_qty` (character): Original requested quantity.
+- orig_qty (character) Original requested quantity.
 
-- `executed_qty` (character): Quantity filled so far.
+- executed_qty (character) Quantity filled so far.
 
-- `status` (character): Order status.
+- status (character) Order status.
 
-- `type` (character): Order type.
+- type (character) Order type.
 
-- `side` (character): `"BUY"` or `"SELL"`.
+- side (character) `"BUY"` or `"SELL"`.
 
-- `position_side` (character): Position side.
+- position_side (character) Position side.
 
-- `time` (POSIXct): Order creation time.
+- time (POSIXct) Order creation time.
 
-- `update_time` (POSIXct): Last update time.
+- update_time (POSIXct) Last update time.
 
 #### Examples
 
@@ -1046,7 +1044,7 @@ and positions (kept as list columns).
 [Binance Futures Account Information
 V2](https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Account-Information-V2)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -1120,52 +1118,59 @@ Verified: 2026-03-10
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and the following columns:
+(data.table \| promise\<data.table\>) one row per asset balance in the
+account; account-level fields are replicated on each row. The companion
+`positions` array Binance returns is intentionally dropped — see the
+long note below. Columns:
 
-- `fee_tier` (integer): Commission fee tier.
+- fee_tier (integer) Commission fee tier.
 
-- `can_trade` (logical): Whether trading is permitted.
+- can_trade (logical) Whether trading is permitted.
 
-- `can_deposit` (logical): Whether deposits are permitted.
+- can_deposit (logical) Whether deposits are permitted.
 
-- `can_withdraw` (logical): Whether withdrawals are permitted.
+- can_withdraw (logical) Whether withdrawals are permitted.
 
-- `total_initial_margin` (character): Total initial margin required.
+- total_initial_margin (character) Total initial margin required.
 
-- `total_maint_margin` (character): Total maintenance margin required.
+- total_maint_margin (character) Total maintenance margin required.
 
-- `total_wallet_balance` (character): Total wallet balance.
+- total_wallet_balance (character) Total wallet balance.
 
-- `total_unrealized_profit` (character): Total unrealised PnL.
+- total_unrealized_profit (character) Total unrealised PnL.
 
-- `total_margin_balance` (character): Total margin balance.
+- total_margin_balance (character) Total margin balance.
 
-- `total_cross_wallet_balance` (character): Total cross-wallet balance.
+- total_cross_wallet_balance (character) Total cross-wallet balance.
 
-- `available_balance` (character): Available balance for new positions.
+- available_balance (character) Available balance for new positions.
 
-- `max_withdraw_amount` (character): Maximum withdrawable amount.
+- max_withdraw_amount (character) Maximum withdrawable amount.
 
-- `asset_name` (character): Per-asset name (one row per asset, expanded
-  from `assets`).
+- asset_asset (character) Per-asset symbol — one row per asset (Binance
+  returns the symbol under the `asset` field within the `assets` array,
+  hence the doubled name after `asset_` prefixing).
 
-- `asset_wallet_balance` (character): Per-asset wallet balance.
+- asset_wallet_balance (character) Per-asset wallet balance.
 
-- `asset_unrealized_profit` (character): Per-asset unrealised PnL.
+- asset_unrealized_profit (character) Per-asset unrealised PnL.
 
-- `asset_margin_balance` (character): Per-asset margin balance.
+- asset_margin_balance (character) Per-asset margin balance.
 
-- `asset_available_balance` (character): Per-asset available balance.
+- asset_available_balance (character) Per-asset available balance.
 
-- `positions` (list): Nested list of per-symbol position details (kept
-  as list-column).
-
-When the account has multiple assets, account-level fields are repeated
-on each row.
+Account-level fields are replicated on each asset row. For per-position
+data (entry price, leverage, side, unrealised PnL on open contracts) use
+`get_positions()` — Binance returns positions alongside assets in this
+response, but they are a heterogeneous shape (one entity is an asset
+balance, the other is a derivative position) and combining them would
+require a Cartesian join no user expects. We therefore intentionally
+drop the `positions` array here; `get_positions()` hits
+`/fapi/v2/positionRisk` and returns one row per open position.
 
 #### Examples
 
@@ -1173,6 +1178,8 @@ on each row.
     futures <- BinanceFutures$new()
     account <- futures$get_account()
     print(account)
+    positions <- futures$get_positions()
+    print(positions)
     }
 
 ------------------------------------------------------------------------
@@ -1192,7 +1199,7 @@ Retrieves all asset balances for the futures account.
 [Binance Futures Account Balance
 V2](https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Futures-Account-Balance-V2)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -1234,29 +1241,30 @@ Verified: 2026-03-10
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per asset and the following columns:
+(data.table \| promise\<data.table\>) one row per asset (empty when
+there are none):
 
-- `account_alias` (character): Account alias (e.g., `"SgsR"`).
+- account_alias (character) Account alias (e.g., `"SgsR"`).
 
-- `asset` (character): Asset symbol (e.g., `"USDT"`).
+- asset (character) Asset symbol (e.g., `"USDT"`).
 
-- `balance` (character): Wallet balance.
+- balance (character) Wallet balance.
 
-- `cross_wallet_balance` (character): Cross-wallet balance.
+- cross_wallet_balance (character) Cross-wallet balance.
 
-- `cross_un_pnl` (character): Unrealised PnL from cross positions.
+- cross_un_pnl (character) Unrealised PnL from cross positions.
 
-- `available_balance` (character): Available balance.
+- available_balance (character) Available balance.
 
-- `max_withdraw_amount` (character): Maximum withdrawable amount.
+- max_withdraw_amount (character) Maximum withdrawable amount.
 
-- `margin_available` (logical): Whether margin is available.
+- margin_available (logical) Whether margin is available.
 
-- `update_time` (POSIXct): Last balance update time.
+- update_time (POSIXct) Last balance update time.
 
 #### Examples
 
@@ -1283,7 +1291,7 @@ Retrieves position risk information, optionally filtered by symbol.
 [Binance Futures Position Information
 V2](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Position-Information-V2)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -1320,39 +1328,40 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character or NULL; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>?) trading pair (e.g., `"BTCUSDT"`).
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per position and the following columns:
+(data.table \| promise\<data.table\>) one row per position (empty when
+there are none):
 
-- `symbol` (character): Trading pair.
+- symbol (character) Trading pair.
 
-- `position_side` (character): `"BOTH"`, `"LONG"`, or `"SHORT"`.
+- position_side (character) `"BOTH"`, `"LONG"`, or `"SHORT"`.
 
-- `position_amt` (character): Position quantity.
+- position_amt (character) Position quantity.
 
-- `entry_price` (character): Average entry price.
+- entry_price (character) Average entry price.
 
-- `mark_price` (character): Current mark price.
+- mark_price (character) Current mark price.
 
-- `un_realized_profit` (character): Unrealised PnL.
+- un_realized_profit (character) Unrealised PnL.
 
-- `liquidation_price` (character): Estimated liquidation price.
+- liquidation_price (character) Estimated liquidation price.
 
-- `leverage` (character): Current leverage.
+- leverage (character) Current leverage.
 
-- `margin_type` (character): `"isolated"` or `"cross"`.
+- margin_type (character) `"isolated"` or `"cross"`.
 
-- `isolated_margin` (character): Isolated margin amount.
+- isolated_margin (character) Isolated margin amount.
 
-- `notional` (character): Position notional value.
+- notional (character) Position notional value.
 
-- `update_time` (POSIXct): Last position update time.
+- update_time (POSIXct) Last position update time.
 
 #### Examples
 
@@ -1379,7 +1388,7 @@ Changes the initial leverage for a futures symbol.
 [Binance Futures Change Initial
 Leverage](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Initial-Leverage)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -1412,26 +1421,26 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `leverage`:
 
-  Integer; target leverage (1-125).
+  (scalar\<count\>) target leverage (1-125).
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and the following columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `leverage` (integer): New leverage setting.
+- leverage (integer) New leverage setting.
 
-- `max_notional_value` (character): Maximum notional value for this
+- max_notional_value (character) Maximum notional value for this
   leverage.
 
-- `symbol` (character): Trading pair.
+- symbol (character) Trading pair.
 
 #### Examples
 
@@ -1458,7 +1467,7 @@ Changes the margin type for a futures symbol.
 [Binance Futures Change Margin
 Type](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Margin-Type)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -1490,23 +1499,23 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `marginType`:
 
-  Character; `"ISOLATED"` or `"CROSSED"`.
+  (scalar\<character\>) `"ISOLATED"` or `"CROSSED"`.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and the following columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `code` (integer): Response code (`200` on success).
+- code (integer) Response code (`200` on success).
 
-- `msg` (character): Response message.
+- msg (character) Response message.
 
 #### Examples
 
@@ -1533,7 +1542,7 @@ Adds or reduces the isolated margin for a position.
 [Binance Futures Modify Isolated Position
 Margin](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Modify-Isolated-Position-Margin)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -1574,35 +1583,36 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `amount`:
 
-  Numeric; margin amount.
+  (scalar\<numeric\>) margin amount.
 
 - `type`:
 
-  Integer; 1 = add margin, 2 = reduce margin.
+  (scalar\<count\>) 1 = add margin, 2 = reduce margin.
 
 - `positionSide`:
 
-  Character or NULL; `"BOTH"`, `"LONG"`, `"SHORT"`.
+  (scalar\<character\>?) `"BOTH"`, `"LONG"`, `"SHORT"`.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and the following columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `code` (integer): Response code (`200` on success).
+- code (integer) Response code (`200` on success).
 
-- `msg` (character): Response message.
+- msg (character) Response message.
 
-- `amount` (numeric): Margin amount modified.
+- amount (numeric) Margin amount modified (Binance returns it as a JSON
+  decimal, so it is parsed as a double, not an integer).
 
-- `type` (integer): Margin change type (1 = add, 2 = reduce).
+- type (integer) Margin change type (1 = add, 2 = reduce).
 
 #### Examples
 
@@ -1629,7 +1639,7 @@ Retrieves the history of position margin changes.
 [Binance Futures Get Position Margin Change
 History](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Get-Position-Margin-Change-History)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -1665,45 +1675,46 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `type`:
 
-  Integer or NULL; 1 = add margin, 2 = reduce margin.
+  (scalar\<count\>?) 1 = add margin, 2 = reduce margin.
 
 - `startTime`:
 
-  Integer or NULL; start timestamp in milliseconds.
+  (scalar\<count\>?) start timestamp in milliseconds.
 
 - `endTime`:
 
-  Integer or NULL; end timestamp in milliseconds.
+  (scalar\<count\>?) end timestamp in milliseconds.
 
 - `limit`:
 
-  Integer or NULL; max results (default 500).
+  (scalar\<count\>?) max results (default 500).
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per margin change and the following columns:
+(data.table \| promise\<data.table\>) one row per margin change (empty
+when there are none):
 
-- `symbol` (character): Trading pair.
+- symbol (character) Trading pair.
 
-- `type` (integer): Margin change type (1 = add, 2 = reduce).
+- type (integer) Margin change type (1 = add, 2 = reduce).
 
-- `delta_type` (character): Type of margin change.
+- delta_type (character) Type of margin change.
 
-- `amount` (character): Margin amount changed.
+- amount (character) Margin amount changed.
 
-- `asset` (character): Margin asset (e.g., `"USDT"`).
+- asset (character) Margin asset (e.g., `"USDT"`).
 
-- `time` (POSIXct): Time of the margin change.
+- time (POSIXct) Time of the margin change.
 
-- `position_side` (character): Position side.
+- position_side (character) Position side.
 
 #### Examples
 
@@ -1730,7 +1741,7 @@ Retrieves the trade history for the futures account.
 [Binance Futures Account Trade
 List](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Account-Trade-List)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -1775,63 +1786,64 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `orderId`:
 
-  Integer or NULL; filter by order ID.
+  (scalar\<count\>?) filter by order ID.
 
 - `startTime`:
 
-  Integer or NULL; start timestamp in milliseconds.
+  (scalar\<count\>?) start timestamp in milliseconds.
 
 - `endTime`:
 
-  Integer or NULL; end timestamp in milliseconds.
+  (scalar\<count\>?) end timestamp in milliseconds.
 
 - `fromId`:
 
-  Integer or NULL; trade ID to fetch from.
+  (scalar\<count\>?) trade ID to fetch from.
 
 - `limit`:
 
-  Integer or NULL; max results (default 500, max 1000).
+  (scalar\<count\>?) max results (default 500, max 1000).
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per trade and the following columns:
+(data.table \| promise\<data.table\>) one row per trade (empty when
+there are none):
 
-- `symbol` (character): Trading pair.
+- symbol (character) Trading pair.
 
-- `id` (integer): Trade identifier.
+- id (numeric) Trade identifier.
 
-- `order_id` (integer): Order identifier.
+- order_id (numeric) Order identifier.
 
-- `price` (character): Trade execution price.
+- price (character) Trade execution price.
 
-- `qty` (character): Trade quantity.
+- qty (character) Trade quantity.
 
-- `quote_qty` (character): Quote asset quantity.
+- quote_qty (character) Quote asset quantity.
 
-- `commission` (character): Commission paid.
+- commission (character) Commission paid.
 
-- `commission_asset` (character): Commission asset (e.g., `"USDT"`).
+- commission_asset (character) Commission asset (e.g., `"USDT"`).
 
-- `realized_pnl` (character): Realised profit/loss.
+- realized_pnl (character) Realised profit/loss.
 
-- `side` (character): `"BUY"` or `"SELL"`.
+- side (character) `"BUY"` or `"SELL"`.
 
-- `position_side` (character): Position side.
+- position_side (character) Position side.
 
-- `buyer` (logical): Whether the trade was a buy.
+- buyer (logical) Whether the trade was a buy.
 
-- `maker` (logical): Whether the trade was a maker.
+- maker (logical) Whether the trade was a maker.
 
-- `time` (POSIXct): Trade execution time.
+- time (POSIXct) Trade execution time.
 
 #### Examples
 
@@ -1859,7 +1871,7 @@ realized PnL, commissions, etc.).
 [Binance Futures Get Income
 History](https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Get-Income-History)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -1906,11 +1918,11 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character or NULL; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>?) trading pair (e.g., `"BTCUSDT"`).
 
 - `incomeType`:
 
-  Character or NULL; income type filter. Valid values: `"TRANSFER"`,
+  (scalar\<character\>?) income type filter. Valid values: `"TRANSFER"`,
   `"WELCOME_BONUS"`, `"REALIZED_PNL"`, `"FUNDING_FEE"`, `"COMMISSION"`,
   `"INSURANCE_CLEAR"`, `"REFERRAL_KICKBACK"`, `"COMMISSION_REBATE"`,
   `"API_REBATE"`, `"CONTEST_REWARD"`, `"CROSS_COLLATERAL_TRANSFER"`,
@@ -1921,41 +1933,42 @@ Verified: 2026-03-10
 
 - `startTime`:
 
-  Integer or NULL; start timestamp in milliseconds.
+  (scalar\<count\>?) start timestamp in milliseconds.
 
 - `endTime`:
 
-  Integer or NULL; end timestamp in milliseconds.
+  (scalar\<count\>?) end timestamp in milliseconds.
 
 - `limit`:
 
-  Integer or NULL; max results (default 100, max 1000).
+  (scalar\<count\>?) max results (default 100, max 1000).
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per income entry and the following columns:
+(data.table \| promise\<data.table\>) one row per income entry (empty
+when there are none):
 
-- `symbol` (character): Trading pair (may be empty for some income
-  types).
+- symbol (character) Trading pair (may be empty for some income types).
 
-- `income_type` (character): Type of income (e.g., `"FUNDING_FEE"`,
+- income_type (character) Type of income (e.g., `"FUNDING_FEE"`,
   `"REALIZED_PNL"`).
 
-- `income` (character): Income amount (negative for fees paid).
+- income (character) Income amount (negative for fees paid).
 
-- `asset` (character): Asset of the income (e.g., `"USDT"`).
+- asset (character) Asset of the income (e.g., `"USDT"`).
 
-- `info` (character): Additional info about the income event.
+- info (character) Additional info about the income event.
 
-- `time` (POSIXct): Time of the income event.
+- time (POSIXct) Time of the income event.
 
-- `tran_id` (integer): Transaction identifier.
+- tran_id (numeric) Transaction identifier (a large integer that
+  overflows R's 32-bit `integer`, so it is coerced to a double).
 
-- `trade_id` (character): Associated trade ID if applicable.
+- trade_id (character) Associated trade ID if applicable.
 
 #### Examples
 
@@ -1982,7 +1995,7 @@ Changes the position mode between one-way and hedge mode.
 [Binance Futures Change Position
 Mode](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Change-Position-Mode)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -2013,19 +2026,19 @@ Verified: 2026-03-10
 
 - `dualSidePosition`:
 
-  Logical; `TRUE` for hedge mode, `FALSE` for one-way.
+  (scalar\<logical\>) `TRUE` for hedge mode, `FALSE` for one-way.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and the following columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `code` (integer): Response code (`200` on success).
+- code (integer) Response code (`200` on success).
 
-- `msg` (character): Response message.
+- msg (character) Response message.
 
 #### Examples
 
@@ -2050,9 +2063,9 @@ Retrieves the current position mode (one-way or hedge mode).
 #### Official Documentation
 
 [Binance Futures Get Current Position
-Mode](https://developers.binance.com/docs/derivatives/usds-margined-futures/trade/rest-api/Get-Current-Position-Mode)
+Mode](https://developers.binance.com/docs/derivatives/usds-margined-futures/account/rest-api/Get-Current-Position-Mode)
 
-Verified: 2026-03-10
+Verified: 2026-05-22
 
 #### curl
 
@@ -2073,14 +2086,14 @@ Verified: 2026-03-10
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row and the following columns:
+(data.table \| promise\<data.table\>) one row:
 
-- `dual_side_position` (logical): `TRUE` if hedge mode, `FALSE` if
-  one-way mode.
+- dual_side_position (logical) `TRUE` if hedge mode, `FALSE` if one-way
+  mode.
 
 #### Examples
 
@@ -2155,7 +2168,7 @@ test <- futures$add_order_test(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
   quantity = 0.001, price = 50000, timeInForce = "GTC"
 )
-print(test)
+stopifnot(test$validated)
 } # }
 
 ## ------------------------------------------------
@@ -2216,6 +2229,8 @@ if (FALSE) { # \dontrun{
 futures <- BinanceFutures$new()
 account <- futures$get_account()
 print(account)
+positions <- futures$get_positions()
+print(positions)
 } # }
 
 ## ------------------------------------------------

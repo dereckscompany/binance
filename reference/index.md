@@ -33,6 +33,22 @@ R6 classes for interacting with Binance REST API
 - [`BinanceFutures`](https://dereckscompany.github.io/binance/reference/BinanceFutures.md)
   : BinanceFutures: USD-M Futures Trading
 
+## WebSocket Streaming
+
+R6 classes for Binance’s real-time WebSocket streams
+
+- [`BinanceWsBase`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.md)
+  : BinanceWsBase: Abstract Base Class for Binance WebSocket Streams
+- [`BinanceMarketStream`](https://dereckscompany.github.io/binance/reference/BinanceMarketStream.md)
+  : BinanceMarketStream: Spot Market-Data WebSocket Streams
+
+## Data Shapes
+
+Column shapes of the data.tables returned by the API methods
+
+- [`binance_shapes`](https://dereckscompany.github.io/binance/reference/binance_shapes.md)
+  : Binance REST return shapes
+
 ## Configuration
 
 API credential and endpoint helpers

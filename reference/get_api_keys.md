@@ -17,17 +17,21 @@ get_api_keys(
 
 - api_key:
 
-  Character string; Binance API key. Defaults to
+  (scalar\<character\>) Binance API key. Defaults to
   `Sys.getenv("BINANCE_API_KEY")`.
 
 - api_secret:
 
-  Character string; Binance API secret. Defaults to
+  (scalar\<character\>) Binance API secret. Defaults to
   `Sys.getenv("BINANCE_API_SECRET")`.
 
 ## Value
 
-Named list with `api_key` and `api_secret`.
+(list) named list with `api_key` and `api_secret`:
+
+- api_key (scalar\<character\>) the API key.
+
+- api_secret (scalar\<character\>) the API secret.
 
 ## Examples
 

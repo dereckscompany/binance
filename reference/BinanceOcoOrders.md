@@ -26,7 +26,7 @@ All methods require authentication (valid API key and secret).
 ### Official Documentation
 
 [Binance Spot
-Trading](https://binance-docs.github.io/apidocs/spot/en/#spot-account-trade)
+Trading](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints)
 
 ### Endpoints Covered
 
@@ -39,8 +39,10 @@ Trading](https://binance-docs.github.io/apidocs/spot/en/#spot-account-trade)
 | get_open_oco_orders | GET /api/v3/openOrderList | GET    |
 | get_all_oco_orders  | GET /api/v3/allOrderList  | GET    |
 
-## Super class
+## Super classes
 
+[`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
+-\>
 [`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceOcoOrders`
 
@@ -80,8 +82,8 @@ limit order and a stop-loss (or stop-loss-limit) order.
 #### Official Documentation
 
 [Binance New
-OCO](https://binance-docs.github.io/apidocs/spot/en/#new-oco-trade)
-Verified: 2026-03-10
+OCO](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#order-lists)
+Verified: 2026-05-22
 
 #### curl
 
@@ -141,93 +143,119 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `side`:
 
-  Character; `"BUY"` or `"SELL"`.
+  (scalar\<character\>) `"BUY"` or `"SELL"`.
 
 - `quantity`:
 
-  Numeric; base asset quantity.
+  (scalar\<numeric\>) base asset quantity.
 
 - `price`:
 
-  Numeric; price for the limit leg.
+  (scalar\<numeric\>) price for the limit leg.
 
 - `stopPrice`:
 
-  Numeric; trigger price for the stop-loss leg.
+  (scalar\<numeric\>) trigger price for the stop-loss leg.
 
 - `stopLimitPrice`:
 
-  Numeric or NULL; limit price for the stop-loss-limit leg.
+  (scalar\<numeric\>?) limit price for the stop-loss-limit leg.
 
 - `stopLimitTimeInForce`:
 
-  Character or NULL; time-in-force for the stop-limit leg (`"GTC"`,
+  (scalar\<character\>?) time-in-force for the stop-limit leg (`"GTC"`,
   `"IOC"`, `"FOK"`). Required if `stopLimitPrice` is provided.
 
 - `listClientOrderId`:
 
-  Character or NULL; unique ID for the entire OCO list.
+  (scalar\<character\>?) unique ID for the entire OCO list.
 
 - `limitClientOrderId`:
 
-  Character or NULL; unique ID for the limit leg.
+  (scalar\<character\>?) unique ID for the limit leg.
 
 - `stopClientOrderId`:
 
-  Character or NULL; unique ID for the stop-loss leg.
+  (scalar\<character\>?) unique ID for the stop-loss leg.
 
 - `limitIcebergQty`:
 
-  Numeric or NULL; iceberg quantity for the limit leg.
+  (scalar\<numeric\>?) iceberg quantity for the limit leg.
 
 - `stopIcebergQty`:
 
-  Numeric or NULL; iceberg quantity for the stop-loss leg.
+  (scalar\<numeric\>?) iceberg quantity for the stop-loss leg.
 
 - `newOrderRespType`:
 
-  Character or NULL; `"ACK"`, `"RESULT"`, or `"FULL"`.
+  (scalar\<character\>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
 
 - `selfTradePreventionMode`:
 
-  Character or NULL.
+  (scalar\<character\>?)
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per child order (long format) and the
-following columns:
+(data.table \| promise\<data.table\>) one row per child order report
+(long format):
 
-- `order_list_id` (integer): OCO order list identifier (repeated per
-  child order).
+- order_list_id (numeric) OCO order list identifier (repeated per child
+  order).
 
-- `contingency_type` (character): Always `"OCO"`.
+- contingency_type (character) Always `"OCO"`.
 
-- `list_status_type` (character): Status type (e.g., `"EXEC_STARTED"`).
+- list_status_type (character) Status type (e.g., `"EXEC_STARTED"`).
 
-- `list_order_status` (character): Order status (e.g., `"EXECUTING"`).
+- list_order_status (character) Order status (e.g., `"EXECUTING"`).
 
-- `list_client_order_id` (character): Client-assigned list ID.
+- list_client_order_id (character) Client-assigned list ID.
 
-- `transact_time` (POSIXct): Transaction time.
+- transact_time (POSIXct) Transaction time.
 
-- `symbol` (character): Trading pair from parent OCO.
+- symbol (character) Trading pair from parent OCO.
 
-- `order_symbol` (character): Trading pair from child order.
+- order_report_symbol (character) Trading pair from child order report.
 
-- `order_id` (integer): Child order ID.
+- order_report_order_id (numeric) Child order ID.
 
-- `client_order_id` (character): Child order client ID.
+- order_report_order_list_id (numeric) Child order's OCO list ID.
 
-- `order_reports` (list): List of order report objects (kept as
-  list-column).
+- order_report_client_order_id (character) Child order client ID.
+
+- order_report_transact_time (POSIXct) Child order transaction time.
+
+- order_report_price (character) Child order price.
+
+- order_report_orig_qty (character) Child order original quantity.
+
+- order_report_executed_qty (character) Child order executed quantity.
+
+- order_report_cummulative_quote_qty (character) Child order cumulative
+  quote quantity filled.
+
+- order_report_status (character) Child order status (e.g., `"NEW"`).
+
+- order_report_time_in_force (character) Child order time-in-force
+  policy.
+
+- order_report_type (character) Child order type (e.g.,
+  `"STOP_LOSS_LIMIT"`, `"LIMIT_MAKER"`).
+
+- order_report_side (character) Child order side.
+
+- order_report_stop_price (character \| NA) Stop price (`NA` for the
+  non-stop leg, e.g. the `LIMIT_MAKER` order).
+
+- order_report_self_trade_prevention_mode (character)
+  Self-trade-prevention mode.
 
 #### Examples
 
@@ -256,8 +284,8 @@ Cancels an entire OCO order list by order list ID or client order ID.
 #### Official Documentation
 
 [Binance Cancel
-OCO](https://binance-docs.github.io/apidocs/spot/en/#cancel-oco-trade)
-Verified: 2026-03-10
+OCO](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trading-endpoints#order-lists)
+Verified: 2026-05-22
 
 #### curl
 
@@ -334,45 +362,77 @@ Verified: 2026-03-10
 
 - `symbol`:
 
-  Character; trading pair (e.g., `"BTCUSDT"`).
+  (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
 - `orderListId`:
 
-  Integer or NULL; the OCO order list ID.
+  (scalar\<count\>?) the OCO order list ID.
 
 - `listClientOrderId`:
 
-  Character or NULL; the client order list ID.
+  (scalar\<character\>?) the client order list ID.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per child order (long format) and the
-following columns:
+(data.table \| promise\<data.table\>) one row per child order report
+(long format), matching the shape returned by `add_oco_order()`. The
+thinner `orders` array Binance returns is dropped in favour of the
+richer `orderReports` payload, which includes the cancellation status,
+prices, quantities, and stop price for each child order:
 
-- `order_list_id` (integer): OCO order list identifier (repeated per
-  child order).
+- order_list_id (numeric) OCO order list identifier (repeated per child
+  order).
 
-- `contingency_type` (character): Always `"OCO"`.
+- contingency_type (character) Always `"OCO"`.
 
-- `list_status_type` (character): Status type (e.g., `"ALL_DONE"`).
+- list_status_type (character) Status type (e.g., `"ALL_DONE"`).
 
-- `list_order_status` (character): Order status (e.g., `"ALL_DONE"`).
+- list_order_status (character) Order status (e.g., `"ALL_DONE"`).
 
-- `list_client_order_id` (character): Client-assigned list ID.
+- list_client_order_id (character) Client-assigned list ID.
 
-- `transact_time` (POSIXct): Cancellation time (if present).
+- transact_time (POSIXct) Cancellation time (if present).
 
-- `symbol` (character): Trading pair from parent OCO.
+- symbol (character) Trading pair from parent OCO.
 
-- `order_symbol` (character): Trading pair from child order.
+- order_report_symbol (character) Trading pair from child order.
 
-- `order_id` (integer): Child order ID.
+- order_report_order_id (numeric) Child order ID.
 
-- `client_order_id` (character): Child order client ID.
+- order_report_order_list_id (numeric) Child order's OCO list ID.
+
+- order_report_client_order_id (character) Child order client ID.
+
+- order_report_transact_time (POSIXct) Child order transaction time.
+
+- order_report_price (character) Child order price.
+
+- order_report_orig_qty (character) Child order original quantity.
+
+- order_report_executed_qty (character) Child order executed quantity.
+
+- order_report_cummulative_quote_qty (character) Child order cumulative
+  quote quantity filled.
+
+- order_report_status (character) Child order status (e.g.,
+  `"CANCELED"`).
+
+- order_report_time_in_force (character) Child order time-in-force
+  policy.
+
+- order_report_type (character) Child order type.
+
+- order_report_side (character) Child order side.
+
+- order_report_stop_price (character \| NA) Stop price (`NA` for the
+  non-stop leg).
+
+- order_report_self_trade_prevention_mode (character)
+  Self-trade-prevention mode.
 
 #### Examples
 
@@ -398,8 +458,8 @@ client order ID.
 #### Official Documentation
 
 [Binance Query
-OCO](https://binance-docs.github.io/apidocs/spot/en/#query-oco-user_data)
-Verified: 2026-03-10
+OCO](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-order-list-user_data)
+Verified: 2026-05-22
 
 #### curl
 
@@ -442,41 +502,41 @@ Verified: 2026-03-10
 
 - `orderListId`:
 
-  Integer or NULL; the OCO order list ID.
+  (scalar\<count\>?) the OCO order list ID.
 
 - `origClientOrderId`:
 
-  Character or NULL; the original client order list ID.
+  (scalar\<character\>?) the original client order list ID.
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per child order (long format) and the
-following columns:
+(data.table \| promise\<data.table\>) one row per child order (long
+format):
 
-- `order_list_id` (integer): OCO order list identifier (repeated per
-  child order).
+- order_list_id (numeric) OCO order list identifier (repeated per child
+  order).
 
-- `contingency_type` (character): Always `"OCO"`.
+- contingency_type (character) Always `"OCO"`.
 
-- `list_status_type` (character): Status type (e.g., `"ALL_DONE"`).
+- list_status_type (character) Status type (e.g., `"ALL_DONE"`).
 
-- `list_order_status` (character): Order status.
+- list_order_status (character) Order status.
 
-- `list_client_order_id` (character): Client-assigned list ID.
+- list_client_order_id (character) Client-assigned list ID.
 
-- `transaction_time` (POSIXct): Transaction time (if present).
+- transaction_time (POSIXct) Transaction time (if present).
 
-- `symbol` (character): Trading pair from parent OCO.
+- symbol (character) Trading pair from parent OCO.
 
-- `order_symbol` (character): Trading pair from child order.
+- order_symbol (character) Trading pair from child order.
 
-- `order_id` (integer): Child order ID.
+- order_order_id (numeric) Child order ID.
 
-- `client_order_id` (character): Child order client ID.
+- order_client_order_id (character) Child order client ID.
 
 #### Examples
 
@@ -501,8 +561,8 @@ Retrieves all currently open OCO order lists.
 #### Official Documentation
 
 [Binance Query Open
-OCO](https://binance-docs.github.io/apidocs/spot/en/#query-open-oco-user_data)
-Verified: 2026-03-10
+OCO](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-open-order-lists-user_data)
+Verified: 2026-05-22
 
 #### curl
 
@@ -543,33 +603,33 @@ Verified: 2026-03-10
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per child order across all open OCOs (long
-format). Columns include:
+(data.table \| promise\<data.table\>) one row per child order across all
+open OCOs (long format; empty when there are no open OCOs):
 
-- `order_list_id` (integer): OCO order list identifier (repeated per
-  child order).
+- order_list_id (numeric) OCO order list identifier (repeated per child
+  order).
 
-- `contingency_type` (character): Always `"OCO"`.
+- contingency_type (character) Always `"OCO"`.
 
-- `list_status_type` (character): Status type.
+- list_status_type (character) Status type.
 
-- `list_order_status` (character): Order status.
+- list_order_status (character) Order status.
 
-- `list_client_order_id` (character): Client-assigned list ID.
+- list_client_order_id (character) Client-assigned list ID.
 
-- `transaction_time` (POSIXct): Transaction time.
+- transaction_time (POSIXct) Transaction time.
 
-- `symbol` (character): Trading pair from parent OCO.
+- symbol (character) Trading pair from parent OCO.
 
-- `order_symbol` (character): Trading pair from child order.
+- order_symbol (character) Trading pair from child order.
 
-- `order_id` (integer): Child order ID.
+- order_order_id (numeric) Child order ID.
 
-- `client_order_id` (character): Child order client ID.
+- order_client_order_id (character) Child order client ID.
 
 #### Examples
 
@@ -596,8 +656,8 @@ the most recent OCOs.
 #### Official Documentation
 
 [Binance Query All
-OCO](https://binance-docs.github.io/apidocs/spot/en/#query-all-oco-user_data)
-Verified: 2026-03-10
+OCO](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/account-endpoints#query-all-order-lists-user_data)
+Verified: 2026-05-22
 
 #### curl
 
@@ -665,49 +725,49 @@ Verified: 2026-03-10
 
 - `fromId`:
 
-  Integer or NULL; pagination cursor (orderListId).
+  (scalar\<count\>?) pagination cursor (orderListId).
 
 - `startTime`:
 
-  Integer or NULL; start timestamp in milliseconds.
+  (scalar\<count\>?) start timestamp in milliseconds.
 
 - `endTime`:
 
-  Integer or NULL; end timestamp in milliseconds.
+  (scalar\<count\>?) end timestamp in milliseconds.
 
 - `limit`:
 
-  Integer or NULL; max results (default 500, max 1000).
+  (scalar\<count\>?) max results (default 500, max 1000).
 
 - `recvWindow`:
 
-  Integer or NULL; max 60000.
+  (scalar\<count\>?) max 60000.
 
 #### Returns
 
-`data.table` with one row per child order across all OCOs (long format).
-Columns include:
+(data.table \| promise\<data.table\>) one row per child order across all
+OCOs (long format; empty when there are no matching OCOs):
 
-- `order_list_id` (integer): OCO order list identifier (repeated per
-  child order).
+- order_list_id (numeric) OCO order list identifier (repeated per child
+  order).
 
-- `contingency_type` (character): Always `"OCO"`.
+- contingency_type (character) Always `"OCO"`.
 
-- `list_status_type` (character): Status type.
+- list_status_type (character) Status type.
 
-- `list_order_status` (character): Order status.
+- list_order_status (character) Order status.
 
-- `list_client_order_id` (character): Client-assigned list ID.
+- list_client_order_id (character) Client-assigned list ID.
 
-- `transaction_time` (POSIXct): Transaction time.
+- transaction_time (POSIXct) Transaction time.
 
-- `symbol` (character): Trading pair from parent OCO.
+- symbol (character) Trading pair from parent OCO.
 
-- `order_symbol` (character): Trading pair from child order.
+- order_symbol (character) Trading pair from child order.
 
-- `order_id` (integer): Child order ID.
+- order_order_id (numeric) Child order ID.
 
-- `client_order_id` (character): Child order client ID.
+- order_client_order_id (character) Child order client ID.
 
 #### Examples
 

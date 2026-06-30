@@ -11,6 +11,20 @@ credential management, sync/async execution mode, timestamp source
 configuration, and a standardised method for calling implementation
 functions.
 
+### Transport
+
+This class is a thin Binance specialisation of
+[connectcore::RestClient](https://rdrr.io/pkg/connectcore/man/RestClient.html),
+the shared transport base. The request funnel, sync/async branching,
+retry, and throttle all live in `connectcore`; `BinanceBase` only
+supplies the two venue-specific seams — how Binance authenticates a
+request (`.sign()`, delegating to
+[`connectcore::hmac_query_sign()`](https://rdrr.io/pkg/connectcore/man/hmac_query_sign.html)
+with the `X-MBX-APIKEY` header) and how it reports an error
+(`.parse_envelope()`, which honours Binance's negative-`code` error
+body). Binance carries signed parameters in the query string, so the
+body is configured as `body_format = "query"`.
+
 ### Sync vs Async
 
 The `async` parameter controls execution mode for all API methods:
@@ -34,9 +48,7 @@ mode (`Suggests` dependency).
 The `time_source` parameter controls which clock is used for HMAC
 request signing:
 
-- `"local"` (default): uses
-  [`Sys.time()`](https://rdrr.io/r/base/Sys.time.html) from the local
-  machine.
+- `"local"` (default): uses the local UTC clock.
 
 - `"server"`: fetches the Binance server time via `GET /api/v3/time`
   before each authenticated request. This is slower (one extra HTTP
@@ -51,39 +63,10 @@ This class is not meant to be instantiated directly. Subclasses (e.g.,
 inherit from it and define their own public methods that delegate to
 `private$.request()`.
 
-## Fields
+## Super class
 
-All fields are private:
-
-- `.keys`: List; API credentials from
-  [`get_api_keys()`](https://dereckscompany.github.io/binance/reference/get_api_keys.md).
-
-- `.base_url`: Character; API base URL from
-  [`get_base_url()`](https://dereckscompany.github.io/binance/reference/get_base_url.md).
-
-- `.perform`: Function; either
-  [httr2::req_perform](https://httr2.r-lib.org/reference/req_perform.html)
-  or
-  [httr2::req_perform_promise](https://httr2.r-lib.org/reference/req_perform_promise.html).
-
-- `.is_async`: Logical; whether the instance is in async mode.
-
-- `.time_source`: Character; `"local"` or `"server"`.
-
-- `.get_timestamp_ms`: Function; returns epoch milliseconds for HMAC
-  signing.
-
-## Active bindings
-
-- `is_async`:
-
-  Logical; read-only flag indicating whether this instance operates in
-  async mode.
-
-- `time_source`:
-
-  Character; read-only flag indicating the timestamp source used for
-  HMAC signing (`"local"` or `"server"`).
+[`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
+-\> `BinanceBase`
 
 ## Methods
 
@@ -112,30 +95,31 @@ Initialise a BinanceBase Object
 
 - `keys`:
 
-  List; API credentials from
+  (list) API credentials from
   [`get_api_keys()`](https://dereckscompany.github.io/binance/reference/get_api_keys.md).
   Defaults to
   [`get_api_keys()`](https://dereckscompany.github.io/binance/reference/get_api_keys.md).
 
 - `base_url`:
 
-  Character; API base URL. Defaults to
+  (scalar\<character\>) API base URL. Defaults to
   [`get_base_url()`](https://dereckscompany.github.io/binance/reference/get_base_url.md).
 
 - `async`:
 
-  Logical; if `TRUE`, methods return promises. Default `FALSE`.
+  (scalar\<logical\>) if `TRUE`, methods return promises. Default
+  `FALSE`.
 
 - `time_source`:
 
-  Character; clock source for HMAC request signing. `"local"` (default)
-  uses [`Sys.time()`](https://rdrr.io/r/base/Sys.time.html). `"server"`
-  fetches the Binance server time before each authenticated request,
-  which adds latency but avoids clock-drift issues.
+  (scalar\<character in c("local", "server")\>) clock source for HMAC
+  request signing. `"local"` (default) uses the local UTC clock.
+  `"server"` fetches the Binance server time before each authenticated
+  request, which adds latency but avoids clock-drift issues.
 
 #### Returns
 
-Invisible self.
+(class\<BinanceBase\>) invisibly, self.
 
 ------------------------------------------------------------------------
 
