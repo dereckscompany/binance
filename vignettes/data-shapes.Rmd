@@ -11,9 +11,27 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  eval = FALSE
+  comment = "#>"
 )
+
+# Docs execute against the synthetic mock router (no network, no keys), so the
+# printed shapes are produced by the real parsers from canned fixtures.
+box::use(
+  binance[
+    BinanceMarketData, BinanceAccount, BinanceTrading,
+    BinanceFutures, BinanceMargin, BinanceEarn, get_api_keys
+  ]
+)
+box::use(../tests/testthat/mock_router[mock_router])
+options(httr2_mock = mock_router)
+
+keys    <- get_api_keys(api_key = "your-key", api_secret = "your-secret")
+market  <- BinanceMarketData$new()
+acct    <- BinanceAccount$new(keys = keys)
+trading <- BinanceTrading$new(keys = keys)
+futures <- BinanceFutures$new(keys = keys)
+margin  <- BinanceMargin$new(keys = keys)
+earn    <- BinanceEarn$new(keys = keys)
 ```
 
 This vignette is the **one-stop tour** of the `binance` package. It
@@ -414,18 +432,16 @@ column. Filter with `grepl`, recover the original vector with
 `strsplit(x, ";", fixed = TRUE)[[1]]`.
 
 ```{r}
-market <- BinanceMarketData$new()
 info <- market$get_exchange_info("BTCUSDT")
 
+# An array of plain strings, collapsed into one `;`-separated column:
 info$order_types
-#> "LIMIT;LIMIT_MAKER;MARKET;STOP_LOSS_LIMIT;TAKE_PROFIT_LIMIT"
 
-# Filter
+# Filter with grepl()
 info[grepl("MARKET", order_types)]
 
-# Recover the vector
+# Recover the original vector
 strsplit(info$order_types[1], ";", fixed = TRUE)[[1]]
-#> "LIMIT" "LIMIT_MAKER" "MARKET" "STOP_LOSS_LIMIT" "TAKE_PROFIT_LIMIT"
 ```
 
 Where this is used: `exchange_info` (spot + futures) for
@@ -448,15 +464,11 @@ A 1-indexed position column is added where order matters.
 ```{r}
 # `add_order` returns one row per fill, with the order-level fields
 # replicated. `fill_index` runs 1..N.
-trading <- BinanceTrading$new()
 order <- trading$add_order(
   type = "MARKET", symbol = "BTCUSDT", side = "BUY",
   quantity = 0.0001, newOrderRespType = "FULL"
 )
 order[, .(order_id, status, fill_index, fill_price, fill_qty)]
-#>    order_id  status  fill_index  fill_price  fill_qty
-#> 1: 28        FILLED  1           50000.00    0.00005000
-#> 2: 28        FILLED  2           50001.00    0.00005000
 
 # `get_depth` returns one row per (side, price level).
 depth <- market$get_depth("BTCUSDT", limit = 5)
@@ -479,8 +491,7 @@ When the field is a single nested object with a known fixed key set,
 flatten it to `parent_child` columns.
 
 ```{r}
-account <- BinanceAccount$new()
-info <- account$get_account_info()
+info <- acct$get_account_info()
 
 # `commissionRates` was a nested object — now wide-prefixed.
 info[, .(commission_rates_maker, commission_rates_taker,
@@ -508,19 +519,19 @@ is lost.
 # Binance also returns a `positions` array alongside `assets`; rather
 # than Cartesian-joining them, `positions` is parsed by the dedicated
 # method that hits `/fapi/v2/positionRisk`:
-futures <- BinanceFutures$new()
-acct      <- futures$get_account()    # one row per asset
+fut_acct  <- futures$get_account()    # one row per asset
 positions <- futures$get_positions()  # one row per open position
+fut_acct
 ```
 
 ```{r}
 # `/exchangeInfo` bundles per-symbol rows + exchange-wide rate-limit
 # rules + exchange-wide filter rules. Per-symbol stays on the main
 # method; the rest moves to siblings.
-market <- BinanceMarketData$new()
 info        <- market$get_exchange_info()       # one row per symbol
 rate_limits <- market$get_rate_limits()         # one row per rate-limit rule
 ex_filters  <- market$get_exchange_filters()    # one row per exchange-wide filter (usually empty)
+info
 ```
 
 The cases:
@@ -551,27 +562,19 @@ recover with `jsonlite::fromJSON`.
 # the same `"A;B"`, losing the grouping.
 info <- market$get_exchange_info("BTCUSDT")
 info$permission_sets
-#> '[["SPOT","MARGIN","TRD_GRP_004", ...]]'
 
 # Recover the structure
 jsonlite::fromJSON(info$permission_sets[1], simplifyVector = FALSE)
-#> [[1]]
-#> [[1]][[1]] "SPOT"
-#> [[1]][[2]] "MARGIN"
-#> [[1]][[3]] "TRD_GRP_004"
 ```
 
 ```{r}
 # Earn `tierAnnualPercentageRate` has dynamic keys per product
 # (different size tiers).
-earn <- BinanceEarn$new()
 products <- earn$get_flexible_products(asset = "USDT")
 products$tier_annual_percentage_rate
-#> '{"0-5BTC":0.05,"5-10BTC":0.03}'
 
 tiers <- jsonlite::fromJSON(products$tier_annual_percentage_rate[1])
-tiers$`0-5BTC`
-#> 0.05
+tiers
 ```
 
 Where this is used: spot `exchangeInfo` `permission_sets`, Earn
