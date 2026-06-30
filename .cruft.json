@@ -1,7 +1,7 @@
 {
   "template": "https://github.com/dereckscompany/templates-cookiecutter.git",
-  "commit": "5f86cbc79d59efc845845db678820e28ad63d905",
-  "checkout": null,
+  "commit": "961e7486bbd9619e49d57be3261c0d9b94b74b47",
+  "checkout": "fix/renv-snapshot-dev",
   "context": {
     "cookiecutter": {
       "package_name": "binance",
@@ -20,7 +20,7 @@
         "scripts/*"
       ],
       "_template": "https://github.com/dereckscompany/templates-cookiecutter.git",
-      "_commit": "5f86cbc79d59efc845845db678820e28ad63d905"
+      "_commit": "961e7486bbd9619e49d57be3261c0d9b94b74b47"
     }
   },
   "directory": "template-r-package"
