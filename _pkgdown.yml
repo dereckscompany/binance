@@ -39,6 +39,17 @@ reference:
       - BinanceFuturesData
       - BinanceFutures
 
+  - title: WebSocket Streaming
+    desc: R6 classes for Binance's real-time WebSocket streams
+    contents:
+      - BinanceWsBase
+      - BinanceMarketStream
+
+  - title: Data Shapes
+    desc: Column shapes of the data.tables returned by the API methods
+    contents:
+      - binance_shapes
+
   - title: Configuration
     desc: API credential and endpoint helpers
     contents:
@@ -70,4 +81,6 @@ articles:
     contents:
       - getting-started
       - async-usage
+      - websocket-streams
       - margin-futures-trading
+      - data-shapes
