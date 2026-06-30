@@ -33,6 +33,12 @@ box::use(
 # so it works from the package root (README), vignettes/, and tests/testthat.
 .fixtures <- load_fixtures(box::file("fixtures"), parse = TRUE)
 
+# Binance returns one object with a `symbol` query param vs. the full array
+# without it, on the SAME ticker URL (verified against the live API). Every other
+# venue uses a distinct path for single-vs-all, so this query reader stays local
+# here rather than in connectcore.
+.absent <- function(req, param) is.null(httr2::url_parse(req$url)$query[[param]])
+
 #' Route table: URL substring (+ optional method) -> synthetic-fixture list.
 #'
 #' Order matters — more specific patterns first. Each `fixture` is the parsed
@@ -44,7 +50,17 @@ box::use(
   list(pattern = "api/v3/time", fixture = .fixtures$server_time_data),
   list(pattern = "api/v3/exchangeInfo", fixture = .fixtures$exchange_info_data),
   list(pattern = "api/v3/ticker/bookTicker", fixture = .fixtures$book_ticker_data),
+  # /ticker/24hr and /ticker/price return one row with `symbol`, all rows without
+  # (live-verified). The "absent -> all" route must precede the single fallback.
+  list(
+    match = function(req) grepl("api/v3/ticker/24hr", req$url, fixed = TRUE) && .absent(req, "symbol"),
+    fixture = .fixtures$all_24hr_stats_data
+  ),
   list(pattern = "api/v3/ticker/24hr", fixture = .fixtures$"24hr_stats_data"),
+  list(
+    match = function(req) grepl("api/v3/ticker/price", req$url, fixed = TRUE) && .absent(req, "symbol"),
+    fixture = .fixtures$all_tickers_data
+  ),
   list(pattern = "api/v3/ticker/price", fixture = .fixtures$ticker_data),
   list(pattern = "api/v3/avgPrice", fixture = .fixtures$avg_price_data),
   list(pattern = "api/v3/depth", fixture = .fixtures$orderbook_data),
@@ -93,8 +109,8 @@ box::use(
   list(pattern = "sapi/v1/margin/borrow-repay", fixture = .fixtures$margin_borrow_response, method = "POST"),
   list(pattern = "sapi/v1/margin/order", fixture = .fixtures$margin_order_response, method = "POST"),
   list(pattern = "sapi/v1/margin/order", fixture = .fixtures$margin_order_response, method = "DELETE"),
-  list(pattern = "sapi/v1/margin/openOrders", fixture = function() list(.fixtures$margin_order_response)),
-  list(pattern = "sapi/v1/margin/allOrders", fixture = function() list(.fixtures$margin_order_response)),
+  list(pattern = "sapi/v1/margin/openOrders", fixture = .fixtures$margin_open_orders_data),
+  list(pattern = "sapi/v1/margin/allOrders", fixture = .fixtures$margin_open_orders_data),
   list(pattern = "sapi/v1/margin/account", fixture = .fixtures$margin_account_data),
   list(pattern = "sapi/v1/margin/maxBorrowable", fixture = .fixtures$max_borrowable_data),
   list(pattern = "sapi/v1/margin/myTrades", fixture = .fixtures$margin_trades_data),

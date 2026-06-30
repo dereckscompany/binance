@@ -46,6 +46,7 @@ Suggests:
     diffviewer,
     knitr,
     rmarkdown,
+    pkgdown,
     roxyassert (>= 0.9.1)
 Remotes:
     dereckscompany/assert,
