@@ -19,7 +19,16 @@ test_that("BinanceTrading inherits from BinanceBase", {
 # -- add_order --
 
 test_that("add_order returns order data.table with correct columns", {
-  resp <- mock_binance_response(data = mock_order_response())
+  # The shared order_response fixture is a FILLED order carrying `fills` (the
+  # data-shapes vignette showcases the fills expansion). This test covers the
+  # fills-free ACK shape — one plain row, no expansion — so strip the fixture
+  # back to a resting NEW order before serving it.
+  order_data <- mock_order_response()
+  order_data$fills <- NULL
+  order_data$status <- "NEW"
+  order_data$executedQty <- "0.00000000"
+  order_data$cummulativeQuoteQty <- "0.00000000"
+  resp <- mock_binance_response(data = order_data)
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_trading()$add_order(
