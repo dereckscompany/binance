@@ -1,3 +1,9 @@
+# binance 0.6.1
+
+## Bug fixes
+
+* **`binance_backfill_klines()`'s `timeout` now accepts a whole number, not only a decimal.** It was contracted as `scalar<numeric in ]0, Inf[>` — a strict double — so a caller passing an integer (e.g. a `timeout` read from a YAML config, where `30` parses as an R integer) hit `` `timeout` must be a single double value ``. The contract is widened to `scalar<numeric in ]0, Inf[> | scalar<integer in [1, Inf[>`, so both a whole-number and a decimal timeout are accepted while a non-positive value is still rejected.
+
 # binance 0.6.0
 
 This release brings binance into line with the fleet-wide connector conventions. Every method argument is now plain snake_case (the words you type in R), while the Binance API still receives its own camelCase field names on the wire — the translation now happens inside each method rather than leaking the exchange's spelling into your R code. It is a clean break with no deprecation shims, so calls that passed camelCase argument names by keyword must be updated (for example `cancel_order("BTCUSDT", orderId = 123)` becomes `cancel_order("BTCUSDT", order_id = 123)`).

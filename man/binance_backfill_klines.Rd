@@ -42,9 +42,10 @@ symbol-timeframe combination to respect rate limits.}
 
 \item{verbose}{(scalar<logical>) if \code{TRUE}, prints progress messages via \code{\link[rlang:abort]{rlang::inform()}}.}
 
-\item{timeout}{(scalar<numeric in ]0, Inf[>) per-request timeout in seconds.
-A deep backfill issues hundreds of sequential page requests, so a single
-slow response should not abort the combo; this bounds each attempt before
+\item{timeout}{(scalar<numeric in ]0, Inf[> | scalar<integer in [1, Inf[>)
+per-request timeout in seconds — a whole number or a decimal is accepted. A
+deep backfill issues hundreds of sequential page requests, so a single slow
+response should not abort the combo; this bounds each attempt before
 \code{max_tries} retries it. Default \code{30}.}
 
 \item{max_tries}{(scalar<count in [1, Inf[>) retry each page request up to

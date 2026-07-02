@@ -4164,8 +4164,17 @@ assert_args_binance_backfill_klines <- function(timeframes, from, to, file, base
   assert_scalar_double(sleep)
   assert_between(sleep, lower = 0, upper = Inf, upper_inclusive = FALSE)
   assert_scalar_logical(verbose)
-  assert_scalar_double(timeout)
-  assert_between(timeout, lower = 0, lower_inclusive = FALSE, upper = Inf, upper_inclusive = FALSE)
+  assert_any_of(
+    timeout,
+    function(.x) {
+      assert_scalar_double(.x)
+      assert_between(.x, lower = 0, lower_inclusive = FALSE, upper = Inf, upper_inclusive = FALSE)
+    },
+    function(.x) {
+      assert_scalar_integer(.x)
+      assert_between(.x, lower = 1)
+    }
+  )
   assert_scalar_count(max_tries)
   assert_between(max_tries, lower = 1)
   return(invisible(NULL))
