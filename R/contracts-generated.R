@@ -4138,7 +4138,7 @@ assert_return_BinanceWsBase__subscriptions <- function(value) {
   return(value)
 }
 
-assert_args_binance_backfill_klines <- function(timeframes, from, to, file, base_url, sleep, verbose) {
+assert_args_binance_backfill_klines <- function(timeframes, from, to, file, base_url, sleep, verbose, timeout, max_tries) {
   assert_character(timeframes)
   assert_no_missing_values(timeframes)
   assert_any_of(
@@ -4164,6 +4164,10 @@ assert_args_binance_backfill_klines <- function(timeframes, from, to, file, base
   assert_scalar_double(sleep)
   assert_between(sleep, lower = 0, upper = Inf, upper_inclusive = FALSE)
   assert_scalar_logical(verbose)
+  assert_scalar_double(timeout)
+  assert_between(timeout, lower = 0, lower_inclusive = FALSE, upper = Inf, upper_inclusive = FALSE)
+  assert_scalar_count(max_tries)
+  assert_between(max_tries, lower = 1)
   return(invisible(NULL))
 }
 

@@ -72,6 +72,10 @@ sign_request <- function(req, keys, .get_timestamp_ms = NULL) {
 #'   Default `identity`.
 #' @param is_async (scalar<logical>) whether `.perform` returns promises. Default `FALSE`.
 #' @param timeout (scalar<numeric in ]0, Inf[>) request timeout in seconds. Default `10`.
+#' @param max_tries (scalar<count in [1, Inf[>) retry up to this many times with
+#'   backoff on a transient failure — a timeout, a dropped connection, a 5xx, or
+#'   a 429. `1` (default) disables retry. Enable this only for idempotent GETs
+#'   (never for order placement, where a resend could double-submit).
 #' @param .get_timestamp_ms (function?) zero-argument function returning epoch
 #'   milliseconds for HMAC signing.
 #' @return (promise<any>) parsed and post-processed API response data, or a
@@ -90,6 +94,7 @@ binance_build_request <- function(
   .parser = identity,
   is_async = FALSE,
   timeout = 10,
+  max_tries = 1L,
   .get_timestamp_ms = NULL
 ) {
   return(connectcore::build_request(
@@ -106,6 +111,7 @@ binance_build_request <- function(
     .parser = .parser,
     is_async = is_async,
     timeout = timeout,
+    max_tries = max_tries,
     ctx = list(get_timestamp_ms = .get_timestamp_ms)
   ))
 }

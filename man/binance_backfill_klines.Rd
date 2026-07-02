@@ -12,7 +12,9 @@ binance_backfill_klines(
   file = "binance_klines.csv",
   base_url = "https://api.binance.com",
   sleep = 0.3,
-  verbose = TRUE
+  verbose = TRUE,
+  timeout = 30,
+  max_tries = 5L
 )
 }
 \arguments{
@@ -39,6 +41,16 @@ incrementally so progress is saved even if the process is interrupted.}
 symbol-timeframe combination to respect rate limits.}
 
 \item{verbose}{(scalar<logical>) if \code{TRUE}, prints progress messages via \code{\link[rlang:abort]{rlang::inform()}}.}
+
+\item{timeout}{(scalar<numeric in ]0, Inf[>) per-request timeout in seconds.
+A deep backfill issues hundreds of sequential page requests, so a single
+slow response should not abort the combo; this bounds each attempt before
+\code{max_tries} retries it. Default \code{30}.}
+
+\item{max_tries}{(scalar<count in [1, Inf[>) retry each page request up to
+this many times with backoff on a transient failure (timeout, dropped
+connection, 5xx, 429). Without it, one timeout mid-history truncates the
+file. Backfill is an idempotent GET, so retrying is always safe. Default \code{5}.}
 }
 \value{
 (scalar<character>) the file path (invisibly).
