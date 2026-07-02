@@ -32,6 +32,14 @@
 #' @param sleep (scalar<numeric in [0, Inf[>) seconds to sleep between each
 #'   symbol-timeframe combination to respect rate limits.
 #' @param verbose (scalar<logical>) if `TRUE`, prints progress messages via [rlang::inform()].
+#' @param timeout (scalar<numeric in ]0, Inf[>) per-request timeout in seconds.
+#'   A deep backfill issues hundreds of sequential page requests, so a single
+#'   slow response should not abort the combo; this bounds each attempt before
+#'   `max_tries` retries it. Default `30`.
+#' @param max_tries (scalar<count in [1, Inf[>) retry each page request up to
+#'   this many times with backoff on a transient failure (timeout, dropped
+#'   connection, 5xx, 429). Without it, one timeout mid-history truncates the
+#'   file. Backfill is an idempotent GET, so retrying is always safe. Default `5`.
 #' @noassert symbols
 #'
 #' @return (scalar<character>) the file path (invisibly).
@@ -64,7 +72,9 @@ binance_backfill_klines <- function(
   file = "binance_klines.csv",
   base_url = "https://api.binance.com",
   sleep = 0.3,
-  verbose = TRUE
+  verbose = TRUE,
+  timeout = 30,
+  max_tries = 5L
 ) {
   # --- Input validation ---
   assert_args_binance_backfill_klines(
@@ -74,7 +84,9 @@ binance_backfill_klines <- function(
     file,
     base_url,
     sleep,
-    verbose
+    verbose,
+    timeout,
+    max_tries
   )
   if (is.null(symbols) || length(symbols) == 0L) {
     rlang::abort("`symbols` must be a non-empty character vector of trading pairs.")
@@ -112,6 +124,8 @@ binance_backfill_klines <- function(
   }
 
   # --- Sync request function closure ---
+  # Retry each page with backoff so a single transient timeout (common on the
+  # 500+ page 1m fetches, especially through a VPN) does not truncate the file.
   sync_req_fn <- function(endpoint, method = "GET", query = list(), auth = FALSE, .parser = identity, ...) {
     return(binance_build_request(
       base_url = base_url,
@@ -122,7 +136,9 @@ binance_backfill_klines <- function(
       keys = NULL,
       .perform = httr2::req_perform,
       .parser = .parser,
-      is_async = FALSE
+      is_async = FALSE,
+      timeout = timeout,
+      max_tries = max_tries
     ))
   }
 

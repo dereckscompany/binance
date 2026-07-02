@@ -15,6 +15,7 @@ binance_build_request(
   .parser = identity,
   is_async = FALSE,
   timeout = 10,
+  max_tries = 1L,
   .get_timestamp_ms = NULL
 )
 }
@@ -39,6 +40,11 @@ Default \code{identity}.}
 \item{is_async}{(scalar<logical>) whether \code{.perform} returns promises. Default \code{FALSE}.}
 
 \item{timeout}{(scalar<numeric in ]0, Inf[>) request timeout in seconds. Default \code{10}.}
+
+\item{max_tries}{(scalar<count in [1, Inf[>) retry up to this many times with
+backoff on a transient failure — a timeout, a dropped connection, a 5xx, or
+a 429. \code{1} (default) disables retry. Enable this only for idempotent GETs
+(never for order placement, where a resend could double-submit).}
 
 \item{.get_timestamp_ms}{(function?) zero-argument function returning epoch
 milliseconds for HMAC signing.}
