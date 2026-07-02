@@ -13,7 +13,7 @@ symbol-timeframe combinations that are already up to date."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,7 +42,7 @@ symbol-timeframe combinations that are already up to date."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Backfill Binance Kline Data to CSV</h1>
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.5.3/R/backfill.R" class="external-link"><code>R/backfill.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.5.4/R/backfill.R" class="external-link"><code>R/backfill.R</code></a></small>
       <div class="d-none name"><code>binance_backfill_klines.Rd</code></div>
     </div>
 
@@ -63,7 +63,9 @@ symbol-timeframe combinations that are already up to date.</p>
 <span>  file <span class="op">=</span> <span class="st">"binance_klines.csv"</span>,</span>
 <span>  base_url <span class="op">=</span> <span class="st">"https://api.binance.com"</span>,</span>
 <span>  sleep <span class="op">=</span> <span class="fl">0.3</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  timeout <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  max_tries <span class="op">=</span> <span class="fl">5L</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -109,6 +111,20 @@ symbol-timeframe combination to respect rate limits.</p></dd>
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>(scalar&lt;logical&gt;) if <code>TRUE</code>, prints progress messages via <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-link">rlang::inform()</a></code>.</p></dd>
+
+
+<dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
+<dd><p>(scalar&lt;numeric in ]0, Inf[&gt;) per-request timeout in seconds.
+A deep backfill issues hundreds of sequential page requests, so a single
+slow response should not abort the combo; this bounds each attempt before
+<code>max_tries</code> retries it. Default <code>30</code>.</p></dd>
+
+
+<dt id="arg-max-tries">max_tries<a class="anchor" aria-label="anchor" href="#arg-max-tries"></a></dt>
+<dd><p>(scalar&lt;count in [1, Inf[&gt;) retry each page request up to
+this many times with backoff on a transient failure (timeout, dropped
+connection, 5xx, 429). Without it, one timeout mid-history truncates the
+file. Backfill is an idempotent GET, so retrying is always safe. Default <code>5</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

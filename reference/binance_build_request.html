@@ -17,7 +17,7 @@ envelope and carries signed parameters in the query string
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,7 @@ envelope and carries signed parameters in the query string
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Build and Execute a Binance API Request</h1>
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.5.3/R/helpers_request.R" class="external-link"><code>R/helpers_request.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.5.4/R/helpers_request.R" class="external-link"><code>R/helpers_request.R</code></a></small>
       <div class="d-none name"><code>binance_build_request.Rd</code></div>
     </div>
 
@@ -72,6 +72,7 @@ envelope and carries signed parameters in the query string
 <span>  .parser <span class="op">=</span> <span class="va">identity</span>,</span>
 <span>  is_async <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  timeout <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  max_tries <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  .get_timestamp_ms <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -119,6 +120,13 @@ Default <code>identity</code>.</p></dd>
 
 <dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
 <dd><p>(scalar&lt;numeric in ]0, Inf[&gt;) request timeout in seconds. Default <code>10</code>.</p></dd>
+
+
+<dt id="arg-max-tries">max_tries<a class="anchor" aria-label="anchor" href="#arg-max-tries"></a></dt>
+<dd><p>(scalar&lt;count in [1, Inf[&gt;) retry up to this many times with
+backoff on a transient failure — a timeout, a dropped connection, a 5xx, or
+a 429. <code>1</code> (default) disables retry. Enable this only for idempotent GETs
+(never for order placement, where a resend could double-submit).</p></dd>
 
 
 <dt id="arg--get-timestamp-ms">.get_timestamp_ms<a class="anchor" aria-label="anchor" href="#arg--get-timestamp-ms"></a></dt>

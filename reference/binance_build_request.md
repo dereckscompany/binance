@@ -23,6 +23,7 @@ binance_build_request(
   .parser = identity,
   is_async = FALSE,
   timeout = 10,
+  max_tries = 1L,
   .get_timestamp_ms = NULL
 )
 ```
@@ -73,6 +74,14 @@ binance_build_request(
 
   (scalar\<numeric in \]0, Inf\[\>) request timeout in seconds. Default
   `10`.
+
+- max_tries:
+
+  (scalar\<count in \[1, Inf\[\>) retry up to this many times with
+  backoff on a transient failure — a timeout, a dropped connection, a
+  5xx, or a 429. `1` (default) disables retry. Enable this only for
+  idempotent GETs (never for order placement, where a resend could
+  double-submit).
 
 - .get_timestamp_ms:
 

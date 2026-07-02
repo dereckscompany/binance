@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,9 +36,17 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/dereckscompany/binance/blob/v0.5.3/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/dereckscompany/binance/blob/v0.5.4/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.4" id="binance-054">binance 0.5.4<a class="anchor" aria-label="anchor" href="#binance-054"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-0-5-4">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-4"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/binance_backfill_klines.html">binance_backfill_klines()</a></code> now retries transient request failures, so a single timeout no longer truncates a symbol’s history.</strong> Every page request ran with retry disabled and a 10s timeout, so one <code>curl</code> timeout to <code>api.binance.com</code> mid-backfill — near-certain on the 500+ sequential pages of a year of 1m candles, and worse through a VPN — aborted the fetch and left a truncated CSV; because the crawler’s resume floor is the earliest year already written, the gap then became permanent. The function gains <code>timeout</code> (default <code>30</code>) and <code>max_tries</code> (default <code>5</code>) parameters, threaded through <code><a href="../reference/binance_build_request.html">binance_build_request()</a></code> into <code>connectcore</code>’s <code>req_retry()</code> exponential backoff (which also honours <code>Retry-After</code>); backfill is an idempotent GET, so retrying is always safe. <code><a href="../reference/binance_build_request.html">binance_build_request()</a></code> gains a matching <code>max_tries</code> passthrough defaulting to <code>1</code> (retry off), so retry stays opt-in per call and is never enabled for order placement, where a resend could double-submit.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.3" id="binance-053">binance 0.5.3<a class="anchor" aria-label="anchor" href="#binance-053"></a></h2>
 <div class="section level3">

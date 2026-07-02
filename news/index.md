@@ -1,5 +1,28 @@
 # Changelog
 
+## binance 0.5.4
+
+### Bug fixes
+
+- **[`binance_backfill_klines()`](https://dereckscompany.github.io/binance/reference/binance_backfill_klines.md)
+  now retries transient request failures, so a single timeout no longer
+  truncates a symbol’s history.** Every page request ran with retry
+  disabled and a 10s timeout, so one `curl` timeout to `api.binance.com`
+  mid-backfill — near-certain on the 500+ sequential pages of a year of
+  1m candles, and worse through a VPN — aborted the fetch and left a
+  truncated CSV; because the crawler’s resume floor is the earliest year
+  already written, the gap then became permanent. The function gains
+  `timeout` (default `30`) and `max_tries` (default `5`) parameters,
+  threaded through
+  [`binance_build_request()`](https://dereckscompany.github.io/binance/reference/binance_build_request.md)
+  into `connectcore`’s `req_retry()` exponential backoff (which also
+  honours `Retry-After`); backfill is an idempotent GET, so retrying is
+  always safe.
+  [`binance_build_request()`](https://dereckscompany.github.io/binance/reference/binance_build_request.md)
+  gains a matching `max_tries` passthrough defaulting to `1` (retry
+  off), so retry stays opt-in per call and is never enabled for order
+  placement, where a resend could double-submit.
+
 ## binance 0.5.3
 
 ### Internal
