@@ -5,7 +5,7 @@
 #' purposes. Produced by [binance_backfill_klines()].
 #'
 #' @format A [data.table::data.table] with 500 rows and 14 columns:
-#' - `open_time` (POSIXct): Candle open time in UTC.
+#' - `datetime` (POSIXct): Candle open time in UTC (the bar-reference time).
 #' - `open` (Numeric): Opening price.
 #' - `high` (Numeric): Highest price during the interval.
 #' - `low` (Numeric): Lowest price during the interval.

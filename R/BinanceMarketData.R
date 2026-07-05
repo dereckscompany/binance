@@ -1041,12 +1041,12 @@ BinanceMarketData <- R6::R6Class(
     #'   `"1s"`, `"1m"`, `"3m"`, `"5m"`, `"15m"`, `"30m"`,
     #'   `"1h"`, `"2h"`, `"4h"`, `"6h"`, `"8h"`, `"12h"`,
     #'   `"1d"`, `"3d"`, `"1w"`, `"1M"`.
-    #' @param startTime (scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).
-    #' @param endTime (scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).
+    #' @param start_time (scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).
+    #' @param end_time (scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).
     #' @param limit (scalar<count>?) max results (default 500, max 1000).
     #' @param fetch_all (scalar<logical>) if `TRUE`, automatically pages forward through the
     #'   time range — following the data and stopping at the first empty or short
-    #'   page — and returns the combined result sorted by `open_time`. Both
+    #'   page — and returns the combined result sorted by `datetime`. Both
     #'   `startTime` and `endTime` are required when enabled. **Warning**: large
     #'   date ranges will consume multiple API requests and may impact your
     #'   rate-limit quota. Default `FALSE`.
@@ -1074,8 +1074,8 @@ BinanceMarketData <- R6::R6Class(
     #' # Fetch all candles across a large date range (multiple API calls)
     #' all_klines <- market$get_klines(
     #'   "BTCUSDT", "1h",
-    #'   startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-    #'   endTime = as.POSIXct("2024-06-01", tz = "UTC"),
+    #'   start_time = as.POSIXct("2024-01-01", tz = "UTC"),
+    #'   end_time = as.POSIXct("2024-06-01", tz = "UTC"),
     #'   fetch_all = TRUE, sleep = 0.5
     #' )
     #' }
@@ -1083,14 +1083,23 @@ BinanceMarketData <- R6::R6Class(
     get_klines = function(
       symbol,
       interval = "1h",
-      startTime = NULL,
-      endTime = NULL,
+      start_time = NULL,
+      end_time = NULL,
       limit = NULL,
       fetch_all = FALSE,
       sleep = 0.2,
       on_page = NULL
     ) {
-      assert_args_BinanceMarketData__get_klines(symbol, interval, startTime, endTime, limit, fetch_all, sleep, on_page)
+      assert_args_BinanceMarketData__get_klines(
+        symbol,
+        interval,
+        start_time,
+        end_time,
+        limit,
+        fetch_all,
+        sleep,
+        on_page
+      )
       assert::assert_nonempty_strings(symbol)
       valid_intervals <- c(
         "1s",
@@ -1114,17 +1123,17 @@ BinanceMarketData <- R6::R6Class(
 
       # fetch_all mode: segment the time range into multiple API calls
       if (isTRUE(fetch_all)) {
-        if (is.null(startTime) || is.null(endTime)) {
+        if (is.null(start_time) || is.null(end_time)) {
           rlang::abort("Both `startTime` and `endTime` are required when `fetch_all = TRUE`.")
         }
         # Convert ms strings back to POSIXct if needed
-        from <- startTime
-        if (!inherits(startTime, "POSIXct")) {
-          from <- as.POSIXct(as.numeric(startTime) / 1000, origin = "1970-01-01", tz = "UTC")
+        from <- start_time
+        if (!inherits(start_time, "POSIXct")) {
+          from <- as.POSIXct(as.numeric(start_time) / 1000, origin = "1970-01-01", tz = "UTC")
         }
-        to <- endTime
-        if (!inherits(endTime, "POSIXct")) {
-          to <- as.POSIXct(as.numeric(endTime) / 1000, origin = "1970-01-01", tz = "UTC")
+        to <- end_time
+        if (!inherits(end_time, "POSIXct")) {
+          to <- as.POSIXct(as.numeric(end_time) / 1000, origin = "1970-01-01", tz = "UTC")
         }
         return(binance_fetch_klines(
           symbol = symbol,
@@ -1141,11 +1150,11 @@ BinanceMarketData <- R6::R6Class(
       }
 
       # Single-call mode (default)
-      if (inherits(startTime, "POSIXct")) {
-        startTime <- format(floor(as.numeric(startTime) * 1000), scientific = FALSE)
+      if (inherits(start_time, "POSIXct")) {
+        start_time <- format(floor(as.numeric(start_time) * 1000), scientific = FALSE)
       }
-      if (inherits(endTime, "POSIXct")) {
-        endTime <- format(floor(as.numeric(endTime) * 1000), scientific = FALSE)
+      if (inherits(end_time, "POSIXct")) {
+        end_time <- format(floor(as.numeric(end_time) * 1000), scientific = FALSE)
       }
 
       res <- private$.request(
@@ -1153,8 +1162,8 @@ BinanceMarketData <- R6::R6Class(
         query = list(
           symbol = symbol,
           interval = interval,
-          startTime = startTime,
-          endTime = endTime,
+          startTime = start_time,
+          endTime = end_time,
           limit = limit
         ),
         auth = FALSE,

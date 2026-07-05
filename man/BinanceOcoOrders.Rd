@@ -46,8 +46,8 @@ All methods require authentication (valid API key and secret).
 oco <- BinanceOcoOrders$new()
 result <- oco$add_oco_order(
   symbol = "BTCUSDT", side = "SELL",
-  quantity = 0.0001, price = 55000, stopPrice = 49000,
-  stopLimitPrice = 48500, stopLimitTimeInForce = "GTC"
+  quantity = 0.0001, price = 55000, stop_price = 49000,
+  stop_limit_price = 48500, stop_limit_time_in_force = "GTC"
 )
 print(result)
 
@@ -70,8 +70,8 @@ while (!later::loop_empty()) later::run_now()
 oco <- BinanceOcoOrders$new()
 result <- oco$add_oco_order(
   symbol = "BTCUSDT", side = "SELL",
-  quantity = 0.0001, price = 55000, stopPrice = 49000,
-  stopLimitPrice = 48500, stopLimitTimeInForce = "GTC"
+  quantity = 0.0001, price = 55000, stop_price = 49000,
+  stop_limit_price = 48500, stop_limit_time_in_force = "GTC"
 )
 print(result)
 }
@@ -82,7 +82,7 @@ print(result)
 
 \dontrun{
 oco <- BinanceOcoOrders$new()
-cancelled <- oco$cancel_oco_order("BTCUSDT", orderListId = 0)
+cancelled <- oco$cancel_oco_order("BTCUSDT", order_list_id = 0)
 print(cancelled)
 }
 
@@ -92,7 +92,7 @@ print(cancelled)
 
 \dontrun{
 oco <- BinanceOcoOrders$new()
-order <- oco$get_oco_order(orderListId = 0)
+order <- oco$get_oco_order(order_list_id = 0)
 print(order)
 }
 
@@ -201,17 +201,17 @@ Verified: 2026-05-22
   side,
   quantity,
   price,
-  stopPrice,
-  stopLimitPrice = NULL,
-  stopLimitTimeInForce = NULL,
-  listClientOrderId = NULL,
-  limitClientOrderId = NULL,
-  stopClientOrderId = NULL,
-  limitIcebergQty = NULL,
-  stopIcebergQty = NULL,
-  newOrderRespType = NULL,
-  selfTradePreventionMode = NULL,
-  recvWindow = NULL
+  stop_price,
+  stop_limit_price = NULL,
+  stop_limit_time_in_force = NULL,
+  list_client_order_id = NULL,
+  limit_client_order_id = NULL,
+  stop_client_order_id = NULL,
+  limit_iceberg_qty = NULL,
+  stop_iceberg_qty = NULL,
+  new_order_resp_type = NULL,
+  self_trade_prevention_mode = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -226,28 +226,28 @@ Verified: 2026-05-22
 
 \item{\code{price}}{(scalar<numeric>) price for the limit leg.}
 
-\item{\code{stopPrice}}{(scalar<numeric>) trigger price for the stop-loss leg.}
+\item{\code{stop_price}}{(scalar<numeric>) trigger price for the stop-loss leg.}
 
-\item{\code{stopLimitPrice}}{(scalar<numeric>?) limit price for the stop-loss-limit leg.}
+\item{\code{stop_limit_price}}{(scalar<numeric>?) limit price for the stop-loss-limit leg.}
 
-\item{\code{stopLimitTimeInForce}}{(scalar<character>?) time-in-force for the stop-limit leg
+\item{\code{stop_limit_time_in_force}}{(scalar<character>?) time-in-force for the stop-limit leg
 (\code{"GTC"}, \code{"IOC"}, \code{"FOK"}). Required if \code{stopLimitPrice} is provided.}
 
-\item{\code{listClientOrderId}}{(scalar<character>?) unique ID for the entire OCO list.}
+\item{\code{list_client_order_id}}{(scalar<character>?) unique ID for the entire OCO list.}
 
-\item{\code{limitClientOrderId}}{(scalar<character>?) unique ID for the limit leg.}
+\item{\code{limit_client_order_id}}{(scalar<character>?) unique ID for the limit leg.}
 
-\item{\code{stopClientOrderId}}{(scalar<character>?) unique ID for the stop-loss leg.}
+\item{\code{stop_client_order_id}}{(scalar<character>?) unique ID for the stop-loss leg.}
 
-\item{\code{limitIcebergQty}}{(scalar<numeric>?) iceberg quantity for the limit leg.}
+\item{\code{limit_iceberg_qty}}{(scalar<numeric>?) iceberg quantity for the limit leg.}
 
-\item{\code{stopIcebergQty}}{(scalar<numeric>?) iceberg quantity for the stop-loss leg.}
+\item{\code{stop_iceberg_qty}}{(scalar<numeric>?) iceberg quantity for the stop-loss leg.}
 
-\item{\code{newOrderRespType}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
+\item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
 
-\item{\code{selfTradePreventionMode}}{(scalar<character>?)}
+\item{\code{self_trade_prevention_mode}}{(scalar<character>?)}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -288,8 +288,8 @@ mode.
 oco <- BinanceOcoOrders$new()
 result <- oco$add_oco_order(
   symbol = "BTCUSDT", side = "SELL",
-  quantity = 0.0001, price = 55000, stopPrice = 49000,
-  stopLimitPrice = 48500, stopLimitTimeInForce = "GTC"
+  quantity = 0.0001, price = 55000, stop_price = 49000,
+  stop_limit_price = 48500, stop_limit_time_in_force = "GTC"
 )
 print(result)
 }
@@ -385,9 +385,9 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceOcoOrders$cancel_oco_order(
   symbol,
-  orderListId = NULL,
-  listClientOrderId = NULL,
-  recvWindow = NULL
+  order_list_id = NULL,
+  list_client_order_id = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -396,11 +396,11 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderListId}}{(scalar<count>?) the OCO order list ID.}
+\item{\code{order_list_id}}{(scalar<count>?) the OCO order list ID.}
 
-\item{\code{listClientOrderId}}{(scalar<character>?) the client order list ID.}
+\item{\code{list_client_order_id}}{(scalar<character>?) the client order list ID.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -443,7 +443,7 @@ mode.
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 oco <- BinanceOcoOrders$new()
-cancelled <- oco$cancel_oco_order("BTCUSDT", orderListId = 0)
+cancelled <- oco$cancel_oco_order("BTCUSDT", order_list_id = 0)
 print(cancelled)
 }
 }
@@ -505,20 +505,20 @@ Verified: 2026-05-22
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceOcoOrders$get_oco_order(
-  orderListId = NULL,
-  origClientOrderId = NULL,
-  recvWindow = NULL
+  order_list_id = NULL,
+  orig_client_order_id = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{orderListId}}{(scalar<count>?) the OCO order list ID.}
+\item{\code{order_list_id}}{(scalar<count>?) the OCO order list ID.}
 
-\item{\code{origClientOrderId}}{(scalar<character>?) the original client order list ID.}
+\item{\code{orig_client_order_id}}{(scalar<character>?) the original client order list ID.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -542,7 +542,7 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 oco <- BinanceOcoOrders$new()
-order <- oco$get_oco_order(orderListId = 0)
+order <- oco$get_oco_order(order_list_id = 0)
 print(order)
 }
 }
@@ -604,13 +604,13 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceOcoOrders$get_open_oco_orders(recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceOcoOrders$get_open_oco_orders(recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -720,26 +720,26 @@ Verified: 2026-05-22
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceOcoOrders$get_all_oco_orders(
-  fromId = NULL,
-  startTime = NULL,
-  endTime = NULL,
+  from_id = NULL,
+  start_time = NULL,
+  end_time = NULL,
   limit = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{fromId}}{(scalar<count>?) pagination cursor (orderListId).}
+\item{\code{from_id}}{(scalar<count>?) pagination cursor (orderListId).}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
 \item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }

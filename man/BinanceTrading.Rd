@@ -123,7 +123,7 @@ stopifnot(test$validated)
 
 \dontrun{
 trading <- BinanceTrading$new()
-cancelled <- trading$cancel_order("BTCUSDT", orderId = 12345)
+cancelled <- trading$cancel_order("BTCUSDT", order_id = 12345)
 print(cancelled)
 }
 
@@ -143,7 +143,7 @@ print(cancelled)
 
 \dontrun{
 trading <- BinanceTrading$new()
-order <- trading$get_order("BTCUSDT", orderId = 12345)
+order <- trading$get_order("BTCUSDT", order_id = 12345)
 print(order)
 }
 
@@ -212,7 +212,7 @@ Verified: 2026-05-22
 \itemize{
 \item \strong{Limit Orders}: Set specific entry/exit prices for strategy execution.
 \item \strong{Market Orders}: Execute immediately at best available price.
-\item \strong{Response Type}: Use \code{newOrderRespType = "FULL"} to get fill details in the response.
+\item \strong{Response Type}: Use \code{new_order_resp_type = "FULL"} to get fill details in the response.
 }
 }
 
@@ -250,15 +250,15 @@ Verified: 2026-05-22
   symbol,
   side,
   quantity = NULL,
-  quoteOrderQty = NULL,
+  quote_order_qty = NULL,
   price = NULL,
-  timeInForce = NULL,
-  newClientOrderId = NULL,
-  stopPrice = NULL,
-  icebergQty = NULL,
-  newOrderRespType = NULL,
-  selfTradePreventionMode = NULL,
-  recvWindow = NULL
+  time_in_force = NULL,
+  new_client_order_id = NULL,
+  stop_price = NULL,
+  iceberg_qty = NULL,
+  new_order_resp_type = NULL,
+  self_trade_prevention_mode = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -273,23 +273,23 @@ Verified: 2026-05-22
 
 \item{\code{quantity}}{(scalar<numeric>?) base asset quantity.}
 
-\item{\code{quoteOrderQty}}{(scalar<numeric>?) quote asset quantity (market orders only).}
+\item{\code{quote_order_qty}}{(scalar<numeric>?) quote asset quantity (market orders only).}
 
 \item{\code{price}}{(scalar<numeric>?) price for limit orders.}
 
-\item{\code{timeInForce}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
+\item{\code{time_in_force}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
 
-\item{\code{newClientOrderId}}{(scalar<character>?) unique client order ID.}
+\item{\code{new_client_order_id}}{(scalar<character>?) unique client order ID.}
 
-\item{\code{stopPrice}}{(scalar<numeric>?) trigger price for stop orders.}
+\item{\code{stop_price}}{(scalar<numeric>?) trigger price for stop orders.}
 
-\item{\code{icebergQty}}{(scalar<numeric>?) iceberg quantity.}
+\item{\code{iceberg_qty}}{(scalar<numeric>?) iceberg quantity.}
 
-\item{\code{newOrderRespType}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
+\item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
 
-\item{\code{selfTradePreventionMode}}{(scalar<character>?)}
+\item{\code{self_trade_prevention_mode}}{(scalar<character>?)}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -326,7 +326,7 @@ avoid 32-bit overflow; \code{NA} when no fills).
 
 When the order has N fills, the parent order fields are replicated on
 each of the N rows and \code{fill_index} runs \verb{1..N}. When the order has
-no fills (e.g. a resting \code{LIMIT} order with \code{newOrderRespType = "ACK"}
+no fills (e.g. a resting \code{LIMIT} order with \code{new_order_resp_type = "ACK"}
 / \code{"RESULT"}), a single row is returned with the \verb{fill_*} columns
 present as \code{NA} so the schema is stable across response types.
 }
@@ -408,15 +408,15 @@ Verified: 2026-05-22
   symbol,
   side,
   quantity = NULL,
-  quoteOrderQty = NULL,
+  quote_order_qty = NULL,
   price = NULL,
-  timeInForce = NULL,
-  newClientOrderId = NULL,
-  stopPrice = NULL,
-  icebergQty = NULL,
-  newOrderRespType = NULL,
-  selfTradePreventionMode = NULL,
-  recvWindow = NULL
+  time_in_force = NULL,
+  new_client_order_id = NULL,
+  stop_price = NULL,
+  iceberg_qty = NULL,
+  new_order_resp_type = NULL,
+  self_trade_prevention_mode = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -431,23 +431,23 @@ Verified: 2026-05-22
 
 \item{\code{quantity}}{(scalar<numeric>?) base asset quantity.}
 
-\item{\code{quoteOrderQty}}{(scalar<numeric>?) quote asset quantity (market orders only).}
+\item{\code{quote_order_qty}}{(scalar<numeric>?) quote asset quantity (market orders only).}
 
 \item{\code{price}}{(scalar<numeric>?) price for limit orders.}
 
-\item{\code{timeInForce}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
+\item{\code{time_in_force}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
 
-\item{\code{newClientOrderId}}{(scalar<character>?) unique client order ID.}
+\item{\code{new_client_order_id}}{(scalar<character>?) unique client order ID.}
 
-\item{\code{stopPrice}}{(scalar<numeric>?) trigger price for stop orders.}
+\item{\code{stop_price}}{(scalar<numeric>?) trigger price for stop orders.}
 
-\item{\code{icebergQty}}{(scalar<numeric>?) iceberg quantity.}
+\item{\code{iceberg_qty}}{(scalar<numeric>?) iceberg quantity.}
 
-\item{\code{newOrderRespType}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
+\item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
 
-\item{\code{selfTradePreventionMode}}{(scalar<character>?)}
+\item{\code{self_trade_prevention_mode}}{(scalar<character>?)}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -525,9 +525,9 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$cancel_order(
   symbol,
-  orderId = NULL,
-  origClientOrderId = NULL,
-  recvWindow = NULL
+  order_id = NULL,
+  orig_client_order_id = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -536,11 +536,11 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{(scalar<count>?) the order ID to cancel.}
+\item{\code{order_id}}{(scalar<count>?) the order ID to cancel.}
 
-\item{\code{origClientOrderId}}{(scalar<character>?) the client order ID to cancel.}
+\item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID to cancel.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -568,7 +568,7 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 trading <- BinanceTrading$new()
-cancelled <- trading$cancel_order("BTCUSDT", orderId = 12345)
+cancelled <- trading$cancel_order("BTCUSDT", order_id = 12345)
 print(cancelled)
 }
 }
@@ -643,7 +643,7 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$cancel_all_orders(symbol, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$cancel_all_orders(symbol, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -651,7 +651,7 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -745,9 +745,9 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$get_order(
   symbol,
-  orderId = NULL,
-  origClientOrderId = NULL,
-  recvWindow = NULL
+  order_id = NULL,
+  orig_client_order_id = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -756,11 +756,11 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{(scalar<count>?) the order ID.}
+\item{\code{order_id}}{(scalar<count>?) the order ID.}
 
-\item{\code{origClientOrderId}}{(scalar<character>?) the client order ID.}
+\item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -771,7 +771,7 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 trading <- BinanceTrading$new()
-order <- trading$get_order("BTCUSDT", orderId = 12345)
+order <- trading$get_order("BTCUSDT", order_id = 12345)
 print(order)
 }
 }
@@ -834,7 +834,7 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$get_open_orders(symbol = NULL, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$get_open_orders(symbol = NULL, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -843,7 +843,7 @@ Verified: 2026-05-22
 \item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).
 If NULL, returns open orders for all symbols (weight 80).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -965,11 +965,11 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$get_all_orders(
   symbol,
-  orderId = NULL,
-  startTime = NULL,
-  endTime = NULL,
+  order_id = NULL,
+  start_time = NULL,
+  end_time = NULL,
   limit = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -978,15 +978,15 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{(scalar<count>?) pagination cursor.}
+\item{\code{order_id}}{(scalar<count>?) pagination cursor.}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
 \item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }

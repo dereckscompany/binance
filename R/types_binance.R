@@ -36,7 +36,7 @@
 #'
 #' @type Ohlcv (data.table) one row per candle, as parsed by `parse_klines()`
 #'   (shared by spot `get_klines()` and the futures kline endpoints):
-#' - open_time (POSIXct) candle open time.
+#' - datetime (POSIXct) candle open time (the bar-reference time).
 #' - open (numeric) open price.
 #' - high (numeric) high price.
 #' - low (numeric) low price.

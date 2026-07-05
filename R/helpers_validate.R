@@ -18,16 +18,16 @@
 #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
 #' @param side (scalar<character>) order side, case-insensitive; `"BUY"` or `"SELL"`.
 #' @param quantity (scalar<numeric>?) base asset quantity.
-#' @param quoteOrderQty (scalar<numeric>?) quote asset quantity (market orders only).
+#' @param quote_order_qty (scalar<numeric>?) quote asset quantity (market orders only).
 #' @param price (scalar<numeric>?) price for limit orders.
-#' @param timeInForce (scalar<character>?) `"GTC"`, `"IOC"`, `"FOK"`.
-#' @param newClientOrderId (scalar<character>?) unique client order ID.
-#' @param stopPrice (scalar<numeric>?) trigger price for stop orders.
-#' @param icebergQty (scalar<numeric>?) iceberg quantity.
-#' @param newOrderRespType (scalar<character>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
-#' @param selfTradePreventionMode (scalar<character>?) `"NONE"`, `"EXPIRE_TAKER"`,
+#' @param time_in_force (scalar<character>?) `"GTC"`, `"IOC"`, `"FOK"`.
+#' @param new_client_order_id (scalar<character>?) unique client order ID.
+#' @param stop_price (scalar<numeric>?) trigger price for stop orders.
+#' @param iceberg_qty (scalar<numeric>?) iceberg quantity.
+#' @param new_order_resp_type (scalar<character>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
+#' @param self_trade_prevention_mode (scalar<character>?) `"NONE"`, `"EXPIRE_TAKER"`,
 #'   `"EXPIRE_MAKER"`, `"EXPIRE_BOTH"`.
-#' @param recvWindow (scalar<count in [1, Inf[>?) max 60000.
+#' @param recv_window (scalar<count in [1, Inf[>?) max 60000.
 #' @return (list) named list of validated order parameters (NULLs removed).
 #'
 #' @importFrom rlang abort arg_match0
@@ -38,30 +38,30 @@ validate_order_params <- function(
   symbol,
   side,
   quantity = NULL,
-  quoteOrderQty = NULL,
+  quote_order_qty = NULL,
   price = NULL,
-  timeInForce = NULL,
-  newClientOrderId = NULL,
-  stopPrice = NULL,
-  icebergQty = NULL,
-  newOrderRespType = NULL,
-  selfTradePreventionMode = NULL,
-  recvWindow = NULL
+  time_in_force = NULL,
+  new_client_order_id = NULL,
+  stop_price = NULL,
+  iceberg_qty = NULL,
+  new_order_resp_type = NULL,
+  self_trade_prevention_mode = NULL,
+  recv_window = NULL
 ) {
   assert_args_validate_order_params(
     type,
     symbol,
     side,
     quantity,
-    quoteOrderQty,
+    quote_order_qty,
     price,
-    timeInForce,
-    newClientOrderId,
-    stopPrice,
-    icebergQty,
-    newOrderRespType,
-    selfTradePreventionMode,
-    recvWindow
+    time_in_force,
+    new_client_order_id,
+    stop_price,
+    iceberg_qty,
+    new_order_resp_type,
+    self_trade_prevention_mode,
+    recv_window
   )
   # Required field validation
   type <- toupper(type)
@@ -83,14 +83,14 @@ validate_order_params <- function(
   if (!is.null(quantity)) {
     quantity <- as.character(quantity)
   }
-  if (!is.null(quoteOrderQty)) {
-    quoteOrderQty <- as.character(quoteOrderQty)
+  if (!is.null(quote_order_qty)) {
+    quote_order_qty <- as.character(quote_order_qty)
   }
-  if (!is.null(stopPrice)) {
-    stopPrice <- as.character(stopPrice)
+  if (!is.null(stop_price)) {
+    stop_price <- as.character(stop_price)
   }
-  if (!is.null(icebergQty)) {
-    icebergQty <- as.character(icebergQty)
+  if (!is.null(iceberg_qty)) {
+    iceberg_qty <- as.character(iceberg_qty)
   }
 
   # Type-specific validation
@@ -101,35 +101,35 @@ validate_order_params <- function(
     if (is.null(quantity)) {
       rlang::abort("Parameter 'quantity' is required for LIMIT orders.")
     }
-    if (is.null(timeInForce)) timeInForce <- "GTC"
+    if (is.null(time_in_force)) time_in_force <- "GTC"
   } else if (type == "MARKET") {
     if (!is.null(price)) {
       rlang::abort("Parameter 'price' is not applicable for MARKET orders.")
     }
-    if (is.null(quantity) && is.null(quoteOrderQty)) {
-      rlang::abort("Either 'quantity' or 'quoteOrderQty' must be specified for MARKET orders.")
+    if (is.null(quantity) && is.null(quote_order_qty)) {
+      rlang::abort("Either 'quantity' or 'quote_order_qty' must be specified for MARKET orders.")
     }
-    if (!is.null(quantity) && !is.null(quoteOrderQty)) {
-      rlang::abort("Parameters 'quantity' and 'quoteOrderQty' are mutually exclusive for MARKET orders.")
+    if (!is.null(quantity) && !is.null(quote_order_qty)) {
+      rlang::abort("Parameters 'quantity' and 'quote_order_qty' are mutually exclusive for MARKET orders.")
     }
   }
 
   # Optional parameter validation
-  if (!is.null(timeInForce)) {
-    timeInForce <- rlang::arg_match0(timeInForce, c("GTC", "IOC", "FOK"))
+  if (!is.null(time_in_force)) {
+    time_in_force <- rlang::arg_match0(time_in_force, c("GTC", "IOC", "FOK"))
   }
-  if (!is.null(newOrderRespType)) {
-    newOrderRespType <- rlang::arg_match0(newOrderRespType, c("ACK", "RESULT", "FULL"))
+  if (!is.null(new_order_resp_type)) {
+    new_order_resp_type <- rlang::arg_match0(new_order_resp_type, c("ACK", "RESULT", "FULL"))
   }
-  if (!is.null(selfTradePreventionMode)) {
-    selfTradePreventionMode <- rlang::arg_match0(
-      selfTradePreventionMode,
+  if (!is.null(self_trade_prevention_mode)) {
+    self_trade_prevention_mode <- rlang::arg_match0(
+      self_trade_prevention_mode,
       c("NONE", "EXPIRE_TAKER", "EXPIRE_MAKER", "EXPIRE_BOTH")
     )
   }
-  if (!is.null(recvWindow)) {
-    recvWindow <- as.integer(recvWindow)
-    if (recvWindow > 60000L) rlang::abort("Parameter 'recvWindow' must not exceed 60000.")
+  if (!is.null(recv_window)) {
+    recv_window <- as.integer(recv_window)
+    if (recv_window > 60000L) rlang::abort("Parameter 'recv_window' must not exceed 60000.")
   }
 
   # Build the result list, dropping NULLs
@@ -137,16 +137,16 @@ validate_order_params <- function(
     symbol = symbol,
     side = side,
     type = type,
-    timeInForce = timeInForce,
+    timeInForce = time_in_force,
     quantity = quantity,
-    quoteOrderQty = quoteOrderQty,
+    quoteOrderQty = quote_order_qty,
     price = price,
-    newClientOrderId = newClientOrderId,
-    stopPrice = stopPrice,
-    icebergQty = icebergQty,
-    newOrderRespType = newOrderRespType,
-    selfTradePreventionMode = selfTradePreventionMode,
-    recvWindow = recvWindow
+    newClientOrderId = new_client_order_id,
+    stopPrice = stop_price,
+    icebergQty = iceberg_qty,
+    newOrderRespType = new_order_resp_type,
+    selfTradePreventionMode = self_trade_prevention_mode,
+    recvWindow = recv_window
   )
   params <- params[!vapply(params, is.null, logical(1))]
 

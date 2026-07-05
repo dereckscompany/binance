@@ -19,7 +19,16 @@ test_that("BinanceTrading inherits from BinanceBase", {
 # -- add_order --
 
 test_that("add_order returns order data.table with correct columns", {
-  resp <- mock_binance_response(data = mock_order_response())
+  # The shared order_response fixture is a FILLED order carrying `fills` (the
+  # data-shapes vignette showcases the fills expansion). This test covers the
+  # fills-free ACK shape — one plain row, no expansion — so strip the fixture
+  # back to a resting NEW order before serving it.
+  order_data <- mock_order_response()
+  order_data$fills <- NULL
+  order_data$status <- "NEW"
+  order_data$executedQty <- "0.00000000"
+  order_data$cummulativeQuoteQty <- "0.00000000"
+  resp <- mock_binance_response(data = order_data)
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_trading()$add_order(
@@ -60,7 +69,7 @@ test_that("add_order expands fills to long format when present", {
     symbol = "BTCUSDT",
     side = "BUY",
     quantity = 0.0001,
-    newOrderRespType = "FULL"
+    new_order_resp_type = "FULL"
   )
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 2L)
@@ -184,7 +193,7 @@ test_that("cancel_order returns cancelled order details with datetime", {
   resp <- mock_binance_response(data = mock_cancel_order_data())
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_trading()$cancel_order("BTCUSDT", orderId = 28)
+  dt <- new_trading()$cancel_order("BTCUSDT", order_id = 28)
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   expect_equal(dt$status, "CANCELED")
@@ -196,10 +205,10 @@ test_that("cancel_order returns cancelled order details with datetime", {
   expect_s3_class(dt$transact_time, "POSIXct")
 })
 
-test_that("cancel_order requires orderId or origClientOrderId", {
+test_that("cancel_order requires order_id or orig_client_order_id", {
   expect_error(
     new_trading()$cancel_order("BTCUSDT"),
-    "orderId.*origClientOrderId"
+    "order_id.*orig_client_order_id"
   )
 })
 
@@ -211,7 +220,7 @@ test_that("cancel_order sends DELETE method", {
     return(resp)
   })
 
-  new_trading()$cancel_order("BTCUSDT", orderId = 28)
+  new_trading()$cancel_order("BTCUSDT", order_id = 28)
   expect_equal(captured_method, "DELETE")
 })
 
@@ -264,7 +273,7 @@ test_that("get_order returns order with datetime columns", {
   resp <- mock_binance_response(data = mock_query_order_data())
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_trading()$get_order("BTCUSDT", orderId = 28)
+  dt <- new_trading()$get_order("BTCUSDT", order_id = 28)
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   expect_equal(dt$symbol, "BTCUSDT")
@@ -283,10 +292,10 @@ test_that("get_order returns order with datetime columns", {
   expect_s3_class(dt$working_time, "POSIXct")
 })
 
-test_that("get_order requires orderId or origClientOrderId", {
+test_that("get_order requires order_id or orig_client_order_id", {
   expect_error(
     new_trading()$get_order("BTCUSDT"),
-    "orderId.*origClientOrderId"
+    "order_id.*orig_client_order_id"
   )
 })
 

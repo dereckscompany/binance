@@ -7,7 +7,7 @@
 \format{
 A \link[data.table:data.table]{data.table::data.table} with 500 rows and 14 columns:
 \itemize{
-\item \code{open_time} (POSIXct): Candle open time in UTC.
+\item \code{datetime} (POSIXct): Candle open time in UTC (the bar-reference time).
 \item \code{open} (Numeric): Opening price.
 \item \code{high} (Numeric): Highest price during the interval.
 \item \code{low} (Numeric): Lowest price during the interval.

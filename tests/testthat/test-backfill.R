@@ -45,7 +45,7 @@ test_that("backfill writes CSV and returns file path", {
   expect_true(nrow(dt) > 0L)
   expect_true("symbol" %in% names(dt))
   expect_true("timeframe" %in% names(dt))
-  expect_true("open_time" %in% names(dt))
+  expect_true("datetime" %in% names(dt))
   expect_equal(unique(dt$symbol), "BTCUSDT")
   expect_equal(unique(dt$timeframe), "1d")
 })
@@ -58,7 +58,7 @@ test_that("backfill skips completed combos on resume", {
 
   # Write a pre-existing CSV with data up to `to`
   existing <- data.table::data.table(
-    open_time = "2024-10-17T00:00:00",
+    datetime = "2024-10-17T00:00:00",
     open = 67000,
     high = 67100,
     low = 66900,

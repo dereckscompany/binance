@@ -65,7 +65,7 @@ test_that("[LIVE] add_order_test validates a limit order without executing", {
     type = "LIMIT",
     quantity = 0.00001,
     price = 10000,
-    timeInForce = "GTC"
+    time_in_force = "GTC"
   )
   expect_s3_class(dt, "data.table")
   throttle()
@@ -296,7 +296,7 @@ test_that("[LIVE] futures add_order_test validates without executing", {
       type = "LIMIT",
       quantity = 0.001,
       price = 10000,
-      timeInForce = "GTC"
+      time_in_force = "GTC"
     ),
     error = function(e) {
       return(skip(paste("Futures account not available:", conditionMessage(e))))

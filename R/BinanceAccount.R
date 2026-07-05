@@ -109,7 +109,7 @@ BinanceAccount <- R6::R6Class(
     #' `commission_rates_*` columns and `permissions` is `;`-collapsed
     #' so the return is always one row per account.
     #'
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per account:
     #' - maker_commission (integer) Maker commission rate (basis points).
     #' - taker_commission (integer) Taker commission rate (basis points).
@@ -142,11 +142,11 @@ BinanceAccount <- R6::R6Class(
     #' print(info[, .(maker_commission, taker_commission, can_trade, account_type)])
     #' }
     # nolint end
-    get_account_info = function(recvWindow = NULL) {
-      assert_args_BinanceAccount__get_account_info(recvWindow)
+    get_account_info = function(recv_window = NULL) {
+      assert_args_BinanceAccount__get_account_info(recv_window)
       res <- private$.request(
         endpoint = "/api/v3/account",
-        query = list(recvWindow = recvWindow),
+        query = list(recvWindow = recv_window),
         .parser = function(data) {
           data$balances <- NULL
           # Flatten `commissionRates` nested object into wide columns
@@ -217,8 +217,8 @@ BinanceAccount <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param omitZeroBalances (scalar<logical>?) if TRUE, omit assets with zero balance.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param omit_zero_balances (scalar<logical>?) if TRUE, omit assets with zero balance.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per asset:
     #' - asset (character) Asset ticker (e.g., `"BTC"`, `"USDT"`).
     #' - free (character) Available balance for trading.
@@ -231,10 +231,10 @@ BinanceAccount <- R6::R6Class(
     #' print(balances[free != "0.00000000"])
     #' }
     # nolint end
-    get_balances = function(omitZeroBalances = NULL, recvWindow = NULL) {
-      assert_args_BinanceAccount__get_balances(omitZeroBalances, recvWindow)
-      query <- list(recvWindow = recvWindow)
-      if (isTRUE(omitZeroBalances)) {
+    get_balances = function(omit_zero_balances = NULL, recv_window = NULL) {
+      assert_args_BinanceAccount__get_balances(omit_zero_balances, recv_window)
+      query <- list(recvWindow = recv_window)
+      if (isTRUE(omit_zero_balances)) {
         query$omitZeroBalances <- "true"
       }
 
@@ -302,12 +302,12 @@ BinanceAccount <- R6::R6Class(
     #' ```
     #'
     #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderId (scalar<count>?) filter by order ID.
-    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
-    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
-    #' @param fromId (scalar<count>?) trade ID to fetch from.
+    #' @param order_id (scalar<count>?) filter by order ID.
+    #' @param start_time (scalar<count>?) start timestamp in milliseconds.
+    #' @param end_time (scalar<count>?) end timestamp in milliseconds.
+    #' @param from_id (scalar<count>?) trade ID to fetch from.
     #' @param limit (scalar<count>?) max results (default 500, max 1000).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per trade:
     #' - symbol (character) Trading pair (e.g., `"BTCUSDT"`).
     #' - id (numeric) Unique trade identifier.
@@ -332,25 +332,25 @@ BinanceAccount <- R6::R6Class(
     # nolint end
     get_trades = function(
       symbol,
-      orderId = NULL,
-      startTime = NULL,
-      endTime = NULL,
-      fromId = NULL,
+      order_id = NULL,
+      start_time = NULL,
+      end_time = NULL,
+      from_id = NULL,
       limit = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     ) {
-      assert_args_BinanceAccount__get_trades(symbol, orderId, startTime, endTime, fromId, limit, recvWindow)
+      assert_args_BinanceAccount__get_trades(symbol, order_id, start_time, end_time, from_id, limit, recv_window)
       assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/api/v3/myTrades",
         query = list(
           symbol = symbol,
-          orderId = orderId,
-          startTime = startTime,
-          endTime = endTime,
-          fromId = fromId,
+          orderId = order_id,
+          startTime = start_time,
+          endTime = end_time,
+          fromId = from_id,
           limit = limit,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {

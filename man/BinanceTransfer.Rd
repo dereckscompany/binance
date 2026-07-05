@@ -173,9 +173,9 @@ Verified: 2026-05-22
   type,
   asset,
   amount,
-  fromSymbol = NULL,
-  toSymbol = NULL,
-  recvWindow = NULL
+  from_symbol = NULL,
+  to_symbol = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -194,13 +194,13 @@ Verified: 2026-05-22
 
 \item{\code{amount}}{(scalar<numeric>) amount to transfer.}
 
-\item{\code{fromSymbol}}{(scalar<character>?) mandatory when \code{type} involves
+\item{\code{from_symbol}}{(scalar<character>?) mandatory when \code{type} involves
 isolated margin (e.g., \code{"BNBUSDT"}).}
 
-\item{\code{toSymbol}}{(scalar<character>?) mandatory when \code{type} involves
+\item{\code{to_symbol}}{(scalar<character>?) mandatory when \code{type} involves
 isolated margin (e.g., \code{"BNBUSDT"}).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -271,13 +271,13 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceTransfer$get_transfer_history(
   type,
-  startTime = NULL,
-  endTime = NULL,
+  start_time = NULL,
+  end_time = NULL,
   current = NULL,
   size = NULL,
-  fromSymbol = NULL,
-  toSymbol = NULL,
-  recvWindow = NULL
+  from_symbol = NULL,
+  to_symbol = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -286,21 +286,21 @@ Verified: 2026-05-22
 \describe{
 \item{\code{type}}{(scalar<character>) transfer type. Same options as \code{add_transfer()}.}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
 \item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
 
 \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{fromSymbol}}{(scalar<character>?) must be sent when \code{type} involves
+\item{\code{from_symbol}}{(scalar<character>?) must be sent when \code{type} involves
 isolated margin.}
 
-\item{\code{toSymbol}}{(scalar<character>?) must be sent when \code{type} involves
+\item{\code{to_symbol}}{(scalar<character>?) must be sent when \code{type} involves
 isolated margin.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }

@@ -44,7 +44,7 @@
 #' print(products)
 #'
 #' # Subscribe
-#' result <- earn$add_flexible_subscription(productId = "USDT001", amount = 100)
+#' result <- earn$add_flexible_subscription(product_id = "USDT001", amount = 100)
 #' print(result)
 #'
 #' # Asynchronous
@@ -113,7 +113,7 @@ BinanceEarn <- R6::R6Class(
     #' @param asset (scalar<character>?) filter by asset (e.g., `"USDT"`).
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per product
     #'   (empty when there are none):
     #' - asset (character) Asset symbol (e.g., `"USDT"`).
@@ -138,8 +138,8 @@ BinanceEarn <- R6::R6Class(
     #' print(products)
     #' }
     # nolint end
-    get_flexible_products = function(asset = NULL, current = NULL, size = NULL, recvWindow = NULL) {
-      assert_args_BinanceEarn__get_flexible_products(asset, current, size, recvWindow)
+    get_flexible_products = function(asset = NULL, current = NULL, size = NULL, recv_window = NULL) {
+      assert_args_BinanceEarn__get_flexible_products(asset, current, size, recv_window)
       assert::assert_nonempty_strings(asset, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/list",
@@ -147,7 +147,7 @@ BinanceEarn <- R6::R6Class(
           asset = asset,
           current = current,
           size = size,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           rows <- data$rows
@@ -240,7 +240,7 @@ BinanceEarn <- R6::R6Class(
     #' @param asset (scalar<character>?) filter by asset (e.g., `"BTC"`).
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per product (empty when
     #'   there are none).
     #'   Nested `detail` and `quota` objects are wide-prefixed
@@ -277,8 +277,8 @@ BinanceEarn <- R6::R6Class(
     #' print(products)
     #' }
     # nolint end
-    get_locked_products = function(asset = NULL, current = NULL, size = NULL, recvWindow = NULL) {
-      assert_args_BinanceEarn__get_locked_products(asset, current, size, recvWindow)
+    get_locked_products = function(asset = NULL, current = NULL, size = NULL, recv_window = NULL) {
+      assert_args_BinanceEarn__get_locked_products(asset, current, size, recv_window)
       assert::assert_nonempty_strings(asset, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/list",
@@ -286,7 +286,7 @@ BinanceEarn <- R6::R6Class(
           asset = asset,
           current = current,
           size = size,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           rows <- data$rows
@@ -359,11 +359,11 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param productId (scalar<character>) the product ID to subscribe to.
+    #' @param product_id (scalar<character>) the product ID to subscribe to.
     #' @param amount (scalar<numeric>) amount to subscribe.
-    #' @param autoSubscribe (scalar<logical>?) whether to enable auto-subscription.
-    #' @param sourceAccount (scalar<character>?) source wallet: `"SPOT"`, `"FUND"`, or `"ALL"`. Default `"SPOT"`.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param auto_subscribe (scalar<logical>?) whether to enable auto-subscription.
+    #' @param source_account (scalar<character>?) source wallet: `"SPOT"`, `"FUND"`, or `"ALL"`. Default `"SPOT"`.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - purchase_id (numeric) Unique purchase identifier.
     #' - success (logical) Whether the subscription was successful.
@@ -371,27 +371,33 @@ BinanceEarn <- R6::R6Class(
     #' @examples
     #' \dontrun{
     #' earn <- BinanceEarn$new()
-    #' result <- earn$add_flexible_subscription(productId = "USDT001", amount = 100)
+    #' result <- earn$add_flexible_subscription(product_id = "USDT001", amount = 100)
     #' print(result)
     #' }
     add_flexible_subscription = function(
-      productId,
+      product_id,
       amount,
-      autoSubscribe = NULL,
-      sourceAccount = NULL,
-      recvWindow = NULL
+      auto_subscribe = NULL,
+      source_account = NULL,
+      recv_window = NULL
     ) {
-      assert_args_BinanceEarn__add_flexible_subscription(productId, amount, autoSubscribe, sourceAccount, recvWindow)
-      assert::assert_nonempty_strings(productId)
+      assert_args_BinanceEarn__add_flexible_subscription(
+        product_id,
+        amount,
+        auto_subscribe,
+        source_account,
+        recv_window
+      )
+      assert::assert_nonempty_strings(product_id)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/subscribe",
         method = "POST",
         query = list(
-          productId = productId,
+          productId = product_id,
           amount = as.character(amount),
-          autoSubscribe = autoSubscribe,
-          sourceAccount = sourceAccount,
-          recvWindow = recvWindow
+          autoSubscribe = auto_subscribe,
+          sourceAccount = source_account,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
@@ -445,10 +451,10 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param projectId (scalar<character>) the project ID to subscribe to.
+    #' @param project_id (scalar<character>) the project ID to subscribe to.
     #' @param amount (scalar<numeric>) amount to subscribe.
-    #' @param autoSubscribe (scalar<logical>?) whether to enable auto-subscription.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param auto_subscribe (scalar<logical>?) whether to enable auto-subscription.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - purchase_id (numeric) Unique purchase identifier.
     #' - position_id (character) Position identifier for the locked subscription.
@@ -457,21 +463,21 @@ BinanceEarn <- R6::R6Class(
     #' @examples
     #' \dontrun{
     #' earn <- BinanceEarn$new()
-    #' result <- earn$add_locked_subscription(projectId = "BTC30d001", amount = 0.01)
+    #' result <- earn$add_locked_subscription(project_id = "BTC30d001", amount = 0.01)
     #' print(result)
     #' }
     # nolint end
-    add_locked_subscription = function(projectId, amount, autoSubscribe = NULL, recvWindow = NULL) {
-      assert_args_BinanceEarn__add_locked_subscription(projectId, amount, autoSubscribe, recvWindow)
-      assert::assert_nonempty_strings(projectId)
+    add_locked_subscription = function(project_id, amount, auto_subscribe = NULL, recv_window = NULL) {
+      assert_args_BinanceEarn__add_locked_subscription(project_id, amount, auto_subscribe, recv_window)
+      assert::assert_nonempty_strings(project_id)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/subscribe",
         method = "POST",
         query = list(
-          projectId = projectId,
+          projectId = project_id,
           amount = as.character(amount),
-          autoSubscribe = autoSubscribe,
-          recvWindow = recvWindow
+          autoSubscribe = auto_subscribe,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
@@ -527,11 +533,11 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param productId (scalar<character>) the product ID to redeem from.
+    #' @param product_id (scalar<character>) the product ID to redeem from.
     #' @param amount (scalar<numeric>?) amount to redeem. If NULL, use `redeemAll`.
-    #' @param redeemAll (scalar<logical>?) if TRUE, redeem entire position.
-    #' @param destAccount (scalar<character>?) destination wallet: `"SPOT"` or `"FUND"`. Default `"SPOT"`.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param redeem_all (scalar<logical>?) if TRUE, redeem entire position.
+    #' @param dest_account (scalar<character>?) destination wallet: `"SPOT"` or `"FUND"`. Default `"SPOT"`.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - redeem_id (numeric) Unique redemption identifier.
     #' - success (logical) Whether the redemption was successful.
@@ -539,28 +545,28 @@ BinanceEarn <- R6::R6Class(
     #' @examples
     #' \dontrun{
     #' earn <- BinanceEarn$new()
-    #' result <- earn$add_flexible_redemption(productId = "USDT001", amount = 50)
+    #' result <- earn$add_flexible_redemption(product_id = "USDT001", amount = 50)
     #' print(result)
     #' }
     # nolint end
     add_flexible_redemption = function(
-      productId,
+      product_id,
       amount = NULL,
-      redeemAll = NULL,
-      destAccount = NULL,
-      recvWindow = NULL
+      redeem_all = NULL,
+      dest_account = NULL,
+      recv_window = NULL
     ) {
-      assert_args_BinanceEarn__add_flexible_redemption(productId, amount, redeemAll, destAccount, recvWindow)
-      assert::assert_nonempty_strings(productId)
+      assert_args_BinanceEarn__add_flexible_redemption(product_id, amount, redeem_all, dest_account, recv_window)
+      assert::assert_nonempty_strings(product_id)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/redeem",
         method = "POST",
         query = list(
-          productId = productId,
+          productId = product_id,
           amount = if (!is.null(amount)) as.character(amount) else NULL,
-          redeemAll = redeemAll,
-          destAccount = destAccount,
-          recvWindow = recvWindow
+          redeemAll = redeem_all,
+          destAccount = dest_account,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
@@ -611,8 +617,8 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param positionId (scalar<character>) the position ID to redeem.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param position_id (scalar<character>) the position ID to redeem.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - redeem_id (numeric) Unique redemption identifier.
     #' - success (logical) Whether the redemption was successful.
@@ -620,19 +626,19 @@ BinanceEarn <- R6::R6Class(
     #' @examples
     #' \dontrun{
     #' earn <- BinanceEarn$new()
-    #' result <- earn$add_locked_redemption(positionId = "12345")
+    #' result <- earn$add_locked_redemption(position_id = "12345")
     #' print(result)
     #' }
     # nolint end
-    add_locked_redemption = function(positionId, recvWindow = NULL) {
-      assert_args_BinanceEarn__add_locked_redemption(positionId, recvWindow)
-      assert::assert_nonempty_strings(positionId)
+    add_locked_redemption = function(position_id, recv_window = NULL) {
+      assert_args_BinanceEarn__add_locked_redemption(position_id, recv_window)
+      assert::assert_nonempty_strings(position_id)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/redeem",
         method = "POST",
         query = list(
-          positionId = positionId,
-          recvWindow = recvWindow
+          positionId = position_id,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
@@ -699,10 +705,10 @@ BinanceEarn <- R6::R6Class(
     #' ```
     #'
     #' @param asset (scalar<character>?) filter by asset (e.g., `"USDT"`).
-    #' @param productId (scalar<character>?) filter by product ID.
+    #' @param product_id (scalar<character>?) filter by product ID.
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per position
     #'   (empty when there are none):
     #' - total_amount (character) Total amount in the position.
@@ -737,18 +743,18 @@ BinanceEarn <- R6::R6Class(
     #' print(positions)
     #' }
     # nolint end
-    get_flexible_position = function(asset = NULL, productId = NULL, current = NULL, size = NULL, recvWindow = NULL) {
-      assert_args_BinanceEarn__get_flexible_position(asset, productId, current, size, recvWindow)
+    get_flexible_position = function(asset = NULL, product_id = NULL, current = NULL, size = NULL, recv_window = NULL) {
+      assert_args_BinanceEarn__get_flexible_position(asset, product_id, current, size, recv_window)
       assert::assert_nonempty_strings(asset, null_ok = TRUE)
-      assert::assert_nonempty_strings(productId, null_ok = TRUE)
+      assert::assert_nonempty_strings(product_id, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/position",
         query = list(
           asset = asset,
-          productId = productId,
+          productId = product_id,
           current = current,
           size = size,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           rows <- data$rows
@@ -849,11 +855,11 @@ BinanceEarn <- R6::R6Class(
     #' ```
     #'
     #' @param asset (scalar<character>?) filter by asset (e.g., `"BTC"`).
-    #' @param positionId (scalar<character>?) filter by position ID.
-    #' @param projectId (scalar<character>?) filter by project ID.
+    #' @param position_id (scalar<character>?) filter by position ID.
+    #' @param project_id (scalar<character>?) filter by project ID.
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per locked position
     #'   (empty when there are none), with whichever fields Binance returns,
     #'   snake-cased (Binance's uppercase `APY` lowers to `apy`). Common
@@ -878,25 +884,25 @@ BinanceEarn <- R6::R6Class(
     # nolint end
     get_locked_position = function(
       asset = NULL,
-      positionId = NULL,
-      projectId = NULL,
+      position_id = NULL,
+      project_id = NULL,
       current = NULL,
       size = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     ) {
-      assert_args_BinanceEarn__get_locked_position(asset, positionId, projectId, current, size, recvWindow)
+      assert_args_BinanceEarn__get_locked_position(asset, position_id, project_id, current, size, recv_window)
       assert::assert_nonempty_strings(asset, null_ok = TRUE)
-      assert::assert_nonempty_strings(positionId, null_ok = TRUE)
-      assert::assert_nonempty_strings(projectId, null_ok = TRUE)
+      assert::assert_nonempty_strings(position_id, null_ok = TRUE)
+      assert::assert_nonempty_strings(project_id, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/position",
         query = list(
           asset = asset,
-          positionId = positionId,
-          projectId = projectId,
+          positionId = position_id,
+          projectId = project_id,
           current = current,
           size = size,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- parse_paginated(
@@ -961,14 +967,14 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param productId (scalar<character>?) filter by product ID.
-    #' @param purchaseId (scalar<count>?) filter by purchase ID.
+    #' @param product_id (scalar<character>?) filter by product ID.
+    #' @param purchase_id (scalar<count>?) filter by purchase ID.
     #' @param asset (scalar<character>?) filter by asset (e.g., `"USDT"`).
-    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
-    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param start_time (scalar<count>?) start timestamp in milliseconds.
+    #' @param end_time (scalar<count>?) end timestamp in milliseconds.
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per subscription record
     #'   (empty when there are none):
     #' - amount (character) Subscription amount.
@@ -987,38 +993,38 @@ BinanceEarn <- R6::R6Class(
     #' }
     # nolint end
     get_flexible_subscription_history = function(
-      productId = NULL,
-      purchaseId = NULL,
+      product_id = NULL,
+      purchase_id = NULL,
       asset = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      start_time = NULL,
+      end_time = NULL,
       current = NULL,
       size = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     ) {
       assert_args_BinanceEarn__get_flexible_subscription_history(
-        productId,
-        purchaseId,
+        product_id,
+        purchase_id,
         asset,
-        startTime,
-        endTime,
+        start_time,
+        end_time,
         current,
         size,
-        recvWindow
+        recv_window
       )
-      assert::assert_nonempty_strings(productId, null_ok = TRUE)
+      assert::assert_nonempty_strings(product_id, null_ok = TRUE)
       assert::assert_nonempty_strings(asset, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/history/subscriptionRecord",
         query = list(
-          productId = productId,
-          purchaseId = purchaseId,
+          productId = product_id,
+          purchaseId = purchase_id,
           asset = asset,
-          startTime = startTime,
-          endTime = endTime,
+          startTime = start_time,
+          endTime = end_time,
           current = current,
           size = size,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- parse_paginated(data, time_cols = "time")
@@ -1076,13 +1082,13 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param purchaseId (scalar<count>?) filter by purchase ID.
+    #' @param purchase_id (scalar<count>?) filter by purchase ID.
     #' @param asset (scalar<character>?) filter by asset (e.g., `"BTC"`).
-    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
-    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param start_time (scalar<count>?) start timestamp in milliseconds.
+    #' @param end_time (scalar<count>?) end timestamp in milliseconds.
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per subscription record
     #'   (empty when there are none):
     #' - amount (character) Subscription amount.
@@ -1103,34 +1109,34 @@ BinanceEarn <- R6::R6Class(
     #' }
     # nolint end
     get_locked_subscription_history = function(
-      purchaseId = NULL,
+      purchase_id = NULL,
       asset = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      start_time = NULL,
+      end_time = NULL,
       current = NULL,
       size = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     ) {
       assert_args_BinanceEarn__get_locked_subscription_history(
-        purchaseId,
+        purchase_id,
         asset,
-        startTime,
-        endTime,
+        start_time,
+        end_time,
         current,
         size,
-        recvWindow
+        recv_window
       )
       assert::assert_nonempty_strings(asset, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/history/subscriptionRecord",
         query = list(
-          purchaseId = purchaseId,
+          purchaseId = purchase_id,
           asset = asset,
-          startTime = startTime,
-          endTime = endTime,
+          startTime = start_time,
+          endTime = end_time,
           current = current,
           size = size,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- parse_paginated(data, time_cols = "time")
@@ -1186,14 +1192,14 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param productId (scalar<character>?) filter by product ID.
-    #' @param redeemId (scalar<count>?) filter by redeem ID.
+    #' @param product_id (scalar<character>?) filter by product ID.
+    #' @param redeem_id (scalar<count>?) filter by redeem ID.
     #' @param asset (scalar<character>?) filter by asset (e.g., `"USDT"`).
-    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
-    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param start_time (scalar<count>?) start timestamp in milliseconds.
+    #' @param end_time (scalar<count>?) end timestamp in milliseconds.
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per redemption record
     #'   (empty when there are none):
     #' - amount (character) Redemption amount.
@@ -1212,38 +1218,38 @@ BinanceEarn <- R6::R6Class(
     #' }
     # nolint end
     get_flexible_redemption_history = function(
-      productId = NULL,
-      redeemId = NULL,
+      product_id = NULL,
+      redeem_id = NULL,
       asset = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      start_time = NULL,
+      end_time = NULL,
       current = NULL,
       size = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     ) {
       assert_args_BinanceEarn__get_flexible_redemption_history(
-        productId,
-        redeemId,
+        product_id,
+        redeem_id,
         asset,
-        startTime,
-        endTime,
+        start_time,
+        end_time,
         current,
         size,
-        recvWindow
+        recv_window
       )
-      assert::assert_nonempty_strings(productId, null_ok = TRUE)
+      assert::assert_nonempty_strings(product_id, null_ok = TRUE)
       assert::assert_nonempty_strings(asset, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/flexible/history/redemptionRecord",
         query = list(
-          productId = productId,
-          redeemId = redeemId,
+          productId = product_id,
+          redeemId = redeem_id,
           asset = asset,
-          startTime = startTime,
-          endTime = endTime,
+          startTime = start_time,
+          endTime = end_time,
           current = current,
           size = size,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- parse_paginated(data, time_cols = "time")
@@ -1299,14 +1305,14 @@ BinanceEarn <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param positionId (scalar<character>?) filter by position ID.
-    #' @param redeemId (scalar<count>?) filter by redeem ID.
+    #' @param position_id (scalar<character>?) filter by position ID.
+    #' @param redeem_id (scalar<count>?) filter by redeem ID.
     #' @param asset (scalar<character>?) filter by asset (e.g., `"BTC"`).
-    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
-    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param start_time (scalar<count>?) start timestamp in milliseconds.
+    #' @param end_time (scalar<count>?) end timestamp in milliseconds.
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per redemption record
     #'   (empty when there are none):
     #' - amount (character) Redemption amount.
@@ -1325,38 +1331,38 @@ BinanceEarn <- R6::R6Class(
     #' }
     # nolint end
     get_locked_redemption_history = function(
-      positionId = NULL,
-      redeemId = NULL,
+      position_id = NULL,
+      redeem_id = NULL,
       asset = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      start_time = NULL,
+      end_time = NULL,
       current = NULL,
       size = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     ) {
       assert_args_BinanceEarn__get_locked_redemption_history(
-        positionId,
-        redeemId,
+        position_id,
+        redeem_id,
         asset,
-        startTime,
-        endTime,
+        start_time,
+        end_time,
         current,
         size,
-        recvWindow
+        recv_window
       )
-      assert::assert_nonempty_strings(positionId, null_ok = TRUE)
+      assert::assert_nonempty_strings(position_id, null_ok = TRUE)
       assert::assert_nonempty_strings(asset, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/simple-earn/locked/history/redemptionRecord",
         query = list(
-          positionId = positionId,
-          redeemId = redeemId,
+          positionId = position_id,
+          redeemId = redeem_id,
           asset = asset,
-          startTime = startTime,
-          endTime = endTime,
+          startTime = start_time,
+          endTime = end_time,
           current = current,
           size = size,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- parse_paginated(data, time_cols = c("time", "deliver_date"))

@@ -58,7 +58,7 @@ products <- earn$get_flexible_products(asset = "USDT")
 print(products)
 
 # Subscribe
-result <- earn$add_flexible_subscription(productId = "USDT001", amount = 100)
+result <- earn$add_flexible_subscription(product_id = "USDT001", amount = 100)
 print(result)
 
 # Asynchronous
@@ -98,7 +98,7 @@ print(products)
 
 \dontrun{
 earn <- BinanceEarn$new()
-result <- earn$add_flexible_subscription(productId = "USDT001", amount = 100)
+result <- earn$add_flexible_subscription(product_id = "USDT001", amount = 100)
 print(result)
 }
 
@@ -108,7 +108,7 @@ print(result)
 
 \dontrun{
 earn <- BinanceEarn$new()
-result <- earn$add_locked_subscription(projectId = "BTC30d001", amount = 0.01)
+result <- earn$add_locked_subscription(project_id = "BTC30d001", amount = 0.01)
 print(result)
 }
 
@@ -118,7 +118,7 @@ print(result)
 
 \dontrun{
 earn <- BinanceEarn$new()
-result <- earn$add_flexible_redemption(productId = "USDT001", amount = 50)
+result <- earn$add_flexible_redemption(product_id = "USDT001", amount = 50)
 print(result)
 }
 
@@ -128,7 +128,7 @@ print(result)
 
 \dontrun{
 earn <- BinanceEarn$new()
-result <- earn$add_locked_redemption(positionId = "12345")
+result <- earn$add_locked_redemption(position_id = "12345")
 print(result)
 }
 
@@ -276,7 +276,7 @@ Verified: 2026-05-22
   asset = NULL,
   current = NULL,
   size = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -289,7 +289,7 @@ Verified: 2026-05-22
 
 \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -391,7 +391,7 @@ fields; older internal examples that still show \code{apy} are stale.
   asset = NULL,
   current = NULL,
   size = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -404,7 +404,7 @@ fields; older internal examples that still show \code{apy} are stale.
 
 \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -500,26 +500,26 @@ Verified: 2026-05-22
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$add_flexible_subscription(
-  productId,
+  product_id,
   amount,
-  autoSubscribe = NULL,
-  sourceAccount = NULL,
-  recvWindow = NULL
+  auto_subscribe = NULL,
+  source_account = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{productId}}{(scalar<character>) the product ID to subscribe to.}
+\item{\code{product_id}}{(scalar<character>) the product ID to subscribe to.}
 
 \item{\code{amount}}{(scalar<numeric>) amount to subscribe.}
 
-\item{\code{autoSubscribe}}{(scalar<logical>?) whether to enable auto-subscription.}
+\item{\code{auto_subscribe}}{(scalar<logical>?) whether to enable auto-subscription.}
 
-\item{\code{sourceAccount}}{(scalar<character>?) source wallet: \code{"SPOT"}, \code{"FUND"}, or \code{"ALL"}. Default \code{"SPOT"}.}
+\item{\code{source_account}}{(scalar<character>?) source wallet: \code{"SPOT"}, \code{"FUND"}, or \code{"ALL"}. Default \code{"SPOT"}.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -534,7 +534,7 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 earn <- BinanceEarn$new()
-result <- earn$add_flexible_subscription(productId = "USDT001", amount = 100)
+result <- earn$add_flexible_subscription(product_id = "USDT001", amount = 100)
 print(result)
 }
 }
@@ -590,23 +590,23 @@ Verified: 2026-05-22
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$add_locked_subscription(
-  projectId,
+  project_id,
   amount,
-  autoSubscribe = NULL,
-  recvWindow = NULL
+  auto_subscribe = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{projectId}}{(scalar<character>) the project ID to subscribe to.}
+\item{\code{project_id}}{(scalar<character>) the project ID to subscribe to.}
 
 \item{\code{amount}}{(scalar<numeric>) amount to subscribe.}
 
-\item{\code{autoSubscribe}}{(scalar<logical>?) whether to enable auto-subscription.}
+\item{\code{auto_subscribe}}{(scalar<logical>?) whether to enable auto-subscription.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -622,7 +622,7 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 earn <- BinanceEarn$new()
-result <- earn$add_locked_subscription(projectId = "BTC30d001", amount = 0.01)
+result <- earn$add_locked_subscription(project_id = "BTC30d001", amount = 0.01)
 print(result)
 }
 }
@@ -678,26 +678,26 @@ Verified: 2026-05-22
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$add_flexible_redemption(
-  productId,
+  product_id,
   amount = NULL,
-  redeemAll = NULL,
-  destAccount = NULL,
-  recvWindow = NULL
+  redeem_all = NULL,
+  dest_account = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{productId}}{(scalar<character>) the product ID to redeem from.}
+\item{\code{product_id}}{(scalar<character>) the product ID to redeem from.}
 
 \item{\code{amount}}{(scalar<numeric>?) amount to redeem. If NULL, use \code{redeemAll}.}
 
-\item{\code{redeemAll}}{(scalar<logical>?) if TRUE, redeem entire position.}
+\item{\code{redeem_all}}{(scalar<logical>?) if TRUE, redeem entire position.}
 
-\item{\code{destAccount}}{(scalar<character>?) destination wallet: \code{"SPOT"} or \code{"FUND"}. Default \code{"SPOT"}.}
+\item{\code{dest_account}}{(scalar<character>?) destination wallet: \code{"SPOT"} or \code{"FUND"}. Default \code{"SPOT"}.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -712,7 +712,7 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 earn <- BinanceEarn$new()
-result <- earn$add_flexible_redemption(productId = "USDT001", amount = 50)
+result <- earn$add_flexible_redemption(product_id = "USDT001", amount = 50)
 print(result)
 }
 }
@@ -764,15 +764,15 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$add_locked_redemption(positionId, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$add_locked_redemption(position_id, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{positionId}}{(scalar<character>) the position ID to redeem.}
+\item{\code{position_id}}{(scalar<character>) the position ID to redeem.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -787,7 +787,7 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 earn <- BinanceEarn$new()
-result <- earn$add_locked_redemption(positionId = "12345")
+result <- earn$add_locked_redemption(position_id = "12345")
 print(result)
 }
 }
@@ -854,10 +854,10 @@ Shape captured 2026-05-22 from the live docs.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$get_flexible_position(
   asset = NULL,
-  productId = NULL,
+  product_id = NULL,
   current = NULL,
   size = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -866,13 +866,13 @@ Shape captured 2026-05-22 from the live docs.
 \describe{
 \item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
 
-\item{\code{productId}}{(scalar<character>?) filter by product ID.}
+\item{\code{product_id}}{(scalar<character>?) filter by product ID.}
 
 \item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
 
 \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -996,11 +996,11 @@ converter lowers it to \code{apy} in the data.table.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$get_locked_position(
   asset = NULL,
-  positionId = NULL,
-  projectId = NULL,
+  position_id = NULL,
+  project_id = NULL,
   current = NULL,
   size = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -1009,15 +1009,15 @@ converter lowers it to \code{apy} in the data.table.
 \describe{
 \item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"BTC"}).}
 
-\item{\code{positionId}}{(scalar<character>?) filter by position ID.}
+\item{\code{position_id}}{(scalar<character>?) filter by position ID.}
 
-\item{\code{projectId}}{(scalar<character>?) filter by project ID.}
+\item{\code{project_id}}{(scalar<character>?) filter by project ID.}
 
 \item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
 
 \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1095,35 +1095,35 @@ Verified: 2026-05-22
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$get_flexible_subscription_history(
-  productId = NULL,
-  purchaseId = NULL,
+  product_id = NULL,
+  purchase_id = NULL,
   asset = NULL,
-  startTime = NULL,
-  endTime = NULL,
+  start_time = NULL,
+  end_time = NULL,
   current = NULL,
   size = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{productId}}{(scalar<character>?) filter by product ID.}
+\item{\code{product_id}}{(scalar<character>?) filter by product ID.}
 
-\item{\code{purchaseId}}{(scalar<count>?) filter by purchase ID.}
+\item{\code{purchase_id}}{(scalar<count>?) filter by purchase ID.}
 
 \item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
 \item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
 
 \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1200,32 +1200,32 @@ Verified: 2026-05-22
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$get_locked_subscription_history(
-  purchaseId = NULL,
+  purchase_id = NULL,
   asset = NULL,
-  startTime = NULL,
-  endTime = NULL,
+  start_time = NULL,
+  end_time = NULL,
   current = NULL,
   size = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{purchaseId}}{(scalar<count>?) filter by purchase ID.}
+\item{\code{purchase_id}}{(scalar<count>?) filter by purchase ID.}
 
 \item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"BTC"}).}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
 \item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
 
 \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1302,35 +1302,35 @@ Verified: 2026-05-22
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$get_flexible_redemption_history(
-  productId = NULL,
-  redeemId = NULL,
+  product_id = NULL,
+  redeem_id = NULL,
   asset = NULL,
-  startTime = NULL,
-  endTime = NULL,
+  start_time = NULL,
+  end_time = NULL,
   current = NULL,
   size = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{productId}}{(scalar<character>?) filter by product ID.}
+\item{\code{product_id}}{(scalar<character>?) filter by product ID.}
 
-\item{\code{redeemId}}{(scalar<count>?) filter by redeem ID.}
+\item{\code{redeem_id}}{(scalar<count>?) filter by redeem ID.}
 
 \item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
 \item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
 
 \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1405,35 +1405,35 @@ Verified: 2026-05-22
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$get_locked_redemption_history(
-  positionId = NULL,
-  redeemId = NULL,
+  position_id = NULL,
+  redeem_id = NULL,
   asset = NULL,
-  startTime = NULL,
-  endTime = NULL,
+  start_time = NULL,
+  end_time = NULL,
   current = NULL,
   size = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{positionId}}{(scalar<character>?) filter by position ID.}
+\item{\code{position_id}}{(scalar<character>?) filter by position ID.}
 
-\item{\code{redeemId}}{(scalar<count>?) filter by redeem ID.}
+\item{\code{redeem_id}}{(scalar<count>?) filter by redeem ID.}
 
 \item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"BTC"}).}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
 \item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
 
 \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }

@@ -92,8 +92,8 @@ test_that("add_transfer passes optional fromSymbol and toSymbol", {
     type = "MAIN_ISOLATED_MARGIN",
     asset = "USDT",
     amount = 50,
-    fromSymbol = "BNBUSDT",
-    toSymbol = "BTCUSDT"
+    from_symbol = "BNBUSDT",
+    to_symbol = "BTCUSDT"
   )
   expect_true(grepl("fromSymbol=BNBUSDT", captured_url))
   expect_true(grepl("toSymbol=BTCUSDT", captured_url))
@@ -156,8 +156,8 @@ test_that("get_transfer_history passes query parameters", {
 
   new_transfer()$get_transfer_history(
     type = "MAIN_UMFUTURE",
-    startTime = 1661493146000,
-    endTime = 1661593146000,
+    start_time = 1661493146000,
+    end_time = 1661593146000,
     current = 1,
     size = 10
   )

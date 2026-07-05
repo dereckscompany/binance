@@ -97,8 +97,8 @@ print(history[, .(amount, coin, status, insert_time)])
 # Get deposits from the last 24 hours
 now_ms <- as.integer(as.numeric(Sys.time()) * 1000)
 recent <- deposit$get_deposit_history(
-  startTime = now_ms - 86400000L,
-  endTime = now_ms
+  start_time = now_ms - 86400000L,
+  end_time = now_ms
 )
 }
 }
@@ -166,7 +166,7 @@ the address on the correct chain.
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceDeposit$get_deposit_address(coin, network = NULL, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceDeposit$get_deposit_address(coin, network = NULL, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -177,7 +177,7 @@ the address on the correct chain.
 \item{\code{network}}{(scalar<character>?) blockchain network (e.g., \code{"ETH"},
 \code{"TRX"}, \code{"BSC"}). If NULL, uses the coin's default network.}
 
-\item{\code{recvWindow}}{(scalar<count in [1, Inf[>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count in [1, Inf[>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -271,12 +271,12 @@ specific period. Max range is 90 days.
 \if{html}{\out{<div class="r">}}\preformatted{BinanceDeposit$get_deposit_history(
   coin = NULL,
   status = NULL,
-  startTime = NULL,
-  endTime = NULL,
+  start_time = NULL,
+  end_time = NULL,
   offset = NULL,
   limit = NULL,
-  txId = NULL,
-  recvWindow = NULL
+  tx_id = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -288,17 +288,17 @@ specific period. Max range is 90 days.
 \item{\code{status}}{(scalar<count>?) filter by status:
 \code{0} (pending), \code{1} (success), \code{6} (credited), \code{7} (wrong), \code{8} (waiting confirm).}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
 \item{\code{offset}}{(scalar<count>?) pagination offset (default 0).}
 
 \item{\code{limit}}{(scalar<count>?) max results (default 1000, max 1000).}
 
-\item{\code{txId}}{(scalar<character>?) filter by transaction ID.}
+\item{\code{tx_id}}{(scalar<character>?) filter by transaction ID.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -334,8 +334,8 @@ print(history[, .(amount, coin, status, insert_time)])
 # Get deposits from the last 24 hours
 now_ms <- as.integer(as.numeric(Sys.time()) * 1000)
 recent <- deposit$get_deposit_history(
-  startTime = now_ms - 86400000L,
-  endTime = now_ms
+  start_time = now_ms - 86400000L,
+  end_time = now_ms
 )
 }
 }

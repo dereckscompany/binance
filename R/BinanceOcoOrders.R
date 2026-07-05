@@ -32,8 +32,8 @@
 #' oco <- BinanceOcoOrders$new()
 #' result <- oco$add_oco_order(
 #'   symbol = "BTCUSDT", side = "SELL",
-#'   quantity = 0.0001, price = 55000, stopPrice = 49000,
-#'   stopLimitPrice = 48500, stopLimitTimeInForce = "GTC"
+#'   quantity = 0.0001, price = 55000, stop_price = 49000,
+#'   stop_limit_price = 48500, stop_limit_time_in_force = "GTC"
 #' )
 #' print(result)
 #'
@@ -110,18 +110,18 @@ BinanceOcoOrders <- R6::R6Class(
     #' @param side (scalar<character>) `"BUY"` or `"SELL"`.
     #' @param quantity (scalar<numeric>) base asset quantity.
     #' @param price (scalar<numeric>) price for the limit leg.
-    #' @param stopPrice (scalar<numeric>) trigger price for the stop-loss leg.
-    #' @param stopLimitPrice (scalar<numeric>?) limit price for the stop-loss-limit leg.
-    #' @param stopLimitTimeInForce (scalar<character>?) time-in-force for the stop-limit leg
+    #' @param stop_price (scalar<numeric>) trigger price for the stop-loss leg.
+    #' @param stop_limit_price (scalar<numeric>?) limit price for the stop-loss-limit leg.
+    #' @param stop_limit_time_in_force (scalar<character>?) time-in-force for the stop-limit leg
     #'   (`"GTC"`, `"IOC"`, `"FOK"`). Required if `stopLimitPrice` is provided.
-    #' @param listClientOrderId (scalar<character>?) unique ID for the entire OCO list.
-    #' @param limitClientOrderId (scalar<character>?) unique ID for the limit leg.
-    #' @param stopClientOrderId (scalar<character>?) unique ID for the stop-loss leg.
-    #' @param limitIcebergQty (scalar<numeric>?) iceberg quantity for the limit leg.
-    #' @param stopIcebergQty (scalar<numeric>?) iceberg quantity for the stop-loss leg.
-    #' @param newOrderRespType (scalar<character>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
-    #' @param selfTradePreventionMode (scalar<character>?)
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param list_client_order_id (scalar<character>?) unique ID for the entire OCO list.
+    #' @param limit_client_order_id (scalar<character>?) unique ID for the limit leg.
+    #' @param stop_client_order_id (scalar<character>?) unique ID for the stop-loss leg.
+    #' @param limit_iceberg_qty (scalar<numeric>?) iceberg quantity for the limit leg.
+    #' @param stop_iceberg_qty (scalar<numeric>?) iceberg quantity for the stop-loss leg.
+    #' @param new_order_resp_type (scalar<character>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
+    #' @param self_trade_prevention_mode (scalar<character>?)
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per child order report
     #'   (long format):
     #' - order_list_id (numeric) OCO order list identifier (repeated per child order).
@@ -155,8 +155,8 @@ BinanceOcoOrders <- R6::R6Class(
     #' oco <- BinanceOcoOrders$new()
     #' result <- oco$add_oco_order(
     #'   symbol = "BTCUSDT", side = "SELL",
-    #'   quantity = 0.0001, price = 55000, stopPrice = 49000,
-    #'   stopLimitPrice = 48500, stopLimitTimeInForce = "GTC"
+    #'   quantity = 0.0001, price = 55000, stop_price = 49000,
+    #'   stop_limit_price = 48500, stop_limit_time_in_force = "GTC"
     #' )
     #' print(result)
     #' }
@@ -166,39 +166,39 @@ BinanceOcoOrders <- R6::R6Class(
       side,
       quantity,
       price,
-      stopPrice,
-      stopLimitPrice = NULL,
-      stopLimitTimeInForce = NULL,
-      listClientOrderId = NULL,
-      limitClientOrderId = NULL,
-      stopClientOrderId = NULL,
-      limitIcebergQty = NULL,
-      stopIcebergQty = NULL,
-      newOrderRespType = NULL,
-      selfTradePreventionMode = NULL,
-      recvWindow = NULL
+      stop_price,
+      stop_limit_price = NULL,
+      stop_limit_time_in_force = NULL,
+      list_client_order_id = NULL,
+      limit_client_order_id = NULL,
+      stop_client_order_id = NULL,
+      limit_iceberg_qty = NULL,
+      stop_iceberg_qty = NULL,
+      new_order_resp_type = NULL,
+      self_trade_prevention_mode = NULL,
+      recv_window = NULL
     ) {
       assert_args_BinanceOcoOrders__add_oco_order(
         symbol,
         side,
         quantity,
         price,
-        stopPrice,
-        stopLimitPrice,
-        stopLimitTimeInForce,
-        listClientOrderId,
-        limitClientOrderId,
-        stopClientOrderId,
-        limitIcebergQty,
-        stopIcebergQty,
-        newOrderRespType,
-        selfTradePreventionMode,
-        recvWindow
+        stop_price,
+        stop_limit_price,
+        stop_limit_time_in_force,
+        list_client_order_id,
+        limit_client_order_id,
+        stop_client_order_id,
+        limit_iceberg_qty,
+        stop_iceberg_qty,
+        new_order_resp_type,
+        self_trade_prevention_mode,
+        recv_window
       )
       assert::assert_nonempty_strings(symbol)
-      assert::assert_nonempty_strings(listClientOrderId, null_ok = TRUE)
-      assert::assert_nonempty_strings(limitClientOrderId, null_ok = TRUE)
-      assert::assert_nonempty_strings(stopClientOrderId, null_ok = TRUE)
+      assert::assert_nonempty_strings(list_client_order_id, null_ok = TRUE)
+      assert::assert_nonempty_strings(limit_client_order_id, null_ok = TRUE)
+      assert::assert_nonempty_strings(stop_client_order_id, null_ok = TRUE)
       side <- rlang::arg_match0(side, c("BUY", "SELL"))
 
       body <- list(
@@ -206,17 +206,17 @@ BinanceOcoOrders <- R6::R6Class(
         side = side,
         quantity = as.character(quantity),
         price = as.character(price),
-        stopPrice = as.character(stopPrice),
-        stopLimitPrice = if (!is.null(stopLimitPrice)) as.character(stopLimitPrice),
-        stopLimitTimeInForce = stopLimitTimeInForce,
-        listClientOrderId = listClientOrderId,
-        limitClientOrderId = limitClientOrderId,
-        stopClientOrderId = stopClientOrderId,
-        limitIcebergQty = if (!is.null(limitIcebergQty)) as.character(limitIcebergQty),
-        stopIcebergQty = if (!is.null(stopIcebergQty)) as.character(stopIcebergQty),
-        newOrderRespType = newOrderRespType,
-        selfTradePreventionMode = selfTradePreventionMode,
-        recvWindow = recvWindow
+        stopPrice = as.character(stop_price),
+        stopLimitPrice = if (!is.null(stop_limit_price)) as.character(stop_limit_price),
+        stopLimitTimeInForce = stop_limit_time_in_force,
+        listClientOrderId = list_client_order_id,
+        limitClientOrderId = limit_client_order_id,
+        stopClientOrderId = stop_client_order_id,
+        limitIcebergQty = if (!is.null(limit_iceberg_qty)) as.character(limit_iceberg_qty),
+        stopIcebergQty = if (!is.null(stop_iceberg_qty)) as.character(stop_iceberg_qty),
+        newOrderRespType = new_order_resp_type,
+        selfTradePreventionMode = self_trade_prevention_mode,
+        recvWindow = recv_window
       )
 
       res <- private$.request(
@@ -338,9 +338,9 @@ BinanceOcoOrders <- R6::R6Class(
     #' ```
     #'
     #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderListId (scalar<count>?) the OCO order list ID.
-    #' @param listClientOrderId (scalar<character>?) the client order list ID.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param order_list_id (scalar<count>?) the OCO order list ID.
+    #' @param list_client_order_id (scalar<character>?) the client order list ID.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per child order report
     #'   (long format), matching the shape returned by `add_oco_order()`. The
     #'   thinner `orders` array Binance returns is dropped in favour of
@@ -376,16 +376,16 @@ BinanceOcoOrders <- R6::R6Class(
     #' @examples
     #' \dontrun{
     #' oco <- BinanceOcoOrders$new()
-    #' cancelled <- oco$cancel_oco_order("BTCUSDT", orderListId = 0)
+    #' cancelled <- oco$cancel_oco_order("BTCUSDT", order_list_id = 0)
     #' print(cancelled)
     #' }
     # nolint end
-    cancel_oco_order = function(symbol, orderListId = NULL, listClientOrderId = NULL, recvWindow = NULL) {
-      assert_args_BinanceOcoOrders__cancel_oco_order(symbol, orderListId, listClientOrderId, recvWindow)
+    cancel_oco_order = function(symbol, order_list_id = NULL, list_client_order_id = NULL, recv_window = NULL) {
+      assert_args_BinanceOcoOrders__cancel_oco_order(symbol, order_list_id, list_client_order_id, recv_window)
       assert::assert_nonempty_strings(symbol)
-      assert::assert_nonempty_strings(listClientOrderId, null_ok = TRUE)
-      if (is.null(orderListId) && is.null(listClientOrderId)) {
-        rlang::abort("Either 'orderListId' or 'listClientOrderId' must be provided.")
+      assert::assert_nonempty_strings(list_client_order_id, null_ok = TRUE)
+      if (is.null(order_list_id) && is.null(list_client_order_id)) {
+        rlang::abort("Either 'order_list_id' or 'list_client_order_id' must be provided.")
       }
 
       res <- private$.request(
@@ -393,9 +393,9 @@ BinanceOcoOrders <- R6::R6Class(
         method = "DELETE",
         query = list(
           symbol = symbol,
-          orderListId = orderListId,
-          listClientOrderId = listClientOrderId,
-          recvWindow = recvWindow
+          orderListId = order_list_id,
+          listClientOrderId = list_client_order_id,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
@@ -481,9 +481,9 @@ BinanceOcoOrders <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param orderListId (scalar<count>?) the OCO order list ID.
-    #' @param origClientOrderId (scalar<character>?) the original client order list ID.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param order_list_id (scalar<count>?) the OCO order list ID.
+    #' @param orig_client_order_id (scalar<character>?) the original client order list ID.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per child order
     #'   (long format):
     #' - order_list_id (numeric) OCO order list identifier (repeated per child order).
@@ -500,23 +500,23 @@ BinanceOcoOrders <- R6::R6Class(
     #' @examples
     #' \dontrun{
     #' oco <- BinanceOcoOrders$new()
-    #' order <- oco$get_oco_order(orderListId = 0)
+    #' order <- oco$get_oco_order(order_list_id = 0)
     #' print(order)
     #' }
     # nolint end
-    get_oco_order = function(orderListId = NULL, origClientOrderId = NULL, recvWindow = NULL) {
-      assert_args_BinanceOcoOrders__get_oco_order(orderListId, origClientOrderId, recvWindow)
-      assert::assert_nonempty_strings(origClientOrderId, null_ok = TRUE)
-      if (is.null(orderListId) && is.null(origClientOrderId)) {
-        rlang::abort("Either 'orderListId' or 'origClientOrderId' must be provided.")
+    get_oco_order = function(order_list_id = NULL, orig_client_order_id = NULL, recv_window = NULL) {
+      assert_args_BinanceOcoOrders__get_oco_order(order_list_id, orig_client_order_id, recv_window)
+      assert::assert_nonempty_strings(orig_client_order_id, null_ok = TRUE)
+      if (is.null(order_list_id) && is.null(orig_client_order_id)) {
+        rlang::abort("Either 'order_list_id' or 'orig_client_order_id' must be provided.")
       }
 
       res <- private$.request(
         endpoint = "/api/v3/orderList",
         query = list(
-          orderListId = orderListId,
-          origClientOrderId = origClientOrderId,
-          recvWindow = recvWindow
+          orderListId = order_list_id,
+          origClientOrderId = orig_client_order_id,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
@@ -592,7 +592,7 @@ BinanceOcoOrders <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per child order across
     #'   all open OCOs (long format; empty when there are no open OCOs):
     #' - order_list_id (numeric) OCO order list identifier (repeated per child order).
@@ -613,11 +613,11 @@ BinanceOcoOrders <- R6::R6Class(
     #' print(open)
     #' }
     # nolint end
-    get_open_oco_orders = function(recvWindow = NULL) {
-      assert_args_BinanceOcoOrders__get_open_oco_orders(recvWindow)
+    get_open_oco_orders = function(recv_window = NULL) {
+      assert_args_BinanceOcoOrders__get_open_oco_orders(recv_window)
       res <- private$.request(
         endpoint = "/api/v3/openOrderList",
-        query = list(recvWindow = recvWindow),
+        query = list(recvWindow = recv_window),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
             return(empty_dt_oco_query())
@@ -719,11 +719,11 @@ BinanceOcoOrders <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param fromId (scalar<count>?) pagination cursor (orderListId).
-    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
-    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param from_id (scalar<count>?) pagination cursor (orderListId).
+    #' @param start_time (scalar<count>?) start timestamp in milliseconds.
+    #' @param end_time (scalar<count>?) end timestamp in milliseconds.
     #' @param limit (scalar<count>?) max results (default 500, max 1000).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per child order across
     #'   all OCOs (long format; empty when there are no matching OCOs):
     #' - order_list_id (numeric) OCO order list identifier (repeated per child order).
@@ -745,21 +745,21 @@ BinanceOcoOrders <- R6::R6Class(
     #' }
     # nolint end
     get_all_oco_orders = function(
-      fromId = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      from_id = NULL,
+      start_time = NULL,
+      end_time = NULL,
       limit = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     ) {
-      assert_args_BinanceOcoOrders__get_all_oco_orders(fromId, startTime, endTime, limit, recvWindow)
+      assert_args_BinanceOcoOrders__get_all_oco_orders(from_id, start_time, end_time, limit, recv_window)
       res <- private$.request(
         endpoint = "/api/v3/allOrderList",
         query = list(
-          fromId = fromId,
-          startTime = startTime,
-          endTime = endTime,
+          fromId = from_id,
+          startTime = start_time,
+          endTime = end_time,
           limit = limit,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {

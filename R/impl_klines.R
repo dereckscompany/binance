@@ -4,7 +4,7 @@
 # range by following the data: it requests up to `max_candles` candles starting
 # at a cursor, advances the cursor past the last candle returned, and stops as
 # soon as a page comes back empty or shorter than `max_candles`. Because Binance
-# returns candles with open_time >= startTime, an empty leading stretch (e.g. a
+# returns candles with datetime >= startTime, an empty leading stretch (e.g. a
 # range before the symbol was listed) is skipped in a single request rather than
 # probed slice by slice.
 
@@ -40,7 +40,7 @@ binance_timeframe_map <- list(
 # If `on_page` is supplied, each parsed page (a data.table) is passed to it as
 # the page arrives and nothing is accumulated — streaming, memory-light — and the
 # function returns invisibly. Otherwise every page is combined, de-duplicated by
-# open_time, sorted ascending, and returned as one data.table (the historical
+# datetime, sorted ascending, and returned as one data.table (the historical
 # behaviour).
 #
 # Used internally by BinanceMarketData$get_klines(), BinanceFuturesData$get_klines(),
@@ -75,19 +75,19 @@ binance_fetch_klines <- function(
     return(if (streaming) invisible(NULL) else empty_dt_ohlcv())
   }
 
-  # Combine buffered pages: stack, de-dup by open_time, sort ascending.
+  # Combine buffered pages: stack, de-dup by datetime, sort ascending.
   combine_klines <- function(results_list) {
     dts <- Filter(function(x) !is.null(x) && nrow(x) > 0L, results_list)
     if (length(dts) == 0L) {
       return(empty_dt_ohlcv())
     }
     dt <- data.table::rbindlist(dts)
-    dt <- unique(dt, by = "open_time")
-    data.table::setorder(dt, open_time)
+    dt <- unique(dt, by = "datetime")
+    data.table::setorder(dt, datetime)
     return(dt[])
   }
 
-  # Fetch one page: candles with open_time in [start_ms, to_ms], up to max_candles.
+  # Fetch one page: candles with datetime in [start_ms, to_ms], up to max_candles.
   fetch_page <- function(start_ms) {
     return(.req_fn(
       endpoint = endpoint,
@@ -110,7 +110,7 @@ binance_fetch_klines <- function(
     if (is.null(page) || nrow(page) == 0L || nrow(page) < max_candles) {
       return(NULL)
     }
-    ns <- floor(as.numeric(max(page$open_time)) * 1000) + 1
+    ns <- floor(as.numeric(max(page$datetime)) * 1000) + 1
     if (ns > to_ms) {
       return(NULL)
     }

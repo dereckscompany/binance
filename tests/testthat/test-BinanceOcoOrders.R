@@ -27,7 +27,7 @@ test_that("add_oco_order returns data.table with orders expanded to long format"
     side = "SELL",
     quantity = 0.0001,
     price = 55000,
-    stopPrice = 49000
+    stop_price = 49000
   )
   expect_s3_class(dt, "data.table")
   # 2 child orders expanded to 2 rows
@@ -74,7 +74,7 @@ test_that("add_oco_order sends POST to correct endpoint", {
     side = "SELL",
     quantity = 0.0001,
     price = 55000,
-    stopPrice = 49000
+    stop_price = 49000
   )
   expect_true(grepl("api/v3/order/oco", captured_url))
   expect_equal(captured_method, "POST")
@@ -87,7 +87,7 @@ test_that("add_oco_order validates side parameter", {
       side = "INVALID",
       quantity = 0.0001,
       price = 55000,
-      stopPrice = 49000
+      stop_price = 49000
     ),
     "INVALID"
   )
@@ -99,7 +99,7 @@ test_that("cancel_oco_order expands the richer orderReports payload (matching ad
   resp <- mock_binance_response(data = mock_oco_order_response())
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_oco()$cancel_oco_order("BTCUSDT", orderListId = 0)
+  dt <- new_oco()$cancel_oco_order("BTCUSDT", order_list_id = 0)
   expect_s3_class(dt, "data.table")
   # 2 child order reports expanded to 2 rows.
   expect_equal(nrow(dt), 2L)
@@ -126,10 +126,10 @@ test_that("cancel_oco_order expands the richer orderReports payload (matching ad
   expect_equal(length(list_cols), 0L)
 })
 
-test_that("cancel_oco_order requires orderListId or listClientOrderId", {
+test_that("cancel_oco_order requires order_list_id or list_client_order_id", {
   expect_error(
     new_oco()$cancel_oco_order("BTCUSDT"),
-    "orderListId.*listClientOrderId"
+    "order_list_id.*list_client_order_id"
   )
 })
 
@@ -141,7 +141,7 @@ test_that("cancel_oco_order sends DELETE method", {
     return(resp)
   })
 
-  new_oco()$cancel_oco_order("BTCUSDT", orderListId = 0)
+  new_oco()$cancel_oco_order("BTCUSDT", order_list_id = 0)
   expect_equal(captured_method, "DELETE")
 })
 
@@ -153,7 +153,7 @@ test_that("cancel_oco_order sends to correct endpoint", {
     return(resp)
   })
 
-  new_oco()$cancel_oco_order("BTCUSDT", orderListId = 0)
+  new_oco()$cancel_oco_order("BTCUSDT", order_list_id = 0)
   expect_true(grepl("api/v3/orderList", captured_url))
 })
 
@@ -163,7 +163,7 @@ test_that("get_oco_order returns data.table with orders expanded and datetime co
   resp <- mock_binance_response(data = mock_oco_query_data())
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_oco()$get_oco_order(orderListId = 0)
+  dt <- new_oco()$get_oco_order(order_list_id = 0)
   expect_s3_class(dt, "data.table")
   # 2 child orders expanded to 2 rows
   expect_equal(nrow(dt), 2L)
@@ -183,10 +183,10 @@ test_that("get_oco_order returns data.table with orders expanded and datetime co
   expect_false("orders" %in% names(dt))
 })
 
-test_that("get_oco_order requires orderListId or origClientOrderId", {
+test_that("get_oco_order requires order_list_id or orig_client_order_id", {
   expect_error(
     new_oco()$get_oco_order(),
-    "orderListId.*origClientOrderId"
+    "order_list_id.*orig_client_order_id"
   )
 })
 
@@ -198,7 +198,7 @@ test_that("get_oco_order sends GET to correct endpoint", {
     return(resp)
   })
 
-  new_oco()$get_oco_order(orderListId = 0)
+  new_oco()$get_oco_order(order_list_id = 0)
   expect_true(grepl("api/v3/orderList", captured_url))
 })
 
@@ -261,7 +261,7 @@ test_that("get_all_oco_orders passes query parameters", {
     return(resp)
   })
 
-  new_oco()$get_all_oco_orders(limit = 50, fromId = 10)
+  new_oco()$get_all_oco_orders(limit = 50, from_id = 10)
   expect_true(grepl("limit=50", captured_url))
   expect_true(grepl("fromId=10", captured_url))
 })
