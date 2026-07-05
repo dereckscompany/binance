@@ -134,8 +134,8 @@ klines <- futures$get_klines("BTCUSDT", "1h", limit = 24)
 # Fetch all candles across a large date range (multiple API calls)
 all_klines <- futures$get_klines(
   "BTCUSDT", "1h",
-  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-  endTime = as.POSIXct("2024-06-01", tz = "UTC"),
+  start_time = as.POSIXct("2024-01-01", tz = "UTC"),
+  end_time = as.POSIXct("2024-06-01", tz = "UTC"),
   fetch_all = TRUE, sleep = 0.5
 )
 }
@@ -593,8 +593,8 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFuturesData$get_klines(
   symbol,
   interval = "1h",
-  startTime = NULL,
-  endTime = NULL,
+  start_time = NULL,
+  end_time = NULL,
   limit = NULL,
   fetch_all = FALSE,
   sleep = 0.2,
@@ -612,15 +612,15 @@ Verified: 2026-05-22
 \code{"1h"}, \code{"2h"}, \code{"4h"}, \code{"6h"}, \code{"8h"}, \code{"12h"},
 \code{"1d"}, \code{"3d"}, \code{"1w"}, \code{"1M"}.}
 
-\item{\code{startTime}}{(scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).}
+\item{\code{start_time}}{(scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).}
 
-\item{\code{endTime}}{(scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).}
+\item{\code{end_time}}{(scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).}
 
 \item{\code{limit}}{(scalar<count>?) max results (default 500, max 1500).}
 
 \item{\code{fetch_all}}{(scalar<logical>) if \code{TRUE}, automatically pages forward through the
 time range — following the data and stopping at the first empty or short
-page — and returns the combined result sorted by \code{open_time}. Both
+page — and returns the combined result sorted by \code{datetime}. Both
 \code{startTime} and \code{endTime} are required when enabled. \strong{Warning}: large
 date ranges will consume multiple API requests and may impact your
 rate-limit quota. Default \code{FALSE}.}
@@ -654,8 +654,8 @@ klines <- futures$get_klines("BTCUSDT", "1h", limit = 24)
 # Fetch all candles across a large date range (multiple API calls)
 all_klines <- futures$get_klines(
   "BTCUSDT", "1h",
-  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-  endTime = as.POSIXct("2024-06-01", tz = "UTC"),
+  start_time = as.POSIXct("2024-01-01", tz = "UTC"),
+  end_time = as.POSIXct("2024-06-01", tz = "UTC"),
   fetch_all = TRUE, sleep = 0.5
 )
 }
@@ -792,8 +792,8 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFuturesData$get_funding_rate(
   symbol,
-  startTime = NULL,
-  endTime = NULL,
+  start_time = NULL,
+  end_time = NULL,
   limit = NULL
 )}\if{html}{\out{</div>}}
 }
@@ -803,9 +803,9 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{startTime}}{(scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).}
+\item{\code{start_time}}{(scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).}
 
-\item{\code{endTime}}{(scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).}
+\item{\code{end_time}}{(scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).}
 
 \item{\code{limit}}{(scalar<count>?) max results (default 100, max 1000).}
 }
@@ -1332,8 +1332,8 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFuturesData$get_index_price_klines(
   pair,
   interval = "1h",
-  startTime = NULL,
-  endTime = NULL,
+  start_time = NULL,
+  end_time = NULL,
   limit = NULL
 )}\if{html}{\out{</div>}}
 }
@@ -1348,9 +1348,9 @@ Verified: 2026-05-22
 \code{"1h"}, \code{"2h"}, \code{"4h"}, \code{"6h"}, \code{"8h"}, \code{"12h"},
 \code{"1d"}, \code{"3d"}, \code{"1w"}, \code{"1M"}.}
 
-\item{\code{startTime}}{(scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).}
+\item{\code{start_time}}{(scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).}
 
-\item{\code{endTime}}{(scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).}
+\item{\code{end_time}}{(scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).}
 
 \item{\code{limit}}{(scalar<count>?) max results (default 500, max 1500).}
 }
@@ -1420,8 +1420,8 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFuturesData$get_mark_price_klines(
   symbol,
   interval = "1h",
-  startTime = NULL,
-  endTime = NULL,
+  start_time = NULL,
+  end_time = NULL,
   limit = NULL
 )}\if{html}{\out{</div>}}
 }
@@ -1436,9 +1436,9 @@ Verified: 2026-05-22
 \code{"1h"}, \code{"2h"}, \code{"4h"}, \code{"6h"}, \code{"8h"}, \code{"12h"},
 \code{"1d"}, \code{"3d"}, \code{"1w"}, \code{"1M"}.}
 
-\item{\code{startTime}}{(scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).}
+\item{\code{start_time}}{(scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).}
 
-\item{\code{endTime}}{(scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).}
+\item{\code{end_time}}{(scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).}
 
 \item{\code{limit}}{(scalar<count>?) max results (default 500, max 1500).}
 }

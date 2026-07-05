@@ -94,27 +94,27 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param subAccountString (scalar<character>) the sub-account name/string identifier.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param sub_account_string (scalar<character>) the sub-account name/string identifier.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - email (character) The email of the newly created sub-account.
     #'
     #' @examples
     #' \dontrun{
     #' sub <- BinanceSubAccount$new()
-    #' result <- sub$add_sub_account(subAccountString = "mysubaccount")
+    #' result <- sub$add_sub_account(sub_account_string = "mysubaccount")
     #' print(result$email)
     #' }
     # nolint end
-    add_sub_account = function(subAccountString, recvWindow = NULL) {
-      assert_args_BinanceSubAccount__add_sub_account(subAccountString, recvWindow)
-      assert::assert_nonempty_strings(subAccountString)
+    add_sub_account = function(sub_account_string, recv_window = NULL) {
+      assert_args_BinanceSubAccount__add_sub_account(sub_account_string, recv_window)
+      assert::assert_nonempty_strings(sub_account_string)
       res <- private$.request(
         endpoint = "/sapi/v1/sub-account/virtualSubAccount",
         method = "POST",
         body = list(
-          subAccountString = subAccountString,
-          recvWindow = recvWindow
+          subAccountString = sub_account_string,
+          recvWindow = recv_window
         ),
         .parser = as_dt_row
       )
@@ -163,10 +163,10 @@ BinanceSubAccount <- R6::R6Class(
     #' ```
     #'
     #' @param email (scalar<character>?) filter by sub-account email.
-    #' @param isFreeze (scalar<logical>?) filter by freeze status.
+    #' @param is_freeze (scalar<logical>?) filter by freeze status.
     #' @param page (scalar<count>?) page number (default 1).
     #' @param limit (scalar<count>?) results per page (default 1, max 200).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per sub-account
     #'   (empty when there are none):
     #' - email (character) Sub-account email.
@@ -182,17 +182,17 @@ BinanceSubAccount <- R6::R6Class(
     #' print(accounts[, .(email, is_freeze, create_time)])
     #' }
     # nolint end
-    get_sub_accounts = function(email = NULL, isFreeze = NULL, page = NULL, limit = NULL, recvWindow = NULL) {
-      assert_args_BinanceSubAccount__get_sub_accounts(email, isFreeze, page, limit, recvWindow)
+    get_sub_accounts = function(email = NULL, is_freeze = NULL, page = NULL, limit = NULL, recv_window = NULL) {
+      assert_args_BinanceSubAccount__get_sub_accounts(email, is_freeze, page, limit, recv_window)
       assert::assert_nonempty_strings(email, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/sub-account/list",
         query = list(
           email = email,
-          isFreeze = isFreeze,
+          isFreeze = is_freeze,
           page = page,
           limit = limit,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           items <- data$subAccounts
@@ -241,7 +241,7 @@ BinanceSubAccount <- R6::R6Class(
     #' ```
     #'
     #' @param email (scalar<character>) the sub-account email.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per asset
     #'   (empty when there are none):
     #' - asset (character) Asset symbol (e.g., `"BTC"`).
@@ -255,14 +255,14 @@ BinanceSubAccount <- R6::R6Class(
     #' print(balances)
     #' }
     # nolint end
-    get_balances = function(email, recvWindow = NULL) {
-      assert_args_BinanceSubAccount__get_balances(email, recvWindow)
+    get_balances = function(email, recv_window = NULL) {
+      assert_args_BinanceSubAccount__get_balances(email, recv_window)
       assert::assert_nonempty_strings(email)
       res <- private$.request(
         endpoint = "/sapi/v3/sub-account/assets",
         query = list(
           email = email,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           items <- data$balances
@@ -323,7 +323,7 @@ BinanceSubAccount <- R6::R6Class(
     #' @param email (scalar<character>?) filter by sub-account email.
     #' @param page (scalar<count>?) page number (default 1).
     #' @param size (scalar<count>?) results per page (default 10, max 20).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per sub-account
     #'   (empty when there are none); the master-level summary fields are
     #'   replicated on each row:
@@ -340,8 +340,8 @@ BinanceSubAccount <- R6::R6Class(
     #' print(summary)
     #' }
     # nolint end
-    get_spot_summary = function(email = NULL, page = NULL, size = NULL, recvWindow = NULL) {
-      assert_args_BinanceSubAccount__get_spot_summary(email, page, size, recvWindow)
+    get_spot_summary = function(email = NULL, page = NULL, size = NULL, recv_window = NULL) {
+      assert_args_BinanceSubAccount__get_spot_summary(email, page, size, recv_window)
       assert::assert_nonempty_strings(email, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/sub-account/spotSummary",
@@ -349,7 +349,7 @@ BinanceSubAccount <- R6::R6Class(
           email = email,
           page = page,
           size = size,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
@@ -426,16 +426,16 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param fromEmail (scalar<character>?) sender sub-account email.
-    #' @param toEmail (scalar<character>?) recipient sub-account email.
-    #' @param fromAccountType (scalar<character>) source account type. One of
+    #' @param from_email (scalar<character>?) sender sub-account email.
+    #' @param to_email (scalar<character>?) recipient sub-account email.
+    #' @param from_account_type (scalar<character>) source account type. One of
     #'   `"SPOT"`, `"USDT_FUTURE"`, `"COIN_FUTURE"`, `"MARGIN"`, `"ISOLATED_MARGIN"`.
-    #' @param toAccountType (scalar<character>) destination account type. One of
+    #' @param to_account_type (scalar<character>) destination account type. One of
     #'   `"SPOT"`, `"USDT_FUTURE"`, `"COIN_FUTURE"`, `"MARGIN"`, `"ISOLATED_MARGIN"`.
     #' @param asset (scalar<character>) asset to transfer (e.g., `"USDT"`).
     #' @param amount (scalar<numeric>) amount to transfer.
-    #' @param clientTranId (scalar<character>?) client-defined transfer ID.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param client_tran_id (scalar<character>?) client-defined transfer ID.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - tran_id (numeric) Binance-assigned transfer ID (a large integer that
     #'   overflows R's 32-bit `integer`, so it arrives as a double).
@@ -445,52 +445,52 @@ BinanceSubAccount <- R6::R6Class(
     #' \dontrun{
     #' sub <- BinanceSubAccount$new()
     #' result <- sub$add_transfer(
-    #'   toEmail = "sub@virtual.com",
-    #'   fromAccountType = "SPOT", toAccountType = "SPOT",
+    #'   to_email = "sub@virtual.com",
+    #'   from_account_type = "SPOT", to_account_type = "SPOT",
     #'   asset = "USDT", amount = 100
     #' )
     #' print(result$tran_id)
     #' }
     # nolint end
     add_transfer = function(
-      fromEmail = NULL,
-      toEmail = NULL,
-      fromAccountType,
-      toAccountType,
+      from_email = NULL,
+      to_email = NULL,
+      from_account_type,
+      to_account_type,
       asset,
       amount,
-      clientTranId = NULL,
-      recvWindow = NULL
+      client_tran_id = NULL,
+      recv_window = NULL
     ) {
       assert_args_BinanceSubAccount__add_transfer(
-        fromEmail,
-        toEmail,
-        fromAccountType,
-        toAccountType,
+        from_email,
+        to_email,
+        from_account_type,
+        to_account_type,
         asset,
         amount,
-        clientTranId,
-        recvWindow
+        client_tran_id,
+        recv_window
       )
-      assert::assert_nonempty_strings(fromEmail, null_ok = TRUE)
-      assert::assert_nonempty_strings(toEmail, null_ok = TRUE)
+      assert::assert_nonempty_strings(from_email, null_ok = TRUE)
+      assert::assert_nonempty_strings(to_email, null_ok = TRUE)
       assert::assert_nonempty_strings(asset)
       valid_types <- c("SPOT", "USDT_FUTURE", "COIN_FUTURE", "MARGIN", "ISOLATED_MARGIN")
-      if (!fromAccountType %in% valid_types) {
+      if (!from_account_type %in% valid_types) {
         rlang::abort(paste0(
-          "'fromAccountType' must be one of: ",
+          "'from_account_type' must be one of: ",
           paste(valid_types, collapse = ", "),
           ". Got: '",
-          fromAccountType,
+          from_account_type,
           "'."
         ))
       }
-      if (!toAccountType %in% valid_types) {
+      if (!to_account_type %in% valid_types) {
         rlang::abort(paste0(
-          "'toAccountType' must be one of: ",
+          "'to_account_type' must be one of: ",
           paste(valid_types, collapse = ", "),
           ". Got: '",
-          toAccountType,
+          to_account_type,
           "'."
         ))
       }
@@ -499,14 +499,14 @@ BinanceSubAccount <- R6::R6Class(
         endpoint = "/sapi/v1/sub-account/universalTransfer",
         method = "POST",
         body = list(
-          fromEmail = fromEmail,
-          toEmail = toEmail,
-          fromAccountType = fromAccountType,
-          toAccountType = toAccountType,
+          fromEmail = from_email,
+          toEmail = to_email,
+          fromAccountType = from_account_type,
+          toAccountType = to_account_type,
           asset = asset,
           amount = as.character(amount),
-          clientTranId = clientTranId,
-          recvWindow = recvWindow
+          clientTranId = client_tran_id,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
@@ -560,14 +560,14 @@ BinanceSubAccount <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param fromEmail (scalar<character>?) filter by sender email.
-    #' @param toEmail (scalar<character>?) filter by recipient email.
-    #' @param clientTranId (scalar<character>?) filter by client transfer ID.
-    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
-    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param from_email (scalar<character>?) filter by sender email.
+    #' @param to_email (scalar<character>?) filter by recipient email.
+    #' @param client_tran_id (scalar<character>?) filter by client transfer ID.
+    #' @param start_time (scalar<count>?) start timestamp in milliseconds.
+    #' @param end_time (scalar<count>?) end timestamp in milliseconds.
     #' @param page (scalar<count>?) page number (default 1).
     #' @param limit (scalar<count>?) results per page (default 500, max 500).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per transfer
     #'   (empty when there are none):
     #' - tran_id (numeric) Binance-assigned transfer ID (a large integer that
@@ -585,43 +585,43 @@ BinanceSubAccount <- R6::R6Class(
     #' @examples
     #' \dontrun{
     #' sub <- BinanceSubAccount$new()
-    #' history <- sub$get_transfer_history(toEmail = "sub@virtual.com")
+    #' history <- sub$get_transfer_history(to_email = "sub@virtual.com")
     #' print(history)
     #' }
     # nolint end
     get_transfer_history = function(
-      fromEmail = NULL,
-      toEmail = NULL,
-      clientTranId = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      from_email = NULL,
+      to_email = NULL,
+      client_tran_id = NULL,
+      start_time = NULL,
+      end_time = NULL,
       page = NULL,
       limit = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     ) {
       assert_args_BinanceSubAccount__get_transfer_history(
-        fromEmail,
-        toEmail,
-        clientTranId,
-        startTime,
-        endTime,
+        from_email,
+        to_email,
+        client_tran_id,
+        start_time,
+        end_time,
         page,
         limit,
-        recvWindow
+        recv_window
       )
-      assert::assert_nonempty_strings(fromEmail, null_ok = TRUE)
-      assert::assert_nonempty_strings(toEmail, null_ok = TRUE)
+      assert::assert_nonempty_strings(from_email, null_ok = TRUE)
+      assert::assert_nonempty_strings(to_email, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/sub-account/universalTransfer",
         query = list(
-          fromEmail = fromEmail,
-          toEmail = toEmail,
-          clientTranId = clientTranId,
-          startTime = startTime,
-          endTime = endTime,
+          fromEmail = from_email,
+          toEmail = to_email,
+          clientTranId = client_tran_id,
+          startTime = start_time,
+          endTime = end_time,
           page = page,
           limit = limit,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           items <- data$result
@@ -696,8 +696,8 @@ BinanceSubAccount <- R6::R6Class(
     #' ```
     #'
     #' @param email (scalar<character>) the sub-account email.
-    #' @param futuresType (scalar<count>) `1` for USDT-margined futures, `2` for COIN-margined futures.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param futures_type (scalar<count>) `1` for USDT-margined futures, `2` for COIN-margined futures.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per asset (long
     #'   format). Account-level fields (`email`, `asset`, `can_deposit`,
     #'   `can_trade`, `can_withdraw`, `fee_tier`, `max_withdraw_amount`,
@@ -714,19 +714,19 @@ BinanceSubAccount <- R6::R6Class(
     #' @examples
     #' \dontrun{
     #' sub <- BinanceSubAccount$new()
-    #' futures <- sub$get_futures_account(email = "sub@virtual.com", futuresType = 1)
+    #' futures <- sub$get_futures_account(email = "sub@virtual.com", futures_type = 1)
     #' print(futures)
     #' }
     # nolint end
-    get_futures_account = function(email, futuresType, recvWindow = NULL) {
-      assert_args_BinanceSubAccount__get_futures_account(email, futuresType, recvWindow)
+    get_futures_account = function(email, futures_type, recv_window = NULL) {
+      assert_args_BinanceSubAccount__get_futures_account(email, futures_type, recv_window)
       assert::assert_nonempty_strings(email)
       res <- private$.request(
         endpoint = "/sapi/v2/sub-account/futures/account",
         query = list(
           email = email,
-          futuresType = futuresType,
-          recvWindow = recvWindow
+          futuresType = futures_type,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
@@ -795,7 +795,7 @@ BinanceSubAccount <- R6::R6Class(
     #' ```
     #'
     #' @param email (scalar<character>) the sub-account email.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row, whichever margin
     #'   account fields Binance returns (`email`, `margin_level`,
     #'   `total_asset_of_btc`, `total_liability_of_btc`,
@@ -810,14 +810,14 @@ BinanceSubAccount <- R6::R6Class(
     #' print(margin)
     #' }
     # nolint end
-    get_margin_account = function(email, recvWindow = NULL) {
-      assert_args_BinanceSubAccount__get_margin_account(email, recvWindow)
+    get_margin_account = function(email, recv_window = NULL) {
+      assert_args_BinanceSubAccount__get_margin_account(email, recv_window)
       assert::assert_nonempty_strings(email)
       res <- private$.request(
         endpoint = "/sapi/v1/sub-account/margin/account",
         query = list(
           email = email,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = as_dt_row
       )
@@ -866,7 +866,7 @@ BinanceSubAccount <- R6::R6Class(
     #' ```
     #'
     #' @param email (scalar<character>?) filter by sub-account email.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per sub-account
     #'   (empty when there are none):
     #' - email (character) Sub-account email.
@@ -884,14 +884,14 @@ BinanceSubAccount <- R6::R6Class(
     #' print(status)
     #' }
     # nolint end
-    get_status = function(email = NULL, recvWindow = NULL) {
-      assert_args_BinanceSubAccount__get_status(email, recvWindow)
+    get_status = function(email = NULL, recv_window = NULL) {
+      assert_args_BinanceSubAccount__get_status(email, recv_window)
       assert::assert_nonempty_strings(email, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/sub-account/status",
         query = list(
           email = email,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {

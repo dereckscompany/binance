@@ -7,7 +7,7 @@ utils::globalVariables(c(
   # Timestamp columns converted in-place via :=
   "server_time",
   "time",
-  "open_time",
+  "datetime",
   "close_time",
   "update_time",
   "transact_time",

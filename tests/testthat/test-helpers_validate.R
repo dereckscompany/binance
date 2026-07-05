@@ -26,12 +26,12 @@ test_that("validate_order_params validates market orders with quantity", {
   expect_null(params$price)
 })
 
-test_that("validate_order_params validates market orders with quoteOrderQty", {
+test_that("validate_order_params validates market orders with quote_order_qty", {
   params <- binance:::validate_order_params(
     type = "MARKET",
     symbol = "BTCUSDT",
     side = "BUY",
-    quoteOrderQty = 100
+    quote_order_qty = 100
   )
   expect_equal(params$quoteOrderQty, "100")
   expect_null(params$quantity)
@@ -69,7 +69,7 @@ test_that("validate_order_params rejects market order without quantity or quoteO
       symbol = "BTCUSDT",
       side = "BUY"
     ),
-    "quantity.*quoteOrderQty"
+    "quantity.*quote_order_qty"
   )
 })
 
@@ -94,8 +94,8 @@ test_that("validate_order_params rejects excessive recvWindow", {
       side = "BUY",
       price = 50000,
       quantity = 0.001,
-      recvWindow = 70000
+      recv_window = 70000
     ),
-    "recvWindow"
+    "recv_window"
   )
 })

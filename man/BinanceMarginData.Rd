@@ -203,13 +203,13 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMarginData$get_all_pairs(recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarginData$get_all_pairs(recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{recvWindow}}{(scalar<count>?) request validity window in milliseconds.}
+\item{\code{recv_window}}{(scalar<count>?) request validity window in milliseconds.}
 }
 \if{html}{\out{</div>}}
 }
@@ -287,13 +287,13 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMarginData$get_isolated_pairs(recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarginData$get_isolated_pairs(recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{recvWindow}}{(scalar<count>?) request validity window in milliseconds.}
+\item{\code{recv_window}}{(scalar<count>?) request validity window in milliseconds.}
 }
 \if{html}{\out{</div>}}
 }
@@ -431,10 +431,10 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMarginData$get_interest_rate_history(
   asset,
-  vipLevel = NULL,
-  startTime = NULL,
-  endTime = NULL,
-  recvWindow = NULL
+  vip_level = NULL,
+  start_time = NULL,
+  end_time = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -443,13 +443,13 @@ Verified: 2026-05-22
 \describe{
 \item{\code{asset}}{(scalar<character>) asset code (e.g., \code{"BTC"}).}
 
-\item{\code{vipLevel}}{(scalar<count>?) VIP level to query. Defaults to user's VIP level.}
+\item{\code{vip_level}}{(scalar<count>?) VIP level to query. Defaults to user's VIP level.}
 
-\item{\code{startTime}}{(scalar<numeric>?) start time in milliseconds.}
+\item{\code{start_time}}{(scalar<numeric>?) start time in milliseconds.}
 
-\item{\code{endTime}}{(scalar<numeric>?) end time in milliseconds.}
+\item{\code{end_time}}{(scalar<numeric>?) end time in milliseconds.}
 
-\item{\code{recvWindow}}{(scalar<count>?) request validity window in milliseconds.}
+\item{\code{recv_window}}{(scalar<count>?) request validity window in milliseconds.}
 }
 \if{html}{\out{</div>}}
 }
@@ -529,20 +529,20 @@ Verified: 2026-05-22
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMarginData$get_cross_margin_data(
-  vipLevel = NULL,
+  vip_level = NULL,
   coin = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{vipLevel}}{(scalar<count>?) VIP level to query. Defaults to user's VIP level.}
+\item{\code{vip_level}}{(scalar<count>?) VIP level to query. Defaults to user's VIP level.}
 
 \item{\code{coin}}{(scalar<character>?) specific coin to query (e.g., \code{"BTC"}).}
 
-\item{\code{recvWindow}}{(scalar<count>?) request validity window in milliseconds.}
+\item{\code{recv_window}}{(scalar<count>?) request validity window in milliseconds.}
 }
 \if{html}{\out{</div>}}
 }
@@ -642,20 +642,20 @@ Verified: 2026-05-22
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMarginData$get_isolated_margin_data(
-  vipLevel = NULL,
+  vip_level = NULL,
   symbol = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{vipLevel}}{(scalar<count>?) VIP level to query. Defaults to user's VIP level.}
+\item{\code{vip_level}}{(scalar<count>?) VIP level to query. Defaults to user's VIP level.}
 
 \item{\code{symbol}}{(scalar<character>?) specific symbol to query (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{recvWindow}}{(scalar<count>?) request validity window in milliseconds.}
+\item{\code{recv_window}}{(scalar<count>?) request validity window in milliseconds.}
 }
 \if{html}{\out{</div>}}
 }

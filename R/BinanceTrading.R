@@ -88,7 +88,7 @@ BinanceTrading <- R6::R6Class(
     #' ### Automated Trading Usage
     #' - **Limit Orders**: Set specific entry/exit prices for strategy execution.
     #' - **Market Orders**: Execute immediately at best available price.
-    #' - **Response Type**: Use `newOrderRespType = "FULL"` to get fill details in the response.
+    #' - **Response Type**: Use `new_order_resp_type = "FULL"` to get fill details in the response.
     #'
     #' ### curl
     #' ```
@@ -121,15 +121,15 @@ BinanceTrading <- R6::R6Class(
     #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
     #' @param side (scalar<character>) `"BUY"` or `"SELL"`.
     #' @param quantity (scalar<numeric>?) base asset quantity.
-    #' @param quoteOrderQty (scalar<numeric>?) quote asset quantity (market orders only).
+    #' @param quote_order_qty (scalar<numeric>?) quote asset quantity (market orders only).
     #' @param price (scalar<numeric>?) price for limit orders.
-    #' @param timeInForce (scalar<character>?) `"GTC"`, `"IOC"`, `"FOK"`.
-    #' @param newClientOrderId (scalar<character>?) unique client order ID.
-    #' @param stopPrice (scalar<numeric>?) trigger price for stop orders.
-    #' @param icebergQty (scalar<numeric>?) iceberg quantity.
-    #' @param newOrderRespType (scalar<character>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
-    #' @param selfTradePreventionMode (scalar<character>?)
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param time_in_force (scalar<character>?) `"GTC"`, `"IOC"`, `"FOK"`.
+    #' @param new_client_order_id (scalar<character>?) unique client order ID.
+    #' @param stop_price (scalar<numeric>?) trigger price for stop orders.
+    #' @param iceberg_qty (scalar<numeric>?) iceberg quantity.
+    #' @param new_order_resp_type (scalar<character>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
+    #' @param self_trade_prevention_mode (scalar<character>?)
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per fill (one row with
     #'   `NA` `fill_*` columns when the order had no fills):
     #' - symbol (character) Trading pair (e.g., `"BTCUSDT"`).
@@ -160,7 +160,7 @@ BinanceTrading <- R6::R6Class(
     #'
     #' When the order has N fills, the parent order fields are replicated on
     #' each of the N rows and `fill_index` runs `1..N`. When the order has
-    #' no fills (e.g. a resting `LIMIT` order with `newOrderRespType = "ACK"`
+    #' no fills (e.g. a resting `LIMIT` order with `new_order_resp_type = "ACK"`
     #' / `"RESULT"`), a single row is returned with the `fill_*` columns
     #' present as `NA` so the schema is stable across response types.
     #'
@@ -179,47 +179,47 @@ BinanceTrading <- R6::R6Class(
       symbol,
       side,
       quantity = NULL,
-      quoteOrderQty = NULL,
+      quote_order_qty = NULL,
       price = NULL,
-      timeInForce = NULL,
-      newClientOrderId = NULL,
-      stopPrice = NULL,
-      icebergQty = NULL,
-      newOrderRespType = NULL,
-      selfTradePreventionMode = NULL,
-      recvWindow = NULL
+      time_in_force = NULL,
+      new_client_order_id = NULL,
+      stop_price = NULL,
+      iceberg_qty = NULL,
+      new_order_resp_type = NULL,
+      self_trade_prevention_mode = NULL,
+      recv_window = NULL
     ) {
       assert_args_BinanceTrading__add_order(
         type,
         symbol,
         side,
         quantity,
-        quoteOrderQty,
+        quote_order_qty,
         price,
-        timeInForce,
-        newClientOrderId,
-        stopPrice,
-        icebergQty,
-        newOrderRespType,
-        selfTradePreventionMode,
-        recvWindow
+        time_in_force,
+        new_client_order_id,
+        stop_price,
+        iceberg_qty,
+        new_order_resp_type,
+        self_trade_prevention_mode,
+        recv_window
       )
       assert::assert_nonempty_strings(symbol)
-      assert::assert_nonempty_strings(newClientOrderId, null_ok = TRUE)
+      assert::assert_nonempty_strings(new_client_order_id, null_ok = TRUE)
       body <- validate_order_params(
         type = type,
         symbol = symbol,
         side = side,
         quantity = quantity,
-        quoteOrderQty = quoteOrderQty,
+        quote_order_qty = quote_order_qty,
         price = price,
-        timeInForce = timeInForce,
-        newClientOrderId = newClientOrderId,
-        stopPrice = stopPrice,
-        icebergQty = icebergQty,
-        newOrderRespType = newOrderRespType,
-        selfTradePreventionMode = selfTradePreventionMode,
-        recvWindow = recvWindow
+        time_in_force = time_in_force,
+        new_client_order_id = new_client_order_id,
+        stop_price = stop_price,
+        iceberg_qty = iceberg_qty,
+        new_order_resp_type = new_order_resp_type,
+        self_trade_prevention_mode = self_trade_prevention_mode,
+        recv_window = recv_window
       )
 
       res <- private$.request(
@@ -322,15 +322,15 @@ BinanceTrading <- R6::R6Class(
     #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
     #' @param side (scalar<character>) `"BUY"` or `"SELL"`.
     #' @param quantity (scalar<numeric>?) base asset quantity.
-    #' @param quoteOrderQty (scalar<numeric>?) quote asset quantity (market orders only).
+    #' @param quote_order_qty (scalar<numeric>?) quote asset quantity (market orders only).
     #' @param price (scalar<numeric>?) price for limit orders.
-    #' @param timeInForce (scalar<character>?) `"GTC"`, `"IOC"`, `"FOK"`.
-    #' @param newClientOrderId (scalar<character>?) unique client order ID.
-    #' @param stopPrice (scalar<numeric>?) trigger price for stop orders.
-    #' @param icebergQty (scalar<numeric>?) iceberg quantity.
-    #' @param newOrderRespType (scalar<character>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
-    #' @param selfTradePreventionMode (scalar<character>?)
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param time_in_force (scalar<character>?) `"GTC"`, `"IOC"`, `"FOK"`.
+    #' @param new_client_order_id (scalar<character>?) unique client order ID.
+    #' @param stop_price (scalar<numeric>?) trigger price for stop orders.
+    #' @param iceberg_qty (scalar<numeric>?) iceberg quantity.
+    #' @param new_order_resp_type (scalar<character>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
+    #' @param self_trade_prevention_mode (scalar<character>?)
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) a single row. Binance returns
     #'   `{}` on a successful test order — the absence of an error is the
     #'   validation signal, so we don't fabricate a stub row echoing the request
@@ -352,47 +352,47 @@ BinanceTrading <- R6::R6Class(
       symbol,
       side,
       quantity = NULL,
-      quoteOrderQty = NULL,
+      quote_order_qty = NULL,
       price = NULL,
-      timeInForce = NULL,
-      newClientOrderId = NULL,
-      stopPrice = NULL,
-      icebergQty = NULL,
-      newOrderRespType = NULL,
-      selfTradePreventionMode = NULL,
-      recvWindow = NULL
+      time_in_force = NULL,
+      new_client_order_id = NULL,
+      stop_price = NULL,
+      iceberg_qty = NULL,
+      new_order_resp_type = NULL,
+      self_trade_prevention_mode = NULL,
+      recv_window = NULL
     ) {
       assert_args_BinanceTrading__add_order_test(
         type,
         symbol,
         side,
         quantity,
-        quoteOrderQty,
+        quote_order_qty,
         price,
-        timeInForce,
-        newClientOrderId,
-        stopPrice,
-        icebergQty,
-        newOrderRespType,
-        selfTradePreventionMode,
-        recvWindow
+        time_in_force,
+        new_client_order_id,
+        stop_price,
+        iceberg_qty,
+        new_order_resp_type,
+        self_trade_prevention_mode,
+        recv_window
       )
       assert::assert_nonempty_strings(symbol)
-      assert::assert_nonempty_strings(newClientOrderId, null_ok = TRUE)
+      assert::assert_nonempty_strings(new_client_order_id, null_ok = TRUE)
       body <- validate_order_params(
         type = type,
         symbol = symbol,
         side = side,
         quantity = quantity,
-        quoteOrderQty = quoteOrderQty,
+        quote_order_qty = quote_order_qty,
         price = price,
-        timeInForce = timeInForce,
-        newClientOrderId = newClientOrderId,
-        stopPrice = stopPrice,
-        icebergQty = icebergQty,
-        newOrderRespType = newOrderRespType,
-        selfTradePreventionMode = selfTradePreventionMode,
-        recvWindow = recvWindow
+        time_in_force = time_in_force,
+        new_client_order_id = new_client_order_id,
+        stop_price = stop_price,
+        iceberg_qty = iceberg_qty,
+        new_order_resp_type = new_order_resp_type,
+        self_trade_prevention_mode = self_trade_prevention_mode,
+        recv_window = recv_window
       )
 
       res <- private$.request(
@@ -462,9 +462,9 @@ BinanceTrading <- R6::R6Class(
     #' ```
     #'
     #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderId (scalar<count>?) the order ID to cancel.
-    #' @param origClientOrderId (scalar<character>?) the client order ID to cancel.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param order_id (scalar<count>?) the order ID to cancel.
+    #' @param orig_client_order_id (scalar<character>?) the client order ID to cancel.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - symbol (character) Trading pair.
     #' - orig_client_order_id (character) Original client order ID.
@@ -485,16 +485,16 @@ BinanceTrading <- R6::R6Class(
     #' @examples
     #' \dontrun{
     #' trading <- BinanceTrading$new()
-    #' cancelled <- trading$cancel_order("BTCUSDT", orderId = 12345)
+    #' cancelled <- trading$cancel_order("BTCUSDT", order_id = 12345)
     #' print(cancelled)
     #' }
     # nolint end
-    cancel_order = function(symbol, orderId = NULL, origClientOrderId = NULL, recvWindow = NULL) {
-      assert_args_BinanceTrading__cancel_order(symbol, orderId, origClientOrderId, recvWindow)
+    cancel_order = function(symbol, order_id = NULL, orig_client_order_id = NULL, recv_window = NULL) {
+      assert_args_BinanceTrading__cancel_order(symbol, order_id, orig_client_order_id, recv_window)
       assert::assert_nonempty_strings(symbol)
-      assert::assert_nonempty_strings(origClientOrderId, null_ok = TRUE)
-      if (is.null(orderId) && is.null(origClientOrderId)) {
-        rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
+      assert::assert_nonempty_strings(orig_client_order_id, null_ok = TRUE)
+      if (is.null(order_id) && is.null(orig_client_order_id)) {
+        rlang::abort("Either 'order_id' or 'orig_client_order_id' must be provided.")
       }
 
       res <- private$.request(
@@ -502,9 +502,9 @@ BinanceTrading <- R6::R6Class(
         method = "DELETE",
         query = list(
           symbol = symbol,
-          orderId = orderId,
-          origClientOrderId = origClientOrderId,
-          recvWindow = recvWindow
+          orderId = order_id,
+          origClientOrderId = orig_client_order_id,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
@@ -581,7 +581,7 @@ BinanceTrading <- R6::R6Class(
     #' ```
     #'
     #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per cancelled order
     #'   (empty when there were no open orders to cancel, per the cross-package
     #'   "no stub rows" convention — the absence of an error is the success
@@ -609,13 +609,13 @@ BinanceTrading <- R6::R6Class(
     #' print(cancelled)
     #' }
     # nolint end
-    cancel_all_orders = function(symbol, recvWindow = NULL) {
-      assert_args_BinanceTrading__cancel_all_orders(symbol, recvWindow)
+    cancel_all_orders = function(symbol, recv_window = NULL) {
+      assert_args_BinanceTrading__cancel_all_orders(symbol, recv_window)
       assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/api/v3/openOrders",
         method = "DELETE",
-        query = list(symbol = symbol, recvWindow = recvWindow),
+        query = list(symbol = symbol, recvWindow = recv_window),
         .parser = function(data) {
           # Per the cross-package "empty response → empty data.table,
           # no stub rows" convention: when there were no orders to
@@ -688,33 +688,33 @@ BinanceTrading <- R6::R6Class(
     #' ```
     #'
     #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderId (scalar<count>?) the order ID.
-    #' @param origClientOrderId (scalar<character>?) the client order ID.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param order_id (scalar<count>?) the order ID.
+    #' @param orig_client_order_id (scalar<character>?) the client order ID.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (SpotOrderQuery | promise<SpotOrderQuery>) one row, the order.
     #'
     #' @examples
     #' \dontrun{
     #' trading <- BinanceTrading$new()
-    #' order <- trading$get_order("BTCUSDT", orderId = 12345)
+    #' order <- trading$get_order("BTCUSDT", order_id = 12345)
     #' print(order)
     #' }
     # nolint end
-    get_order = function(symbol, orderId = NULL, origClientOrderId = NULL, recvWindow = NULL) {
-      assert_args_BinanceTrading__get_order(symbol, orderId, origClientOrderId, recvWindow)
+    get_order = function(symbol, order_id = NULL, orig_client_order_id = NULL, recv_window = NULL) {
+      assert_args_BinanceTrading__get_order(symbol, order_id, orig_client_order_id, recv_window)
       assert::assert_nonempty_strings(symbol)
-      assert::assert_nonempty_strings(origClientOrderId, null_ok = TRUE)
-      if (is.null(orderId) && is.null(origClientOrderId)) {
-        rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
+      assert::assert_nonempty_strings(orig_client_order_id, null_ok = TRUE)
+      if (is.null(order_id) && is.null(orig_client_order_id)) {
+        rlang::abort("Either 'order_id' or 'orig_client_order_id' must be provided.")
       }
 
       res <- private$.request(
         endpoint = "/api/v3/order",
         query = list(
           symbol = symbol,
-          orderId = orderId,
-          origClientOrderId = origClientOrderId,
-          recvWindow = recvWindow
+          orderId = order_id,
+          origClientOrderId = orig_client_order_id,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
@@ -780,7 +780,7 @@ BinanceTrading <- R6::R6Class(
     #'
     #' @param symbol (scalar<character>?) trading pair (e.g., `"BTCUSDT"`).
     #'   If NULL, returns open orders for all symbols (weight 80).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per open order
     #'   (empty when there are none):
     #' - symbol (character) Trading pair.
@@ -810,12 +810,12 @@ BinanceTrading <- R6::R6Class(
     #' print(open)
     #' }
     # nolint end
-    get_open_orders = function(symbol = NULL, recvWindow = NULL) {
-      assert_args_BinanceTrading__get_open_orders(symbol, recvWindow)
+    get_open_orders = function(symbol = NULL, recv_window = NULL) {
+      assert_args_BinanceTrading__get_open_orders(symbol, recv_window)
       assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/api/v3/openOrders",
-        query = list(symbol = symbol, recvWindow = recvWindow),
+        query = list(symbol = symbol, recvWindow = recv_window),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
             return(empty_dt_spot_order_list())
@@ -906,11 +906,11 @@ BinanceTrading <- R6::R6Class(
     #' ```
     #'
     #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderId (scalar<count>?) pagination cursor.
-    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
-    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param order_id (scalar<count>?) pagination cursor.
+    #' @param start_time (scalar<count>?) start timestamp in milliseconds.
+    #' @param end_time (scalar<count>?) end timestamp in milliseconds.
     #' @param limit (scalar<count>?) max results (default 500, max 1000).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per order
     #'   (empty when there are no matching orders):
     #' - symbol (character) Trading pair.
@@ -942,23 +942,23 @@ BinanceTrading <- R6::R6Class(
     # nolint end
     get_all_orders = function(
       symbol,
-      orderId = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      order_id = NULL,
+      start_time = NULL,
+      end_time = NULL,
       limit = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     ) {
-      assert_args_BinanceTrading__get_all_orders(symbol, orderId, startTime, endTime, limit, recvWindow)
+      assert_args_BinanceTrading__get_all_orders(symbol, order_id, start_time, end_time, limit, recv_window)
       assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/api/v3/allOrders",
         query = list(
           symbol = symbol,
-          orderId = orderId,
-          startTime = startTime,
-          endTime = endTime,
+          orderId = order_id,
+          startTime = start_time,
+          endTime = end_time,
           limit = limit,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {

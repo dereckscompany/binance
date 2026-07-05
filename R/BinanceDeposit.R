@@ -92,7 +92,7 @@ BinanceDeposit <- R6::R6Class(
     #' @param coin (scalar<character>) coin symbol (e.g., `"BTC"`, `"ETH"`, `"USDT"`).
     #' @param network (scalar<character>?) blockchain network (e.g., `"ETH"`,
     #'   `"TRX"`, `"BSC"`). If NULL, uses the coin's default network.
-    #' @param recvWindow (scalar<count in [1, Inf[>?) max 60000.
+    #' @param recv_window (scalar<count in [1, Inf[>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - address (character) the deposit wallet address.
     #' - coin (character) coin symbol (e.g., `"BTC"`).
@@ -111,8 +111,8 @@ BinanceDeposit <- R6::R6Class(
     #' usdt <- deposit$get_deposit_address(coin = "USDT", network = "TRX")
     #' print(usdt[, .(address, coin, tag)])
     #' }
-    get_deposit_address = function(coin, network = NULL, recvWindow = NULL) {
-      assert_args_BinanceDeposit__get_deposit_address(coin, network, recvWindow)
+    get_deposit_address = function(coin, network = NULL, recv_window = NULL) {
+      assert_args_BinanceDeposit__get_deposit_address(coin, network, recv_window)
       assert::assert_nonempty_strings(coin)
       assert::assert_nonempty_strings(network, null_ok = TRUE)
       res <- private$.request(
@@ -120,7 +120,7 @@ BinanceDeposit <- R6::R6Class(
         query = list(
           coin = coin,
           network = network,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = as_dt_row
       )
@@ -183,12 +183,12 @@ BinanceDeposit <- R6::R6Class(
     #' @param coin (scalar<character>?) filter by coin (e.g., `"BTC"`, `"USDT"`).
     #' @param status (scalar<count>?) filter by status:
     #'   `0` (pending), `1` (success), `6` (credited), `7` (wrong), `8` (waiting confirm).
-    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
-    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param start_time (scalar<count>?) start timestamp in milliseconds.
+    #' @param end_time (scalar<count>?) end timestamp in milliseconds.
     #' @param offset (scalar<count>?) pagination offset (default 0).
     #' @param limit (scalar<count>?) max results (default 1000, max 1000).
-    #' @param txId (scalar<character>?) filter by transaction ID.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param tx_id (scalar<character>?) filter by transaction ID.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per deposit
     #'   (empty when there are no matching deposits):
     #' - id (character) unique deposit identifier.
@@ -217,30 +217,30 @@ BinanceDeposit <- R6::R6Class(
     #' # Get deposits from the last 24 hours
     #' now_ms <- as.integer(as.numeric(Sys.time()) * 1000)
     #' recent <- deposit$get_deposit_history(
-    #'   startTime = now_ms - 86400000L,
-    #'   endTime = now_ms
+    #'   start_time = now_ms - 86400000L,
+    #'   end_time = now_ms
     #' )
     #' }
     # nolint end
     get_deposit_history = function(
       coin = NULL,
       status = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      start_time = NULL,
+      end_time = NULL,
       offset = NULL,
       limit = NULL,
-      txId = NULL,
-      recvWindow = NULL
+      tx_id = NULL,
+      recv_window = NULL
     ) {
       assert_args_BinanceDeposit__get_deposit_history(
         coin,
         status,
-        startTime,
-        endTime,
+        start_time,
+        end_time,
         offset,
         limit,
-        txId,
-        recvWindow
+        tx_id,
+        recv_window
       )
       assert::assert_nonempty_strings(coin, null_ok = TRUE)
       res <- private$.request(
@@ -248,12 +248,12 @@ BinanceDeposit <- R6::R6Class(
         query = list(
           coin = coin,
           status = status,
-          startTime = startTime,
-          endTime = endTime,
+          startTime = start_time,
+          endTime = end_time,
           offset = offset,
           limit = limit,
-          txId = txId,
-          recvWindow = recvWindow
+          txId = tx_id,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {

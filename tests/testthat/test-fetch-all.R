@@ -52,8 +52,8 @@ test_that("get_klines with fetch_all = TRUE makes multiple API calls for large r
   dt <- market$get_klines(
     symbol = "BTCUSDT",
     interval = "1h",
-    startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-    endTime = as.POSIXct("2024-03-25", tz = "UTC"),
+    start_time = as.POSIXct("2024-01-01", tz = "UTC"),
+    end_time = as.POSIXct("2024-03-25", tz = "UTC"),
     fetch_all = TRUE,
     sleep = 0
   )
@@ -81,8 +81,8 @@ test_that("get_klines with fetch_all = TRUE deduplicates and sorts overlapping s
   dt <- market$get_klines(
     symbol = "BTCUSDT",
     interval = "1h",
-    startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-    endTime = as.POSIXct("2024-04-15", tz = "UTC"),
+    start_time = as.POSIXct("2024-01-01", tz = "UTC"),
+    end_time = as.POSIXct("2024-04-15", tz = "UTC"),
     fetch_all = TRUE,
     sleep = 0
   )
@@ -90,10 +90,10 @@ test_that("get_klines with fetch_all = TRUE deduplicates and sorts overlapping s
   expect_s3_class(dt, "data.table")
   # Must have made multiple calls
   expect_true(call_count >= 2L, info = paste("Expected >= 2 API calls, got", call_count))
-  # No duplicate open_time values after dedup
-  expect_equal(nrow(dt), length(unique(dt$open_time)), info = "Segmented results should be deduplicated by open_time")
+  # No duplicate datetime values after dedup
+  expect_equal(nrow(dt), length(unique(dt$datetime)), info = "Segmented results should be deduplicated by datetime")
   # Sorted ascending
-  expect_true(all(diff(as.numeric(dt$open_time)) >= 0), info = "Results should be sorted by open_time ascending")
+  expect_true(all(diff(as.numeric(dt$datetime)) >= 0), info = "Results should be sorted by datetime ascending")
 })
 
 test_that("get_klines with fetch_all = FALSE does NOT segment (default single call)", {
@@ -112,8 +112,8 @@ test_that("get_klines with fetch_all = FALSE does NOT segment (default single ca
     dt <- market$get_klines(
       symbol = "BTCUSDT",
       interval = "1h",
-      startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-      endTime = as.POSIXct("2024-03-25", tz = "UTC")
+      start_time = as.POSIXct("2024-01-01", tz = "UTC"),
+      end_time = as.POSIXct("2024-03-25", tz = "UTC")
     ),
     regexp = "truncat|1000"
   )
@@ -142,8 +142,8 @@ test_that("get_klines with fetch_all = TRUE suppresses truncation warning", {
     market$get_klines(
       symbol = "BTCUSDT",
       interval = "1h",
-      startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-      endTime = as.POSIXct("2024-03-25", tz = "UTC"),
+      start_time = as.POSIXct("2024-01-01", tz = "UTC"),
+      end_time = as.POSIXct("2024-03-25", tz = "UTC"),
       fetch_all = TRUE,
       sleep = 0
     )
@@ -173,8 +173,8 @@ test_that("BinanceFuturesData$get_klines with fetch_all segments large ranges", 
   dt <- futures$get_klines(
     symbol = "BTCUSDT",
     interval = "1h",
-    startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-    endTime = as.POSIXct("2024-04-15", tz = "UTC"),
+    start_time = as.POSIXct("2024-01-01", tz = "UTC"),
+    end_time = as.POSIXct("2024-04-15", tz = "UTC"),
     fetch_all = TRUE,
     sleep = 0
   )
@@ -184,7 +184,7 @@ test_that("BinanceFuturesData$get_klines with fetch_all segments large ranges", 
   expect_true(call_count >= 2L, info = paste("Expected >= 2 API calls for futures, got", call_count))
   expect_true(nrow(dt) > 1500L, info = paste("Expected > 1500 rows for futures, got", nrow(dt)))
   # Deduplication
-  expect_equal(nrow(dt), length(unique(dt$open_time)), info = "Futures segmented results should be deduplicated")
+  expect_equal(nrow(dt), length(unique(dt$datetime)), info = "Futures segmented results should be deduplicated")
 })
 
 # ---------------------------------------------------------------------------

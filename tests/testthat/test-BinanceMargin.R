@@ -115,7 +115,7 @@ test_that("add_order validates sideEffectType when provided", {
       symbol = "BTCUSDT",
       side = "BUY",
       type = "LIMIT",
-      sideEffectType = "INVALID"
+      side_effect_type = "INVALID"
     ),
     "INVALID"
   )
@@ -127,7 +127,7 @@ test_that("cancel_order returns cancelled order with transact_time as POSIXct", 
   resp <- mock_binance_response(data = mock_margin_cancel_order_data())
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_margin()$cancel_order("BTCUSDT", orderId = 28)
+  dt <- new_margin()$cancel_order("BTCUSDT", order_id = 28)
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   expect_equal(dt$status, "CANCELED")
@@ -136,10 +136,10 @@ test_that("cancel_order returns cancelled order with transact_time as POSIXct", 
   expect_s3_class(dt$transact_time, "POSIXct")
 })
 
-test_that("cancel_order requires orderId or origClientOrderId", {
+test_that("cancel_order requires order_id or orig_client_order_id", {
   expect_error(
     new_margin()$cancel_order("BTCUSDT"),
-    "orderId.*origClientOrderId"
+    "order_id.*orig_client_order_id"
   )
 })
 
@@ -151,7 +151,7 @@ test_that("cancel_order sends DELETE method", {
     return(resp)
   })
 
-  new_margin()$cancel_order("BTCUSDT", orderId = 28)
+  new_margin()$cancel_order("BTCUSDT", order_id = 28)
   expect_equal(captured_method, "DELETE")
 })
 
@@ -161,7 +161,7 @@ test_that("get_order returns order with time and update_time as POSIXct", {
   resp <- mock_binance_response(data = mock_margin_query_order_data())
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_margin()$get_order("BTCUSDT", orderId = 28)
+  dt <- new_margin()$get_order("BTCUSDT", order_id = 28)
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   expect_equal(dt$symbol, "BTCUSDT")
@@ -172,10 +172,10 @@ test_that("get_order returns order with time and update_time as POSIXct", {
   expect_s3_class(dt$update_time, "POSIXct")
 })
 
-test_that("get_order requires orderId or origClientOrderId", {
+test_that("get_order requires order_id or orig_client_order_id", {
   expect_error(
     new_margin()$get_order("BTCUSDT"),
-    "orderId.*origClientOrderId"
+    "order_id.*orig_client_order_id"
   )
 })
 
@@ -187,7 +187,7 @@ test_that("get_order sends GET to correct endpoint", {
     return(resp)
   })
 
-  new_margin()$get_order("BTCUSDT", orderId = 28)
+  new_margin()$get_order("BTCUSDT", order_id = 28)
   expect_true(grepl("sapi/v1/margin/order", captured_url))
 })
 
@@ -366,8 +366,8 @@ test_that("add_isolated_transfer returns data.table with tran_id", {
   dt <- new_margin()$add_isolated_transfer(
     asset = "USDT",
     symbol = "BTCUSDT",
-    transFrom = "SPOT",
-    transTo = "ISOLATED_MARGIN",
+    trans_from = "SPOT",
+    trans_to = "ISOLATED_MARGIN",
     amount = 100
   )
   expect_s3_class(dt, "data.table")
@@ -381,8 +381,8 @@ test_that("add_isolated_transfer validates transFrom and transTo", {
     new_margin()$add_isolated_transfer(
       asset = "USDT",
       symbol = "BTCUSDT",
-      transFrom = "INVALID",
-      transTo = "SPOT",
+      trans_from = "INVALID",
+      trans_to = "SPOT",
       amount = 100
     ),
     "INVALID"
@@ -391,8 +391,8 @@ test_that("add_isolated_transfer validates transFrom and transTo", {
     new_margin()$add_isolated_transfer(
       asset = "USDT",
       symbol = "BTCUSDT",
-      transFrom = "SPOT",
-      transTo = "INVALID",
+      trans_from = "SPOT",
+      trans_to = "INVALID",
       amount = 100
     ),
     "INVALID"
@@ -412,8 +412,8 @@ test_that("add_isolated_transfer sends POST to correct endpoint", {
   new_margin()$add_isolated_transfer(
     asset = "USDT",
     symbol = "BTCUSDT",
-    transFrom = "SPOT",
-    transTo = "ISOLATED_MARGIN",
+    trans_from = "SPOT",
+    trans_to = "ISOLATED_MARGIN",
     amount = 100
   )
   expect_true(grepl("sapi/v1/margin/isolated/transfer", captured_url))

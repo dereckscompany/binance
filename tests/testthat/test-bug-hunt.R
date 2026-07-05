@@ -53,7 +53,7 @@ test_that("sign_request encodes special chars in query string for HMAC", {
 # ---------------------------------------------------------------------------
 test_that("backfill resume logic starts after last existing timestamp", {
   # Simulate the resume data.table that binance_backfill_klines computes
-  # from an existing CSV (grouped max of open_time by symbol+timeframe)
+  # from an existing CSV (grouped max of datetime by symbol+timeframe)
   resume <- data.table::data.table(
     symbol = "BTCUSDT",
     timeframe = "1h",
@@ -105,11 +105,11 @@ test_that("collapse_string_array_fields + as_dt_row: stable character column for
   row1 <- list(name = "A", perms = list("SPOT"))
   row2 <- list(name = "B", perms = list("SPOT", "MARGIN"))
 
-  row1 <- binance:::collapse_string_array_fields(row1, "perms")
-  row2 <- binance:::collapse_string_array_fields(row2, "perms")
+  row1 <- connectcore::collapse_string_array_fields(row1, "perms")
+  row2 <- connectcore::collapse_string_array_fields(row2, "perms")
 
-  dt1 <- binance:::as_dt_row(row1)
-  dt2 <- binance:::as_dt_row(row2)
+  dt1 <- connectcore::as_dt_row(row1)
+  dt2 <- connectcore::as_dt_row(row2)
 
   # Plain character on both rows.
   expect_true(is.character(dt1$perms), info = "Length-1 array should collapse to a character scalar")
@@ -126,7 +126,7 @@ test_that("collapse_string_array_fields + as_dt_row: stable character column for
 
 test_that("empty array collapses to NA_character_ (not list())", {
   row <- list(name = "C", perms = list())
-  row <- binance:::collapse_string_array_fields(row, "perms")
+  row <- connectcore::collapse_string_array_fields(row, "perms")
   expect_true(is.na(row$perms))
   expect_type(row$perms, "character")
 })
@@ -136,20 +136,20 @@ test_that("collapse_string_array_fields is NA-safe (scalar NA, all-NA vector, pa
   # `if (NA)` historically errored. NA-safe path falls back to
   # NA_character_.
   row_scalar_na <- list(name = "A", perms = NA_character_)
-  row_scalar_na <- binance:::collapse_string_array_fields(row_scalar_na, "perms")
+  row_scalar_na <- connectcore::collapse_string_array_fields(row_scalar_na, "perms")
   expect_true(is.na(row_scalar_na$perms))
   expect_type(row_scalar_na$perms, "character")
 
   # All-NA vector → NA_character_.
   row_all_na <- list(name = "B", perms = c(NA_character_, NA_character_))
-  row_all_na <- binance:::collapse_string_array_fields(row_all_na, "perms")
+  row_all_na <- connectcore::collapse_string_array_fields(row_all_na, "perms")
   expect_true(is.na(row_all_na$perms))
 
   # Partial NA — `paste(c("SPOT", NA), collapse = ";")` historically
   # produced the literal string `"SPOT;NA"`. NA-safe path drops NA
   # elements so the resulting string is just `"SPOT;MARGIN"`.
   row_partial <- list(name = "C", perms = c("SPOT", NA_character_, "MARGIN"))
-  row_partial <- binance:::collapse_string_array_fields(row_partial, "perms")
+  row_partial <- connectcore::collapse_string_array_fields(row_partial, "perms")
   expect_equal(row_partial$perms, "SPOT;MARGIN")
   expect_false(grepl("NA", row_partial$perms, fixed = TRUE))
 })
@@ -161,7 +161,7 @@ test_that("collapse_string_array_fields is NA-safe (scalar NA, all-NA vector, pa
 test_that("parse_klines handles trades field as double from JSON", {
   # Simulate what jsonlite returns: all numbers are doubles
   kline <- list(
-    1704067200000, # open_time (double)
+    1704067200000, # datetime (double)
     "42000.00", # open
     "42100.00", # high
     "41900.00", # low
@@ -320,8 +320,8 @@ test_that("get_klines warns or fetches all when range exceeds limit", {
     market$get_klines(
       symbol = "BTCUSDT",
       interval = "1h",
-      startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-      endTime = as.POSIXct("2024-03-25", tz = "UTC")
+      start_time = as.POSIXct("2024-01-01", tz = "UTC"),
+      end_time = as.POSIXct("2024-03-25", tz = "UTC")
     ),
     regexp = "truncat|limit|exceed|segment|1000",
     ignore.case = TRUE

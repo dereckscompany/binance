@@ -125,7 +125,7 @@ test_that("binance_fetch_klines fetches single segment correctly", {
   expect_equal(call_count, 1L)
   expect_s3_class(result, "data.table")
   expect_equal(nrow(result), 2L)
-  expect_true(all(c("open_time", "open", "high", "low", "close", "volume") %in% names(result)))
+  expect_true(all(c("datetime", "open", "high", "low", "close", "volume") %in% names(result)))
 
   # Verify query params
   q <- captured_queries[[1]]
@@ -179,7 +179,7 @@ test_that("binance_fetch_klines pages forward through large ranges (multiple cal
   expect_gt(nrow(result), 1000L)
 })
 
-test_that("binance_fetch_klines deduplicates by open_time", {
+test_that("binance_fetch_klines deduplicates by datetime", {
   from_ts <- 1729100000
   to_ts <- from_ts + 7200
 
@@ -229,10 +229,10 @@ test_that("binance_fetch_klines deduplicates by open_time", {
   )
 
   # Should be deduplicated
-  expect_equal(nrow(result), length(unique(result$open_time)))
+  expect_equal(nrow(result), length(unique(result$datetime)))
 })
 
-test_that("binance_fetch_klines sorts by open_time ascending", {
+test_that("binance_fetch_klines sorts by datetime ascending", {
   from_ts <- 1729100000
   to_ts <- from_ts + 10800 # 3 candles at 1h
 
@@ -293,7 +293,7 @@ test_that("binance_fetch_klines sorts by open_time ascending", {
     .req_fn = fake_req_fn
   )
 
-  timestamps <- as.numeric(result$open_time)
+  timestamps <- as.numeric(result$datetime)
   expect_true(all(diff(timestamps) >= 0))
 })
 

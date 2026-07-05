@@ -22,7 +22,7 @@ test_that("add_sub_account returns data.table with email", {
   resp <- mock_binance_response(data = mock_sub_account_create_response())
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_sub()$add_sub_account(subAccountString = "testsub01")
+  dt <- new_sub()$add_sub_account(sub_account_string = "testsub01")
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   expect_true("email" %in% names(dt))
@@ -39,7 +39,7 @@ test_that("add_sub_account hits correct endpoint with POST", {
     return(resp)
   })
 
-  new_sub()$add_sub_account(subAccountString = "testsub01")
+  new_sub()$add_sub_account(sub_account_string = "testsub01")
   expect_true(grepl("sapi/v1/sub-account/virtualSubAccount", captured_url))
   expect_equal(captured_method, "POST")
 })
@@ -206,9 +206,9 @@ test_that("add_transfer returns data.table with tranId", {
   httr2::local_mocked_responses(function(req) resp)
 
   dt <- new_sub()$add_transfer(
-    toEmail = "testsub01@virtual.com",
-    fromAccountType = "SPOT",
-    toAccountType = "SPOT",
+    to_email = "testsub01@virtual.com",
+    from_account_type = "SPOT",
+    to_account_type = "SPOT",
     asset = "USDT",
     amount = 100
   )
@@ -229,8 +229,8 @@ test_that("add_transfer hits correct endpoint with POST", {
   })
 
   new_sub()$add_transfer(
-    fromAccountType = "SPOT",
-    toAccountType = "SPOT",
+    from_account_type = "SPOT",
+    to_account_type = "SPOT",
     asset = "USDT",
     amount = 100
   )
@@ -238,27 +238,27 @@ test_that("add_transfer hits correct endpoint with POST", {
   expect_equal(captured_method, "POST")
 })
 
-test_that("add_transfer validates fromAccountType", {
+test_that("add_transfer validates from_account_type", {
   expect_error(
     new_sub()$add_transfer(
-      fromAccountType = "INVALID",
-      toAccountType = "SPOT",
+      from_account_type = "INVALID",
+      to_account_type = "SPOT",
       asset = "USDT",
       amount = 100
     ),
-    "fromAccountType"
+    "from_account_type"
   )
 })
 
-test_that("add_transfer validates toAccountType", {
+test_that("add_transfer validates to_account_type", {
   expect_error(
     new_sub()$add_transfer(
-      fromAccountType = "SPOT",
-      toAccountType = "INVALID",
+      from_account_type = "SPOT",
+      to_account_type = "INVALID",
       asset = "USDT",
       amount = 100
     ),
-    "toAccountType"
+    "to_account_type"
   )
 })
 
@@ -309,7 +309,7 @@ test_that("get_transfer_history passes query parameters", {
     return(resp)
   })
 
-  new_sub()$get_transfer_history(fromEmail = "master@test.com", page = 1, limit = 10)
+  new_sub()$get_transfer_history(from_email = "master@test.com", page = 1, limit = 10)
   expect_true(grepl("fromEmail=master", captured_url))
   expect_true(grepl("page=1", captured_url))
   expect_true(grepl("limit=10", captured_url))
@@ -345,7 +345,7 @@ test_that("get_futures_account hits correct endpoint", {
     return(resp)
   })
 
-  new_sub()$get_futures_account(email = "sub@virtual.com", futuresType = 1)
+  new_sub()$get_futures_account(email = "sub@virtual.com", futures_type = 1)
   expect_true(grepl("sapi/v2/sub-account/futures/account", captured_url))
   expect_true(grepl("email=sub", captured_url))
   expect_true(grepl("futuresType=1", captured_url))
@@ -366,7 +366,7 @@ test_that("get_futures_account returns data.table with assets expanded", {
   )
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_sub()$get_futures_account(email = "sub@virtual.com", futuresType = 1)
+  dt <- new_sub()$get_futures_account(email = "sub@virtual.com", futures_type = 1)
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   # No list-column 'assets' - expanded with prefix
@@ -392,7 +392,7 @@ test_that("get_futures_account converts update_time to POSIXct (regression)", {
   )
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_sub()$get_futures_account(email = "sub@virtual.com", futuresType = 1)
+  dt <- new_sub()$get_futures_account(email = "sub@virtual.com", futures_type = 1)
   expect_true("update_time" %in% names(dt))
   expect_s3_class(dt$update_time, "POSIXct")
 })
@@ -407,7 +407,7 @@ test_that("get_futures_account works without futureAccountResp wrapper", {
   )
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_sub()$get_futures_account(email = "sub@virtual.com", futuresType = 1)
+  dt <- new_sub()$get_futures_account(email = "sub@virtual.com", futures_type = 1)
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   expect_equal(dt$email, "sub@virtual.com")

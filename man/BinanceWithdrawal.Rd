@@ -100,8 +100,8 @@ print(history[, .(amount, coin, status, address, apply_time)])
 # Get withdrawals from the last 7 days
 now_ms <- as.integer(as.numeric(Sys.time()) * 1000)
 recent <- withdrawal$get_withdrawal_history(
-  startTime = now_ms - 7 * 86400000L,
-  endTime = now_ms
+  start_time = now_ms - 7 * 86400000L,
+  end_time = now_ms
 )
 }
 }
@@ -183,12 +183,12 @@ to select the cheapest or fastest network.
   address,
   amount,
   network = NULL,
-  withdrawOrderId = NULL,
-  addressTag = NULL,
-  transactionFeeFlag = NULL,
+  withdraw_order_id = NULL,
+  address_tag = NULL,
+  transaction_fee_flag = NULL,
   name = NULL,
-  walletType = NULL,
-  recvWindow = NULL
+  wallet_type = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -204,19 +204,19 @@ to select the cheapest or fastest network.
 \item{\code{network}}{(scalar<character>?) blockchain network (e.g., \code{"ETH"}, \code{"TRX"}, \code{"BSC"}).
 If NULL, uses the coin's default network.}
 
-\item{\code{withdrawOrderId}}{(scalar<character>?) client-side withdrawal ID for tracking.}
+\item{\code{withdraw_order_id}}{(scalar<character>?) client-side withdrawal ID for tracking.}
 
-\item{\code{addressTag}}{(scalar<character>?) secondary address identifier (required for
+\item{\code{address_tag}}{(scalar<character>?) secondary address identifier (required for
 coins like XRP, XMR, XLM).}
 
-\item{\code{transactionFeeFlag}}{(scalar<logical>?) for internal transfers: \code{TRUE} returns
+\item{\code{transaction_fee_flag}}{(scalar<logical>?) for internal transfers: \code{TRUE} returns
 fee to destination, \code{FALSE} to origin.}
 
 \item{\code{name}}{(scalar<character>?) description for the address (max 200 entries in address book).}
 
-\item{\code{walletType}}{(scalar<count>?) \code{0} for spot wallet, \code{1} for funding wallet.}
+\item{\code{wallet_type}}{(scalar<count>?) \code{0} for spot wallet, \code{1} for funding wallet.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -308,13 +308,13 @@ left the exchange.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceWithdrawal$get_withdrawal_history(
   coin = NULL,
-  withdrawOrderId = NULL,
+  withdraw_order_id = NULL,
   status = NULL,
-  startTime = NULL,
-  endTime = NULL,
+  start_time = NULL,
+  end_time = NULL,
   offset = NULL,
   limit = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -323,21 +323,21 @@ left the exchange.
 \describe{
 \item{\code{coin}}{(scalar<character>?) filter by coin (e.g., \code{"BTC"}, \code{"USDT"}).}
 
-\item{\code{withdrawOrderId}}{(scalar<character>?) filter by client-side withdrawal ID.}
+\item{\code{withdraw_order_id}}{(scalar<character>?) filter by client-side withdrawal ID.}
 
 \item{\code{status}}{(scalar<count>?) filter by status:
 \code{0} (email sent), \code{1} (cancelled), \code{2} (awaiting approval),
 \code{3} (rejected), \code{4} (processing), \code{5} (failure), \code{6} (completed).}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
 \item{\code{offset}}{(scalar<count>?) pagination offset (default 0).}
 
 \item{\code{limit}}{(scalar<count>?) max results (default 1000, max 1000).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -377,8 +377,8 @@ print(history[, .(amount, coin, status, address, apply_time)])
 # Get withdrawals from the last 7 days
 now_ms <- as.integer(as.numeric(Sys.time()) * 1000)
 recent <- withdrawal$get_withdrawal_history(
-  startTime = now_ms - 7 * 86400000L,
-  endTime = now_ms
+  start_time = now_ms - 7 * 86400000L,
+  end_time = now_ms
 )
 }
 }

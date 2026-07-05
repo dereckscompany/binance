@@ -117,9 +117,9 @@ BinanceMargin <- R6::R6Class(
     #'
     #' @param asset (scalar<character>) asset to borrow (e.g., `"USDT"`).
     #' @param amount (scalar<numeric>) amount to borrow.
-    #' @param isIsolated (scalar<character>) `"TRUE"` or `"FALSE"` for isolated margin. Default `"FALSE"`.
-    #' @param symbol (scalar<character>?) required when `isIsolated = "TRUE"`.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param is_isolated (scalar<character>) `"TRUE"` or `"FALSE"` for isolated margin. Default `"FALSE"`.
+    #' @param symbol (scalar<character>?) required when `is_isolated = "TRUE"`.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - tran_id (numeric) Transaction identifier (a large integer that overflows
     #'   R's 32-bit `integer`, so it is coerced to a double).
@@ -131,8 +131,8 @@ BinanceMargin <- R6::R6Class(
     #' print(result)
     #' }
     # nolint end
-    add_borrow = function(asset, amount, isIsolated = "FALSE", symbol = NULL, recvWindow = NULL) {
-      assert_args_BinanceMargin__add_borrow(asset, amount, isIsolated, symbol, recvWindow)
+    add_borrow = function(asset, amount, is_isolated = "FALSE", symbol = NULL, recv_window = NULL) {
+      assert_args_BinanceMargin__add_borrow(asset, amount, is_isolated, symbol, recv_window)
       assert::assert_nonempty_strings(asset)
       assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       res <- private$.request(
@@ -142,9 +142,9 @@ BinanceMargin <- R6::R6Class(
           asset = asset,
           amount = as.character(amount),
           type = "BORROW",
-          isIsolated = isIsolated,
+          isIsolated = is_isolated,
           symbol = symbol,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
@@ -199,9 +199,9 @@ BinanceMargin <- R6::R6Class(
     #'
     #' @param asset (scalar<character>) asset to repay (e.g., `"USDT"`).
     #' @param amount (scalar<numeric>) amount to repay.
-    #' @param isIsolated (scalar<character>) `"TRUE"` or `"FALSE"` for isolated margin. Default `"FALSE"`.
-    #' @param symbol (scalar<character>?) required when `isIsolated = "TRUE"`.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param is_isolated (scalar<character>) `"TRUE"` or `"FALSE"` for isolated margin. Default `"FALSE"`.
+    #' @param symbol (scalar<character>?) required when `is_isolated = "TRUE"`.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - tran_id (numeric) Transaction identifier (a large integer that overflows
     #'   R's 32-bit `integer`, so it is coerced to a double).
@@ -213,8 +213,8 @@ BinanceMargin <- R6::R6Class(
     #' print(result)
     #' }
     # nolint end
-    add_repay = function(asset, amount, isIsolated = "FALSE", symbol = NULL, recvWindow = NULL) {
-      assert_args_BinanceMargin__add_repay(asset, amount, isIsolated, symbol, recvWindow)
+    add_repay = function(asset, amount, is_isolated = "FALSE", symbol = NULL, recv_window = NULL) {
+      assert_args_BinanceMargin__add_repay(asset, amount, is_isolated, symbol, recv_window)
       assert::assert_nonempty_strings(asset)
       assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       res <- private$.request(
@@ -224,9 +224,9 @@ BinanceMargin <- R6::R6Class(
           asset = asset,
           amount = as.character(amount),
           type = "REPAY",
-          isIsolated = isIsolated,
+          isIsolated = is_isolated,
           symbol = symbol,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
@@ -300,15 +300,15 @@ BinanceMargin <- R6::R6Class(
     #' @param type (scalar<character>) order type: `"LIMIT"`, `"MARKET"`, `"STOP_LOSS"`,
     #'   `"STOP_LOSS_LIMIT"`, `"TAKE_PROFIT"`, `"TAKE_PROFIT_LIMIT"`, `"LIMIT_MAKER"`.
     #' @param quantity (scalar<numeric>?) base asset quantity.
-    #' @param quoteOrderQty (scalar<numeric>?) quote asset quantity (market orders only).
+    #' @param quote_order_qty (scalar<numeric>?) quote asset quantity (market orders only).
     #' @param price (scalar<numeric>?) price for limit orders.
-    #' @param stopPrice (scalar<numeric>?) trigger price for stop orders.
-    #' @param timeInForce (scalar<character>?) `"GTC"`, `"IOC"`, `"FOK"`.
-    #' @param newClientOrderId (scalar<character>?) unique client order ID.
-    #' @param newOrderRespType (scalar<character>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
-    #' @param sideEffectType (scalar<character>?) `"NO_SIDE_EFFECT"`, `"MARGIN_BUY"`, `"AUTO_REPAY"`.
-    #' @param isIsolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param stop_price (scalar<numeric>?) trigger price for stop orders.
+    #' @param time_in_force (scalar<character>?) `"GTC"`, `"IOC"`, `"FOK"`.
+    #' @param new_client_order_id (scalar<character>?) unique client order ID.
+    #' @param new_order_resp_type (scalar<character>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
+    #' @param side_effect_type (scalar<character>?) `"NO_SIDE_EFFECT"`, `"MARGIN_BUY"`, `"AUTO_REPAY"`.
+    #' @param is_isolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - symbol (character) Trading pair.
     #' - order_id (numeric) Unique order identifier.
@@ -327,7 +327,7 @@ BinanceMargin <- R6::R6Class(
     #' margin <- BinanceMargin$new()
     #' order <- margin$add_order(
     #'   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
-    #'   price = 50000, quantity = 0.0001, timeInForce = "GTC"
+    #'   price = 50000, quantity = 0.0001, time_in_force = "GTC"
     #' )
     #' print(order)
     #' }
@@ -337,33 +337,33 @@ BinanceMargin <- R6::R6Class(
       side,
       type,
       quantity = NULL,
-      quoteOrderQty = NULL,
+      quote_order_qty = NULL,
       price = NULL,
-      stopPrice = NULL,
-      timeInForce = NULL,
-      newClientOrderId = NULL,
-      newOrderRespType = NULL,
-      sideEffectType = NULL,
-      isIsolated = NULL,
-      recvWindow = NULL
+      stop_price = NULL,
+      time_in_force = NULL,
+      new_client_order_id = NULL,
+      new_order_resp_type = NULL,
+      side_effect_type = NULL,
+      is_isolated = NULL,
+      recv_window = NULL
     ) {
       assert_args_BinanceMargin__add_order(
         symbol,
         side,
         type,
         quantity,
-        quoteOrderQty,
+        quote_order_qty,
         price,
-        stopPrice,
-        timeInForce,
-        newClientOrderId,
-        newOrderRespType,
-        sideEffectType,
-        isIsolated,
-        recvWindow
+        stop_price,
+        time_in_force,
+        new_client_order_id,
+        new_order_resp_type,
+        side_effect_type,
+        is_isolated,
+        recv_window
       )
       assert::assert_nonempty_strings(symbol)
-      assert::assert_nonempty_strings(newClientOrderId, null_ok = TRUE)
+      assert::assert_nonempty_strings(new_client_order_id, null_ok = TRUE)
       side <- toupper(side)
       type <- toupper(type)
       rlang::arg_match0(side, c("BUY", "SELL"))
@@ -372,9 +372,9 @@ BinanceMargin <- R6::R6Class(
         c("LIMIT", "MARKET", "STOP_LOSS", "STOP_LOSS_LIMIT", "TAKE_PROFIT", "TAKE_PROFIT_LIMIT", "LIMIT_MAKER")
       )
 
-      if (!is.null(sideEffectType)) {
-        sideEffectType <- toupper(sideEffectType)
-        rlang::arg_match0(sideEffectType, c("NO_SIDE_EFFECT", "MARGIN_BUY", "AUTO_REPAY"))
+      if (!is.null(side_effect_type)) {
+        side_effect_type <- toupper(side_effect_type)
+        rlang::arg_match0(side_effect_type, c("NO_SIDE_EFFECT", "MARGIN_BUY", "AUTO_REPAY"))
       }
 
       # Convert numeric values to character for precision
@@ -384,11 +384,11 @@ BinanceMargin <- R6::R6Class(
       if (!is.null(quantity)) {
         quantity <- as.character(quantity)
       }
-      if (!is.null(quoteOrderQty)) {
-        quoteOrderQty <- as.character(quoteOrderQty)
+      if (!is.null(quote_order_qty)) {
+        quote_order_qty <- as.character(quote_order_qty)
       }
-      if (!is.null(stopPrice)) {
-        stopPrice <- as.character(stopPrice)
+      if (!is.null(stop_price)) {
+        stop_price <- as.character(stop_price)
       }
 
       res <- private$.request(
@@ -399,15 +399,15 @@ BinanceMargin <- R6::R6Class(
           side = side,
           type = type,
           quantity = quantity,
-          quoteOrderQty = quoteOrderQty,
+          quoteOrderQty = quote_order_qty,
           price = price,
-          stopPrice = stopPrice,
-          timeInForce = timeInForce,
-          newClientOrderId = newClientOrderId,
-          newOrderRespType = newOrderRespType,
-          sideEffectType = sideEffectType,
-          isIsolated = isIsolated,
-          recvWindow = recvWindow
+          stopPrice = stop_price,
+          timeInForce = time_in_force,
+          newClientOrderId = new_client_order_id,
+          newOrderRespType = new_order_resp_type,
+          sideEffectType = side_effect_type,
+          isIsolated = is_isolated,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
@@ -473,10 +473,10 @@ BinanceMargin <- R6::R6Class(
     #' ```
     #'
     #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderId (scalar<count>?) the order ID to cancel.
-    #' @param origClientOrderId (scalar<character>?) the client order ID to cancel.
-    #' @param isIsolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param order_id (scalar<count>?) the order ID to cancel.
+    #' @param orig_client_order_id (scalar<character>?) the client order ID to cancel.
+    #' @param is_isolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - symbol (character) Trading pair.
     #' - order_id (numeric) Unique order identifier.
@@ -488,16 +488,22 @@ BinanceMargin <- R6::R6Class(
     #' @examples
     #' \dontrun{
     #' margin <- BinanceMargin$new()
-    #' cancelled <- margin$cancel_order("BTCUSDT", orderId = 28)
+    #' cancelled <- margin$cancel_order("BTCUSDT", order_id = 28)
     #' print(cancelled)
     #' }
     # nolint end
-    cancel_order = function(symbol, orderId = NULL, origClientOrderId = NULL, isIsolated = NULL, recvWindow = NULL) {
-      assert_args_BinanceMargin__cancel_order(symbol, orderId, origClientOrderId, isIsolated, recvWindow)
+    cancel_order = function(
+      symbol,
+      order_id = NULL,
+      orig_client_order_id = NULL,
+      is_isolated = NULL,
+      recv_window = NULL
+    ) {
+      assert_args_BinanceMargin__cancel_order(symbol, order_id, orig_client_order_id, is_isolated, recv_window)
       assert::assert_nonempty_strings(symbol)
-      assert::assert_nonempty_strings(origClientOrderId, null_ok = TRUE)
-      if (is.null(orderId) && is.null(origClientOrderId)) {
-        rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
+      assert::assert_nonempty_strings(orig_client_order_id, null_ok = TRUE)
+      if (is.null(order_id) && is.null(orig_client_order_id)) {
+        rlang::abort("Either 'order_id' or 'orig_client_order_id' must be provided.")
       }
 
       res <- private$.request(
@@ -505,10 +511,10 @@ BinanceMargin <- R6::R6Class(
         method = "DELETE",
         query = list(
           symbol = symbol,
-          orderId = orderId,
-          origClientOrderId = origClientOrderId,
-          isIsolated = isIsolated,
-          recvWindow = recvWindow
+          orderId = order_id,
+          origClientOrderId = orig_client_order_id,
+          isIsolated = is_isolated,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
@@ -575,8 +581,8 @@ BinanceMargin <- R6::R6Class(
     #' ```
     #'
     #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
-    #' @param isIsolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param is_isolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per cancelled order
     #'   (empty when there were no open orders to cancel, per the cross-package
     #'   "no stub rows" convention — the absence of an error is the success
@@ -595,16 +601,16 @@ BinanceMargin <- R6::R6Class(
     #' print(cancelled)
     #' }
     # nolint end
-    cancel_all_orders = function(symbol, isIsolated = NULL, recvWindow = NULL) {
-      assert_args_BinanceMargin__cancel_all_orders(symbol, isIsolated, recvWindow)
+    cancel_all_orders = function(symbol, is_isolated = NULL, recv_window = NULL) {
+      assert_args_BinanceMargin__cancel_all_orders(symbol, is_isolated, recv_window)
       assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/openOrders",
         method = "DELETE",
         query = list(
           symbol = symbol,
-          isIsolated = isIsolated,
-          recvWindow = recvWindow
+          isIsolated = is_isolated,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           # Per the cross-package "empty response → empty data.table,
@@ -671,10 +677,10 @@ BinanceMargin <- R6::R6Class(
     #' ```
     #'
     #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderId (scalar<count>?) the order ID.
-    #' @param origClientOrderId (scalar<character>?) the client order ID.
-    #' @param isIsolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param order_id (scalar<count>?) the order ID.
+    #' @param orig_client_order_id (scalar<character>?) the client order ID.
+    #' @param is_isolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - symbol (character) Trading pair.
     #' - order_id (numeric) Unique order identifier.
@@ -692,26 +698,26 @@ BinanceMargin <- R6::R6Class(
     #' @examples
     #' \dontrun{
     #' margin <- BinanceMargin$new()
-    #' order <- margin$get_order("BTCUSDT", orderId = 28)
+    #' order <- margin$get_order("BTCUSDT", order_id = 28)
     #' print(order)
     #' }
     # nolint end
-    get_order = function(symbol, orderId = NULL, origClientOrderId = NULL, isIsolated = NULL, recvWindow = NULL) {
-      assert_args_BinanceMargin__get_order(symbol, orderId, origClientOrderId, isIsolated, recvWindow)
+    get_order = function(symbol, order_id = NULL, orig_client_order_id = NULL, is_isolated = NULL, recv_window = NULL) {
+      assert_args_BinanceMargin__get_order(symbol, order_id, orig_client_order_id, is_isolated, recv_window)
       assert::assert_nonempty_strings(symbol)
-      assert::assert_nonempty_strings(origClientOrderId, null_ok = TRUE)
-      if (is.null(orderId) && is.null(origClientOrderId)) {
-        rlang::abort("Either 'orderId' or 'origClientOrderId' must be provided.")
+      assert::assert_nonempty_strings(orig_client_order_id, null_ok = TRUE)
+      if (is.null(order_id) && is.null(orig_client_order_id)) {
+        rlang::abort("Either 'order_id' or 'orig_client_order_id' must be provided.")
       }
 
       res <- private$.request(
         endpoint = "/sapi/v1/margin/order",
         query = list(
           symbol = symbol,
-          orderId = orderId,
-          origClientOrderId = origClientOrderId,
-          isIsolated = isIsolated,
-          recvWindow = recvWindow
+          orderId = order_id,
+          origClientOrderId = orig_client_order_id,
+          isIsolated = is_isolated,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
@@ -773,8 +779,8 @@ BinanceMargin <- R6::R6Class(
     #' ```
     #'
     #' @param symbol (scalar<character>?) trading pair (e.g., `"BTCUSDT"`).
-    #' @param isIsolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param is_isolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per open order
     #'   (empty when there are none):
     #' - symbol (character) Trading pair.
@@ -797,15 +803,15 @@ BinanceMargin <- R6::R6Class(
     #' print(open)
     #' }
     # nolint end
-    get_open_orders = function(symbol = NULL, isIsolated = NULL, recvWindow = NULL) {
-      assert_args_BinanceMargin__get_open_orders(symbol, isIsolated, recvWindow)
+    get_open_orders = function(symbol = NULL, is_isolated = NULL, recv_window = NULL) {
+      assert_args_BinanceMargin__get_open_orders(symbol, is_isolated, recv_window)
       assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/openOrders",
         query = list(
           symbol = symbol,
-          isIsolated = isIsolated,
-          recvWindow = recvWindow
+          isIsolated = is_isolated,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
@@ -888,12 +894,12 @@ BinanceMargin <- R6::R6Class(
     #' ```
     #'
     #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderId (scalar<count>?) pagination cursor.
-    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
-    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param order_id (scalar<count>?) pagination cursor.
+    #' @param start_time (scalar<count>?) start timestamp in milliseconds.
+    #' @param end_time (scalar<count>?) end timestamp in milliseconds.
     #' @param limit (scalar<count>?) max results (default 500, max 500).
-    #' @param isIsolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param is_isolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per order
     #'   (empty when there are no matching orders):
     #' - symbol (character) Trading pair.
@@ -918,25 +924,25 @@ BinanceMargin <- R6::R6Class(
     # nolint end
     get_all_orders = function(
       symbol,
-      orderId = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      order_id = NULL,
+      start_time = NULL,
+      end_time = NULL,
       limit = NULL,
-      isIsolated = NULL,
-      recvWindow = NULL
+      is_isolated = NULL,
+      recv_window = NULL
     ) {
-      assert_args_BinanceMargin__get_all_orders(symbol, orderId, startTime, endTime, limit, isIsolated, recvWindow)
+      assert_args_BinanceMargin__get_all_orders(symbol, order_id, start_time, end_time, limit, is_isolated, recv_window)
       assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/allOrders",
         query = list(
           symbol = symbol,
-          orderId = orderId,
-          startTime = startTime,
-          endTime = endTime,
+          orderId = order_id,
+          startTime = start_time,
+          endTime = end_time,
           limit = limit,
-          isIsolated = isIsolated,
-          recvWindow = recvWindow
+          isIsolated = is_isolated,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
@@ -1010,7 +1016,7 @@ BinanceMargin <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per user asset:
     #' - borrow_enabled (logical) Whether borrowing is enabled.
     #' - margin_level (character) Current margin level.
@@ -1031,11 +1037,11 @@ BinanceMargin <- R6::R6Class(
     #' print(account)
     #' }
     # nolint end
-    get_account = function(recvWindow = NULL) {
-      assert_args_BinanceMargin__get_account(recvWindow)
+    get_account = function(recv_window = NULL) {
+      assert_args_BinanceMargin__get_account(recv_window)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/account",
-        query = list(recvWindow = recvWindow),
+        query = list(recvWindow = recv_window),
         .parser = function(data) {
           user_assets <- data$userAssets
           data$userAssets <- NULL
@@ -1086,8 +1092,8 @@ BinanceMargin <- R6::R6Class(
     #' ```
     #'
     #' @param asset (scalar<character>) asset to query (e.g., `"USDT"`).
-    #' @param isolatedSymbol (scalar<character>?) isolated margin pair (e.g., `"BTCUSDT"`).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param isolated_symbol (scalar<character>?) isolated margin pair (e.g., `"BTCUSDT"`).
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - amount (character) Maximum borrowable amount.
     #' - borrow_limit (character) Borrow limit.
@@ -1098,16 +1104,16 @@ BinanceMargin <- R6::R6Class(
     #' max_borrow <- margin$get_max_borrowable(asset = "USDT")
     #' print(max_borrow)
     #' }
-    get_max_borrowable = function(asset, isolatedSymbol = NULL, recvWindow = NULL) {
-      assert_args_BinanceMargin__get_max_borrowable(asset, isolatedSymbol, recvWindow)
+    get_max_borrowable = function(asset, isolated_symbol = NULL, recv_window = NULL) {
+      assert_args_BinanceMargin__get_max_borrowable(asset, isolated_symbol, recv_window)
       assert::assert_nonempty_strings(asset)
-      assert::assert_nonempty_strings(isolatedSymbol, null_ok = TRUE)
+      assert::assert_nonempty_strings(isolated_symbol, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/maxBorrowable",
         query = list(
           asset = asset,
-          isolatedSymbol = isolatedSymbol,
-          recvWindow = recvWindow
+          isolatedSymbol = isolated_symbol,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           return(as_dt_row(data)[])
@@ -1148,8 +1154,8 @@ BinanceMargin <- R6::R6Class(
     #' ```
     #'
     #' @param asset (scalar<character>) asset to query (e.g., `"USDT"`).
-    #' @param isolatedSymbol (scalar<character>?) isolated margin pair (e.g., `"BTCUSDT"`).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param isolated_symbol (scalar<character>?) isolated margin pair (e.g., `"BTCUSDT"`).
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - amount (character) Maximum transferable-out amount.
     #' - borrow_limit (character) Remaining borrow limit for the
@@ -1162,16 +1168,16 @@ BinanceMargin <- R6::R6Class(
     #' print(max_transfer)
     #' }
     # nolint end
-    get_max_transferable = function(asset, isolatedSymbol = NULL, recvWindow = NULL) {
-      assert_args_BinanceMargin__get_max_transferable(asset, isolatedSymbol, recvWindow)
+    get_max_transferable = function(asset, isolated_symbol = NULL, recv_window = NULL) {
+      assert_args_BinanceMargin__get_max_transferable(asset, isolated_symbol, recv_window)
       assert::assert_nonempty_strings(asset)
-      assert::assert_nonempty_strings(isolatedSymbol, null_ok = TRUE)
+      assert::assert_nonempty_strings(isolated_symbol, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/maxTransferable",
         query = list(
           asset = asset,
-          isolatedSymbol = isolatedSymbol,
-          recvWindow = recvWindow
+          isolatedSymbol = isolated_symbol,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           return(as_dt_row(data)[])
@@ -1234,12 +1240,12 @@ BinanceMargin <- R6::R6Class(
     #' ```
     #'
     #' @param asset (scalar<character>?) filter by asset (e.g., `"USDT"`).
-    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
-    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param start_time (scalar<count>?) start timestamp in milliseconds.
+    #' @param end_time (scalar<count>?) end timestamp in milliseconds.
     #' @param current (scalar<count>?) current page (default 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
     #' @param archived (scalar<character>?) `"true"` to query 6-month archived data.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per interest record
     #'   (empty when there are none):
     #' - asset (character) Asset charged interest.
@@ -1259,25 +1265,25 @@ BinanceMargin <- R6::R6Class(
     # nolint end
     get_interest_history = function(
       asset = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      start_time = NULL,
+      end_time = NULL,
       current = NULL,
       size = NULL,
       archived = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     ) {
-      assert_args_BinanceMargin__get_interest_history(asset, startTime, endTime, current, size, archived, recvWindow)
+      assert_args_BinanceMargin__get_interest_history(asset, start_time, end_time, current, size, archived, recv_window)
       assert::assert_nonempty_strings(asset, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/interestHistory",
         query = list(
           asset = asset,
-          startTime = startTime,
-          endTime = endTime,
+          startTime = start_time,
+          endTime = end_time,
           current = current,
           size = size,
           archived = archived,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- parse_paginated(data, time_cols = "interest_accured_time")
@@ -1336,12 +1342,12 @@ BinanceMargin <- R6::R6Class(
     #' }
     #' ```
     #'
-    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
-    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
-    #' @param isolatedSymbol (scalar<character>?) isolated margin pair.
+    #' @param start_time (scalar<count>?) start timestamp in milliseconds.
+    #' @param end_time (scalar<count>?) end timestamp in milliseconds.
+    #' @param isolated_symbol (scalar<character>?) isolated margin pair.
     #' @param current (scalar<count>?) current page (default 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per liquidation record
     #'   (empty when there are none):
     #' - avg_price (character) Average liquidation price.
@@ -1363,31 +1369,31 @@ BinanceMargin <- R6::R6Class(
     #' }
     # nolint end
     get_force_liquidation_history = function(
-      startTime = NULL,
-      endTime = NULL,
-      isolatedSymbol = NULL,
+      start_time = NULL,
+      end_time = NULL,
+      isolated_symbol = NULL,
       current = NULL,
       size = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     ) {
       assert_args_BinanceMargin__get_force_liquidation_history(
-        startTime,
-        endTime,
-        isolatedSymbol,
+        start_time,
+        end_time,
+        isolated_symbol,
         current,
         size,
-        recvWindow
+        recv_window
       )
-      assert::assert_nonempty_strings(isolatedSymbol, null_ok = TRUE)
+      assert::assert_nonempty_strings(isolated_symbol, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/forceLiquidationRec",
         query = list(
-          startTime = startTime,
-          endTime = endTime,
-          isolatedSymbol = isolatedSymbol,
+          startTime = start_time,
+          endTime = end_time,
+          isolatedSymbol = isolated_symbol,
           current = current,
           size = size,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- parse_paginated(data, time_cols = c("time", "updated_time"))
@@ -1449,13 +1455,13 @@ BinanceMargin <- R6::R6Class(
     #' ```
     #'
     #' @param symbol (scalar<character>) trading pair (e.g., `"BTCUSDT"`).
-    #' @param orderId (scalar<count>?) filter by order ID.
-    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
-    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
-    #' @param fromId (scalar<count>?) trade ID to fetch from.
+    #' @param order_id (scalar<count>?) filter by order ID.
+    #' @param start_time (scalar<count>?) start timestamp in milliseconds.
+    #' @param end_time (scalar<count>?) end timestamp in milliseconds.
+    #' @param from_id (scalar<count>?) trade ID to fetch from.
     #' @param limit (scalar<count>?) max results (default 500, max 1000).
-    #' @param isIsolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param is_isolated (scalar<character>?) `"TRUE"` or `"FALSE"` for isolated margin.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per trade
     #'   (empty when there are none):
     #' - symbol (character) Trading pair.
@@ -1479,27 +1485,36 @@ BinanceMargin <- R6::R6Class(
     # nolint end
     get_trades = function(
       symbol,
-      orderId = NULL,
-      startTime = NULL,
-      endTime = NULL,
-      fromId = NULL,
+      order_id = NULL,
+      start_time = NULL,
+      end_time = NULL,
+      from_id = NULL,
       limit = NULL,
-      isIsolated = NULL,
-      recvWindow = NULL
+      is_isolated = NULL,
+      recv_window = NULL
     ) {
-      assert_args_BinanceMargin__get_trades(symbol, orderId, startTime, endTime, fromId, limit, isIsolated, recvWindow)
+      assert_args_BinanceMargin__get_trades(
+        symbol,
+        order_id,
+        start_time,
+        end_time,
+        from_id,
+        limit,
+        is_isolated,
+        recv_window
+      )
       assert::assert_nonempty_strings(symbol)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/myTrades",
         query = list(
           symbol = symbol,
-          orderId = orderId,
-          startTime = startTime,
-          endTime = endTime,
-          fromId = fromId,
+          orderId = order_id,
+          startTime = start_time,
+          endTime = end_time,
+          fromId = from_id,
           limit = limit,
-          isIsolated = isIsolated,
-          recvWindow = recvWindow
+          isIsolated = is_isolated,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
@@ -1588,7 +1603,7 @@ BinanceMargin <- R6::R6Class(
     #' ```
     #'
     #' @param symbols (scalar<character>?) comma-separated symbols (max 5, e.g., `"BTCUSDT,ETHUSDT"`).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per isolated margin
     #'   pair (long format):
     #' - total_asset_of_btc (character) Total asset value in BTC (repeated per pair).
@@ -1609,14 +1624,14 @@ BinanceMargin <- R6::R6Class(
     #' print(isolated)
     #' }
     # nolint end
-    get_isolated_account = function(symbols = NULL, recvWindow = NULL) {
-      assert_args_BinanceMargin__get_isolated_account(symbols, recvWindow)
+    get_isolated_account = function(symbols = NULL, recv_window = NULL) {
+      assert_args_BinanceMargin__get_isolated_account(symbols, recv_window)
       assert::assert_nonempty_strings(symbols, null_ok = TRUE)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/isolated/account",
         query = list(
           symbols = symbols,
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           if (is.null(data) || length(data) == 0) {
@@ -1689,10 +1704,10 @@ BinanceMargin <- R6::R6Class(
     #'
     #' @param asset (scalar<character>) asset to transfer (e.g., `"USDT"`).
     #' @param symbol (scalar<character>) isolated margin pair (e.g., `"BTCUSDT"`).
-    #' @param transFrom (scalar<character>) source account: `"SPOT"` or `"ISOLATED_MARGIN"`.
-    #' @param transTo (scalar<character>) destination account: `"SPOT"` or `"ISOLATED_MARGIN"`.
+    #' @param trans_from (scalar<character>) source account: `"SPOT"` or `"ISOLATED_MARGIN"`.
+    #' @param trans_to (scalar<character>) destination account: `"SPOT"` or `"ISOLATED_MARGIN"`.
     #' @param amount (scalar<numeric>) amount to transfer.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - tran_id (numeric) Transaction identifier (a large integer that overflows
     #'   R's 32-bit `integer`, so it is coerced to a double).
@@ -1702,20 +1717,20 @@ BinanceMargin <- R6::R6Class(
     #' margin <- BinanceMargin$new()
     #' result <- margin$add_isolated_transfer(
     #'   asset = "USDT", symbol = "BTCUSDT",
-    #'   transFrom = "SPOT", transTo = "ISOLATED_MARGIN",
+    #'   trans_from = "SPOT", trans_to = "ISOLATED_MARGIN",
     #'   amount = 100
     #' )
     #' print(result)
     #' }
     # nolint end
-    add_isolated_transfer = function(asset, symbol, transFrom, transTo, amount, recvWindow = NULL) {
-      assert_args_BinanceMargin__add_isolated_transfer(asset, symbol, transFrom, transTo, amount, recvWindow)
+    add_isolated_transfer = function(asset, symbol, trans_from, trans_to, amount, recv_window = NULL) {
+      assert_args_BinanceMargin__add_isolated_transfer(asset, symbol, trans_from, trans_to, amount, recv_window)
       assert::assert_nonempty_strings(asset)
       assert::assert_nonempty_strings(symbol)
-      transFrom <- toupper(transFrom)
-      transTo <- toupper(transTo)
-      rlang::arg_match0(transFrom, c("SPOT", "ISOLATED_MARGIN"))
-      rlang::arg_match0(transTo, c("SPOT", "ISOLATED_MARGIN"))
+      trans_from <- toupper(trans_from)
+      trans_to <- toupper(trans_to)
+      rlang::arg_match0(trans_from, c("SPOT", "ISOLATED_MARGIN"))
+      rlang::arg_match0(trans_to, c("SPOT", "ISOLATED_MARGIN"))
 
       res <- private$.request(
         endpoint = "/sapi/v1/margin/isolated/transfer",
@@ -1723,10 +1738,10 @@ BinanceMargin <- R6::R6Class(
         query = list(
           asset = asset,
           symbol = symbol,
-          transFrom = transFrom,
-          transTo = transTo,
+          transFrom = trans_from,
+          transTo = trans_to,
           amount = as.character(amount),
-          recvWindow = recvWindow
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)

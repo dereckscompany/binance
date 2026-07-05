@@ -70,7 +70,7 @@ test_that("get_all_pairs passes recvWindow parameter", {
     return(resp)
   })
 
-  new_margin()$get_all_pairs(recvWindow = 5000)
+  new_margin()$get_all_pairs(recv_window = 5000)
   expect_true(grepl("recvWindow=5000", captured_url))
 })
 
@@ -179,7 +179,7 @@ test_that("get_interest_rate_history passes optional parameters", {
     return(resp)
   })
 
-  new_margin()$get_interest_rate_history("BTC", vipLevel = 1, startTime = 1000, endTime = 2000)
+  new_margin()$get_interest_rate_history("BTC", vip_level = 1, start_time = 1000, end_time = 2000)
   expect_true(grepl("vipLevel=1", captured_url))
   expect_true(grepl("startTime=1000", captured_url))
   expect_true(grepl("endTime=2000", captured_url))
@@ -238,7 +238,7 @@ test_that("get_cross_margin_data passes optional parameters", {
     return(resp)
   })
 
-  new_margin()$get_cross_margin_data(vipLevel = 0, coin = "BTC")
+  new_margin()$get_cross_margin_data(vip_level = 0, coin = "BTC")
   expect_true(grepl("vipLevel=0", captured_url))
   expect_true(grepl("coin=BTC", captured_url))
 })
@@ -288,7 +288,7 @@ test_that("get_isolated_margin_data passes optional parameters", {
     return(resp)
   })
 
-  new_margin()$get_isolated_margin_data(vipLevel = 0, symbol = "BTCUSDT")
+  new_margin()$get_isolated_margin_data(vip_level = 0, symbol = "BTCUSDT")
   expect_true(grepl("vipLevel=0", captured_url))
   expect_true(grepl("symbol=BTCUSDT", captured_url))
 })

@@ -119,7 +119,7 @@ print(result)
 margin <- BinanceMargin$new()
 order <- margin$add_order(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
-  price = 50000, quantity = 0.0001, timeInForce = "GTC"
+  price = 50000, quantity = 0.0001, time_in_force = "GTC"
 )
 print(order)
 }
@@ -130,7 +130,7 @@ print(order)
 
 \dontrun{
 margin <- BinanceMargin$new()
-cancelled <- margin$cancel_order("BTCUSDT", orderId = 28)
+cancelled <- margin$cancel_order("BTCUSDT", order_id = 28)
 print(cancelled)
 }
 
@@ -150,7 +150,7 @@ print(cancelled)
 
 \dontrun{
 margin <- BinanceMargin$new()
-order <- margin$get_order("BTCUSDT", orderId = 28)
+order <- margin$get_order("BTCUSDT", order_id = 28)
 print(order)
 }
 
@@ -252,7 +252,7 @@ print(isolated)
 margin <- BinanceMargin$new()
 result <- margin$add_isolated_transfer(
   asset = "USDT", symbol = "BTCUSDT",
-  transFrom = "SPOT", transTo = "ISOLATED_MARGIN",
+  trans_from = "SPOT", trans_to = "ISOLATED_MARGIN",
   amount = 100
 )
 print(result)
@@ -339,9 +339,9 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$add_borrow(
   asset,
   amount,
-  isIsolated = "FALSE",
+  is_isolated = "FALSE",
   symbol = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -352,11 +352,11 @@ Verified: 2026-05-22
 
 \item{\code{amount}}{(scalar<numeric>) amount to borrow.}
 
-\item{\code{isIsolated}}{(scalar<character>) \code{"TRUE"} or \code{"FALSE"} for isolated margin. Default \code{"FALSE"}.}
+\item{\code{is_isolated}}{(scalar<character>) \code{"TRUE"} or \code{"FALSE"} for isolated margin. Default \code{"FALSE"}.}
 
-\item{\code{symbol}}{(scalar<character>?) required when \code{isIsolated = "TRUE"}.}
+\item{\code{symbol}}{(scalar<character>?) required when \code{is_isolated = "TRUE"}.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -429,9 +429,9 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$add_repay(
   asset,
   amount,
-  isIsolated = "FALSE",
+  is_isolated = "FALSE",
   symbol = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -442,11 +442,11 @@ Verified: 2026-05-22
 
 \item{\code{amount}}{(scalar<numeric>) amount to repay.}
 
-\item{\code{isIsolated}}{(scalar<character>) \code{"TRUE"} or \code{"FALSE"} for isolated margin. Default \code{"FALSE"}.}
+\item{\code{is_isolated}}{(scalar<character>) \code{"TRUE"} or \code{"FALSE"} for isolated margin. Default \code{"FALSE"}.}
 
-\item{\code{symbol}}{(scalar<character>?) required when \code{isIsolated = "TRUE"}.}
+\item{\code{symbol}}{(scalar<character>?) required when \code{is_isolated = "TRUE"}.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -535,15 +535,15 @@ Verified: 2026-05-22
   side,
   type,
   quantity = NULL,
-  quoteOrderQty = NULL,
+  quote_order_qty = NULL,
   price = NULL,
-  stopPrice = NULL,
-  timeInForce = NULL,
-  newClientOrderId = NULL,
-  newOrderRespType = NULL,
-  sideEffectType = NULL,
-  isIsolated = NULL,
-  recvWindow = NULL
+  stop_price = NULL,
+  time_in_force = NULL,
+  new_client_order_id = NULL,
+  new_order_resp_type = NULL,
+  side_effect_type = NULL,
+  is_isolated = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -559,23 +559,23 @@ Verified: 2026-05-22
 
 \item{\code{quantity}}{(scalar<numeric>?) base asset quantity.}
 
-\item{\code{quoteOrderQty}}{(scalar<numeric>?) quote asset quantity (market orders only).}
+\item{\code{quote_order_qty}}{(scalar<numeric>?) quote asset quantity (market orders only).}
 
 \item{\code{price}}{(scalar<numeric>?) price for limit orders.}
 
-\item{\code{stopPrice}}{(scalar<numeric>?) trigger price for stop orders.}
+\item{\code{stop_price}}{(scalar<numeric>?) trigger price for stop orders.}
 
-\item{\code{timeInForce}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
+\item{\code{time_in_force}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
 
-\item{\code{newClientOrderId}}{(scalar<character>?) unique client order ID.}
+\item{\code{new_client_order_id}}{(scalar<character>?) unique client order ID.}
 
-\item{\code{newOrderRespType}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
+\item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
 
-\item{\code{sideEffectType}}{(scalar<character>?) \code{"NO_SIDE_EFFECT"}, \code{"MARGIN_BUY"}, \code{"AUTO_REPAY"}.}
+\item{\code{side_effect_type}}{(scalar<character>?) \code{"NO_SIDE_EFFECT"}, \code{"MARGIN_BUY"}, \code{"AUTO_REPAY"}.}
 
-\item{\code{isIsolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+\item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -601,7 +601,7 @@ Verified: 2026-05-22
 margin <- BinanceMargin$new()
 order <- margin$add_order(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
-  price = 50000, quantity = 0.0001, timeInForce = "GTC"
+  price = 50000, quantity = 0.0001, time_in_force = "GTC"
 )
 print(order)
 }
@@ -669,10 +669,10 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$cancel_order(
   symbol,
-  orderId = NULL,
-  origClientOrderId = NULL,
-  isIsolated = NULL,
-  recvWindow = NULL
+  order_id = NULL,
+  orig_client_order_id = NULL,
+  is_isolated = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -681,13 +681,13 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{(scalar<count>?) the order ID to cancel.}
+\item{\code{order_id}}{(scalar<count>?) the order ID to cancel.}
 
-\item{\code{origClientOrderId}}{(scalar<character>?) the client order ID to cancel.}
+\item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID to cancel.}
 
-\item{\code{isIsolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+\item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -706,7 +706,7 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 margin <- BinanceMargin$new()
-cancelled <- margin$cancel_order("BTCUSDT", orderId = 28)
+cancelled <- margin$cancel_order("BTCUSDT", order_id = 28)
 print(cancelled)
 }
 }
@@ -772,7 +772,7 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$cancel_all_orders(symbol, isIsolated = NULL, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$cancel_all_orders(symbol, is_isolated = NULL, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -780,9 +780,9 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{isIsolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+\item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -864,10 +864,10 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_order(
   symbol,
-  orderId = NULL,
-  origClientOrderId = NULL,
-  isIsolated = NULL,
-  recvWindow = NULL
+  order_id = NULL,
+  orig_client_order_id = NULL,
+  is_isolated = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -876,13 +876,13 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{(scalar<count>?) the order ID.}
+\item{\code{order_id}}{(scalar<count>?) the order ID.}
 
-\item{\code{origClientOrderId}}{(scalar<character>?) the client order ID.}
+\item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID.}
 
-\item{\code{isIsolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+\item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -907,7 +907,7 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 margin <- BinanceMargin$new()
-order <- margin$get_order("BTCUSDT", orderId = 28)
+order <- margin$get_order("BTCUSDT", order_id = 28)
 print(order)
 }
 }
@@ -969,8 +969,8 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_open_orders(
   symbol = NULL,
-  isIsolated = NULL,
-  recvWindow = NULL
+  is_isolated = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -979,9 +979,9 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{isIsolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+\item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1087,12 +1087,12 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_all_orders(
   symbol,
-  orderId = NULL,
-  startTime = NULL,
-  endTime = NULL,
+  order_id = NULL,
+  start_time = NULL,
+  end_time = NULL,
   limit = NULL,
-  isIsolated = NULL,
-  recvWindow = NULL
+  is_isolated = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -1101,17 +1101,17 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{(scalar<count>?) pagination cursor.}
+\item{\code{order_id}}{(scalar<count>?) pagination cursor.}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
 \item{\code{limit}}{(scalar<count>?) max results (default 500, max 500).}
 
-\item{\code{isIsolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+\item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1205,13 +1205,13 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_account(recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_account(recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1281,8 +1281,8 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_max_borrowable(
   asset,
-  isolatedSymbol = NULL,
-  recvWindow = NULL
+  isolated_symbol = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -1291,9 +1291,9 @@ Verified: 2026-05-22
 \describe{
 \item{\code{asset}}{(scalar<character>) asset to query (e.g., \code{"USDT"}).}
 
-\item{\code{isolatedSymbol}}{(scalar<character>?) isolated margin pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{isolated_symbol}}{(scalar<character>?) isolated margin pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1353,8 +1353,8 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_max_transferable(
   asset,
-  isolatedSymbol = NULL,
-  recvWindow = NULL
+  isolated_symbol = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -1363,9 +1363,9 @@ Verified: 2026-05-22
 \describe{
 \item{\code{asset}}{(scalar<character>) asset to query (e.g., \code{"USDT"}).}
 
-\item{\code{isolatedSymbol}}{(scalar<character>?) isolated margin pair (e.g., \code{"BTCUSDT"}).}
+\item{\code{isolated_symbol}}{(scalar<character>?) isolated margin pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1446,12 +1446,12 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_interest_history(
   asset = NULL,
-  startTime = NULL,
-  endTime = NULL,
+  start_time = NULL,
+  end_time = NULL,
   current = NULL,
   size = NULL,
   archived = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -1460,9 +1460,9 @@ Verified: 2026-05-22
 \describe{
 \item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
 \item{\code{current}}{(scalar<count>?) current page (default 1).}
 
@@ -1470,7 +1470,7 @@ Verified: 2026-05-22
 
 \item{\code{archived}}{(scalar<character>?) \code{"true"} to query 6-month archived data.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1550,29 +1550,29 @@ Verified: 2026-05-22
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_force_liquidation_history(
-  startTime = NULL,
-  endTime = NULL,
-  isolatedSymbol = NULL,
+  start_time = NULL,
+  end_time = NULL,
+  isolated_symbol = NULL,
   current = NULL,
   size = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{isolatedSymbol}}{(scalar<character>?) isolated margin pair.}
+\item{\code{isolated_symbol}}{(scalar<character>?) isolated margin pair.}
 
 \item{\code{current}}{(scalar<count>?) current page (default 1).}
 
 \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1654,13 +1654,13 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_trades(
   symbol,
-  orderId = NULL,
-  startTime = NULL,
-  endTime = NULL,
-  fromId = NULL,
+  order_id = NULL,
+  start_time = NULL,
+  end_time = NULL,
+  from_id = NULL,
   limit = NULL,
-  isIsolated = NULL,
-  recvWindow = NULL
+  is_isolated = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -1669,19 +1669,19 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{(scalar<count>?) filter by order ID.}
+\item{\code{order_id}}{(scalar<count>?) filter by order ID.}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{fromId}}{(scalar<count>?) trade ID to fetch from.}
+\item{\code{from_id}}{(scalar<count>?) trade ID to fetch from.}
 
 \item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
 
-\item{\code{isIsolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+\item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1788,7 +1788,7 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_isolated_account(symbols = NULL, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_isolated_account(symbols = NULL, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -1796,7 +1796,7 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbols}}{(scalar<character>?) comma-separated symbols (max 5, e.g., \code{"BTCUSDT,ETHUSDT"}).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1882,10 +1882,10 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$add_isolated_transfer(
   asset,
   symbol,
-  transFrom,
-  transTo,
+  trans_from,
+  trans_to,
   amount,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -1896,13 +1896,13 @@ Verified: 2026-05-22
 
 \item{\code{symbol}}{(scalar<character>) isolated margin pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{transFrom}}{(scalar<character>) source account: \code{"SPOT"} or \code{"ISOLATED_MARGIN"}.}
+\item{\code{trans_from}}{(scalar<character>) source account: \code{"SPOT"} or \code{"ISOLATED_MARGIN"}.}
 
-\item{\code{transTo}}{(scalar<character>) destination account: \code{"SPOT"} or \code{"ISOLATED_MARGIN"}.}
+\item{\code{trans_to}}{(scalar<character>) destination account: \code{"SPOT"} or \code{"ISOLATED_MARGIN"}.}
 
 \item{\code{amount}}{(scalar<numeric>) amount to transfer.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1919,7 +1919,7 @@ R's 32-bit \code{integer}, so it is coerced to a double).
 margin <- BinanceMargin$new()
 result <- margin$add_isolated_transfer(
   asset = "USDT", symbol = "BTCUSDT",
-  transFrom = "SPOT", transTo = "ISOLATED_MARGIN",
+  trans_from = "SPOT", trans_to = "ISOLATED_MARGIN",
   amount = 100
 )
 print(result)

@@ -118,11 +118,11 @@ BinanceTransfer <- R6::R6Class(
     #'   `"MAIN_ISOLATED_MARGIN"`, `"ISOLATED_MARGIN_MAIN"`.
     #' @param asset (scalar<character>) asset to transfer (e.g., `"USDT"`).
     #' @param amount (scalar<numeric>) amount to transfer.
-    #' @param fromSymbol (scalar<character>?) mandatory when `type` involves
+    #' @param from_symbol (scalar<character>?) mandatory when `type` involves
     #'   isolated margin (e.g., `"BNBUSDT"`).
-    #' @param toSymbol (scalar<character>?) mandatory when `type` involves
+    #' @param to_symbol (scalar<character>?) mandatory when `type` involves
     #'   isolated margin (e.g., `"BNBUSDT"`).
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row:
     #' - tran_id (numeric) Unique transfer identifier assigned by Binance.
     #'
@@ -138,14 +138,14 @@ BinanceTransfer <- R6::R6Class(
       type,
       asset,
       amount,
-      fromSymbol = NULL,
-      toSymbol = NULL,
-      recvWindow = NULL
+      from_symbol = NULL,
+      to_symbol = NULL,
+      recv_window = NULL
     ) {
-      assert_args_BinanceTransfer__add_transfer(type, asset, amount, fromSymbol, toSymbol, recvWindow)
+      assert_args_BinanceTransfer__add_transfer(type, asset, amount, from_symbol, to_symbol, recv_window)
       assert::assert_nonempty_strings(asset)
-      assert::assert_nonempty_strings(fromSymbol, null_ok = TRUE)
-      assert::assert_nonempty_strings(toSymbol, null_ok = TRUE)
+      assert::assert_nonempty_strings(from_symbol, null_ok = TRUE)
+      assert::assert_nonempty_strings(to_symbol, null_ok = TRUE)
       rlang::arg_match0(
         type,
         c(
@@ -177,9 +177,9 @@ BinanceTransfer <- R6::R6Class(
           type = type,
           asset = asset,
           amount = as.character(amount),
-          fromSymbol = fromSymbol,
-          toSymbol = toSymbol,
-          recvWindow = recvWindow
+          fromSymbol = from_symbol,
+          toSymbol = to_symbol,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- as_dt_row(data)
@@ -235,15 +235,15 @@ BinanceTransfer <- R6::R6Class(
     #' ```
     #'
     #' @param type (scalar<character>) transfer type. Same options as `add_transfer()`.
-    #' @param startTime (scalar<count>?) start timestamp in milliseconds.
-    #' @param endTime (scalar<count>?) end timestamp in milliseconds.
+    #' @param start_time (scalar<count>?) start timestamp in milliseconds.
+    #' @param end_time (scalar<count>?) end timestamp in milliseconds.
     #' @param current (scalar<count>?) current page (default 1, starting from 1).
     #' @param size (scalar<count>?) page size (default 10, max 100).
-    #' @param fromSymbol (scalar<character>?) must be sent when `type` involves
+    #' @param from_symbol (scalar<character>?) must be sent when `type` involves
     #'   isolated margin.
-    #' @param toSymbol (scalar<character>?) must be sent when `type` involves
+    #' @param to_symbol (scalar<character>?) must be sent when `type` involves
     #'   isolated margin.
-    #' @param recvWindow (scalar<count>?) max 60000.
+    #' @param recv_window (scalar<count>?) max 60000.
     #' @return (data.table | promise<data.table>) one row per transfer
     #'   (empty when there are no matching transfers):
     #' - asset (character) Transferred asset (e.g., `"USDT"`).
@@ -262,26 +262,26 @@ BinanceTransfer <- R6::R6Class(
     # nolint end
     get_transfer_history = function(
       type,
-      startTime = NULL,
-      endTime = NULL,
+      start_time = NULL,
+      end_time = NULL,
       current = NULL,
       size = NULL,
-      fromSymbol = NULL,
-      toSymbol = NULL,
-      recvWindow = NULL
+      from_symbol = NULL,
+      to_symbol = NULL,
+      recv_window = NULL
     ) {
       assert_args_BinanceTransfer__get_transfer_history(
         type,
-        startTime,
-        endTime,
+        start_time,
+        end_time,
         current,
         size,
-        fromSymbol,
-        toSymbol,
-        recvWindow
+        from_symbol,
+        to_symbol,
+        recv_window
       )
-      assert::assert_nonempty_strings(fromSymbol, null_ok = TRUE)
-      assert::assert_nonempty_strings(toSymbol, null_ok = TRUE)
+      assert::assert_nonempty_strings(from_symbol, null_ok = TRUE)
+      assert::assert_nonempty_strings(to_symbol, null_ok = TRUE)
       rlang::arg_match0(
         type,
         c(
@@ -310,13 +310,13 @@ BinanceTransfer <- R6::R6Class(
         endpoint = "/sapi/v1/asset/transfer",
         query = list(
           type = type,
-          startTime = startTime,
-          endTime = endTime,
+          startTime = start_time,
+          endTime = end_time,
           current = current,
           size = size,
-          fromSymbol = fromSymbol,
-          toSymbol = toSymbol,
-          recvWindow = recvWindow
+          fromSymbol = from_symbol,
+          toSymbol = to_symbol,
+          recvWindow = recv_window
         ),
         .parser = function(data) {
           dt <- parse_paginated(data, time_cols = "timestamp")

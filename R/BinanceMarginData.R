@@ -107,7 +107,7 @@ BinanceMarginData <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param recvWindow (scalar<count>?) request validity window in milliseconds.
+    #' @param recv_window (scalar<count>?) request validity window in milliseconds.
     #' @return (data.table | promise<data.table>) one row per pair:
     #'   - base (character) Base asset code (e.g., `"BTC"`).
     #'   - id (numeric) Pair identifier.
@@ -124,9 +124,9 @@ BinanceMarginData <- R6::R6Class(
     #' print(pairs)
     #' }
     # nolint end
-    get_all_pairs = function(recvWindow = NULL) {
-      assert_args_BinanceMarginData__get_all_pairs(recvWindow)
-      query <- list(recvWindow = recvWindow)
+    get_all_pairs = function(recv_window = NULL) {
+      assert_args_BinanceMarginData__get_all_pairs(recv_window)
+      query <- list(recvWindow = recv_window)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/allPairs",
         query = query,
@@ -192,7 +192,7 @@ BinanceMarginData <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param recvWindow (scalar<count>?) request validity window in milliseconds.
+    #' @param recv_window (scalar<count>?) request validity window in milliseconds.
     #' @return (data.table | promise<data.table>) one row per pair:
     #'   - symbol (character) Trading pair identifier (e.g., `"BTCUSDT"`).
     #'   - base (character) Base asset code (e.g., `"BTC"`).
@@ -208,9 +208,9 @@ BinanceMarginData <- R6::R6Class(
     #' print(pairs)
     #' }
     # nolint end
-    get_isolated_pairs = function(recvWindow = NULL) {
-      assert_args_BinanceMarginData__get_isolated_pairs(recvWindow)
-      query <- list(recvWindow = recvWindow)
+    get_isolated_pairs = function(recv_window = NULL) {
+      assert_args_BinanceMarginData__get_isolated_pairs(recv_window)
+      query <- list(recvWindow = recv_window)
       res <- private$.request(
         endpoint = "/sapi/v1/margin/isolated/allPairs",
         query = query,
@@ -330,10 +330,10 @@ BinanceMarginData <- R6::R6Class(
     #' ```
     #'
     #' @param asset (scalar<character>) asset code (e.g., `"BTC"`).
-    #' @param vipLevel (scalar<count>?) VIP level to query. Defaults to user's VIP level.
-    #' @param startTime (scalar<numeric>?) start time in milliseconds.
-    #' @param endTime (scalar<numeric>?) end time in milliseconds.
-    #' @param recvWindow (scalar<count>?) request validity window in milliseconds.
+    #' @param vip_level (scalar<count>?) VIP level to query. Defaults to user's VIP level.
+    #' @param start_time (scalar<numeric>?) start time in milliseconds.
+    #' @param end_time (scalar<numeric>?) end time in milliseconds.
+    #' @param recv_window (scalar<count>?) request validity window in milliseconds.
     #' @return (data.table | promise<data.table>) one row per rate record:
     #'   - asset (character) Asset code (e.g., `"BTC"`).
     #'   - daily_interest_rate (character) Daily interest rate as string.
@@ -347,15 +347,21 @@ BinanceMarginData <- R6::R6Class(
     #' print(history)
     #' }
     # nolint end
-    get_interest_rate_history = function(asset, vipLevel = NULL, startTime = NULL, endTime = NULL, recvWindow = NULL) {
-      assert_args_BinanceMarginData__get_interest_rate_history(asset, vipLevel, startTime, endTime, recvWindow)
+    get_interest_rate_history = function(
+      asset,
+      vip_level = NULL,
+      start_time = NULL,
+      end_time = NULL,
+      recv_window = NULL
+    ) {
+      assert_args_BinanceMarginData__get_interest_rate_history(asset, vip_level, start_time, end_time, recv_window)
       assert::assert_nonempty_strings(asset)
       query <- list(
         asset = asset,
-        vipLevel = vipLevel,
-        startTime = startTime,
-        endTime = endTime,
-        recvWindow = recvWindow
+        vipLevel = vip_level,
+        startTime = start_time,
+        endTime = end_time,
+        recvWindow = recv_window
       )
       res <- private$.request(
         endpoint = "/sapi/v1/margin/interestRateHistory",
@@ -425,9 +431,9 @@ BinanceMarginData <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param vipLevel (scalar<count>?) VIP level to query. Defaults to user's VIP level.
+    #' @param vip_level (scalar<count>?) VIP level to query. Defaults to user's VIP level.
     #' @param coin (scalar<character>?) specific coin to query (e.g., `"BTC"`).
-    #' @param recvWindow (scalar<count>?) request validity window in milliseconds.
+    #' @param recv_window (scalar<count>?) request validity window in milliseconds.
     #' @return (data.table | promise<data.table>) one row per coin-pair combination:
     #'   - vip_level (integer) VIP level tier.
     #'   - coin (character) Coin code (e.g., `"BTC"`).
@@ -447,13 +453,13 @@ BinanceMarginData <- R6::R6Class(
     #' print(data)
     #' }
     # nolint end
-    get_cross_margin_data = function(vipLevel = NULL, coin = NULL, recvWindow = NULL) {
-      assert_args_BinanceMarginData__get_cross_margin_data(vipLevel, coin, recvWindow)
+    get_cross_margin_data = function(vip_level = NULL, coin = NULL, recv_window = NULL) {
+      assert_args_BinanceMarginData__get_cross_margin_data(vip_level, coin, recv_window)
       assert::assert_nonempty_strings(coin, null_ok = TRUE)
       query <- list(
-        vipLevel = vipLevel,
+        vipLevel = vip_level,
         coin = coin,
-        recvWindow = recvWindow
+        recvWindow = recv_window
       )
       res <- private$.request(
         endpoint = "/sapi/v1/margin/crossMarginData",
@@ -547,9 +553,9 @@ BinanceMarginData <- R6::R6Class(
     #' ]
     #' ```
     #'
-    #' @param vipLevel (scalar<count>?) VIP level to query. Defaults to user's VIP level.
+    #' @param vip_level (scalar<count>?) VIP level to query. Defaults to user's VIP level.
     #' @param symbol (scalar<character>?) specific symbol to query (e.g., `"BTCUSDT"`).
-    #' @param recvWindow (scalar<count>?) request validity window in milliseconds.
+    #' @param recv_window (scalar<count>?) request validity window in milliseconds.
     #' @return (data.table | promise<data.table>) one row per symbol:
     #'   - vip_level (integer) VIP level tier.
     #'   - symbol (character) Trading pair identifier.
@@ -563,13 +569,13 @@ BinanceMarginData <- R6::R6Class(
     #' print(data)
     #' }
     # nolint end
-    get_isolated_margin_data = function(vipLevel = NULL, symbol = NULL, recvWindow = NULL) {
-      assert_args_BinanceMarginData__get_isolated_margin_data(vipLevel, symbol, recvWindow)
+    get_isolated_margin_data = function(vip_level = NULL, symbol = NULL, recv_window = NULL) {
+      assert_args_BinanceMarginData__get_isolated_margin_data(vip_level, symbol, recv_window)
       assert::assert_nonempty_strings(symbol, null_ok = TRUE)
       query <- list(
-        vipLevel = vipLevel,
+        vipLevel = vip_level,
         symbol = symbol,
-        recvWindow = recvWindow
+        recvWindow = recv_window
       )
       res <- private$.request(
         endpoint = "/sapi/v1/margin/isolatedMarginData",

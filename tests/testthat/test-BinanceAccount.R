@@ -116,7 +116,7 @@ test_that("get_balances passes omitZeroBalances parameter", {
     return(resp)
   })
 
-  new_account()$get_balances(omitZeroBalances = TRUE)
+  new_account()$get_balances(omit_zero_balances = TRUE)
   expect_true(grepl("omitZeroBalances=true", captured_url))
 })
 

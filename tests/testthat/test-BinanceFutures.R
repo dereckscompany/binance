@@ -34,7 +34,7 @@ test_that("add_order returns data.table with order details", {
     type = "LIMIT",
     quantity = 0.001,
     price = 50000,
-    timeInForce = "GTC"
+    time_in_force = "GTC"
   )
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
@@ -78,7 +78,7 @@ test_that("add_order_test returns confirmation dt on success", {
     type = "LIMIT",
     quantity = 0.001,
     price = 50000,
-    timeInForce = "GTC"
+    time_in_force = "GTC"
   )
   expect_s3_class(dt, "data.table")
   # `{}` on success → `validated = TRUE`, no echoed request fields.
@@ -107,13 +107,13 @@ test_that("cancel_order returns data.table", {
   resp <- mock_binance_response(data = mock_futures_order_response())
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_futures()$cancel_order("BTCUSDT", orderId = 283194212)
+  dt <- new_futures()$cancel_order("BTCUSDT", order_id = 283194212)
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
 })
 
-test_that("cancel_order requires orderId or origClientOrderId", {
-  expect_error(new_futures()$cancel_order("BTCUSDT"), "orderId.*origClientOrderId")
+test_that("cancel_order requires order_id or orig_client_order_id", {
+  expect_error(new_futures()$cancel_order("BTCUSDT"), "order_id.*orig_client_order_id")
 })
 
 # -- cancel_all_orders --
@@ -148,15 +148,15 @@ test_that("get_order returns data.table with datetime columns", {
   resp <- mock_binance_response(data = data)
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_futures()$get_order("BTCUSDT", orderId = 283194212)
+  dt <- new_futures()$get_order("BTCUSDT", order_id = 283194212)
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   expect_s3_class(dt$update_time, "POSIXct")
   expect_s3_class(dt$time, "POSIXct")
 })
 
-test_that("get_order requires orderId or origClientOrderId", {
-  expect_error(new_futures()$get_order("BTCUSDT"), "orderId.*origClientOrderId")
+test_that("get_order requires order_id or orig_client_order_id", {
+  expect_error(new_futures()$get_order("BTCUSDT"), "order_id.*orig_client_order_id")
 })
 
 # -- get_open_orders --
@@ -339,7 +339,7 @@ test_that("set_margin_type returns data.table", {
 })
 
 test_that("set_margin_type rejects invalid margin type", {
-  expect_error(new_futures()$set_margin_type("BTCUSDT", "INVALID"), "marginType")
+  expect_error(new_futures()$set_margin_type("BTCUSDT", "INVALID"), "margin_type")
 })
 
 # -- get_trades --
@@ -361,7 +361,7 @@ test_that("get_income_history returns data.table with time", {
   resp <- mock_binance_response(data = mock_futures_income_data())
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_futures()$get_income_history(symbol = "BTCUSDT", incomeType = "FUNDING_FEE")
+  dt <- new_futures()$get_income_history(symbol = "BTCUSDT", income_type = "FUNDING_FEE")
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   expect_true("income_type" %in% names(dt))
@@ -369,8 +369,8 @@ test_that("get_income_history returns data.table with time", {
   expect_s3_class(dt$time, "POSIXct")
 })
 
-test_that("get_income_history rejects invalid incomeType", {
-  expect_error(new_futures()$get_income_history(incomeType = "INVALID"), "incomeType")
+test_that("get_income_history rejects invalid income_type", {
+  expect_error(new_futures()$get_income_history(income_type = "INVALID"), "income_type")
 })
 
 # -- set_position_mode --

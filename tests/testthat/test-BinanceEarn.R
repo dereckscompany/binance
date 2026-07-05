@@ -203,7 +203,7 @@ test_that("add_flexible_subscription returns data.table with purchase_id and suc
   resp <- mock_binance_response(data = mock_flexible_subscribe_response())
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_earn()$add_flexible_subscription(productId = "USDT001", amount = 100)
+  dt <- new_earn()$add_flexible_subscription(product_id = "USDT001", amount = 100)
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   expect_true("purchase_id" %in% names(dt))
@@ -222,7 +222,7 @@ test_that("add_flexible_subscription hits correct endpoint with POST", {
     return(resp)
   })
 
-  new_earn()$add_flexible_subscription(productId = "USDT001", amount = 100)
+  new_earn()$add_flexible_subscription(product_id = "USDT001", amount = 100)
   expect_true(grepl("sapi/v1/simple-earn/flexible/subscribe", captured_url))
   expect_equal(captured_method, "POST")
 })
@@ -235,7 +235,7 @@ test_that("add_flexible_subscription converts amount to character in query", {
     return(resp)
   })
 
-  new_earn()$add_flexible_subscription(productId = "USDT001", amount = 100.5)
+  new_earn()$add_flexible_subscription(product_id = "USDT001", amount = 100.5)
   expect_true(grepl("amount=100.5", captured_url))
   expect_true(grepl("productId=USDT001", captured_url))
 })
@@ -246,7 +246,7 @@ test_that("add_locked_subscription returns data.table with position_id", {
   resp <- mock_binance_response(data = mock_locked_subscribe_response())
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_earn()$add_locked_subscription(projectId = "BTC30d001", amount = 0.01)
+  dt <- new_earn()$add_locked_subscription(project_id = "BTC30d001", amount = 0.01)
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   expect_true("purchase_id" %in% names(dt))
@@ -265,7 +265,7 @@ test_that("add_locked_subscription hits correct endpoint with POST", {
     return(resp)
   })
 
-  new_earn()$add_locked_subscription(projectId = "BTC30d001", amount = 0.01)
+  new_earn()$add_locked_subscription(project_id = "BTC30d001", amount = 0.01)
   expect_true(grepl("sapi/v1/simple-earn/locked/subscribe", captured_url))
   expect_equal(captured_method, "POST")
 })
@@ -276,7 +276,7 @@ test_that("add_flexible_redemption returns data.table with redeem_id and success
   resp <- mock_binance_response(data = mock_flexible_redeem_response())
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_earn()$add_flexible_redemption(productId = "USDT001", amount = 50)
+  dt <- new_earn()$add_flexible_redemption(product_id = "USDT001", amount = 50)
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   expect_true("redeem_id" %in% names(dt))
@@ -295,7 +295,7 @@ test_that("add_flexible_redemption hits correct endpoint with POST", {
     return(resp)
   })
 
-  new_earn()$add_flexible_redemption(productId = "USDT001", amount = 50)
+  new_earn()$add_flexible_redemption(product_id = "USDT001", amount = 50)
   expect_true(grepl("sapi/v1/simple-earn/flexible/redeem", captured_url))
   expect_equal(captured_method, "POST")
 })
@@ -308,7 +308,7 @@ test_that("add_flexible_redemption converts amount to character if provided", {
     return(resp)
   })
 
-  new_earn()$add_flexible_redemption(productId = "USDT001", amount = 25.5)
+  new_earn()$add_flexible_redemption(product_id = "USDT001", amount = 25.5)
   expect_true(grepl("amount=25.5", captured_url))
 })
 
@@ -320,7 +320,7 @@ test_that("add_flexible_redemption works with redeemAll instead of amount", {
     return(resp)
   })
 
-  new_earn()$add_flexible_redemption(productId = "USDT001", redeemAll = TRUE)
+  new_earn()$add_flexible_redemption(product_id = "USDT001", redeem_all = TRUE)
   expect_true(grepl("redeemAll=TRUE", captured_url))
   expect_false(grepl("amount=", captured_url))
 })
@@ -331,7 +331,7 @@ test_that("add_locked_redemption returns data.table with redeem_id", {
   resp <- mock_binance_response(data = mock_locked_redeem_response())
   httr2::local_mocked_responses(function(req) resp)
 
-  dt <- new_earn()$add_locked_redemption(positionId = "12345")
+  dt <- new_earn()$add_locked_redemption(position_id = "12345")
   expect_s3_class(dt, "data.table")
   expect_equal(nrow(dt), 1L)
   expect_true("redeem_id" %in% names(dt))
@@ -348,7 +348,7 @@ test_that("add_locked_redemption hits correct endpoint with POST", {
     return(resp)
   })
 
-  new_earn()$add_locked_redemption(positionId = "12345")
+  new_earn()$add_locked_redemption(position_id = "12345")
   expect_true(grepl("sapi/v1/simple-earn/locked/redeem", captured_url))
   expect_equal(captured_method, "POST")
 })
@@ -410,7 +410,7 @@ test_that("get_flexible_position hits correct endpoint", {
     return(resp)
   })
 
-  new_earn()$get_flexible_position(asset = "USDT", productId = "USDT001")
+  new_earn()$get_flexible_position(asset = "USDT", product_id = "USDT001")
   expect_true(grepl("sapi/v1/simple-earn/flexible/position", captured_url))
   expect_true(grepl("asset=USDT", captured_url))
   expect_true(grepl("productId=USDT001", captured_url))
@@ -478,7 +478,7 @@ test_that("get_locked_position hits correct endpoint", {
     return(resp)
   })
 
-  new_earn()$get_locked_position(asset = "BTC", positionId = "12345")
+  new_earn()$get_locked_position(asset = "BTC", position_id = "12345")
   expect_true(grepl("sapi/v1/simple-earn/locked/position", captured_url))
   expect_true(grepl("asset=BTC", captured_url))
   expect_true(grepl("positionId=12345", captured_url))
@@ -519,7 +519,7 @@ test_that("get_flexible_subscription_history hits correct endpoint", {
     return(resp)
   })
 
-  new_earn()$get_flexible_subscription_history(asset = "USDT", startTime = 1661493146000, endTime = 1661593146000)
+  new_earn()$get_flexible_subscription_history(asset = "USDT", start_time = 1661493146000, end_time = 1661593146000)
   expect_true(grepl("sapi/v1/simple-earn/flexible/history/subscriptionRecord", captured_url))
   expect_true(grepl("asset=USDT", captured_url))
   expect_true(grepl("startTime=1661493146000", captured_url))
@@ -560,7 +560,7 @@ test_that("get_flexible_redemption_history hits correct endpoint", {
     return(resp)
   })
 
-  new_earn()$get_flexible_redemption_history(productId = "USDT001", asset = "USDT")
+  new_earn()$get_flexible_redemption_history(product_id = "USDT001", asset = "USDT")
   expect_true(grepl("sapi/v1/simple-earn/flexible/history/redemptionRecord", captured_url))
   expect_true(grepl("productId=USDT001", captured_url))
   expect_true(grepl("asset=USDT", captured_url))
@@ -576,7 +576,7 @@ test_that("get_locked_redemption_history hits correct endpoint", {
     return(resp)
   })
 
-  new_earn()$get_locked_redemption_history(positionId = "12345", asset = "BTC")
+  new_earn()$get_locked_redemption_history(position_id = "12345", asset = "BTC")
   expect_true(grepl("sapi/v1/simple-earn/locked/history/redemptionRecord", captured_url))
   expect_true(grepl("positionId=12345", captured_url))
   expect_true(grepl("asset=BTC", captured_url))

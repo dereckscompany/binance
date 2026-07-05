@@ -84,7 +84,7 @@ while (!later::loop_empty()) later::run_now()
 
 \dontrun{
 sub <- BinanceSubAccount$new()
-result <- sub$add_sub_account(subAccountString = "mysubaccount")
+result <- sub$add_sub_account(sub_account_string = "mysubaccount")
 print(result$email)
 }
 
@@ -125,8 +125,8 @@ print(summary)
 \dontrun{
 sub <- BinanceSubAccount$new()
 result <- sub$add_transfer(
-  toEmail = "sub@virtual.com",
-  fromAccountType = "SPOT", toAccountType = "SPOT",
+  to_email = "sub@virtual.com",
+  from_account_type = "SPOT", to_account_type = "SPOT",
   asset = "USDT", amount = 100
 )
 print(result$tran_id)
@@ -138,7 +138,7 @@ print(result$tran_id)
 
 \dontrun{
 sub <- BinanceSubAccount$new()
-history <- sub$get_transfer_history(toEmail = "sub@virtual.com")
+history <- sub$get_transfer_history(to_email = "sub@virtual.com")
 print(history)
 }
 
@@ -148,7 +148,7 @@ print(history)
 
 \dontrun{
 sub <- BinanceSubAccount$new()
-futures <- sub$get_futures_account(email = "sub@virtual.com", futuresType = 1)
+futures <- sub$get_futures_account(email = "sub@virtual.com", futures_type = 1)
 print(futures)
 }
 
@@ -231,15 +231,15 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$add_sub_account(subAccountString, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$add_sub_account(sub_account_string, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{subAccountString}}{(scalar<character>) the sub-account name/string identifier.}
+\item{\code{sub_account_string}}{(scalar<character>) the sub-account name/string identifier.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -253,7 +253,7 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 sub <- BinanceSubAccount$new()
-result <- sub$add_sub_account(subAccountString = "mysubaccount")
+result <- sub$add_sub_account(sub_account_string = "mysubaccount")
 print(result$email)
 }
 }
@@ -306,10 +306,10 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_sub_accounts(
   email = NULL,
-  isFreeze = NULL,
+  is_freeze = NULL,
   page = NULL,
   limit = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -318,13 +318,13 @@ Verified: 2026-05-22
 \describe{
 \item{\code{email}}{(scalar<character>?) filter by sub-account email.}
 
-\item{\code{isFreeze}}{(scalar<logical>?) filter by freeze status.}
+\item{\code{is_freeze}}{(scalar<logical>?) filter by freeze status.}
 
 \item{\code{page}}{(scalar<count>?) page number (default 1).}
 
 \item{\code{limit}}{(scalar<count>?) results per page (default 1, max 200).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -388,7 +388,7 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_balances(email, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_balances(email, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -396,7 +396,7 @@ Verified: 2026-05-22
 \describe{
 \item{\code{email}}{(scalar<character>) the sub-account email.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -470,7 +470,7 @@ Verified: 2026-05-22
   email = NULL,
   page = NULL,
   size = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -483,7 +483,7 @@ Verified: 2026-05-22
 
 \item{\code{size}}{(scalar<count>?) results per page (default 10, max 20).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -563,37 +563,37 @@ Verified: 2026-05-22
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$add_transfer(
-  fromEmail = NULL,
-  toEmail = NULL,
-  fromAccountType,
-  toAccountType,
+  from_email = NULL,
+  to_email = NULL,
+  from_account_type,
+  to_account_type,
   asset,
   amount,
-  clientTranId = NULL,
-  recvWindow = NULL
+  client_tran_id = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{fromEmail}}{(scalar<character>?) sender sub-account email.}
+\item{\code{from_email}}{(scalar<character>?) sender sub-account email.}
 
-\item{\code{toEmail}}{(scalar<character>?) recipient sub-account email.}
+\item{\code{to_email}}{(scalar<character>?) recipient sub-account email.}
 
-\item{\code{fromAccountType}}{(scalar<character>) source account type. One of
+\item{\code{from_account_type}}{(scalar<character>) source account type. One of
 \code{"SPOT"}, \code{"USDT_FUTURE"}, \code{"COIN_FUTURE"}, \code{"MARGIN"}, \code{"ISOLATED_MARGIN"}.}
 
-\item{\code{toAccountType}}{(scalar<character>) destination account type. One of
+\item{\code{to_account_type}}{(scalar<character>) destination account type. One of
 \code{"SPOT"}, \code{"USDT_FUTURE"}, \code{"COIN_FUTURE"}, \code{"MARGIN"}, \code{"ISOLATED_MARGIN"}.}
 
 \item{\code{asset}}{(scalar<character>) asset to transfer (e.g., \code{"USDT"}).}
 
 \item{\code{amount}}{(scalar<numeric>) amount to transfer.}
 
-\item{\code{clientTranId}}{(scalar<character>?) client-defined transfer ID.}
+\item{\code{client_tran_id}}{(scalar<character>?) client-defined transfer ID.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -610,8 +610,8 @@ overflows R's 32-bit \code{integer}, so it arrives as a double).
 \preformatted{\dontrun{
 sub <- BinanceSubAccount$new()
 result <- sub$add_transfer(
-  toEmail = "sub@virtual.com",
-  fromAccountType = "SPOT", toAccountType = "SPOT",
+  to_email = "sub@virtual.com",
+  from_account_type = "SPOT", to_account_type = "SPOT",
   asset = "USDT", amount = 100
 )
 print(result$tran_id)
@@ -669,35 +669,35 @@ Verified: 2026-05-22
 }
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_transfer_history(
-  fromEmail = NULL,
-  toEmail = NULL,
-  clientTranId = NULL,
-  startTime = NULL,
-  endTime = NULL,
+  from_email = NULL,
+  to_email = NULL,
+  client_tran_id = NULL,
+  start_time = NULL,
+  end_time = NULL,
   page = NULL,
   limit = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{fromEmail}}{(scalar<character>?) filter by sender email.}
+\item{\code{from_email}}{(scalar<character>?) filter by sender email.}
 
-\item{\code{toEmail}}{(scalar<character>?) filter by recipient email.}
+\item{\code{to_email}}{(scalar<character>?) filter by recipient email.}
 
-\item{\code{clientTranId}}{(scalar<character>?) filter by client transfer ID.}
+\item{\code{client_tran_id}}{(scalar<character>?) filter by client transfer ID.}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
 \item{\code{page}}{(scalar<count>?) page number (default 1).}
 
 \item{\code{limit}}{(scalar<count>?) results per page (default 500, max 500).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -722,7 +722,7 @@ overflows R's 32-bit \code{integer}, so it arrives as a double).
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 sub <- BinanceSubAccount$new()
-history <- sub$get_transfer_history(toEmail = "sub@virtual.com")
+history <- sub$get_transfer_history(to_email = "sub@virtual.com")
 print(history)
 }
 }
@@ -790,7 +790,7 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_futures_account(email, futuresType, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_futures_account(email, futures_type, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -798,9 +798,9 @@ Verified: 2026-05-22
 \describe{
 \item{\code{email}}{(scalar<character>) the sub-account email.}
 
-\item{\code{futuresType}}{(scalar<count>) \code{1} for USDT-margined futures, \code{2} for COIN-margined futures.}
+\item{\code{futures_type}}{(scalar<count>) \code{1} for USDT-margined futures, \code{2} for COIN-margined futures.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -822,7 +822,7 @@ single row without asset-level columns is returned.
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 sub <- BinanceSubAccount$new()
-futures <- sub$get_futures_account(email = "sub@virtual.com", futuresType = 1)
+futures <- sub$get_futures_account(email = "sub@virtual.com", futures_type = 1)
 print(futures)
 }
 }
@@ -873,7 +873,7 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_margin_account(email, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_margin_account(email, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -881,7 +881,7 @@ Verified: 2026-05-22
 \describe{
 \item{\code{email}}{(scalar<character>) the sub-account email.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -948,7 +948,7 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_status(email = NULL, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_status(email = NULL, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -956,7 +956,7 @@ Verified: 2026-05-22
 \describe{
 \item{\code{email}}{(scalar<character>?) filter by sub-account email.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }

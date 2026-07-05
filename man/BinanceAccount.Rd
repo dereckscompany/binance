@@ -178,13 +178,13 @@ for the per-asset shape. \code{commissionRates} is flattened to wide
 so the return is always one row per account.
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceAccount$get_account_info(recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceAccount$get_account_info(recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -279,15 +279,15 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceAccount$get_balances(omitZeroBalances = NULL, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceAccount$get_balances(omit_zero_balances = NULL, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{omitZeroBalances}}{(scalar<logical>?) if TRUE, omit assets with zero balance.}
+\item{\code{omit_zero_balances}}{(scalar<logical>?) if TRUE, omit assets with zero balance.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -369,12 +369,12 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceAccount$get_trades(
   symbol,
-  orderId = NULL,
-  startTime = NULL,
-  endTime = NULL,
-  fromId = NULL,
+  order_id = NULL,
+  start_time = NULL,
+  end_time = NULL,
+  from_id = NULL,
   limit = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -383,17 +383,17 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{(scalar<count>?) filter by order ID.}
+\item{\code{order_id}}{(scalar<count>?) filter by order ID.}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{fromId}}{(scalar<count>?) trade ID to fetch from.}
+\item{\code{from_id}}{(scalar<count>?) trade ID to fetch from.}
 
 \item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }

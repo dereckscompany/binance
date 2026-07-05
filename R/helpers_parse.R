@@ -1,210 +1,6 @@
 # File: R/helpers_parse.R
 # Response parsing and data.table construction helpers.
 
-#' Convert camelCase Names to snake_case
-#'
-#' Converts column names from Binance's camelCase convention to R's
-#' snake_case convention.
-#'
-#' @param names (character) names to convert.
-#' @return (character) converted snake_case names.
-#'
-#' @keywords internal
-#' @noRd
-to_snake_case <- function(names) {
-  assert_args_to_snake_case(names)
-  out <- gsub("([a-z0-9])([A-Z])", "\\1_\\2", names)
-  out <- gsub("([A-Z])([A-Z][a-z])", "\\1_\\2", out)
-  out <- tolower(out)
-  return(assert_return_to_snake_case(out))
-}
-
-#' Convert a List or Named List to a data.table Row
-#'
-#' Converts a flat named list (typically from a Binance API JSON response)
-#' into a single-row [data.table::data.table]. NULL values become NA.
-#' Column names are converted to snake_case.
-#'
-#' @param x (list?) a named list.
-#' @return (data.table) a single-row [data.table::data.table] with snake_case
-#'   column names.
-#'
-#' @keywords internal
-#' @noRd
-as_dt_row <- function(x) {
-  assert_args_as_dt_row(x)
-  if (is.null(x) || length(x) == 0) {
-    return(assert_return_as_dt_row(data.table::data.table()[]))
-  }
-  x <- lapply(x, function(val) {
-    if (is.null(val)) {
-      return(NA)
-    }
-    if (is.list(val) && length(val) == 0) {
-      return(NA)
-    }
-    if (is.list(val) && length(val) >= 1) {
-      return(list(val))
-    }
-    return(val)
-  })
-  dt <- data.table::as.data.table(x)
-  data.table::setnames(dt, to_snake_case(names(dt)))
-  return(assert_return_as_dt_row(dt[]))
-}
-
-#' Convert a List of Lists to a data.table
-#'
-#' Takes a list where each element is a named list (e.g., from a JSON array)
-#' and row-binds them into a [data.table::data.table] with snake_case columns.
-#'
-#' @param items (list?) a list of named lists, or NULL.
-#' @return (data.table) a [data.table::data.table]. Returns an empty data.table
-#'   if `items` is NULL or empty.
-#'
-#' @keywords internal
-#' @noRd
-as_dt_list <- function(items) {
-  assert_args_as_dt_list(items)
-  if (is.null(items) || length(items) == 0) {
-    return(assert_return_as_dt_list(data.table::data.table()[]))
-  }
-  dt <- data.table::rbindlist(lapply(items, as_dt_row), fill = TRUE)
-  return(assert_return_as_dt_list(dt[]))
-}
-
-#' Collapse a Plain-String Array Field on a Single Record
-#'
-#' Walks the named list `x` and replaces any named field whose value is a
-#' length >= 1 list of plain character strings (or atomic character vector)
-#' with a single semicolon-separated character scalar. Used by the parsers
-#' that need a one-row-per-entity shape with no list columns.
-#'
-#' ### Separator choice
-#' We use `;` rather than `,` because semicolon is far less likely to
-#' appear inside any of the values themselves (the array elements are
-#' short codes / snake_case identifiers / tickers — none of which contain
-#' semicolons). Commas legitimately appear inside URL query strings, so
-#' a future URL-valued field would need either URL-encoding or a
-#' different separator entirely. Semicolon sidesteps that.
-#'
-#' The same convention is used across the sister packages (`alpaca`,
-#' `kucoin`) for cross-package consistency.
-#'
-#' If any individual value contains a literal `;`, we'd silently corrupt
-#' the data on a subsequent split. To make any future shape change loud,
-#' we emit a once-per-session warning when that happens.
-#'
-#' ### Recovering the original values
-#' Splitting on `;` gives back the original vector:
-#'
-#' ```r
-#' dt <- market$get_exchange_info()
-#' strsplit(dt$permissions[1], ";", fixed = TRUE)[[1]]
-#' #> [1] "SPOT" "MARGIN"
-#' ```
-#'
-#' Empty / missing arrays are written as `NA_character_` (not `list()`),
-#' so downstream `rbindlist(fill = TRUE)` builds a character column
-#' rather than falling back to a list column when some records have
-#' arrays and others don't.
-#'
-#' Only fields in `fields` are touched; nested objects elsewhere are left
-#' alone so they can be flattened by their own parser.
-#'
-#' @param x (list) a named list representing a single API record.
-#' @param fields (character) names of fields to collapse.
-#' @return (list) the same named list with the matching fields collapsed in place.
-#'
-#' @keywords internal
-#' @noRd
-collapse_string_array_fields <- function(x, fields) {
-  assert_args_collapse_string_array_fields(x, fields)
-  for (nm in fields) {
-    val <- x[[nm]]
-    if (is.null(val) || length(val) == 0L) {
-      x[[nm]] <- NA_character_
-      next
-    }
-    if (is.list(val)) {
-      val <- unlist(val, use.names = FALSE)
-    }
-    if (is.atomic(val) && length(val) >= 1L) {
-      val_chr <- as.character(val)
-      # Drop NA elements BEFORE joining. `paste(c("real", NA),
-      # collapse = ";")` would produce the literal string `"real;NA"`,
-      # indistinguishable from a real "NA" value — same trap we hit on
-      # alpaca's news image_sizes. If every element is NA, fall back to
-      # `NA_character_` so empty / all-missing arrays round-trip to NA.
-      val_chr <- val_chr[!is.na(val_chr)]
-      if (length(val_chr) == 0L) {
-        x[[nm]] <- NA_character_
-        next
-      }
-      # `na.rm = TRUE` on the collision check is defensive — by here
-      # `val_chr` has no NAs, but it's cheap insurance against future
-      # refactors that might add an `NA` element back upstream.
-      if (any(grepl(";", val_chr, fixed = TRUE), na.rm = TRUE)) {
-        rlang::warn(
-          paste0(
-            "Field `",
-            nm,
-            "` contains a literal `;` which collides with the ",
-            "collapse separator. Joining anyway; downstream code that ",
-            "splits on `;` will see corrupted values. Please report this ",
-            "so we can switch the separator for this field."
-          ),
-          # Fire once per session per field — once the user has seen the
-          # warning for a given field they know that field's shape is
-          # changing, and there's no value in repeating.
-          .frequency = "once",
-          .frequency_id = paste0("collapse_sep_collision_", nm)
-        )
-      }
-      x[[nm]] <- paste(val_chr, collapse = ";")
-    }
-  }
-  return(assert_return_collapse_string_array_fields(x))
-}
-
-#' Convert a Binance Millisecond Timestamp to POSIXct
-#'
-#' @param ms (numeric | character | NA?) millisecond Unix timestamp(s); a
-#'   numeric or character vector (NA elements pass through), or NULL.
-#' @return (POSIXct | NA) POSIXct in UTC, or NA if `ms` is NULL/NA.
-#' @noassert ms
-#'
-#' @importFrom lubridate as_datetime
-#' @keywords internal
-#' @noRd
-ms_to_datetime <- function(ms) {
-  if (is.null(ms)) {
-    return(assert_return_ms_to_datetime(lubridate::NA_POSIXct_))
-  }
-  # Don't short-circuit on `all(is.na(ms))` — returning the length-1
-  # `NA_POSIXct_` from there would, when fed back through
-  # `coerce_cols()` -> `data.table::set()`, get recycled into the
-  # existing column's type rather than replacing the column with a
-  # POSIXct one. The helper must return a vector the same length as
-  # `ms` so the column lands as POSIXct regardless of whether every
-  # value is NA. `lubridate::as_datetime()` does the right thing on
-  # all-NA input on its own.
-  if (is.numeric(ms)) {
-    return(assert_return_ms_to_datetime(lubridate::as_datetime(ms / 1000)))
-  }
-  # Character path. Only feed real (non-NA) values to `as.numeric()` so
-  # the documented NA-in -> NA-out contract is silent, but a genuinely
-  # malformed string (e.g. `"not-a-number"`) still triggers the usual
-  # "NAs introduced by coercion" warning. `suppressWarnings()` here
-  # would silence real bugs too.
-  result <- rep(NA_real_, length(ms))
-  not_na <- !is.na(ms)
-  if (any(not_na)) {
-    result[not_na] <- as.numeric(ms[not_na])
-  }
-  return(assert_return_ms_to_datetime(lubridate::as_datetime(result / 1000)))
-}
-
 #' Parse a Binance UTC Datetime String to POSIXct
 #'
 #' Handles fields the API returns as `"YYYY-MM-DD HH:MM:SS"` strings (so far
@@ -226,61 +22,6 @@ utc_string_to_datetime <- function(x) {
   }
   x[!nzchar(x)] <- NA_character_
   return(assert_return_utc_string_to_datetime(lubridate::ymd_hms(x, tz = "UTC")))
-}
-
-#' Apply a Function to Selected Columns of a data.table by Reference
-#'
-#' Walks `cols`; for each that exists in `dt`, replaces it in place with the
-#' result of `fn(dt[[col]])`. Columns that are not in `dt` are silently
-#' skipped — useful for endpoints whose payload sometimes omits optional
-#' fields (e.g. `working_time` on legacy orders). A zero-row `dt` short-
-#' circuits, so the caller can pipe through this without a separate
-#' `nrow(dt) > 0` guard.
-#'
-#' Replaces the repeated boilerplate of:
-#'
-#' ```r
-#' if (nrow(dt) > 0 && "transact_time" %in% names(dt)) {
-#'   dt[, transact_time := ms_to_datetime(transact_time)]
-#' }
-#' if (nrow(dt) > 0 && "working_time" %in% names(dt)) {
-#'   dt[, working_time := ms_to_datetime(working_time)]
-#' }
-#' ```
-#'
-#' with:
-#'
-#' ```r
-#' coerce_cols(dt, c("transact_time", "working_time"), ms_to_datetime)
-#' ```
-#'
-#' Modifies `dt` by reference via `data.table::set()`; returns `dt`
-#' invisibly so the call can be the last line of a parser.
-#'
-#' @param dt (data.table) a [data.table::data.table].
-#' @param cols (character) candidate column names to convert.
-#' @param fn (function) takes a column vector, returns the coerced vector.
-#'
-#' @return (data.table) `dt`, modified by reference and returned invisibly.
-#'
-#' @keywords internal
-#' @noRd
-coerce_cols <- function(dt, cols, fn) {
-  assert_args_coerce_cols(dt, cols, fn)
-  if (nrow(dt) == 0L) {
-    return(invisible(assert_return_coerce_cols(dt)))
-  }
-  # `unique()` prevents double-coercion when a caller passes the same
-  # column name twice (e.g. `coerce_cols(dt, c("time", "time"),
-  # ms_to_datetime)` would otherwise re-feed the already-converted
-  # POSIXct vector back through `as.numeric / 1000 / as_datetime`, which
-  # produces wildly wrong values silently).
-  for (col in unique(cols)) {
-    if (col %in% names(dt)) {
-      data.table::set(dt, j = col, value = fn(dt[[col]]))
-    }
-  }
-  return(invisible(assert_return_coerce_cols(dt)))
 }
 
 #' Process Orderbook Data into a data.table
@@ -412,7 +153,7 @@ empty_dt_account_trade <- function() {
 #' @noassert
 empty_dt_ohlcv <- function() {
   return(data.table::data.table(
-    open_time = ms_to_datetime(numeric(0)),
+    datetime = ms_to_datetime(numeric(0)),
     open = numeric(0),
     high = numeric(0),
     low = numeric(0),
@@ -1422,7 +1163,7 @@ empty_dt_ticker_24hr <- function() {
 #' @param data (list?) the parsed Binance klines response: a list of 12-element
 #'   candle arrays, or NULL/empty.
 #' @return (data.table) OHLCV candles with snake_case columns.
-#'   - open_time (POSIXct) Candle open time.
+#'   - datetime (POSIXct) Candle open time (the bar-reference time).
 #'   - open (numeric) Open price.
 #'   - high (numeric) High price.
 #'   - low (numeric) Low price.
@@ -1448,7 +1189,7 @@ parse_klines <- function(data) {
   # [6] Close time, [7] Quote asset volume, [8] Number of trades,
   # [9] Taker buy base vol, [10] Taker buy quote vol, [11] Ignore
   dt <- data.table::data.table(
-    open_time = lubridate::as_datetime(as.numeric(vapply(data, `[[`, numeric(1), 1L)) / 1000),
+    datetime = lubridate::as_datetime(as.numeric(vapply(data, `[[`, numeric(1), 1L)) / 1000),
     open = as.numeric(vapply(data, `[[`, character(1), 2L)),
     high = as.numeric(vapply(data, `[[`, character(1), 3L)),
     low = as.numeric(vapply(data, `[[`, character(1), 4L)),

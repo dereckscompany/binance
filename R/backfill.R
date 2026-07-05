@@ -114,12 +114,12 @@ binance_backfill_klines <- function(
   resume <- NULL
   if (file.exists(file)) {
     existing <- tryCatch(
-      data.table::fread(file, select = c("symbol", "timeframe", "open_time")),
+      data.table::fread(file, select = c("symbol", "timeframe", "datetime")),
       error = function(e) NULL
     )
     if (!is.null(existing) && nrow(existing) > 0L) {
-      existing[, open_time := lubridate::as_datetime(open_time, tz = "UTC")]
-      resume <- existing[, .(last_dt = max(open_time)), by = .(symbol, timeframe)]
+      existing[, datetime := lubridate::as_datetime(datetime, tz = "UTC")]
+      resume <- existing[, .(last_dt = max(datetime)), by = .(symbol, timeframe)]
     }
   }
 
@@ -180,7 +180,7 @@ binance_backfill_klines <- function(
     # re-requests a completed page. Drop the candle still forming at the live edge
     # (close_time in the future): persisting it would store a half-built candle
     # that resume then skips over (resume advances past the last stored
-    # open_time), so it would never be refreshed to its final values. Keeping only
+    # datetime), so it would never be refreshed to its final values. Keeping only
     # closed candles means the next run re-fetches and completes it. Closed
     # historical candles are unaffected — including ones that straddle a past `to`.
     combo_rows <- 0L

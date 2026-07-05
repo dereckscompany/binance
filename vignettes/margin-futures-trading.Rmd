@@ -132,8 +132,8 @@ order <- margin$add_order(
   type = "LIMIT",
   quantity = 0.001,
   price = 50000,
-  timeInForce = "GTC",
-  sideEffectType = "MARGIN_BUY"
+  time_in_force = "GTC",
+  side_effect_type = "MARGIN_BUY"
 )
 print(order)
 ```
@@ -262,7 +262,7 @@ test <- futures$add_order_test(
   type = "LIMIT",
   quantity = 0.001,
   price = 50000,
-  timeInForce = "GTC"
+  time_in_force = "GTC"
 )
 print(test)
 ```
@@ -276,7 +276,7 @@ order <- futures$add_order(
   type = "LIMIT",
   quantity = 0.001,
   price = 50000,
-  timeInForce = "GTC"
+  time_in_force = "GTC"
 )
 print(order)
 ```
@@ -300,10 +300,10 @@ hedge mode:
 
 ```{r futures-margin-type, eval = FALSE}
 # Switch to isolated margin
-futures$set_margin_type(symbol = "BTCUSDT", marginType = "ISOLATED")
+futures$set_margin_type(symbol = "BTCUSDT", margin_type = "ISOLATED")
 
 # Enable hedge mode (dual side positions)
-futures$set_position_mode(dualSidePosition = TRUE)
+futures$set_position_mode(dual_side_position = TRUE)
 ```
 
 ### Income History

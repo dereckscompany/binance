@@ -79,7 +79,7 @@ The base URL defaults to \verb{https://fapi.binance.com} via \code{\link[=get_fu
 futures <- BinanceFutures$new()
 order <- futures$add_order(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
-  quantity = 0.001, price = 50000, timeInForce = "GTC"
+  quantity = 0.001, price = 50000, time_in_force = "GTC"
 )
 print(order)
 
@@ -105,7 +105,7 @@ while (!later::loop_empty()) later::run_now()
 futures <- BinanceFutures$new()
 order <- futures$add_order(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
-  quantity = 0.001, price = 50000, timeInForce = "GTC"
+  quantity = 0.001, price = 50000, time_in_force = "GTC"
 )
 print(order)
 }
@@ -118,7 +118,7 @@ print(order)
 futures <- BinanceFutures$new()
 test <- futures$add_order_test(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
-  quantity = 0.001, price = 50000, timeInForce = "GTC"
+  quantity = 0.001, price = 50000, time_in_force = "GTC"
 )
 stopifnot(test$validated)
 }
@@ -129,7 +129,7 @@ stopifnot(test$validated)
 
 \dontrun{
 futures <- BinanceFutures$new()
-cancelled <- futures$cancel_order("BTCUSDT", orderId = 283194212)
+cancelled <- futures$cancel_order("BTCUSDT", order_id = 283194212)
 print(cancelled)
 }
 
@@ -149,7 +149,7 @@ print(result)
 
 \dontrun{
 futures <- BinanceFutures$new()
-order <- futures$get_order("BTCUSDT", orderId = 283194212)
+order <- futures$get_order("BTCUSDT", order_id = 283194212)
 print(order)
 }
 
@@ -261,7 +261,7 @@ print(trades)
 
 \dontrun{
 futures <- BinanceFutures$new()
-income <- futures$get_income_history(symbol = "BTCUSDT", incomeType = "FUNDING_FEE")
+income <- futures$get_income_history(symbol = "BTCUSDT", income_type = "FUNDING_FEE")
 print(income)
 }
 
@@ -425,15 +425,15 @@ Verified: 2026-05-22
   type,
   quantity = NULL,
   price = NULL,
-  stopPrice = NULL,
-  timeInForce = NULL,
-  positionSide = NULL,
-  reduceOnly = NULL,
-  newClientOrderId = NULL,
-  closePosition = NULL,
-  workingType = NULL,
-  newOrderRespType = NULL,
-  recvWindow = NULL
+  stop_price = NULL,
+  time_in_force = NULL,
+  position_side = NULL,
+  reduce_only = NULL,
+  new_client_order_id = NULL,
+  close_position = NULL,
+  working_type = NULL,
+  new_order_resp_type = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -452,23 +452,23 @@ Verified: 2026-05-22
 
 \item{\code{price}}{(scalar<numeric>?) price for limit orders.}
 
-\item{\code{stopPrice}}{(scalar<numeric>?) trigger price for stop orders.}
+\item{\code{stop_price}}{(scalar<numeric>?) trigger price for stop orders.}
 
-\item{\code{timeInForce}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
+\item{\code{time_in_force}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
 
-\item{\code{positionSide}}{(scalar<character>?) \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
+\item{\code{position_side}}{(scalar<character>?) \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
 
-\item{\code{reduceOnly}}{(scalar<logical>?) reduce-only flag.}
+\item{\code{reduce_only}}{(scalar<logical>?) reduce-only flag.}
 
-\item{\code{newClientOrderId}}{(scalar<character>?) unique client order ID.}
+\item{\code{new_client_order_id}}{(scalar<character>?) unique client order ID.}
 
-\item{\code{closePosition}}{(scalar<logical>?) close all position flag.}
+\item{\code{close_position}}{(scalar<logical>?) close all position flag.}
 
-\item{\code{workingType}}{(scalar<character>?) \code{"MARK_PRICE"} or \code{"CONTRACT_PRICE"}.}
+\item{\code{working_type}}{(scalar<character>?) \code{"MARK_PRICE"} or \code{"CONTRACT_PRICE"}.}
 
-\item{\code{newOrderRespType}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}.}
+\item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -496,7 +496,7 @@ Verified: 2026-05-22
 futures <- BinanceFutures$new()
 order <- futures$add_order(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
-  quantity = 0.001, price = 50000, timeInForce = "GTC"
+  quantity = 0.001, price = 50000, time_in_force = "GTC"
 )
 print(order)
 }
@@ -561,15 +561,15 @@ Verified: 2026-05-22
   type,
   quantity = NULL,
   price = NULL,
-  stopPrice = NULL,
-  timeInForce = NULL,
-  positionSide = NULL,
-  reduceOnly = NULL,
-  newClientOrderId = NULL,
-  closePosition = NULL,
-  workingType = NULL,
-  newOrderRespType = NULL,
-  recvWindow = NULL
+  stop_price = NULL,
+  time_in_force = NULL,
+  position_side = NULL,
+  reduce_only = NULL,
+  new_client_order_id = NULL,
+  close_position = NULL,
+  working_type = NULL,
+  new_order_resp_type = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -586,23 +586,23 @@ Verified: 2026-05-22
 
 \item{\code{price}}{(scalar<numeric>?) price for limit orders.}
 
-\item{\code{stopPrice}}{(scalar<numeric>?) trigger price for stop orders.}
+\item{\code{stop_price}}{(scalar<numeric>?) trigger price for stop orders.}
 
-\item{\code{timeInForce}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
+\item{\code{time_in_force}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
 
-\item{\code{positionSide}}{(scalar<character>?) \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
+\item{\code{position_side}}{(scalar<character>?) \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
 
-\item{\code{reduceOnly}}{(scalar<logical>?) reduce-only flag.}
+\item{\code{reduce_only}}{(scalar<logical>?) reduce-only flag.}
 
-\item{\code{newClientOrderId}}{(scalar<character>?) unique client order ID.}
+\item{\code{new_client_order_id}}{(scalar<character>?) unique client order ID.}
 
-\item{\code{closePosition}}{(scalar<logical>?) close all position flag.}
+\item{\code{close_position}}{(scalar<logical>?) close all position flag.}
 
-\item{\code{workingType}}{(scalar<character>?) \code{"MARK_PRICE"} or \code{"CONTRACT_PRICE"}.}
+\item{\code{working_type}}{(scalar<character>?) \code{"MARK_PRICE"} or \code{"CONTRACT_PRICE"}.}
 
-\item{\code{newOrderRespType}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}.}
+\item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -620,7 +620,7 @@ validation signal.
 futures <- BinanceFutures$new()
 test <- futures$add_order_test(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
-  quantity = 0.001, price = 50000, timeInForce = "GTC"
+  quantity = 0.001, price = 50000, time_in_force = "GTC"
 )
 stopifnot(test$validated)
 }
@@ -695,9 +695,9 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$cancel_order(
   symbol,
-  orderId = NULL,
-  origClientOrderId = NULL,
-  recvWindow = NULL
+  order_id = NULL,
+  orig_client_order_id = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -706,11 +706,11 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{(scalar<count>?) the order ID to cancel.}
+\item{\code{order_id}}{(scalar<count>?) the order ID to cancel.}
 
-\item{\code{origClientOrderId}}{(scalar<character>?) the client order ID to cancel.}
+\item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID to cancel.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -732,7 +732,7 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 futures <- BinanceFutures$new()
-cancelled <- futures$cancel_order("BTCUSDT", orderId = 283194212)
+cancelled <- futures$cancel_order("BTCUSDT", order_id = 283194212)
 print(cancelled)
 }
 }
@@ -786,7 +786,7 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$cancel_all_orders(symbol, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$cancel_all_orders(symbol, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -794,7 +794,7 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -873,9 +873,9 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_order(
   symbol,
-  orderId = NULL,
-  origClientOrderId = NULL,
-  recvWindow = NULL
+  order_id = NULL,
+  orig_client_order_id = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -884,11 +884,11 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{(scalar<count>?) the order ID.}
+\item{\code{order_id}}{(scalar<count>?) the order ID.}
 
-\item{\code{origClientOrderId}}{(scalar<character>?) the client order ID.}
+\item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -915,7 +915,7 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 futures <- BinanceFutures$new()
-order <- futures$get_order("BTCUSDT", orderId = 283194212)
+order <- futures$get_order("BTCUSDT", order_id = 283194212)
 print(order)
 }
 }
@@ -979,7 +979,7 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_open_orders(symbol = NULL, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_open_orders(symbol = NULL, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -987,7 +987,7 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1079,11 +1079,11 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_all_orders(
   symbol,
-  orderId = NULL,
-  startTime = NULL,
-  endTime = NULL,
+  order_id = NULL,
+  start_time = NULL,
+  end_time = NULL,
   limit = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -1092,15 +1092,15 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{(scalar<count>?) pagination cursor.}
+\item{\code{order_id}}{(scalar<count>?) pagination cursor.}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
 \item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1223,13 +1223,13 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_account(recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_account(recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1340,13 +1340,13 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_balances(recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_balances(recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1428,7 +1428,7 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_positions(symbol = NULL, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_positions(symbol = NULL, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -1436,7 +1436,7 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1519,7 +1519,7 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$set_leverage(symbol, leverage, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$set_leverage(symbol, leverage, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -1529,7 +1529,7 @@ Verified: 2026-05-22
 
 \item{\code{leverage}}{(scalar<count>) target leverage (1-125).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1601,7 +1601,7 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$set_margin_type(symbol, marginType, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$set_margin_type(symbol, margin_type, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -1609,9 +1609,9 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{marginType}}{(scalar<character>) \code{"ISOLATED"} or \code{"CROSSED"}.}
+\item{\code{margin_type}}{(scalar<character>) \code{"ISOLATED"} or \code{"CROSSED"}.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1689,8 +1689,8 @@ Verified: 2026-05-22
   symbol,
   amount,
   type,
-  positionSide = NULL,
-  recvWindow = NULL
+  position_side = NULL,
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -1703,9 +1703,9 @@ Verified: 2026-05-22
 
 \item{\code{type}}{(scalar<count>) 1 = add margin, 2 = reduce margin.}
 
-\item{\code{positionSide}}{(scalar<character>?) \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
+\item{\code{position_side}}{(scalar<character>?) \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1777,10 +1777,10 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_position_margin_history(
   symbol,
   type = NULL,
-  startTime = NULL,
-  endTime = NULL,
+  start_time = NULL,
+  end_time = NULL,
   limit = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -1791,13 +1791,13 @@ Verified: 2026-05-22
 
 \item{\code{type}}{(scalar<count>?) 1 = add margin, 2 = reduce margin.}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
 \item{\code{limit}}{(scalar<count>?) max results (default 500).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1879,12 +1879,12 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_trades(
   symbol,
-  orderId = NULL,
-  startTime = NULL,
-  endTime = NULL,
-  fromId = NULL,
+  order_id = NULL,
+  start_time = NULL,
+  end_time = NULL,
+  from_id = NULL,
   limit = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -1893,17 +1893,17 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{orderId}}{(scalar<count>?) filter by order ID.}
+\item{\code{order_id}}{(scalar<count>?) filter by order ID.}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
-\item{\code{fromId}}{(scalar<count>?) trade ID to fetch from.}
+\item{\code{from_id}}{(scalar<count>?) trade ID to fetch from.}
 
 \item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1996,11 +1996,11 @@ Verified: 2026-05-22
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_income_history(
   symbol = NULL,
-  incomeType = NULL,
-  startTime = NULL,
-  endTime = NULL,
+  income_type = NULL,
+  start_time = NULL,
+  end_time = NULL,
   limit = NULL,
-  recvWindow = NULL
+  recv_window = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -2009,7 +2009,7 @@ Verified: 2026-05-22
 \describe{
 \item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).}
 
-\item{\code{incomeType}}{(scalar<character>?) income type filter. Valid values:
+\item{\code{income_type}}{(scalar<character>?) income type filter. Valid values:
 \code{"TRANSFER"}, \code{"WELCOME_BONUS"}, \code{"REALIZED_PNL"}, \code{"FUNDING_FEE"},
 \code{"COMMISSION"}, \code{"INSURANCE_CLEAR"}, \code{"REFERRAL_KICKBACK"},
 \code{"COMMISSION_REBATE"}, \code{"API_REBATE"}, \code{"CONTEST_REWARD"},
@@ -2018,13 +2018,13 @@ Verified: 2026-05-22
 \code{"DELIVERED_SETTELMENT"}, \code{"COIN_SWAP_DEPOSIT"}, \code{"COIN_SWAP_WITHDRAW"},
 \code{"POSITION_LIMIT_INCREASE_FEE"}.}
 
-\item{\code{startTime}}{(scalar<count>?) start timestamp in milliseconds.}
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
 
-\item{\code{endTime}}{(scalar<count>?) end timestamp in milliseconds.}
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
 
 \item{\code{limit}}{(scalar<count>?) max results (default 100, max 1000).}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -2047,7 +2047,7 @@ R's 32-bit \code{integer}, so it is coerced to a double).
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 futures <- BinanceFutures$new()
-income <- futures$get_income_history(symbol = "BTCUSDT", incomeType = "FUNDING_FEE")
+income <- futures$get_income_history(symbol = "BTCUSDT", income_type = "FUNDING_FEE")
 print(income)
 }
 }
@@ -2102,15 +2102,15 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$set_position_mode(dualSidePosition, recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$set_position_mode(dual_side_position, recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{dualSidePosition}}{(scalar<logical>) \code{TRUE} for hedge mode, \code{FALSE} for one-way.}
+\item{\code{dual_side_position}}{(scalar<logical>) \code{TRUE} for hedge mode, \code{FALSE} for one-way.}
 
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
@@ -2168,13 +2168,13 @@ Verified: 2026-05-22
 }\if{html}{\out{</div>}}
 }
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_position_mode(recvWindow = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_position_mode(recv_window = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{recvWindow}}{(scalar<count>?) max 60000.}
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
 }
 \if{html}{\out{</div>}}
 }
