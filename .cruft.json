@@ -1,7 +1,7 @@
 {
   "template": "https://github.com/dereckscompany/templates-cookiecutter.git",
-  "commit": "94dd95546315fea1a3a8aa4f897bd8f2e34adae5",
-  "checkout": null,
+  "commit": "74ad5ab669ff92f5fcc1d6f33900429f897d351e",
+  "checkout": "74ad5ab669ff92f5fcc1d6f33900429f897d351e",
   "context": {
     "cookiecutter": {
       "package_name": "binance",
@@ -20,8 +20,23 @@
         "scripts/*"
       ],
       "_template": "https://github.com/dereckscompany/templates-cookiecutter.git",
-      "_commit": "961e7486bbd9619e49d57be3261c0d9b94b74b47"
+      "_commit": "74ad5ab669ff92f5fcc1d6f33900429f897d351e"
     }
   },
-  "directory": "template-r-package"
+  "directory": "template-r-package",
+  "skip": [
+    "R/**",
+    "src/**",
+    "man/**",
+    "tests/testthat/**",
+    "vignettes/**",
+    "DESCRIPTION",
+    "NAMESPACE",
+    ".lintr",
+    "_pkgdown.yml",
+    "README.Rmd",
+    "inst/WORDLIST",
+    "renv/**",
+    "renv.lock"
+  ]
 }
