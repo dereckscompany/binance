@@ -9,7 +9,7 @@ BinanceFutures: USD-M Futures Trading"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@ BinanceFutures: USD-M Futures Trading"></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>BinanceFutures: USD-M Futures Trading</h1>
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/master/R/BinanceFutures.R" class="external-link"><code>R/BinanceFutures.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.6.0/R/BinanceFutures.R" class="external-link"><code>R/BinanceFutures.R</code></a></small>
       <div class="d-none name"><code>BinanceFutures.Rd</code></div>
     </div>
 
@@ -246,15 +246,15 @@ Futures server time before each authenticated request.</p></dd>
 <span>  <span class="va">type</span>,</span>
 <span>  quantity <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  price <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  stopPrice <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  timeInForce <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  positionSide <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  reduceOnly <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  newClientOrderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  closePosition <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  workingType <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  newOrderRespType <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  stop_price <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time_in_force <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  position_side <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  reduce_only <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  new_client_order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  close_position <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  working_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  new_order_resp_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -282,39 +282,39 @@ Futures server time before each authenticated request.</p></dd>
 <dd><p>(scalar&lt;numeric&gt;?) price for limit orders.</p></dd>
 
 
-<dt><code>stopPrice</code></dt>
+<dt><code>stop_price</code></dt>
 <dd><p>(scalar&lt;numeric&gt;?) trigger price for stop orders.</p></dd>
 
 
-<dt><code>timeInForce</code></dt>
+<dt><code>time_in_force</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"GTC"</code>, <code>"IOC"</code>, <code>"FOK"</code>.</p></dd>
 
 
-<dt><code>positionSide</code></dt>
+<dt><code>position_side</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"BOTH"</code>, <code>"LONG"</code>, <code>"SHORT"</code>.</p></dd>
 
 
-<dt><code>reduceOnly</code></dt>
+<dt><code>reduce_only</code></dt>
 <dd><p>(scalar&lt;logical&gt;?) reduce-only flag.</p></dd>
 
 
-<dt><code>newClientOrderId</code></dt>
+<dt><code>new_client_order_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) unique client order ID.</p></dd>
 
 
-<dt><code>closePosition</code></dt>
+<dt><code>close_position</code></dt>
 <dd><p>(scalar&lt;logical&gt;?) close all position flag.</p></dd>
 
 
-<dt><code>workingType</code></dt>
+<dt><code>working_type</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"MARK_PRICE"</code> or <code>"CONTRACT_PRICE"</code>.</p></dd>
 
 
-<dt><code>newOrderRespType</code></dt>
+<dt><code>new_order_resp_type</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"ACK"</code>, <code>"RESULT"</code>.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -342,7 +342,7 @@ Futures server time before each authenticated request.</p></dd>
 futures &lt;- BinanceFutures$new()
 order &lt;- futures$add_order(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
-  quantity = 0.001, price = 50000, timeInForce = "GTC"
+  quantity = 0.001, price = 50000, time_in_force = "GTC"
 )
 print(order)
 }
@@ -408,15 +408,15 @@ and authentication exactly as <code>add_order()</code>, but no order is actually
 <span>  <span class="va">type</span>,</span>
 <span>  quantity <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  price <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  stopPrice <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  timeInForce <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  positionSide <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  reduceOnly <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  newClientOrderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  closePosition <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  workingType <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  newOrderRespType <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  stop_price <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time_in_force <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  position_side <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  reduce_only <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  new_client_order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  close_position <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  working_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  new_order_resp_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -442,39 +442,39 @@ and authentication exactly as <code>add_order()</code>, but no order is actually
 <dd><p>(scalar&lt;numeric&gt;?) price for limit orders.</p></dd>
 
 
-<dt><code>stopPrice</code></dt>
+<dt><code>stop_price</code></dt>
 <dd><p>(scalar&lt;numeric&gt;?) trigger price for stop orders.</p></dd>
 
 
-<dt><code>timeInForce</code></dt>
+<dt><code>time_in_force</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"GTC"</code>, <code>"IOC"</code>, <code>"FOK"</code>.</p></dd>
 
 
-<dt><code>positionSide</code></dt>
+<dt><code>position_side</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"BOTH"</code>, <code>"LONG"</code>, <code>"SHORT"</code>.</p></dd>
 
 
-<dt><code>reduceOnly</code></dt>
+<dt><code>reduce_only</code></dt>
 <dd><p>(scalar&lt;logical&gt;?) reduce-only flag.</p></dd>
 
 
-<dt><code>newClientOrderId</code></dt>
+<dt><code>new_client_order_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) unique client order ID.</p></dd>
 
 
-<dt><code>closePosition</code></dt>
+<dt><code>close_position</code></dt>
 <dd><p>(scalar&lt;logical&gt;?) close all position flag.</p></dd>
 
 
-<dt><code>workingType</code></dt>
+<dt><code>working_type</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"MARK_PRICE"</code> or <code>"CONTRACT_PRICE"</code>.</p></dd>
 
 
-<dt><code>newOrderRespType</code></dt>
+<dt><code>new_order_resp_type</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"ACK"</code>, <code>"RESULT"</code>.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -492,7 +492,7 @@ validation signal.</p><ul><li><p>validated (logical) <code>TRUE</code> on a succ
 futures &lt;- BinanceFutures$new()
 test &lt;- futures$add_order_test(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
-  quantity = 0.001, price = 50000, timeInForce = "GTC"
+  quantity = 0.001, price = 50000, time_in_force = "GTC"
 )
 stopifnot(test$validated)
 }
@@ -568,9 +568,9 @@ stopifnot(test$validated)
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">cancel_order</span><span class="op">(</span></span>
 <span>  <span class="va">symbol</span>,</span>
-<span>  orderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  origClientOrderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  orig_client_order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -580,15 +580,15 @@ stopifnot(test$validated)
 <dd><p>(scalar&lt;character&gt;) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>orderId</code></dt>
+<dt><code>order_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) the order ID to cancel.</p></dd>
 
 
-<dt><code>origClientOrderId</code></dt>
+<dt><code>orig_client_order_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) the client order ID to cancel.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -610,7 +610,7 @@ stopifnot(test$validated)
 <h4 id="examples-2">Examples<a class="anchor" aria-label="anchor" href="#examples-2"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 futures &lt;- BinanceFutures$new()
-cancelled &lt;- futures$cancel_order("BTCUSDT", orderId = 283194212)
+cancelled &lt;- futures$cancel_order("BTCUSDT", order_id = 283194212)
 print(cancelled)
 }
 </code></pre></div><p></p></div>
@@ -665,7 +665,7 @@ print(cancelled)
 </div>
 <div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">cancel_all_orders</span><span class="op">(</span><span class="va">symbol</span>, recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">cancel_all_orders</span><span class="op">(</span><span class="va">symbol</span>, recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -674,7 +674,7 @@ print(cancelled)
 <dd><p>(scalar&lt;character&gt;) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -753,9 +753,9 @@ print(result)
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">get_order</span><span class="op">(</span></span>
 <span>  <span class="va">symbol</span>,</span>
-<span>  orderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  origClientOrderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  orig_client_order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -765,15 +765,15 @@ print(result)
 <dd><p>(scalar&lt;character&gt;) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>orderId</code></dt>
+<dt><code>order_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) the order ID.</p></dd>
 
 
-<dt><code>origClientOrderId</code></dt>
+<dt><code>orig_client_order_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) the client order ID.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -800,7 +800,7 @@ print(result)
 <h4 id="examples-4">Examples<a class="anchor" aria-label="anchor" href="#examples-4"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 futures &lt;- BinanceFutures$new()
-order &lt;- futures$get_order("BTCUSDT", orderId = 283194212)
+order &lt;- futures$get_order("BTCUSDT", order_id = 283194212)
 print(order)
 }
 </code></pre></div><p></p></div>
@@ -864,7 +864,7 @@ print(order)
 </div>
 <div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">get_open_orders</span><span class="op">(</span>symbol <span class="op">=</span> <span class="cn">NULL</span>, recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">get_open_orders</span><span class="op">(</span>symbol <span class="op">=</span> <span class="cn">NULL</span>, recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -873,7 +873,7 @@ print(order)
 <dd><p>(scalar&lt;character&gt;?) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -965,11 +965,11 @@ print(open)
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">get_all_orders</span><span class="op">(</span></span>
 <span>  <span class="va">symbol</span>,</span>
-<span>  orderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  limit <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -979,15 +979,15 @@ print(open)
 <dd><p>(scalar&lt;character&gt;) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>orderId</code></dt>
+<dt><code>order_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) pagination cursor.</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) start timestamp in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) end timestamp in milliseconds.</p></dd>
 
 
@@ -995,7 +995,7 @@ print(open)
 <dd><p>(scalar&lt;count&gt;?) max results (default 500, max 1000).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1118,12 +1118,12 @@ and positions (kept as list columns).</p><div class="section">
 </div>
 <div class="section">
 <h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">get_account</span><span class="op">(</span>recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">get_account</span><span class="op">(</span>recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>recvWindow</code></dt>
+<p></p><div class="arguments"><dl><dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1233,12 +1233,12 @@ print(positions)
 </div>
 <div class="section">
 <h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">get_balances</span><span class="op">(</span>recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">get_balances</span><span class="op">(</span>recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>recvWindow</code></dt>
+<p></p><div class="arguments"><dl><dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1320,7 +1320,7 @@ print(balances)
 </div>
 <div class="section">
 <h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">get_positions</span><span class="op">(</span>symbol <span class="op">=</span> <span class="cn">NULL</span>, recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">get_positions</span><span class="op">(</span>symbol <span class="op">=</span> <span class="cn">NULL</span>, recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -1329,7 +1329,7 @@ print(balances)
 <dd><p>(scalar&lt;character&gt;?) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1413,7 +1413,7 @@ print(positions)
 </div>
 <div class="section">
 <h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">set_leverage</span><span class="op">(</span><span class="va">symbol</span>, <span class="va">leverage</span>, recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">set_leverage</span><span class="op">(</span><span class="va">symbol</span>, <span class="va">leverage</span>, recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -1426,7 +1426,7 @@ print(positions)
 <dd><p>(scalar&lt;count&gt;) target leverage (1-125).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1499,7 +1499,7 @@ print(result)
 </div>
 <div class="section">
 <h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">set_margin_type</span><span class="op">(</span><span class="va">symbol</span>, <span class="va">marginType</span>, recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">set_margin_type</span><span class="op">(</span><span class="va">symbol</span>, <span class="va">margin_type</span>, recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -1508,11 +1508,11 @@ print(result)
 <dd><p>(scalar&lt;character&gt;) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>marginType</code></dt>
+<dt><code>margin_type</code></dt>
 <dd><p>(scalar&lt;character&gt;) <code>"ISOLATED"</code> or <code>"CROSSED"</code>.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1591,8 +1591,8 @@ print(result)
 <span>  <span class="va">symbol</span>,</span>
 <span>  <span class="va">amount</span>,</span>
 <span>  <span class="va">type</span>,</span>
-<span>  positionSide <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  position_side <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -1610,11 +1610,11 @@ print(result)
 <dd><p>(scalar&lt;count&gt;) 1 = add margin, 2 = reduce margin.</p></dd>
 
 
-<dt><code>positionSide</code></dt>
+<dt><code>position_side</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"BOTH"</code>, <code>"LONG"</code>, <code>"SHORT"</code>.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1686,10 +1686,10 @@ print(result)
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">get_position_margin_history</span><span class="op">(</span></span>
 <span>  <span class="va">symbol</span>,</span>
 <span>  type <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  limit <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -1703,11 +1703,11 @@ print(result)
 <dd><p>(scalar&lt;count&gt;?) 1 = add margin, 2 = reduce margin.</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) start timestamp in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) end timestamp in milliseconds.</p></dd>
 
 
@@ -1715,7 +1715,7 @@ print(result)
 <dd><p>(scalar&lt;count&gt;?) max results (default 500).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1797,12 +1797,12 @@ print(history)
 <h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">get_trades</span><span class="op">(</span></span>
 <span>  <span class="va">symbol</span>,</span>
-<span>  orderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  fromId <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  from_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  limit <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -1812,19 +1812,19 @@ print(history)
 <dd><p>(scalar&lt;character&gt;) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>orderId</code></dt>
+<dt><code>order_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) filter by order ID.</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) start timestamp in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) end timestamp in milliseconds.</p></dd>
 
 
-<dt><code>fromId</code></dt>
+<dt><code>from_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) trade ID to fetch from.</p></dd>
 
 
@@ -1832,7 +1832,7 @@ print(history)
 <dd><p>(scalar&lt;count&gt;?) max results (default 500, max 1000).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1925,11 +1925,11 @@ realized PnL, commissions, etc.).</p><div class="section">
 <h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">get_income_history</span><span class="op">(</span></span>
 <span>  symbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  incomeType <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  income_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  limit <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -1939,7 +1939,7 @@ realized PnL, commissions, etc.).</p><div class="section">
 <dd><p>(scalar&lt;character&gt;?) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>incomeType</code></dt>
+<dt><code>income_type</code></dt>
 <dd><p>(scalar&lt;character&gt;?) income type filter. Valid values:
 <code>"TRANSFER"</code>, <code>"WELCOME_BONUS"</code>, <code>"REALIZED_PNL"</code>, <code>"FUNDING_FEE"</code>,
 <code>"COMMISSION"</code>, <code>"INSURANCE_CLEAR"</code>, <code>"REFERRAL_KICKBACK"</code>,
@@ -1950,11 +1950,11 @@ realized PnL, commissions, etc.).</p><div class="section">
 <code>"POSITION_LIMIT_INCREASE_FEE"</code>.</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) start timestamp in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) end timestamp in milliseconds.</p></dd>
 
 
@@ -1962,7 +1962,7 @@ realized PnL, commissions, etc.).</p><div class="section">
 <dd><p>(scalar&lt;count&gt;?) max results (default 100, max 1000).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1985,7 +1985,7 @@ R's 32-bit <code>integer</code>, so it is coerced to a double).</p></li>
 <h4 id="examples-15">Examples<a class="anchor" aria-label="anchor" href="#examples-15"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 futures &lt;- BinanceFutures$new()
-income &lt;- futures$get_income_history(symbol = "BTCUSDT", incomeType = "FUNDING_FEE")
+income &lt;- futures$get_income_history(symbol = "BTCUSDT", income_type = "FUNDING_FEE")
 print(income)
 }
 </code></pre></div><p></p></div>
@@ -2041,16 +2041,16 @@ print(income)
 </div>
 <div class="section">
 <h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">set_position_mode</span><span class="op">(</span><span class="va">dualSidePosition</span>, recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">set_position_mode</span><span class="op">(</span><span class="va">dual_side_position</span>, recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-17">Arguments<a class="anchor" aria-label="anchor" href="#arguments-17"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>dualSidePosition</code></dt>
+<p></p><div class="arguments"><dl><dt><code>dual_side_position</code></dt>
 <dd><p>(scalar&lt;logical&gt;) <code>TRUE</code> for hedge mode, <code>FALSE</code> for one-way.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -2108,12 +2108,12 @@ print(result)
 </div>
 <div class="section">
 <h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">get_position_mode</span><span class="op">(</span>recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">get_position_mode</span><span class="op">(</span>recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-18">Arguments<a class="anchor" aria-label="anchor" href="#arguments-18"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>recvWindow</code></dt>
+<p></p><div class="arguments"><dl><dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -2161,7 +2161,7 @@ print(mode$dual_side_position)
 <span class="r-in"><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">order</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">add_order</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, side <span class="op">=</span> <span class="st">"BUY"</span>, type <span class="op">=</span> <span class="st">"LIMIT"</span>,</span></span>
-<span class="r-in"><span>  quantity <span class="op">=</span> <span class="fl">0.001</span>, price <span class="op">=</span> <span class="fl">50000</span>, timeInForce <span class="op">=</span> <span class="st">"GTC"</span></span></span>
+<span class="r-in"><span>  quantity <span class="op">=</span> <span class="fl">0.001</span>, price <span class="op">=</span> <span class="fl">50000</span>, time_in_force <span class="op">=</span> <span class="st">"GTC"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">order</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -2187,7 +2187,7 @@ print(mode$dual_side_position)
 <span class="r-in"><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">order</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">add_order</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, side <span class="op">=</span> <span class="st">"BUY"</span>, type <span class="op">=</span> <span class="st">"LIMIT"</span>,</span></span>
-<span class="r-in"><span>  quantity <span class="op">=</span> <span class="fl">0.001</span>, price <span class="op">=</span> <span class="fl">50000</span>, timeInForce <span class="op">=</span> <span class="st">"GTC"</span></span></span>
+<span class="r-in"><span>  quantity <span class="op">=</span> <span class="fl">0.001</span>, price <span class="op">=</span> <span class="fl">50000</span>, time_in_force <span class="op">=</span> <span class="st">"GTC"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">order</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
@@ -2200,7 +2200,7 @@ print(mode$dual_side_position)
 <span class="r-in"><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">test</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">add_order_test</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, side <span class="op">=</span> <span class="st">"BUY"</span>, type <span class="op">=</span> <span class="st">"LIMIT"</span>,</span></span>
-<span class="r-in"><span>  quantity <span class="op">=</span> <span class="fl">0.001</span>, price <span class="op">=</span> <span class="fl">50000</span>, timeInForce <span class="op">=</span> <span class="st">"GTC"</span></span></span>
+<span class="r-in"><span>  quantity <span class="op">=</span> <span class="fl">0.001</span>, price <span class="op">=</span> <span class="fl">50000</span>, time_in_force <span class="op">=</span> <span class="st">"GTC"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="va">test</span><span class="op">$</span><span class="va">validated</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
@@ -2211,7 +2211,7 @@ print(mode$dual_side_position)
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">cancelled</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">cancel_order</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, orderId <span class="op">=</span> <span class="fl">283194212</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cancelled</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">cancel_order</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, order_id <span class="op">=</span> <span class="fl">283194212</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">cancelled</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
@@ -2231,7 +2231,7 @@ print(mode$dual_side_position)
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">order</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_order</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, orderId <span class="op">=</span> <span class="fl">283194212</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">order</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_order</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, order_id <span class="op">=</span> <span class="fl">283194212</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">order</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
@@ -2343,7 +2343,7 @@ print(mode$dual_side_position)
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va">BinanceFutures</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">income</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_income_history</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, incomeType <span class="op">=</span> <span class="st">"FUNDING_FEE"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">income</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_income_history</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, income_type <span class="op">=</span> <span class="st">"FUNDING_FEE"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">income</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>

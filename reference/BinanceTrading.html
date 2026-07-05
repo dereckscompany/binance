@@ -9,7 +9,7 @@ BinanceTrading: Spot Order Management"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@ BinanceTrading: Spot Order Management"></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>BinanceTrading: Spot Order Management</h1>
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/master/R/BinanceTrading.R" class="external-link"><code>R/BinanceTrading.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.6.0/R/BinanceTrading.R" class="external-link"><code>R/BinanceTrading.R</code></a></small>
       <div class="d-none name"><code>BinanceTrading.Rd</code></div>
     </div>
 
@@ -144,7 +144,7 @@ Verified: 2026-05-22</p>
 
 <ul><li><p><strong>Limit Orders</strong>: Set specific entry/exit prices for strategy execution.</p></li>
 <li><p><strong>Market Orders</strong>: Execute immediately at best available price.</p></li>
-<li><p><strong>Response Type</strong>: Use <code>newOrderRespType = "FULL"</code> to get fill details in the response.</p></li>
+<li><p><strong>Response Type</strong>: Use <code>new_order_resp_type = "FULL"</code> to get fill details in the response.</p></li>
 </ul></div>
 
 <div class="section">
@@ -184,15 +184,15 @@ Verified: 2026-05-22</p>
 <span>  <span class="va">symbol</span>,</span>
 <span>  <span class="va">side</span>,</span>
 <span>  quantity <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  quoteOrderQty <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  quote_order_qty <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  price <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  timeInForce <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  newClientOrderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  stopPrice <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  icebergQty <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  newOrderRespType <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  selfTradePreventionMode <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  time_in_force <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  new_client_order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  stop_price <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  iceberg_qty <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  new_order_resp_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  self_trade_prevention_mode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -214,7 +214,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;numeric&gt;?) base asset quantity.</p></dd>
 
 
-<dt><code>quoteOrderQty</code></dt>
+<dt><code>quote_order_qty</code></dt>
 <dd><p>(scalar&lt;numeric&gt;?) quote asset quantity (market orders only).</p></dd>
 
 
@@ -222,31 +222,31 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;numeric&gt;?) price for limit orders.</p></dd>
 
 
-<dt><code>timeInForce</code></dt>
+<dt><code>time_in_force</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"GTC"</code>, <code>"IOC"</code>, <code>"FOK"</code>.</p></dd>
 
 
-<dt><code>newClientOrderId</code></dt>
+<dt><code>new_client_order_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) unique client order ID.</p></dd>
 
 
-<dt><code>stopPrice</code></dt>
+<dt><code>stop_price</code></dt>
 <dd><p>(scalar&lt;numeric&gt;?) trigger price for stop orders.</p></dd>
 
 
-<dt><code>icebergQty</code></dt>
+<dt><code>iceberg_qty</code></dt>
 <dd><p>(scalar&lt;numeric&gt;?) iceberg quantity.</p></dd>
 
 
-<dt><code>newOrderRespType</code></dt>
+<dt><code>new_order_resp_type</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"ACK"</code>, <code>"RESULT"</code>, or <code>"FULL"</code>.</p></dd>
 
 
-<dt><code>selfTradePreventionMode</code></dt>
+<dt><code>self_trade_prevention_mode</code></dt>
 <dd><p>(scalar&lt;character&gt;?)</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -282,7 +282,7 @@ had no fills).</p></li>
 avoid 32-bit overflow; <code>NA</code> when no fills).</p></li>
 </ul><p>When the order has N fills, the parent order fields are replicated on
 each of the N rows and <code>fill_index</code> runs <code>1..N</code>. When the order has
-no fills (e.g. a resting <code>LIMIT</code> order with <code>newOrderRespType = "ACK"</code>
+no fills (e.g. a resting <code>LIMIT</code> order with <code>new_order_resp_type = "ACK"</code>
 / <code>"RESULT"</code>), a single row is returned with the <code>fill_*</code> columns
 present as <code>NA</code> so the schema is stable across response types.</p>
 </div>
@@ -366,15 +366,15 @@ Verified: 2026-05-22</p>
 <span>  <span class="va">symbol</span>,</span>
 <span>  <span class="va">side</span>,</span>
 <span>  quantity <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  quoteOrderQty <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  quote_order_qty <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  price <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  timeInForce <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  newClientOrderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  stopPrice <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  icebergQty <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  newOrderRespType <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  selfTradePreventionMode <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  time_in_force <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  new_client_order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  stop_price <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  iceberg_qty <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  new_order_resp_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  self_trade_prevention_mode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -396,7 +396,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;numeric&gt;?) base asset quantity.</p></dd>
 
 
-<dt><code>quoteOrderQty</code></dt>
+<dt><code>quote_order_qty</code></dt>
 <dd><p>(scalar&lt;numeric&gt;?) quote asset quantity (market orders only).</p></dd>
 
 
@@ -404,31 +404,31 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;numeric&gt;?) price for limit orders.</p></dd>
 
 
-<dt><code>timeInForce</code></dt>
+<dt><code>time_in_force</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"GTC"</code>, <code>"IOC"</code>, <code>"FOK"</code>.</p></dd>
 
 
-<dt><code>newClientOrderId</code></dt>
+<dt><code>new_client_order_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) unique client order ID.</p></dd>
 
 
-<dt><code>stopPrice</code></dt>
+<dt><code>stop_price</code></dt>
 <dd><p>(scalar&lt;numeric&gt;?) trigger price for stop orders.</p></dd>
 
 
-<dt><code>icebergQty</code></dt>
+<dt><code>iceberg_qty</code></dt>
 <dd><p>(scalar&lt;numeric&gt;?) iceberg quantity.</p></dd>
 
 
-<dt><code>newOrderRespType</code></dt>
+<dt><code>new_order_resp_type</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"ACK"</code>, <code>"RESULT"</code>, or <code>"FULL"</code>.</p></dd>
 
 
-<dt><code>selfTradePreventionMode</code></dt>
+<dt><code>self_trade_prevention_mode</code></dt>
 <dd><p>(scalar&lt;character&gt;?)</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -507,9 +507,9 @@ Verified: 2026-05-22</p>
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceTrading</span><span class="op">$</span><span class="fu">cancel_order</span><span class="op">(</span></span>
 <span>  <span class="va">symbol</span>,</span>
-<span>  orderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  origClientOrderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  orig_client_order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -519,15 +519,15 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;character&gt;) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>orderId</code></dt>
+<dt><code>order_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) the order ID to cancel.</p></dd>
 
 
-<dt><code>origClientOrderId</code></dt>
+<dt><code>orig_client_order_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) the client order ID to cancel.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -555,7 +555,7 @@ Verified: 2026-05-22</p>
 <h4 id="examples-2">Examples<a class="anchor" aria-label="anchor" href="#examples-2"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 trading &lt;- BinanceTrading$new()
-cancelled &lt;- trading$cancel_order("BTCUSDT", orderId = 12345)
+cancelled &lt;- trading$cancel_order("BTCUSDT", order_id = 12345)
 print(cancelled)
 }
 </code></pre></div><p></p></div>
@@ -631,7 +631,7 @@ Verified: 2026-05-22</p>
 </div>
 <div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceTrading</span><span class="op">$</span><span class="fu">cancel_all_orders</span><span class="op">(</span><span class="va">symbol</span>, recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceTrading</span><span class="op">$</span><span class="fu">cancel_all_orders</span><span class="op">(</span><span class="va">symbol</span>, recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -640,7 +640,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;character&gt;) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -735,9 +735,9 @@ Verified: 2026-05-22</p>
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceTrading</span><span class="op">$</span><span class="fu">get_order</span><span class="op">(</span></span>
 <span>  <span class="va">symbol</span>,</span>
-<span>  orderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  origClientOrderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  orig_client_order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -747,15 +747,15 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;character&gt;) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>orderId</code></dt>
+<dt><code>order_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) the order ID.</p></dd>
 
 
-<dt><code>origClientOrderId</code></dt>
+<dt><code>orig_client_order_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) the client order ID.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -769,7 +769,7 @@ Verified: 2026-05-22</p>
 <h4 id="examples-4">Examples<a class="anchor" aria-label="anchor" href="#examples-4"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 trading &lt;- BinanceTrading$new()
-order &lt;- trading$get_order("BTCUSDT", orderId = 12345)
+order &lt;- trading$get_order("BTCUSDT", order_id = 12345)
 print(order)
 }
 </code></pre></div><p></p></div>
@@ -833,7 +833,7 @@ Verified: 2026-05-22</p>
 </div>
 <div class="section">
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceTrading</span><span class="op">$</span><span class="fu">get_open_orders</span><span class="op">(</span>symbol <span class="op">=</span> <span class="cn">NULL</span>, recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceTrading</span><span class="op">$</span><span class="fu">get_open_orders</span><span class="op">(</span>symbol <span class="op">=</span> <span class="cn">NULL</span>, recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -843,7 +843,7 @@ Verified: 2026-05-22</p>
 If NULL, returns open orders for all symbols (weight 80).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -966,11 +966,11 @@ Verified: 2026-05-22</p>
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceTrading</span><span class="op">$</span><span class="fu">get_all_orders</span><span class="op">(</span></span>
 <span>  <span class="va">symbol</span>,</span>
-<span>  orderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  limit <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -980,15 +980,15 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;character&gt;) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>orderId</code></dt>
+<dt><code>order_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) pagination cursor.</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) start timestamp in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) end timestamp in milliseconds.</p></dd>
 
 
@@ -996,7 +996,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;count&gt;?) max results (default 500, max 1000).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1111,7 +1111,7 @@ print(all[, .(order_id, side, price, status, time)])
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">trading</span> <span class="op">&lt;-</span> <span class="va">BinanceTrading</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">cancelled</span> <span class="op">&lt;-</span> <span class="va">trading</span><span class="op">$</span><span class="fu">cancel_order</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, orderId <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cancelled</span> <span class="op">&lt;-</span> <span class="va">trading</span><span class="op">$</span><span class="fu">cancel_order</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, order_id <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">cancelled</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
@@ -1131,7 +1131,7 @@ print(all[, .(order_id, side, price, status, time)])
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">trading</span> <span class="op">&lt;-</span> <span class="va">BinanceTrading</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">order</span> <span class="op">&lt;-</span> <span class="va">trading</span><span class="op">$</span><span class="fu">get_order</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, orderId <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">order</span> <span class="op">&lt;-</span> <span class="va">trading</span><span class="op">$</span><span class="fu">get_order</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, order_id <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">order</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>

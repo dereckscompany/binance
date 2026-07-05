@@ -130,11 +130,11 @@ return is always one row per account.
 
 #### Usage
 
-    BinanceAccount$get_account_info(recvWindow = NULL)
+    BinanceAccount$get_account_info(recv_window = NULL)
 
 #### Arguments
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -241,15 +241,15 @@ Verified: 2026-05-22
 
 #### Usage
 
-    BinanceAccount$get_balances(omitZeroBalances = NULL, recvWindow = NULL)
+    BinanceAccount$get_balances(omit_zero_balances = NULL, recv_window = NULL)
 
 #### Arguments
 
-- `omitZeroBalances`:
+- `omit_zero_balances`:
 
   (scalar\<logical\>?) if TRUE, omit assets with zero balance.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -326,12 +326,12 @@ Verified: 2026-05-22
 
     BinanceAccount$get_trades(
       symbol,
-      orderId = NULL,
-      startTime = NULL,
-      endTime = NULL,
-      fromId = NULL,
+      order_id = NULL,
+      start_time = NULL,
+      end_time = NULL,
+      from_id = NULL,
       limit = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
@@ -340,19 +340,19 @@ Verified: 2026-05-22
 
   (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
-- `orderId`:
+- `order_id`:
 
   (scalar\<count\>?) filter by order ID.
 
-- `startTime`:
+- `start_time`:
 
   (scalar\<count\>?) start timestamp in milliseconds.
 
-- `endTime`:
+- `end_time`:
 
   (scalar\<count\>?) end timestamp in milliseconds.
 
-- `fromId`:
+- `from_id`:
 
   (scalar\<count\>?) trade ID to fetch from.
 
@@ -360,7 +360,7 @@ Verified: 2026-05-22
 
   (scalar\<count\>?) max results (default 500, max 1000).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 

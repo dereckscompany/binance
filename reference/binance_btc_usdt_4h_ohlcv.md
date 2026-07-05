@@ -17,7 +17,8 @@ A
 [data.table::data.table](https://rdrr.io/pkg/data.table/man/data.table.html)
 with 500 rows and 14 columns:
 
-- `open_time` (POSIXct): Candle open time in UTC.
+- `datetime` (POSIXct): Candle open time in UTC (the bar-reference
+  time).
 
 - `open` (Numeric): Opening price.
 
@@ -56,7 +57,7 @@ Binance API via
 ``` r
 data(binance_btc_usdt_4h_ohlcv)
 head(binance_btc_usdt_4h_ohlcv)
-#>              open_time     open     high      low    close volume
+#>               datetime     open     high      low    close volume
 #>                 <POSc>    <num>    <num>    <num>    <num>  <num>
 #> 1: 2024-01-01 00:00:00 42000.00 42099.44 41921.66 41883.96 534.70
 #> 2: 2024-01-01 04:00:00 42279.19 42430.65 42062.94 42224.05 550.12

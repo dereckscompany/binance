@@ -9,7 +9,7 @@ BinanceWithdrawal: Withdrawal Management"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@ BinanceWithdrawal: Withdrawal Management"></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>BinanceWithdrawal: Withdrawal Management</h1>
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/master/R/BinanceWithdrawal.R" class="external-link"><code>R/BinanceWithdrawal.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.6.0/R/BinanceWithdrawal.R" class="external-link"><code>R/BinanceWithdrawal.R</code></a></small>
       <div class="d-none name"><code>BinanceWithdrawal.Rd</code></div>
     </div>
 
@@ -169,12 +169,12 @@ to select the cheapest or fastest network.</p></li>
 <span>  <span class="va">address</span>,</span>
 <span>  <span class="va">amount</span>,</span>
 <span>  network <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  withdrawOrderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  addressTag <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  transactionFeeFlag <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  withdraw_order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  address_tag <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  transaction_fee_flag <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  walletType <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  wallet_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -197,16 +197,16 @@ to select the cheapest or fastest network.</p></li>
 If NULL, uses the coin's default network.</p></dd>
 
 
-<dt><code>withdrawOrderId</code></dt>
+<dt><code>withdraw_order_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) client-side withdrawal ID for tracking.</p></dd>
 
 
-<dt><code>addressTag</code></dt>
+<dt><code>address_tag</code></dt>
 <dd><p>(scalar&lt;character&gt;?) secondary address identifier (required for
 coins like XRP, XMR, XLM).</p></dd>
 
 
-<dt><code>transactionFeeFlag</code></dt>
+<dt><code>transaction_fee_flag</code></dt>
 <dd><p>(scalar&lt;logical&gt;?) for internal transfers: <code>TRUE</code> returns
 fee to destination, <code>FALSE</code> to origin.</p></dd>
 
@@ -215,11 +215,11 @@ fee to destination, <code>FALSE</code> to origin.</p></dd>
 <dd><p>(scalar&lt;character&gt;?) description for the address (max 200 entries in address book).</p></dd>
 
 
-<dt><code>walletType</code></dt>
+<dt><code>wallet_type</code></dt>
 <dd><p>(scalar&lt;count&gt;?) <code>0</code> for spot wallet, <code>1</code> for funding wallet.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -312,13 +312,13 @@ left the exchange.</p></li>
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceWithdrawal</span><span class="op">$</span><span class="fu">get_withdrawal_history</span><span class="op">(</span></span>
 <span>  coin <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  withdrawOrderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  withdraw_order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  status <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  offset <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  limit <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -328,7 +328,7 @@ left the exchange.</p></li>
 <dd><p>(scalar&lt;character&gt;?) filter by coin (e.g., <code>"BTC"</code>, <code>"USDT"</code>).</p></dd>
 
 
-<dt><code>withdrawOrderId</code></dt>
+<dt><code>withdraw_order_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) filter by client-side withdrawal ID.</p></dd>
 
 
@@ -338,11 +338,11 @@ left the exchange.</p></li>
 <code>3</code> (rejected), <code>4</code> (processing), <code>5</code> (failure), <code>6</code> (completed).</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) start timestamp in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) end timestamp in milliseconds.</p></dd>
 
 
@@ -354,7 +354,7 @@ left the exchange.</p></li>
 <dd><p>(scalar&lt;count&gt;?) max results (default 1000, max 1000).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -394,8 +394,8 @@ print(history[, .(amount, coin, status, address, apply_time)])
 # Get withdrawals from the last 7 days
 now_ms &lt;- as.integer(as.numeric(Sys.time()) * 1000)
 recent &lt;- withdrawal$get_withdrawal_history(
-  startTime = now_ms - 7 * 86400000L,
-  endTime = now_ms
+  start_time = now_ms - 7 * 86400000L,
+  end_time = now_ms
 )
 }
 </code></pre></div><p></p></div>
@@ -472,8 +472,8 @@ recent &lt;- withdrawal$get_withdrawal_history(
 <span class="r-in"><span><span class="co"># Get withdrawals from the last 7 days</span></span></span>
 <span class="r-in"><span><span class="va">now_ms</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1000</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">recent</span> <span class="op">&lt;-</span> <span class="va">withdrawal</span><span class="op">$</span><span class="fu">get_withdrawal_history</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  startTime <span class="op">=</span> <span class="va">now_ms</span> <span class="op">-</span> <span class="fl">7</span> <span class="op">*</span> <span class="fl">86400000L</span>,</span></span>
-<span class="r-in"><span>  endTime <span class="op">=</span> <span class="va">now_ms</span></span></span>
+<span class="r-in"><span>  start_time <span class="op">=</span> <span class="va">now_ms</span> <span class="op">-</span> <span class="fl">7</span> <span class="op">*</span> <span class="fl">86400000L</span>,</span></span>
+<span class="r-in"><span>  end_time <span class="op">=</span> <span class="va">now_ms</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>

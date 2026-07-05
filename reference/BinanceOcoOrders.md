@@ -126,17 +126,17 @@ Verified: 2026-05-22
       side,
       quantity,
       price,
-      stopPrice,
-      stopLimitPrice = NULL,
-      stopLimitTimeInForce = NULL,
-      listClientOrderId = NULL,
-      limitClientOrderId = NULL,
-      stopClientOrderId = NULL,
-      limitIcebergQty = NULL,
-      stopIcebergQty = NULL,
-      newOrderRespType = NULL,
-      selfTradePreventionMode = NULL,
-      recvWindow = NULL
+      stop_price,
+      stop_limit_price = NULL,
+      stop_limit_time_in_force = NULL,
+      list_client_order_id = NULL,
+      limit_client_order_id = NULL,
+      stop_client_order_id = NULL,
+      limit_iceberg_qty = NULL,
+      stop_iceberg_qty = NULL,
+      new_order_resp_type = NULL,
+      self_trade_prevention_mode = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -157,48 +157,48 @@ Verified: 2026-05-22
 
   (scalar\<numeric\>) price for the limit leg.
 
-- `stopPrice`:
+- `stop_price`:
 
   (scalar\<numeric\>) trigger price for the stop-loss leg.
 
-- `stopLimitPrice`:
+- `stop_limit_price`:
 
   (scalar\<numeric\>?) limit price for the stop-loss-limit leg.
 
-- `stopLimitTimeInForce`:
+- `stop_limit_time_in_force`:
 
   (scalar\<character\>?) time-in-force for the stop-limit leg (`"GTC"`,
   `"IOC"`, `"FOK"`). Required if `stopLimitPrice` is provided.
 
-- `listClientOrderId`:
+- `list_client_order_id`:
 
   (scalar\<character\>?) unique ID for the entire OCO list.
 
-- `limitClientOrderId`:
+- `limit_client_order_id`:
 
   (scalar\<character\>?) unique ID for the limit leg.
 
-- `stopClientOrderId`:
+- `stop_client_order_id`:
 
   (scalar\<character\>?) unique ID for the stop-loss leg.
 
-- `limitIcebergQty`:
+- `limit_iceberg_qty`:
 
   (scalar\<numeric\>?) iceberg quantity for the limit leg.
 
-- `stopIcebergQty`:
+- `stop_iceberg_qty`:
 
   (scalar\<numeric\>?) iceberg quantity for the stop-loss leg.
 
-- `newOrderRespType`:
+- `new_order_resp_type`:
 
   (scalar\<character\>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
 
-- `selfTradePreventionMode`:
+- `self_trade_prevention_mode`:
 
   (scalar\<character\>?)
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -263,8 +263,8 @@ Verified: 2026-05-22
     oco <- BinanceOcoOrders$new()
     result <- oco$add_oco_order(
       symbol = "BTCUSDT", side = "SELL",
-      quantity = 0.0001, price = 55000, stopPrice = 49000,
-      stopLimitPrice = 48500, stopLimitTimeInForce = "GTC"
+      quantity = 0.0001, price = 55000, stop_price = 49000,
+      stop_limit_price = 48500, stop_limit_time_in_force = "GTC"
     )
     print(result)
     }
@@ -353,9 +353,9 @@ Verified: 2026-05-22
 
     BinanceOcoOrders$cancel_oco_order(
       symbol,
-      orderListId = NULL,
-      listClientOrderId = NULL,
-      recvWindow = NULL
+      order_list_id = NULL,
+      list_client_order_id = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -364,15 +364,15 @@ Verified: 2026-05-22
 
   (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
-- `orderListId`:
+- `order_list_id`:
 
   (scalar\<count\>?) the OCO order list ID.
 
-- `listClientOrderId`:
+- `list_client_order_id`:
 
   (scalar\<character\>?) the client order list ID.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -438,7 +438,7 @@ prices, quantities, and stop price for each child order:
 
     \dontrun{
     oco <- BinanceOcoOrders$new()
-    cancelled <- oco$cancel_oco_order("BTCUSDT", orderListId = 0)
+    cancelled <- oco$cancel_oco_order("BTCUSDT", order_list_id = 0)
     print(cancelled)
     }
 
@@ -493,22 +493,22 @@ Verified: 2026-05-22
 #### Usage
 
     BinanceOcoOrders$get_oco_order(
-      orderListId = NULL,
-      origClientOrderId = NULL,
-      recvWindow = NULL
+      order_list_id = NULL,
+      orig_client_order_id = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
 
-- `orderListId`:
+- `order_list_id`:
 
   (scalar\<count\>?) the OCO order list ID.
 
-- `origClientOrderId`:
+- `orig_client_order_id`:
 
   (scalar\<character\>?) the original client order list ID.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -542,7 +542,7 @@ format):
 
     \dontrun{
     oco <- BinanceOcoOrders$new()
-    order <- oco$get_oco_order(orderListId = 0)
+    order <- oco$get_oco_order(order_list_id = 0)
     print(order)
     }
 
@@ -597,11 +597,11 @@ Verified: 2026-05-22
 
 #### Usage
 
-    BinanceOcoOrders$get_open_oco_orders(recvWindow = NULL)
+    BinanceOcoOrders$get_open_oco_orders(recv_window = NULL)
 
 #### Arguments
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -714,24 +714,24 @@ Verified: 2026-05-22
 #### Usage
 
     BinanceOcoOrders$get_all_oco_orders(
-      fromId = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      from_id = NULL,
+      start_time = NULL,
+      end_time = NULL,
       limit = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
 
-- `fromId`:
+- `from_id`:
 
   (scalar\<count\>?) pagination cursor (orderListId).
 
-- `startTime`:
+- `start_time`:
 
   (scalar\<count\>?) start timestamp in milliseconds.
 
-- `endTime`:
+- `end_time`:
 
   (scalar\<count\>?) end timestamp in milliseconds.
 
@@ -739,7 +739,7 @@ Verified: 2026-05-22
 
   (scalar\<count\>?) max results (default 500, max 1000).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -801,8 +801,8 @@ if (FALSE) { # \dontrun{
 oco <- BinanceOcoOrders$new()
 result <- oco$add_oco_order(
   symbol = "BTCUSDT", side = "SELL",
-  quantity = 0.0001, price = 55000, stopPrice = 49000,
-  stopLimitPrice = 48500, stopLimitTimeInForce = "GTC"
+  quantity = 0.0001, price = 55000, stop_price = 49000,
+  stop_limit_price = 48500, stop_limit_time_in_force = "GTC"
 )
 print(result)
 
@@ -825,8 +825,8 @@ if (FALSE) { # \dontrun{
 oco <- BinanceOcoOrders$new()
 result <- oco$add_oco_order(
   symbol = "BTCUSDT", side = "SELL",
-  quantity = 0.0001, price = 55000, stopPrice = 49000,
-  stopLimitPrice = 48500, stopLimitTimeInForce = "GTC"
+  quantity = 0.0001, price = 55000, stop_price = 49000,
+  stop_limit_price = 48500, stop_limit_time_in_force = "GTC"
 )
 print(result)
 } # }
@@ -837,7 +837,7 @@ print(result)
 
 if (FALSE) { # \dontrun{
 oco <- BinanceOcoOrders$new()
-cancelled <- oco$cancel_oco_order("BTCUSDT", orderListId = 0)
+cancelled <- oco$cancel_oco_order("BTCUSDT", order_list_id = 0)
 print(cancelled)
 } # }
 
@@ -847,7 +847,7 @@ print(cancelled)
 
 if (FALSE) { # \dontrun{
 oco <- BinanceOcoOrders$new()
-order <- oco$get_oco_order(orderListId = 0)
+order <- oco$get_oco_order(order_list_id = 0)
 print(order)
 } # }
 

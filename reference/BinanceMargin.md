@@ -172,9 +172,9 @@ Verified: 2026-05-22
     BinanceMargin$add_borrow(
       asset,
       amount,
-      isIsolated = "FALSE",
+      is_isolated = "FALSE",
       symbol = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
@@ -187,16 +187,16 @@ Verified: 2026-05-22
 
   (scalar\<numeric\>) amount to borrow.
 
-- `isIsolated`:
+- `is_isolated`:
 
   (scalar\<character\>) `"TRUE"` or `"FALSE"` for isolated margin.
   Default `"FALSE"`.
 
 - `symbol`:
 
-  (scalar\<character\>?) required when `isIsolated = "TRUE"`.
+  (scalar\<character\>?) required when `is_isolated = "TRUE"`.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -260,9 +260,9 @@ Verified: 2026-05-22
     BinanceMargin$add_repay(
       asset,
       amount,
-      isIsolated = "FALSE",
+      is_isolated = "FALSE",
       symbol = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
@@ -275,16 +275,16 @@ Verified: 2026-05-22
 
   (scalar\<numeric\>) amount to repay.
 
-- `isIsolated`:
+- `is_isolated`:
 
   (scalar\<character\>) `"TRUE"` or `"FALSE"` for isolated margin.
   Default `"FALSE"`.
 
 - `symbol`:
 
-  (scalar\<character\>?) required when `isIsolated = "TRUE"`.
+  (scalar\<character\>?) required when `is_isolated = "TRUE"`.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -364,15 +364,15 @@ Verified: 2026-05-22
       side,
       type,
       quantity = NULL,
-      quoteOrderQty = NULL,
+      quote_order_qty = NULL,
       price = NULL,
-      stopPrice = NULL,
-      timeInForce = NULL,
-      newClientOrderId = NULL,
-      newOrderRespType = NULL,
-      sideEffectType = NULL,
-      isIsolated = NULL,
-      recvWindow = NULL
+      stop_price = NULL,
+      time_in_force = NULL,
+      new_client_order_id = NULL,
+      new_order_resp_type = NULL,
+      side_effect_type = NULL,
+      is_isolated = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -395,7 +395,7 @@ Verified: 2026-05-22
 
   (scalar\<numeric\>?) base asset quantity.
 
-- `quoteOrderQty`:
+- `quote_order_qty`:
 
   (scalar\<numeric\>?) quote asset quantity (market orders only).
 
@@ -403,32 +403,32 @@ Verified: 2026-05-22
 
   (scalar\<numeric\>?) price for limit orders.
 
-- `stopPrice`:
+- `stop_price`:
 
   (scalar\<numeric\>?) trigger price for stop orders.
 
-- `timeInForce`:
+- `time_in_force`:
 
   (scalar\<character\>?) `"GTC"`, `"IOC"`, `"FOK"`.
 
-- `newClientOrderId`:
+- `new_client_order_id`:
 
   (scalar\<character\>?) unique client order ID.
 
-- `newOrderRespType`:
+- `new_order_resp_type`:
 
   (scalar\<character\>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
 
-- `sideEffectType`:
+- `side_effect_type`:
 
   (scalar\<character\>?) `"NO_SIDE_EFFECT"`, `"MARGIN_BUY"`,
   `"AUTO_REPAY"`.
 
-- `isIsolated`:
+- `is_isolated`:
 
   (scalar\<character\>?) `"TRUE"` or `"FALSE"` for isolated margin.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -464,7 +464,7 @@ Verified: 2026-05-22
     margin <- BinanceMargin$new()
     order <- margin$add_order(
       symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
-      price = 50000, quantity = 0.0001, timeInForce = "GTC"
+      price = 50000, quantity = 0.0001, time_in_force = "GTC"
     )
     print(order)
     }
@@ -523,10 +523,10 @@ Verified: 2026-05-22
 
     BinanceMargin$cancel_order(
       symbol,
-      orderId = NULL,
-      origClientOrderId = NULL,
-      isIsolated = NULL,
-      recvWindow = NULL
+      order_id = NULL,
+      orig_client_order_id = NULL,
+      is_isolated = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -535,19 +535,19 @@ Verified: 2026-05-22
 
   (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
-- `orderId`:
+- `order_id`:
 
   (scalar\<count\>?) the order ID to cancel.
 
-- `origClientOrderId`:
+- `orig_client_order_id`:
 
   (scalar\<character\>?) the client order ID to cancel.
 
-- `isIsolated`:
+- `is_isolated`:
 
   (scalar\<character\>?) `"TRUE"` or `"FALSE"` for isolated margin.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -571,7 +571,7 @@ Verified: 2026-05-22
 
     \dontrun{
     margin <- BinanceMargin$new()
-    cancelled <- margin$cancel_order("BTCUSDT", orderId = 28)
+    cancelled <- margin$cancel_order("BTCUSDT", order_id = 28)
     print(cancelled)
     }
 
@@ -628,7 +628,7 @@ Verified: 2026-05-22
 
 #### Usage
 
-    BinanceMargin$cancel_all_orders(symbol, isIsolated = NULL, recvWindow = NULL)
+    BinanceMargin$cancel_all_orders(symbol, is_isolated = NULL, recv_window = NULL)
 
 #### Arguments
 
@@ -636,11 +636,11 @@ Verified: 2026-05-22
 
   (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
-- `isIsolated`:
+- `is_isolated`:
 
   (scalar\<character\>?) `"TRUE"` or `"FALSE"` for isolated margin.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -720,10 +720,10 @@ Verified: 2026-05-22
 
     BinanceMargin$get_order(
       symbol,
-      orderId = NULL,
-      origClientOrderId = NULL,
-      isIsolated = NULL,
-      recvWindow = NULL
+      order_id = NULL,
+      orig_client_order_id = NULL,
+      is_isolated = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -732,19 +732,19 @@ Verified: 2026-05-22
 
   (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
-- `orderId`:
+- `order_id`:
 
   (scalar\<count\>?) the order ID.
 
-- `origClientOrderId`:
+- `orig_client_order_id`:
 
   (scalar\<character\>?) the client order ID.
 
-- `isIsolated`:
+- `is_isolated`:
 
   (scalar\<character\>?) `"TRUE"` or `"FALSE"` for isolated margin.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -780,7 +780,7 @@ Verified: 2026-05-22
 
     \dontrun{
     margin <- BinanceMargin$new()
-    order <- margin$get_order("BTCUSDT", orderId = 28)
+    order <- margin$get_order("BTCUSDT", order_id = 28)
     print(order)
     }
 
@@ -836,8 +836,8 @@ Verified: 2026-05-22
 
     BinanceMargin$get_open_orders(
       symbol = NULL,
-      isIsolated = NULL,
-      recvWindow = NULL
+      is_isolated = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -846,11 +846,11 @@ Verified: 2026-05-22
 
   (scalar\<character\>?) trading pair (e.g., `"BTCUSDT"`).
 
-- `isIsolated`:
+- `is_isolated`:
 
   (scalar\<character\>?) `"TRUE"` or `"FALSE"` for isolated margin.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -960,12 +960,12 @@ Verified: 2026-05-22
 
     BinanceMargin$get_all_orders(
       symbol,
-      orderId = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      order_id = NULL,
+      start_time = NULL,
+      end_time = NULL,
       limit = NULL,
-      isIsolated = NULL,
-      recvWindow = NULL
+      is_isolated = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -974,15 +974,15 @@ Verified: 2026-05-22
 
   (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
-- `orderId`:
+- `order_id`:
 
   (scalar\<count\>?) pagination cursor.
 
-- `startTime`:
+- `start_time`:
 
   (scalar\<count\>?) start timestamp in milliseconds.
 
-- `endTime`:
+- `end_time`:
 
   (scalar\<count\>?) end timestamp in milliseconds.
 
@@ -990,11 +990,11 @@ Verified: 2026-05-22
 
   (scalar\<count\>?) max results (default 500, max 500).
 
-- `isIsolated`:
+- `is_isolated`:
 
   (scalar\<character\>?) `"TRUE"` or `"FALSE"` for isolated margin.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -1093,11 +1093,11 @@ Verified: 2026-05-22
 
 #### Usage
 
-    BinanceMargin$get_account(recvWindow = NULL)
+    BinanceMargin$get_account(recv_window = NULL)
 
 #### Arguments
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -1168,8 +1168,8 @@ Verified: 2026-05-22
 
     BinanceMargin$get_max_borrowable(
       asset,
-      isolatedSymbol = NULL,
-      recvWindow = NULL
+      isolated_symbol = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -1178,11 +1178,11 @@ Verified: 2026-05-22
 
   (scalar\<character\>) asset to query (e.g., `"USDT"`).
 
-- `isolatedSymbol`:
+- `isolated_symbol`:
 
   (scalar\<character\>?) isolated margin pair (e.g., `"BTCUSDT"`).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -1236,8 +1236,8 @@ Verified: 2026-05-22
 
     BinanceMargin$get_max_transferable(
       asset,
-      isolatedSymbol = NULL,
-      recvWindow = NULL
+      isolated_symbol = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -1246,11 +1246,11 @@ Verified: 2026-05-22
 
   (scalar\<character\>) asset to query (e.g., `"USDT"`).
 
-- `isolatedSymbol`:
+- `isolated_symbol`:
 
   (scalar\<character\>?) isolated margin pair (e.g., `"BTCUSDT"`).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -1325,12 +1325,12 @@ Verified: 2026-05-22
 
     BinanceMargin$get_interest_history(
       asset = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      start_time = NULL,
+      end_time = NULL,
       current = NULL,
       size = NULL,
       archived = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
@@ -1339,11 +1339,11 @@ Verified: 2026-05-22
 
   (scalar\<character\>?) filter by asset (e.g., `"USDT"`).
 
-- `startTime`:
+- `start_time`:
 
   (scalar\<count\>?) start timestamp in milliseconds.
 
-- `endTime`:
+- `end_time`:
 
   (scalar\<count\>?) end timestamp in milliseconds.
 
@@ -1359,7 +1359,7 @@ Verified: 2026-05-22
 
   (scalar\<character\>?) `"true"` to query 6-month archived data.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -1438,25 +1438,25 @@ Verified: 2026-05-22
 #### Usage
 
     BinanceMargin$get_force_liquidation_history(
-      startTime = NULL,
-      endTime = NULL,
-      isolatedSymbol = NULL,
+      start_time = NULL,
+      end_time = NULL,
+      isolated_symbol = NULL,
       current = NULL,
       size = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
 
-- `startTime`:
+- `start_time`:
 
   (scalar\<count\>?) start timestamp in milliseconds.
 
-- `endTime`:
+- `end_time`:
 
   (scalar\<count\>?) end timestamp in milliseconds.
 
-- `isolatedSymbol`:
+- `isolated_symbol`:
 
   (scalar\<character\>?) isolated margin pair.
 
@@ -1468,7 +1468,7 @@ Verified: 2026-05-22
 
   (scalar\<count\>?) page size (default 10, max 100).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -1552,13 +1552,13 @@ Verified: 2026-05-22
 
     BinanceMargin$get_trades(
       symbol,
-      orderId = NULL,
-      startTime = NULL,
-      endTime = NULL,
-      fromId = NULL,
+      order_id = NULL,
+      start_time = NULL,
+      end_time = NULL,
+      from_id = NULL,
       limit = NULL,
-      isIsolated = NULL,
-      recvWindow = NULL
+      is_isolated = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -1567,19 +1567,19 @@ Verified: 2026-05-22
 
   (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
-- `orderId`:
+- `order_id`:
 
   (scalar\<count\>?) filter by order ID.
 
-- `startTime`:
+- `start_time`:
 
   (scalar\<count\>?) start timestamp in milliseconds.
 
-- `endTime`:
+- `end_time`:
 
   (scalar\<count\>?) end timestamp in milliseconds.
 
-- `fromId`:
+- `from_id`:
 
   (scalar\<count\>?) trade ID to fetch from.
 
@@ -1587,11 +1587,11 @@ Verified: 2026-05-22
 
   (scalar\<count\>?) max results (default 500, max 1000).
 
-- `isIsolated`:
+- `is_isolated`:
 
   (scalar\<character\>?) `"TRUE"` or `"FALSE"` for isolated margin.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -1701,7 +1701,7 @@ Verified: 2026-05-22
 
 #### Usage
 
-    BinanceMargin$get_isolated_account(symbols = NULL, recvWindow = NULL)
+    BinanceMargin$get_isolated_account(symbols = NULL, recv_window = NULL)
 
 #### Arguments
 
@@ -1710,7 +1710,7 @@ Verified: 2026-05-22
   (scalar\<character\>?) comma-separated symbols (max 5, e.g.,
   `"BTCUSDT,ETHUSDT"`).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -1801,10 +1801,10 @@ Verified: 2026-05-22
     BinanceMargin$add_isolated_transfer(
       asset,
       symbol,
-      transFrom,
-      transTo,
+      trans_from,
+      trans_to,
       amount,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
@@ -1817,11 +1817,11 @@ Verified: 2026-05-22
 
   (scalar\<character\>) isolated margin pair (e.g., `"BTCUSDT"`).
 
-- `transFrom`:
+- `trans_from`:
 
   (scalar\<character\>) source account: `"SPOT"` or `"ISOLATED_MARGIN"`.
 
-- `transTo`:
+- `trans_to`:
 
   (scalar\<character\>) destination account: `"SPOT"` or
   `"ISOLATED_MARGIN"`.
@@ -1830,7 +1830,7 @@ Verified: 2026-05-22
 
   (scalar\<numeric\>) amount to transfer.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -1847,7 +1847,7 @@ Verified: 2026-05-22
     margin <- BinanceMargin$new()
     result <- margin$add_isolated_transfer(
       asset = "USDT", symbol = "BTCUSDT",
-      transFrom = "SPOT", transTo = "ISOLATED_MARGIN",
+      trans_from = "SPOT", trans_to = "ISOLATED_MARGIN",
       amount = 100
     )
     print(result)
@@ -1917,7 +1917,7 @@ if (FALSE) { # \dontrun{
 margin <- BinanceMargin$new()
 order <- margin$add_order(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
-  price = 50000, quantity = 0.0001, timeInForce = "GTC"
+  price = 50000, quantity = 0.0001, time_in_force = "GTC"
 )
 print(order)
 } # }
@@ -1928,7 +1928,7 @@ print(order)
 
 if (FALSE) { # \dontrun{
 margin <- BinanceMargin$new()
-cancelled <- margin$cancel_order("BTCUSDT", orderId = 28)
+cancelled <- margin$cancel_order("BTCUSDT", order_id = 28)
 print(cancelled)
 } # }
 
@@ -1948,7 +1948,7 @@ print(cancelled)
 
 if (FALSE) { # \dontrun{
 margin <- BinanceMargin$new()
-order <- margin$get_order("BTCUSDT", orderId = 28)
+order <- margin$get_order("BTCUSDT", order_id = 28)
 print(order)
 } # }
 
@@ -2050,7 +2050,7 @@ if (FALSE) { # \dontrun{
 margin <- BinanceMargin$new()
 result <- margin$add_isolated_transfer(
   asset = "USDT", symbol = "BTCUSDT",
-  transFrom = "SPOT", transTo = "ISOLATED_MARGIN",
+  trans_from = "SPOT", trans_to = "ISOLATED_MARGIN",
   amount = 100
 )
 print(result)

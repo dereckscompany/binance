@@ -147,7 +147,7 @@ Verified: 2026-05-22
       asset = NULL,
       current = NULL,
       size = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
@@ -164,7 +164,7 @@ Verified: 2026-05-22
 
   (scalar\<count\>?) page size (default 10, max 100).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -270,7 +270,7 @@ older internal examples that still show `apy` are stale.
       asset = NULL,
       current = NULL,
       size = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
@@ -287,7 +287,7 @@ older internal examples that still show `apy` are stale.
 
   (scalar\<count\>?) page size (default 10, max 100).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -387,16 +387,16 @@ Verified: 2026-05-22
 #### Usage
 
     BinanceEarn$add_flexible_subscription(
-      productId,
+      product_id,
       amount,
-      autoSubscribe = NULL,
-      sourceAccount = NULL,
-      recvWindow = NULL
+      auto_subscribe = NULL,
+      source_account = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
 
-- `productId`:
+- `product_id`:
 
   (scalar\<character\>) the product ID to subscribe to.
 
@@ -404,16 +404,16 @@ Verified: 2026-05-22
 
   (scalar\<numeric\>) amount to subscribe.
 
-- `autoSubscribe`:
+- `auto_subscribe`:
 
   (scalar\<logical\>?) whether to enable auto-subscription.
 
-- `sourceAccount`:
+- `source_account`:
 
   (scalar\<character\>?) source wallet: `"SPOT"`, `"FUND"`, or `"ALL"`.
   Default `"SPOT"`.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -429,7 +429,7 @@ Verified: 2026-05-22
 
     \dontrun{
     earn <- BinanceEarn$new()
-    result <- earn$add_flexible_subscription(productId = "USDT001", amount = 100)
+    result <- earn$add_flexible_subscription(product_id = "USDT001", amount = 100)
     print(result)
     }
 
@@ -476,15 +476,15 @@ Verified: 2026-05-22
 #### Usage
 
     BinanceEarn$add_locked_subscription(
-      projectId,
+      project_id,
       amount,
-      autoSubscribe = NULL,
-      recvWindow = NULL
+      auto_subscribe = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
 
-- `projectId`:
+- `project_id`:
 
   (scalar\<character\>) the project ID to subscribe to.
 
@@ -492,11 +492,11 @@ Verified: 2026-05-22
 
   (scalar\<numeric\>) amount to subscribe.
 
-- `autoSubscribe`:
+- `auto_subscribe`:
 
   (scalar\<logical\>?) whether to enable auto-subscription.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -515,7 +515,7 @@ Verified: 2026-05-22
 
     \dontrun{
     earn <- BinanceEarn$new()
-    result <- earn$add_locked_subscription(projectId = "BTC30d001", amount = 0.01)
+    result <- earn$add_locked_subscription(project_id = "BTC30d001", amount = 0.01)
     print(result)
     }
 
@@ -562,16 +562,16 @@ Verified: 2026-05-22
 #### Usage
 
     BinanceEarn$add_flexible_redemption(
-      productId,
+      product_id,
       amount = NULL,
-      redeemAll = NULL,
-      destAccount = NULL,
-      recvWindow = NULL
+      redeem_all = NULL,
+      dest_account = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
 
-- `productId`:
+- `product_id`:
 
   (scalar\<character\>) the product ID to redeem from.
 
@@ -579,16 +579,16 @@ Verified: 2026-05-22
 
   (scalar\<numeric\>?) amount to redeem. If NULL, use `redeemAll`.
 
-- `redeemAll`:
+- `redeem_all`:
 
   (scalar\<logical\>?) if TRUE, redeem entire position.
 
-- `destAccount`:
+- `dest_account`:
 
   (scalar\<character\>?) destination wallet: `"SPOT"` or `"FUND"`.
   Default `"SPOT"`.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -604,7 +604,7 @@ Verified: 2026-05-22
 
     \dontrun{
     earn <- BinanceEarn$new()
-    result <- earn$add_flexible_redemption(productId = "USDT001", amount = 50)
+    result <- earn$add_flexible_redemption(product_id = "USDT001", amount = 50)
     print(result)
     }
 
@@ -647,15 +647,15 @@ Verified: 2026-05-22
 
 #### Usage
 
-    BinanceEarn$add_locked_redemption(positionId, recvWindow = NULL)
+    BinanceEarn$add_locked_redemption(position_id, recv_window = NULL)
 
 #### Arguments
 
-- `positionId`:
+- `position_id`:
 
   (scalar\<character\>) the position ID to redeem.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -671,7 +671,7 @@ Verified: 2026-05-22
 
     \dontrun{
     earn <- BinanceEarn$new()
-    result <- earn$add_locked_redemption(positionId = "12345")
+    result <- earn$add_locked_redemption(position_id = "12345")
     print(result)
     }
 
@@ -732,10 +732,10 @@ Shape captured 2026-05-22 from the live docs.
 
     BinanceEarn$get_flexible_position(
       asset = NULL,
-      productId = NULL,
+      product_id = NULL,
       current = NULL,
       size = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
@@ -744,7 +744,7 @@ Shape captured 2026-05-22 from the live docs.
 
   (scalar\<character\>?) filter by asset (e.g., `"USDT"`).
 
-- `productId`:
+- `product_id`:
 
   (scalar\<character\>?) filter by product ID.
 
@@ -756,7 +756,7 @@ Shape captured 2026-05-22 from the live docs.
 
   (scalar\<count\>?) page size (default 10, max 100).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -884,11 +884,11 @@ to `apy` in the data.table.
 
     BinanceEarn$get_locked_position(
       asset = NULL,
-      positionId = NULL,
-      projectId = NULL,
+      position_id = NULL,
+      project_id = NULL,
       current = NULL,
       size = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
@@ -897,11 +897,11 @@ to `apy` in the data.table.
 
   (scalar\<character\>?) filter by asset (e.g., `"BTC"`).
 
-- `positionId`:
+- `position_id`:
 
   (scalar\<character\>?) filter by position ID.
 
-- `projectId`:
+- `project_id`:
 
   (scalar\<character\>?) filter by project ID.
 
@@ -913,7 +913,7 @@ to `apy` in the data.table.
 
   (scalar\<count\>?) page size (default 10, max 100).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -985,23 +985,23 @@ Verified: 2026-05-22
 #### Usage
 
     BinanceEarn$get_flexible_subscription_history(
-      productId = NULL,
-      purchaseId = NULL,
+      product_id = NULL,
+      purchase_id = NULL,
       asset = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      start_time = NULL,
+      end_time = NULL,
       current = NULL,
       size = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
 
-- `productId`:
+- `product_id`:
 
   (scalar\<character\>?) filter by product ID.
 
-- `purchaseId`:
+- `purchase_id`:
 
   (scalar\<count\>?) filter by purchase ID.
 
@@ -1009,11 +1009,11 @@ Verified: 2026-05-22
 
   (scalar\<character\>?) filter by asset (e.g., `"USDT"`).
 
-- `startTime`:
+- `start_time`:
 
   (scalar\<count\>?) start timestamp in milliseconds.
 
-- `endTime`:
+- `end_time`:
 
   (scalar\<count\>?) end timestamp in milliseconds.
 
@@ -1025,7 +1025,7 @@ Verified: 2026-05-22
 
   (scalar\<count\>?) page size (default 10, max 100).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -1101,18 +1101,18 @@ Verified: 2026-05-22
 #### Usage
 
     BinanceEarn$get_locked_subscription_history(
-      purchaseId = NULL,
+      purchase_id = NULL,
       asset = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      start_time = NULL,
+      end_time = NULL,
       current = NULL,
       size = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
 
-- `purchaseId`:
+- `purchase_id`:
 
   (scalar\<count\>?) filter by purchase ID.
 
@@ -1120,11 +1120,11 @@ Verified: 2026-05-22
 
   (scalar\<character\>?) filter by asset (e.g., `"BTC"`).
 
-- `startTime`:
+- `start_time`:
 
   (scalar\<count\>?) start timestamp in milliseconds.
 
-- `endTime`:
+- `end_time`:
 
   (scalar\<count\>?) end timestamp in milliseconds.
 
@@ -1136,7 +1136,7 @@ Verified: 2026-05-22
 
   (scalar\<count\>?) page size (default 10, max 100).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -1214,23 +1214,23 @@ Verified: 2026-05-22
 #### Usage
 
     BinanceEarn$get_flexible_redemption_history(
-      productId = NULL,
-      redeemId = NULL,
+      product_id = NULL,
+      redeem_id = NULL,
       asset = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      start_time = NULL,
+      end_time = NULL,
       current = NULL,
       size = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
 
-- `productId`:
+- `product_id`:
 
   (scalar\<character\>?) filter by product ID.
 
-- `redeemId`:
+- `redeem_id`:
 
   (scalar\<count\>?) filter by redeem ID.
 
@@ -1238,11 +1238,11 @@ Verified: 2026-05-22
 
   (scalar\<character\>?) filter by asset (e.g., `"USDT"`).
 
-- `startTime`:
+- `start_time`:
 
   (scalar\<count\>?) start timestamp in milliseconds.
 
-- `endTime`:
+- `end_time`:
 
   (scalar\<count\>?) end timestamp in milliseconds.
 
@@ -1254,7 +1254,7 @@ Verified: 2026-05-22
 
   (scalar\<count\>?) page size (default 10, max 100).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -1328,23 +1328,23 @@ Verified: 2026-05-22
 #### Usage
 
     BinanceEarn$get_locked_redemption_history(
-      positionId = NULL,
-      redeemId = NULL,
+      position_id = NULL,
+      redeem_id = NULL,
       asset = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      start_time = NULL,
+      end_time = NULL,
       current = NULL,
       size = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
 
-- `positionId`:
+- `position_id`:
 
   (scalar\<character\>?) filter by position ID.
 
-- `redeemId`:
+- `redeem_id`:
 
   (scalar\<count\>?) filter by redeem ID.
 
@@ -1352,11 +1352,11 @@ Verified: 2026-05-22
 
   (scalar\<character\>?) filter by asset (e.g., `"BTC"`).
 
-- `startTime`:
+- `start_time`:
 
   (scalar\<count\>?) start timestamp in milliseconds.
 
-- `endTime`:
+- `end_time`:
 
   (scalar\<count\>?) end timestamp in milliseconds.
 
@@ -1368,7 +1368,7 @@ Verified: 2026-05-22
 
   (scalar\<count\>?) page size (default 10, max 100).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -1425,7 +1425,7 @@ products <- earn$get_flexible_products(asset = "USDT")
 print(products)
 
 # Subscribe
-result <- earn$add_flexible_subscription(productId = "USDT001", amount = 100)
+result <- earn$add_flexible_subscription(product_id = "USDT001", amount = 100)
 print(result)
 
 # Asynchronous
@@ -1465,7 +1465,7 @@ print(products)
 
 if (FALSE) { # \dontrun{
 earn <- BinanceEarn$new()
-result <- earn$add_flexible_subscription(productId = "USDT001", amount = 100)
+result <- earn$add_flexible_subscription(product_id = "USDT001", amount = 100)
 print(result)
 } # }
 
@@ -1475,7 +1475,7 @@ print(result)
 
 if (FALSE) { # \dontrun{
 earn <- BinanceEarn$new()
-result <- earn$add_locked_subscription(projectId = "BTC30d001", amount = 0.01)
+result <- earn$add_locked_subscription(project_id = "BTC30d001", amount = 0.01)
 print(result)
 } # }
 
@@ -1485,7 +1485,7 @@ print(result)
 
 if (FALSE) { # \dontrun{
 earn <- BinanceEarn$new()
-result <- earn$add_flexible_redemption(productId = "USDT001", amount = 50)
+result <- earn$add_flexible_redemption(product_id = "USDT001", amount = 50)
 print(result)
 } # }
 
@@ -1495,7 +1495,7 @@ print(result)
 
 if (FALSE) { # \dontrun{
 earn <- BinanceEarn$new()
-result <- earn$add_locked_redemption(positionId = "12345")
+result <- earn$add_locked_redemption(position_id = "12345")
 print(result)
 } # }
 

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,9 +36,31 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/dereckscompany/binance/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/dereckscompany/binance/blob/v0.6.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.0" id="binance-060">binance 0.6.0<a class="anchor" aria-label="anchor" href="#binance-060"></a></h2>
+<p>This release brings binance into line with the fleet-wide connector conventions. Every method argument is now plain snake_case (the words you type in R), while the Binance API still receives its own camelCase field names on the wire — the translation now happens inside each method rather than leaking the exchange’s spelling into your R code. It is a clean break with no deprecation shims, so calls that passed camelCase argument names by keyword must be updated (for example <code>cancel_order("BTCUSDT", orderId = 123)</code> becomes <code>cancel_order("BTCUSDT", order_id = 123)</code>).</p>
+<div class="section level3">
+<h3 id="breaking-changes-0-6-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-6-0"></a></h3>
+<ul><li>
+<strong>All method arguments are now snake_case.</strong> The ~275 camelCase arguments across every R6 class (<code>recvWindow</code>, <code>orderId</code>, <code>startTime</code>, <code>origClientOrderId</code>, <code>quoteOrderQty</code>, <code>timeInForce</code>, <code>newOrderRespType</code>, <code>selfTradePreventionMode</code>, and the rest) are renamed to snake_case; the Binance vocabulary survives untouched as the wire payload keys (<code>recvWindow = recv_window</code>) and accepted values. The blessed <code>.lintr</code> drops its camelCase allowance and now enforces pure snake_case. No deprecation shims — update keyword-argument call sites.</li>
+<li>
+<strong>The OHLCV bar-reference column is renamed <code>open_time</code> to <code>datetime</code>.</strong> Per the fleet datetime convention (<code>datetime</code> for a bar/candle reference time, <code>timestamp</code> for an event time), <code>get_klines()</code> and the futures kline methods, <code><a href="../reference/binance_backfill_klines.html">binance_backfill_klines()</a></code>, and the bundled <code>binance_btc_usdt_4h_ohlcv</code> sample dataset now name the candle open time <code>datetime</code>. The candle <code>close_time</code> keeps its name as a documented venue extra. The 24-hour ticker’s <code>open_time</code> / <code>close_time</code> window bounds are unchanged (they are not a bar-reference time).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="internal-0-6-0">Internal<a class="anchor" aria-label="anchor" href="#internal-0-6-0"></a></h3>
+<ul><li>
+<strong>The generic JSON-to-data.table toolkit is imported from connectcore, not inlined.</strong> <code>to_snake_case()</code>, <code>as_dt_row()</code>, <code>as_dt_list()</code>, <code>coerce_cols()</code>, <code>collapse_string_array_fields()</code>, and <code>ms_to_datetime()</code> were local copies in <code>R/helpers_parse.R</code>; they are now imported from connectcore (floor raised to <code>connectcore (&gt;= 0.3.0)</code>), which is where the fleet-canonical, NA-preserving <code>ms_to_datetime()</code> now lives. Binance-specific parsers (<code>parse_klines()</code>, <code>parse_orderbook()</code>, <code>parse_paginated()</code>, <code>utc_string_to_datetime()</code>) and every <code>empty_dt_*()</code> constructor stay local.</li>
+<li>
+<strong>A <code>test-empty-constructors.R</code> guards the 57 <code>empty_dt_*()</code> constructors</strong> — each returns a zero-row, fully-typed, non-column-less <code>data.table</code> with no list columns (bar the two documented isolated-margin nested shapes).</li>
+<li>
+<strong><code>renv.lock</code> and shared infrastructure refreshed.</strong> The lockfile records connectcore 0.3.0 and the previously-missing dev dependencies (<code>covr</code>, <code>DT</code>, <code>rcmdcheck</code>, <code>devtools</code>, <code>lintr</code>) so the CI runners restore a complete environment; <code>.cruft.json</code> is re-pinned to the current templates-cookiecutter master.</li>
+<li>
+<strong>Folds in the open add_order ACK-test repair</strong> (previously PR <a href="https://github.com/dereckscompany/binance/issues/29" class="external-link">#29</a>): the shared order fixture is stripped to a resting <code>NEW</code> order before the fills-free ACK assertion.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.4" id="binance-054">binance 0.5.4<a class="anchor" aria-label="anchor" href="#binance-054"></a></h2>
 <div class="section level3">

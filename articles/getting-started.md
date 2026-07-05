@@ -153,10 +153,10 @@ trades
 ``` r
 
 klines <- market$get_klines(symbol = "BTCUSDT", interval = "1h", limit = 5)
-klines[, .(open_time, open, high, low, close, volume)]
+klines[, .(datetime, open, high, low, close, volume)]
 ```
 
-    #>     open_time      open   high      low    close   volume
+    #>      datetime      open   high      low    close   volume
     #>        <POSc>     <num>  <num>    <num>    <num>    <num>
     #> 1: 2017-07-03 0.0163479 0.8000 0.015758 0.015771 148976.1
     #> 2: 2017-07-10 0.0157710 0.0158 0.015730 0.015788  95432.0
@@ -178,18 +178,18 @@ piece:
 all_klines <- market$get_klines(
   symbol = "BTCUSDT",
   interval = "1h",
-  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-  endTime = as.POSIXct("2024-06-01", tz = "UTC"),
+  start_time = as.POSIXct("2024-01-01", tz = "UTC"),
+  end_time = as.POSIXct("2024-06-01", tz = "UTC"),
   fetch_all = TRUE,
   sleep = 0
 )
 
 nrow(all_klines)
-head(all_klines[, .(open_time, open, high, low, close, volume)])
+head(all_klines[, .(datetime, open, high, low, close, volume)])
 ```
 
     #> [1] 3
-    #>     open_time      open   high      low    close   volume
+    #>      datetime      open   high      low    close   volume
     #>        <POSc>     <num>  <num>    <num>    <num>    <num>
     #> 1: 2017-07-03 0.0163479 0.8000 0.015758 0.015771 148976.1
     #> 2: 2017-07-10 0.0157710 0.0158 0.015730 0.015788  95432.0
@@ -216,8 +216,8 @@ candles <- 0L
 market$get_klines(
   symbol = "BTCUSDT",
   interval = "1h",
-  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-  endTime = as.POSIXct("2024-02-01", tz = "UTC"),
+  start_time = as.POSIXct("2024-01-01", tz = "UTC"),
+  end_time = as.POSIXct("2024-02-01", tz = "UTC"),
   fetch_all = TRUE,
   on_page = function(page) {
     pages <<- pages + 1L
@@ -294,7 +294,7 @@ order <- trading$add_order(
   side = "BUY",
   price = 50000,
   quantity = 0.0001,
-  timeInForce = "GTC"
+  time_in_force = "GTC"
 )
 order
 ```
@@ -303,7 +303,7 @@ order
 
 ``` r
 
-order <- trading$get_order(symbol = "BTCUSDT", orderId = 12345)
+order <- trading$get_order(symbol = "BTCUSDT", order_id = 12345)
 order
 ```
 
@@ -348,7 +348,7 @@ open_orders
 
 ``` r
 
-cancelled <- trading$cancel_order(symbol = "BTCUSDT", orderId = 12345)
+cancelled <- trading$cancel_order(symbol = "BTCUSDT", order_id = 12345)
 cancelled
 ```
 
@@ -374,9 +374,9 @@ result <- oco$add_order(
   side = "SELL",
   quantity = 0.001,
   price = 110000,          # Limit price (take profit)
-  stopPrice = 90000,       # Stop trigger price
-  stopLimitPrice = 89500,  # Stop limit price
-  stopLimitTimeInForce = "GTC"
+  stop_price = 90000,       # Stop trigger price
+  stop_limit_price = 89500,  # Stop limit price
+  stop_limit_time_in_force = "GTC"
 )
 result
 ```
@@ -620,7 +620,7 @@ products
 
 ``` r
 
-result <- earn$subscribe_flexible(productId = "BTC001", amount = 0.01)
+result <- earn$subscribe_flexible(product_id = "BTC001", amount = 0.01)
 result
 ```
 

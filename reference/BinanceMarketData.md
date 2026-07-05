@@ -1019,8 +1019,8 @@ Verified: 2026-05-22
     BinanceMarketData$get_klines(
       symbol,
       interval = "1h",
-      startTime = NULL,
-      endTime = NULL,
+      start_time = NULL,
+      end_time = NULL,
       limit = NULL,
       fetch_all = FALSE,
       sleep = 0.2,
@@ -1039,11 +1039,11 @@ Verified: 2026-05-22
   `"3m"`, `"5m"`, `"15m"`, `"30m"`, `"1h"`, `"2h"`, `"4h"`, `"6h"`,
   `"8h"`, `"12h"`, `"1d"`, `"3d"`, `"1w"`, `"1M"`.
 
-- `startTime`:
+- `start_time`:
 
   (scalar\<POSIXct\> \| scalar\<numeric\>?) start time (ms or POSIXct).
 
-- `endTime`:
+- `end_time`:
 
   (scalar\<POSIXct\> \| scalar\<numeric\>?) end time (ms or POSIXct).
 
@@ -1055,7 +1055,7 @@ Verified: 2026-05-22
 
   (scalar\<logical\>) if `TRUE`, automatically pages forward through the
   time range — following the data and stopping at the first empty or
-  short page — and returns the combined result sorted by `open_time`.
+  short page — and returns the combined result sorted by `datetime`.
   Both `startTime` and `endTime` are required when enabled. **Warning**:
   large date ranges will consume multiple API requests and may impact
   your rate-limit quota. Default `FALSE`.
@@ -1094,8 +1094,8 @@ buffered (returned) case.
     # Fetch all candles across a large date range (multiple API calls)
     all_klines <- market$get_klines(
       "BTCUSDT", "1h",
-      startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-      endTime = as.POSIXct("2024-06-01", tz = "UTC"),
+      start_time = as.POSIXct("2024-01-01", tz = "UTC"),
+      end_time = as.POSIXct("2024-06-01", tz = "UTC"),
       fetch_all = TRUE, sleep = 0.5
     )
     }
@@ -1273,8 +1273,8 @@ klines <- market$get_klines("BTCUSDT", "1h", limit = 24)
 # Fetch all candles across a large date range (multiple API calls)
 all_klines <- market$get_klines(
   "BTCUSDT", "1h",
-  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-  endTime = as.POSIXct("2024-06-01", tz = "UTC"),
+  start_time = as.POSIXct("2024-01-01", tz = "UTC"),
+  end_time = as.POSIXct("2024-06-01", tz = "UTC"),
   fetch_all = TRUE, sleep = 0.5
 )
 } # }

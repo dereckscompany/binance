@@ -9,7 +9,7 @@ BinanceAccount: Account and Funding Management"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@ BinanceAccount: Account and Funding Management"></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>BinanceAccount: Account and Funding Management</h1>
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/master/R/BinanceAccount.R" class="external-link"><code>R/BinanceAccount.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.6.0/R/BinanceAccount.R" class="external-link"><code>R/BinanceAccount.R</code></a></small>
       <div class="d-none name"><code>BinanceAccount.Rd</code></div>
     </div>
 
@@ -165,12 +165,12 @@ so the return is always one row per account.</p>
 </div>
 <div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceAccount</span><span class="op">$</span><span class="fu">get_account_info</span><span class="op">(</span>recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceAccount</span><span class="op">$</span><span class="fu">get_account_info</span><span class="op">(</span>recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>recvWindow</code></dt>
+<p></p><div class="arguments"><dl><dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -266,16 +266,16 @@ Verified: 2026-05-22</p>
 </div>
 <div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceAccount</span><span class="op">$</span><span class="fu">get_balances</span><span class="op">(</span>omitZeroBalances <span class="op">=</span> <span class="cn">NULL</span>, recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceAccount</span><span class="op">$</span><span class="fu">get_balances</span><span class="op">(</span>omit_zero_balances <span class="op">=</span> <span class="cn">NULL</span>, recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>omitZeroBalances</code></dt>
+<p></p><div class="arguments"><dl><dt><code>omit_zero_balances</code></dt>
 <dd><p>(scalar&lt;logical&gt;?) if TRUE, omit assets with zero balance.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -358,12 +358,12 @@ Verified: 2026-05-22</p>
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceAccount</span><span class="op">$</span><span class="fu">get_trades</span><span class="op">(</span></span>
 <span>  <span class="va">symbol</span>,</span>
-<span>  orderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  fromId <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  from_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  limit <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -373,19 +373,19 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;character&gt;) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>orderId</code></dt>
+<dt><code>order_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) filter by order ID.</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) start timestamp in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) end timestamp in milliseconds.</p></dd>
 
 
-<dt><code>fromId</code></dt>
+<dt><code>from_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) trade ID to fetch from.</p></dd>
 
 
@@ -393,7 +393,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;count&gt;?) max results (default 500, max 1000).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 

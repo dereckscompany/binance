@@ -9,7 +9,7 @@ BinanceMarginData: Margin Market Data Retrieval"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@ BinanceMarginData: Margin Market Data Retrieval"></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>BinanceMarginData: Margin Market Data Retrieval</h1>
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/master/R/BinanceMarginData.R" class="external-link"><code>R/BinanceMarginData.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.6.0/R/BinanceMarginData.R" class="external-link"><code>R/BinanceMarginData.R</code></a></small>
       <div class="d-none name"><code>BinanceMarginData.Rd</code></div>
     </div>
 
@@ -154,12 +154,12 @@ asynchronous execution depending on the <code>async</code> parameter at construc
 </div>
 <div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMarginData</span><span class="op">$</span><span class="fu">get_all_pairs</span><span class="op">(</span>recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMarginData</span><span class="op">$</span><span class="fu">get_all_pairs</span><span class="op">(</span>recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>recvWindow</code></dt>
+<p></p><div class="arguments"><dl><dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) request validity window in milliseconds.</p></dd>
 
 
@@ -237,12 +237,12 @@ print(pairs)
 </div>
 <div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMarginData</span><span class="op">$</span><span class="fu">get_isolated_pairs</span><span class="op">(</span>recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMarginData</span><span class="op">$</span><span class="fu">get_isolated_pairs</span><span class="op">(</span>recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>recvWindow</code></dt>
+<p></p><div class="arguments"><dl><dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) request validity window in milliseconds.</p></dd>
 
 
@@ -379,10 +379,10 @@ print(idx)
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMarginData</span><span class="op">$</span><span class="fu">get_interest_rate_history</span><span class="op">(</span></span>
 <span>  <span class="va">asset</span>,</span>
-<span>  vipLevel <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  vip_level <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -392,19 +392,19 @@ print(idx)
 <dd><p>(scalar&lt;character&gt;) asset code (e.g., <code>"BTC"</code>).</p></dd>
 
 
-<dt><code>vipLevel</code></dt>
+<dt><code>vip_level</code></dt>
 <dd><p>(scalar&lt;count&gt;?) VIP level to query. Defaults to user's VIP level.</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;numeric&gt;?) start time in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;numeric&gt;?) end time in milliseconds.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) request validity window in milliseconds.</p></dd>
 
 
@@ -484,15 +484,15 @@ print(history)
 <div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMarginData</span><span class="op">$</span><span class="fu">get_cross_margin_data</span><span class="op">(</span></span>
-<span>  vipLevel <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  vip_level <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  coin <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>vipLevel</code></dt>
+<p></p><div class="arguments"><dl><dt><code>vip_level</code></dt>
 <dd><p>(scalar&lt;count&gt;?) VIP level to query. Defaults to user's VIP level.</p></dd>
 
 
@@ -500,7 +500,7 @@ print(history)
 <dd><p>(scalar&lt;character&gt;?) specific coin to query (e.g., <code>"BTC"</code>).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) request validity window in milliseconds.</p></dd>
 
 
@@ -599,15 +599,15 @@ print(data)
 <div class="section">
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMarginData</span><span class="op">$</span><span class="fu">get_isolated_margin_data</span><span class="op">(</span></span>
-<span>  vipLevel <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  vip_level <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  symbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>vipLevel</code></dt>
+<p></p><div class="arguments"><dl><dt><code>vip_level</code></dt>
 <dd><p>(scalar&lt;count&gt;?) VIP level to query. Defaults to user's VIP level.</p></dd>
 
 
@@ -615,7 +615,7 @@ print(data)
 <dd><p>(scalar&lt;character&gt;?) specific symbol to query (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) request validity window in milliseconds.</p></dd>
 
 

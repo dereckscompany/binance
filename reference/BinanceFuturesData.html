@@ -9,7 +9,7 @@ BinanceFuturesData: USD-M Futures Market Data Retrieval"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@ BinanceFuturesData: USD-M Futures Market Data Retrieval"></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>BinanceFuturesData: USD-M Futures Market Data Retrieval</h1>
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/master/R/BinanceFuturesData.R" class="external-link"><code>R/BinanceFuturesData.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.6.0/R/BinanceFuturesData.R" class="external-link"><code>R/BinanceFuturesData.R</code></a></small>
       <div class="d-none name"><code>BinanceFuturesData.Rd</code></div>
     </div>
 
@@ -433,8 +433,8 @@ Verified: 2026-05-22</p>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFuturesData</span><span class="op">$</span><span class="fu">get_klines</span><span class="op">(</span></span>
 <span>  <span class="va">symbol</span>,</span>
 <span>  interval <span class="op">=</span> <span class="st">"1h"</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  limit <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  fetch_all <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  sleep <span class="op">=</span> <span class="fl">0.2</span>,</span>
@@ -455,11 +455,11 @@ Verified: 2026-05-22</p>
 <code>"1d"</code>, <code>"3d"</code>, <code>"1w"</code>, <code>"1M"</code>.</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;POSIXct&gt; | scalar&lt;numeric&gt;?) start time (ms or POSIXct).</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;POSIXct&gt; | scalar&lt;numeric&gt;?) end time (ms or POSIXct).</p></dd>
 
 
@@ -470,7 +470,7 @@ Verified: 2026-05-22</p>
 <dt><code>fetch_all</code></dt>
 <dd><p>(scalar&lt;logical&gt;) if <code>TRUE</code>, automatically pages forward through the
 time range — following the data and stopping at the first empty or short
-page — and returns the combined result sorted by <code>open_time</code>. Both
+page — and returns the combined result sorted by <code>datetime</code>. Both
 <code>startTime</code> and <code>endTime</code> are required when enabled. <strong>Warning</strong>: large
 date ranges will consume multiple API requests and may impact your
 rate-limit quota. Default <code>FALSE</code>.</p></dd>
@@ -510,8 +510,8 @@ klines &lt;- futures$get_klines("BTCUSDT", "1h", limit = 24)
 # Fetch all candles across a large date range (multiple API calls)
 all_klines &lt;- futures$get_klines(
   "BTCUSDT", "1h",
-  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-  endTime = as.POSIXct("2024-06-01", tz = "UTC"),
+  start_time = as.POSIXct("2024-01-01", tz = "UTC"),
+  end_time = as.POSIXct("2024-06-01", tz = "UTC"),
   fetch_all = TRUE, sleep = 0.5
 )
 }
@@ -649,8 +649,8 @@ Verified: 2026-05-22</p>
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFuturesData</span><span class="op">$</span><span class="fu">get_funding_rate</span><span class="op">(</span></span>
 <span>  <span class="va">symbol</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  limit <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
@@ -661,11 +661,11 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;character&gt;) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;POSIXct&gt; | scalar&lt;numeric&gt;?) start time (ms or POSIXct).</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;POSIXct&gt; | scalar&lt;numeric&gt;?) end time (ms or POSIXct).</p></dd>
 
 
@@ -1202,8 +1202,8 @@ Verified: 2026-05-22</p>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFuturesData</span><span class="op">$</span><span class="fu">get_index_price_klines</span><span class="op">(</span></span>
 <span>  <span class="va">pair</span>,</span>
 <span>  interval <span class="op">=</span> <span class="st">"1h"</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  limit <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
@@ -1221,11 +1221,11 @@ Verified: 2026-05-22</p>
 <code>"1d"</code>, <code>"3d"</code>, <code>"1w"</code>, <code>"1M"</code>.</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;POSIXct&gt; | scalar&lt;numeric&gt;?) start time (ms or POSIXct).</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;POSIXct&gt; | scalar&lt;numeric&gt;?) end time (ms or POSIXct).</p></dd>
 
 
@@ -1301,8 +1301,8 @@ Verified: 2026-05-22</p>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFuturesData</span><span class="op">$</span><span class="fu">get_mark_price_klines</span><span class="op">(</span></span>
 <span>  <span class="va">symbol</span>,</span>
 <span>  interval <span class="op">=</span> <span class="st">"1h"</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  limit <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
@@ -1320,11 +1320,11 @@ Verified: 2026-05-22</p>
 <code>"1d"</code>, <code>"3d"</code>, <code>"1w"</code>, <code>"1M"</code>.</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;POSIXct&gt; | scalar&lt;numeric&gt;?) start time (ms or POSIXct).</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;POSIXct&gt; | scalar&lt;numeric&gt;?) end time (ms or POSIXct).</p></dd>
 
 
@@ -1443,8 +1443,8 @@ print(klines)
 <span class="r-in"><span><span class="co"># Fetch all candles across a large date range (multiple API calls)</span></span></span>
 <span class="r-in"><span><span class="va">all_klines</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_klines</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"BTCUSDT"</span>, <span class="st">"1h"</span>,</span></span>
-<span class="r-in"><span>  startTime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-01-01"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  endTime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-06-01"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  start_time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-01-01"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  end_time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-06-01"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  fetch_all <span class="op">=</span> <span class="cn">TRUE</span>, sleep <span class="op">=</span> <span class="fl">0.5</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>

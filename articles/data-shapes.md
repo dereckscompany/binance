@@ -156,7 +156,7 @@ depth[side == "ask"][order(-price)][1:5]
 
 | Method | Endpoint | Shape |
 |----|----|----|
-| `add_order(type, symbol, side, ...)` | `POST /api/v3/order` | one row per fill if `newOrderRespType = "FULL"` and the order filled; otherwise a single row with `fill_*` columns `NA` (schema-stable) |
+| `add_order(type, symbol, side, ...)` | `POST /api/v3/order` | one row per fill if `new_order_resp_type = "FULL"` and the order filled; otherwise a single row with `fill_*` columns `NA` (schema-stable) |
 | `add_order_test(...)` | `POST /api/v3/order/test` | single row `data.table(validated = TRUE)` on success |
 | `cancel_order(symbol, ...)` | `DELETE /api/v3/order` | single row |
 | `cancel_all_orders(symbol)` | `DELETE /api/v3/openOrders` | one row per cancelled order; **empty `data.table` if no open orders** |
@@ -169,7 +169,7 @@ depth[side == "ask"][order(-price)][1:5]
 # Long format: one row per fill, parent order fields replicated.
 order <- trading$add_order(
   type = "MARKET", symbol = "BTCUSDT", side = "BUY",
-  quantity = 0.0001, newOrderRespType = "FULL"
+  quantity = 0.0001, new_order_resp_type = "FULL"
 )
 order[, .(order_id, status, fill_index, fill_price, fill_qty)]
 ```
@@ -493,7 +493,7 @@ fields), explode to one row per element with parent fields replicated. A
 # replicated. `fill_index` runs 1..N.
 order <- trading$add_order(
   type = "MARKET", symbol = "BTCUSDT", side = "BUY",
-  quantity = 0.0001, newOrderRespType = "FULL"
+  quantity = 0.0001, new_order_resp_type = "FULL"
 )
 order[, .(order_id, status, fill_index, fill_price, fill_qty)]
 #>    order_id status fill_index     fill_price   fill_qty
@@ -669,7 +669,7 @@ The cases:
 - `get_exchange_info()` (spot + futures) re-routes `rateLimits` to
   `get_rate_limits()`, `exchangeFilters` to `get_exchange_filters()`,
   and (futures only) `assets` to `get_futures_assets()`. The constant
-  scalars (`timezone = "UTC"`, `futuresType = "U_M"`) and `serverTime`
+  scalars (`timezone = "UTC"`, `futures_type = "U_M"`) and `serverTime`
   (already in `get_server_time()`) are not re-exposed.
 
 ### Treatment E — JSON string for dynamic-key or array-of-array objects

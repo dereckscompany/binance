@@ -140,9 +140,9 @@ Verified: 2026-05-22
       type,
       asset,
       amount,
-      fromSymbol = NULL,
-      toSymbol = NULL,
-      recvWindow = NULL
+      from_symbol = NULL,
+      to_symbol = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -165,17 +165,17 @@ Verified: 2026-05-22
 
   (scalar\<numeric\>) amount to transfer.
 
-- `fromSymbol`:
+- `from_symbol`:
 
   (scalar\<character\>?) mandatory when `type` involves isolated margin
   (e.g., `"BNBUSDT"`).
 
-- `toSymbol`:
+- `to_symbol`:
 
   (scalar\<character\>?) mandatory when `type` involves isolated margin
   (e.g., `"BNBUSDT"`).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -239,13 +239,13 @@ Verified: 2026-05-22
 
     BinanceTransfer$get_transfer_history(
       type,
-      startTime = NULL,
-      endTime = NULL,
+      start_time = NULL,
+      end_time = NULL,
       current = NULL,
       size = NULL,
-      fromSymbol = NULL,
-      toSymbol = NULL,
-      recvWindow = NULL
+      from_symbol = NULL,
+      to_symbol = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -254,11 +254,11 @@ Verified: 2026-05-22
 
   (scalar\<character\>) transfer type. Same options as `add_transfer()`.
 
-- `startTime`:
+- `start_time`:
 
   (scalar\<count\>?) start timestamp in milliseconds.
 
-- `endTime`:
+- `end_time`:
 
   (scalar\<count\>?) end timestamp in milliseconds.
 
@@ -270,17 +270,17 @@ Verified: 2026-05-22
 
   (scalar\<count\>?) page size (default 10, max 100).
 
-- `fromSymbol`:
+- `from_symbol`:
 
   (scalar\<character\>?) must be sent when `type` involves isolated
   margin.
 
-- `toSymbol`:
+- `to_symbol`:
 
   (scalar\<character\>?) must be sent when `type` involves isolated
   margin.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 

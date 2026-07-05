@@ -9,7 +9,7 @@ BinanceSubAccount: Sub-Account Management"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@ BinanceSubAccount: Sub-Account Management"></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>BinanceSubAccount: Sub-Account Management</h1>
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/master/R/BinanceSubAccount.R" class="external-link"><code>R/BinanceSubAccount.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.6.0/R/BinanceSubAccount.R" class="external-link"><code>R/BinanceSubAccount.R</code></a></small>
       <div class="d-none name"><code>BinanceSubAccount.Rd</code></div>
     </div>
 
@@ -151,16 +151,16 @@ Verified: 2026-05-22</p>
 </div>
 <div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceSubAccount</span><span class="op">$</span><span class="fu">add_sub_account</span><span class="op">(</span><span class="va">subAccountString</span>, recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceSubAccount</span><span class="op">$</span><span class="fu">add_sub_account</span><span class="op">(</span><span class="va">sub_account_string</span>, recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>subAccountString</code></dt>
+<p></p><div class="arguments"><dl><dt><code>sub_account_string</code></dt>
 <dd><p>(scalar&lt;character&gt;) the sub-account name/string identifier.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -174,7 +174,7 @@ Verified: 2026-05-22</p>
 <h4 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 sub &lt;- BinanceSubAccount$new()
-result &lt;- sub$add_sub_account(subAccountString = "mysubaccount")
+result &lt;- sub$add_sub_account(sub_account_string = "mysubaccount")
 print(result$email)
 }
 </code></pre></div><p></p></div>
@@ -228,10 +228,10 @@ Verified: 2026-05-22</p>
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceSubAccount</span><span class="op">$</span><span class="fu">get_sub_accounts</span><span class="op">(</span></span>
 <span>  email <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  isFreeze <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  is_freeze <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  page <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  limit <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -241,7 +241,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;character&gt;?) filter by sub-account email.</p></dd>
 
 
-<dt><code>isFreeze</code></dt>
+<dt><code>is_freeze</code></dt>
 <dd><p>(scalar&lt;logical&gt;?) filter by freeze status.</p></dd>
 
 
@@ -253,7 +253,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;count&gt;?) results per page (default 1, max 200).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -318,7 +318,7 @@ Verified: 2026-05-22</p>
 </div>
 <div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceSubAccount</span><span class="op">$</span><span class="fu">get_balances</span><span class="op">(</span><span class="va">email</span>, recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceSubAccount</span><span class="op">$</span><span class="fu">get_balances</span><span class="op">(</span><span class="va">email</span>, recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -327,7 +327,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;character&gt;) the sub-account email.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -402,7 +402,7 @@ Verified: 2026-05-22</p>
 <span>  email <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  page <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  size <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -420,7 +420,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;count&gt;?) results per page (default 10, max 20).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -502,33 +502,33 @@ Verified: 2026-05-22</p>
 <div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceSubAccount</span><span class="op">$</span><span class="fu">add_transfer</span><span class="op">(</span></span>
-<span>  fromEmail <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  toEmail <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">fromAccountType</span>,</span>
-<span>  <span class="va">toAccountType</span>,</span>
+<span>  from_email <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  to_email <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">from_account_type</span>,</span>
+<span>  <span class="va">to_account_type</span>,</span>
 <span>  <span class="va">asset</span>,</span>
 <span>  <span class="va">amount</span>,</span>
-<span>  clientTranId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  client_tran_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>fromEmail</code></dt>
+<p></p><div class="arguments"><dl><dt><code>from_email</code></dt>
 <dd><p>(scalar&lt;character&gt;?) sender sub-account email.</p></dd>
 
 
-<dt><code>toEmail</code></dt>
+<dt><code>to_email</code></dt>
 <dd><p>(scalar&lt;character&gt;?) recipient sub-account email.</p></dd>
 
 
-<dt><code>fromAccountType</code></dt>
+<dt><code>from_account_type</code></dt>
 <dd><p>(scalar&lt;character&gt;) source account type. One of
 <code>"SPOT"</code>, <code>"USDT_FUTURE"</code>, <code>"COIN_FUTURE"</code>, <code>"MARGIN"</code>, <code>"ISOLATED_MARGIN"</code>.</p></dd>
 
 
-<dt><code>toAccountType</code></dt>
+<dt><code>to_account_type</code></dt>
 <dd><p>(scalar&lt;character&gt;) destination account type. One of
 <code>"SPOT"</code>, <code>"USDT_FUTURE"</code>, <code>"COIN_FUTURE"</code>, <code>"MARGIN"</code>, <code>"ISOLATED_MARGIN"</code>.</p></dd>
 
@@ -541,11 +541,11 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;numeric&gt;) amount to transfer.</p></dd>
 
 
-<dt><code>clientTranId</code></dt>
+<dt><code>client_tran_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) client-defined transfer ID.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -562,8 +562,8 @@ overflows R's 32-bit <code>integer</code>, so it arrives as a double).</p></li>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 sub &lt;- BinanceSubAccount$new()
 result &lt;- sub$add_transfer(
-  toEmail = "sub@virtual.com",
-  fromAccountType = "SPOT", toAccountType = "SPOT",
+  to_email = "sub@virtual.com",
+  from_account_type = "SPOT", to_account_type = "SPOT",
   asset = "USDT", amount = 100
 )
 print(result$tran_id)
@@ -622,36 +622,36 @@ Verified: 2026-05-22</p>
 <div class="section">
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceSubAccount</span><span class="op">$</span><span class="fu">get_transfer_history</span><span class="op">(</span></span>
-<span>  fromEmail <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  toEmail <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  clientTranId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  from_email <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  to_email <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  client_tran_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  page <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  limit <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>fromEmail</code></dt>
+<p></p><div class="arguments"><dl><dt><code>from_email</code></dt>
 <dd><p>(scalar&lt;character&gt;?) filter by sender email.</p></dd>
 
 
-<dt><code>toEmail</code></dt>
+<dt><code>to_email</code></dt>
 <dd><p>(scalar&lt;character&gt;?) filter by recipient email.</p></dd>
 
 
-<dt><code>clientTranId</code></dt>
+<dt><code>client_tran_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) filter by client transfer ID.</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) start timestamp in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) end timestamp in milliseconds.</p></dd>
 
 
@@ -663,7 +663,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;count&gt;?) results per page (default 500, max 500).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -688,7 +688,7 @@ overflows R's 32-bit <code>integer</code>, so it arrives as a double).</p></li>
 <h4 id="examples-5">Examples<a class="anchor" aria-label="anchor" href="#examples-5"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 sub &lt;- BinanceSubAccount$new()
-history &lt;- sub$get_transfer_history(toEmail = "sub@virtual.com")
+history &lt;- sub$get_transfer_history(to_email = "sub@virtual.com")
 print(history)
 }
 </code></pre></div><p></p></div>
@@ -757,7 +757,7 @@ Verified: 2026-05-22</p>
 </div>
 <div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceSubAccount</span><span class="op">$</span><span class="fu">get_futures_account</span><span class="op">(</span><span class="va">email</span>, <span class="va">futuresType</span>, recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceSubAccount</span><span class="op">$</span><span class="fu">get_futures_account</span><span class="op">(</span><span class="va">email</span>, <span class="va">futures_type</span>, recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -766,11 +766,11 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;character&gt;) the sub-account email.</p></dd>
 
 
-<dt><code>futuresType</code></dt>
+<dt><code>futures_type</code></dt>
 <dd><p>(scalar&lt;count&gt;) <code>1</code> for USDT-margined futures, <code>2</code> for COIN-margined futures.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -795,7 +795,7 @@ single row without asset-level columns is returned.</p>
 <h4 id="examples-6">Examples<a class="anchor" aria-label="anchor" href="#examples-6"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 sub &lt;- BinanceSubAccount$new()
-futures &lt;- sub$get_futures_account(email = "sub@virtual.com", futuresType = 1)
+futures &lt;- sub$get_futures_account(email = "sub@virtual.com", futures_type = 1)
 print(futures)
 }
 </code></pre></div><p></p></div>
@@ -847,7 +847,7 @@ Verified: 2026-05-22</p>
 </div>
 <div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceSubAccount</span><span class="op">$</span><span class="fu">get_margin_account</span><span class="op">(</span><span class="va">email</span>, recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceSubAccount</span><span class="op">$</span><span class="fu">get_margin_account</span><span class="op">(</span><span class="va">email</span>, recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -856,7 +856,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;character&gt;) the sub-account email.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -927,7 +927,7 @@ Verified: 2026-05-22</p>
 </div>
 <div class="section">
 <h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceSubAccount</span><span class="op">$</span><span class="fu">get_status</span><span class="op">(</span>email <span class="op">=</span> <span class="cn">NULL</span>, recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceSubAccount</span><span class="op">$</span><span class="fu">get_status</span><span class="op">(</span>email <span class="op">=</span> <span class="cn">NULL</span>, recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -936,7 +936,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;character&gt;?) filter by sub-account email.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1009,7 +1009,7 @@ print(status)
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">sub</span> <span class="op">&lt;-</span> <span class="va">BinanceSubAccount</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">sub</span><span class="op">$</span><span class="fu">add_sub_account</span><span class="op">(</span>subAccountString <span class="op">=</span> <span class="st">"mysubaccount"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">sub</span><span class="op">$</span><span class="fu">add_sub_account</span><span class="op">(</span>sub_account_string <span class="op">=</span> <span class="st">"mysubaccount"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">email</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
@@ -1050,8 +1050,8 @@ print(status)
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">sub</span> <span class="op">&lt;-</span> <span class="va">BinanceSubAccount</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">sub</span><span class="op">$</span><span class="fu">add_transfer</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  toEmail <span class="op">=</span> <span class="st">"sub@virtual.com"</span>,</span></span>
-<span class="r-in"><span>  fromAccountType <span class="op">=</span> <span class="st">"SPOT"</span>, toAccountType <span class="op">=</span> <span class="st">"SPOT"</span>,</span></span>
+<span class="r-in"><span>  to_email <span class="op">=</span> <span class="st">"sub@virtual.com"</span>,</span></span>
+<span class="r-in"><span>  from_account_type <span class="op">=</span> <span class="st">"SPOT"</span>, to_account_type <span class="op">=</span> <span class="st">"SPOT"</span>,</span></span>
 <span class="r-in"><span>  asset <span class="op">=</span> <span class="st">"USDT"</span>, amount <span class="op">=</span> <span class="fl">100</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">tran_id</span><span class="op">)</span></span></span>
@@ -1063,7 +1063,7 @@ print(status)
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">sub</span> <span class="op">&lt;-</span> <span class="va">BinanceSubAccount</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">history</span> <span class="op">&lt;-</span> <span class="va">sub</span><span class="op">$</span><span class="fu">get_transfer_history</span><span class="op">(</span>toEmail <span class="op">=</span> <span class="st">"sub@virtual.com"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">history</span> <span class="op">&lt;-</span> <span class="va">sub</span><span class="op">$</span><span class="fu">get_transfer_history</span><span class="op">(</span>to_email <span class="op">=</span> <span class="st">"sub@virtual.com"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">history</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
@@ -1073,7 +1073,7 @@ print(status)
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">sub</span> <span class="op">&lt;-</span> <span class="va">BinanceSubAccount</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va">sub</span><span class="op">$</span><span class="fu">get_futures_account</span><span class="op">(</span>email <span class="op">=</span> <span class="st">"sub@virtual.com"</span>, futuresType <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va">sub</span><span class="op">$</span><span class="fu">get_futures_account</span><span class="op">(</span>email <span class="op">=</span> <span class="st">"sub@virtual.com"</span>, futures_type <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">futures</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>

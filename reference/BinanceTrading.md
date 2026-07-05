@@ -127,8 +127,8 @@ Verified: 2026-05-22
 
 - **Market Orders**: Execute immediately at best available price.
 
-- **Response Type**: Use `newOrderRespType = "FULL"` to get fill details
-  in the response.
+- **Response Type**: Use `new_order_resp_type = "FULL"` to get fill
+  details in the response.
 
 #### curl
 
@@ -162,15 +162,15 @@ Verified: 2026-05-22
       symbol,
       side,
       quantity = NULL,
-      quoteOrderQty = NULL,
+      quote_order_qty = NULL,
       price = NULL,
-      timeInForce = NULL,
-      newClientOrderId = NULL,
-      stopPrice = NULL,
-      icebergQty = NULL,
-      newOrderRespType = NULL,
-      selfTradePreventionMode = NULL,
-      recvWindow = NULL
+      time_in_force = NULL,
+      new_client_order_id = NULL,
+      stop_price = NULL,
+      iceberg_qty = NULL,
+      new_order_resp_type = NULL,
+      self_trade_prevention_mode = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -192,7 +192,7 @@ Verified: 2026-05-22
 
   (scalar\<numeric\>?) base asset quantity.
 
-- `quoteOrderQty`:
+- `quote_order_qty`:
 
   (scalar\<numeric\>?) quote asset quantity (market orders only).
 
@@ -200,31 +200,31 @@ Verified: 2026-05-22
 
   (scalar\<numeric\>?) price for limit orders.
 
-- `timeInForce`:
+- `time_in_force`:
 
   (scalar\<character\>?) `"GTC"`, `"IOC"`, `"FOK"`.
 
-- `newClientOrderId`:
+- `new_client_order_id`:
 
   (scalar\<character\>?) unique client order ID.
 
-- `stopPrice`:
+- `stop_price`:
 
   (scalar\<numeric\>?) trigger price for stop orders.
 
-- `icebergQty`:
+- `iceberg_qty`:
 
   (scalar\<numeric\>?) iceberg quantity.
 
-- `newOrderRespType`:
+- `new_order_resp_type`:
 
   (scalar\<character\>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
 
-- `selfTradePreventionMode`:
+- `self_trade_prevention_mode`:
 
   (scalar\<character\>?)
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -285,7 +285,7 @@ Verified: 2026-05-22
 
 When the order has N fills, the parent order fields are replicated on
 each of the N rows and `fill_index` runs `1..N`. When the order has no
-fills (e.g. a resting `LIMIT` order with `newOrderRespType = "ACK"` /
+fills (e.g. a resting `LIMIT` order with `new_order_resp_type = "ACK"` /
 `"RESULT"`), a single row is returned with the `fill_*` columns present
 as `NA` so the schema is stable across response types.
 
@@ -360,15 +360,15 @@ Verified: 2026-05-22
       symbol,
       side,
       quantity = NULL,
-      quoteOrderQty = NULL,
+      quote_order_qty = NULL,
       price = NULL,
-      timeInForce = NULL,
-      newClientOrderId = NULL,
-      stopPrice = NULL,
-      icebergQty = NULL,
-      newOrderRespType = NULL,
-      selfTradePreventionMode = NULL,
-      recvWindow = NULL
+      time_in_force = NULL,
+      new_client_order_id = NULL,
+      stop_price = NULL,
+      iceberg_qty = NULL,
+      new_order_resp_type = NULL,
+      self_trade_prevention_mode = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -390,7 +390,7 @@ Verified: 2026-05-22
 
   (scalar\<numeric\>?) base asset quantity.
 
-- `quoteOrderQty`:
+- `quote_order_qty`:
 
   (scalar\<numeric\>?) quote asset quantity (market orders only).
 
@@ -398,31 +398,31 @@ Verified: 2026-05-22
 
   (scalar\<numeric\>?) price for limit orders.
 
-- `timeInForce`:
+- `time_in_force`:
 
   (scalar\<character\>?) `"GTC"`, `"IOC"`, `"FOK"`.
 
-- `newClientOrderId`:
+- `new_client_order_id`:
 
   (scalar\<character\>?) unique client order ID.
 
-- `stopPrice`:
+- `stop_price`:
 
   (scalar\<numeric\>?) trigger price for stop orders.
 
-- `icebergQty`:
+- `iceberg_qty`:
 
   (scalar\<numeric\>?) iceberg quantity.
 
-- `newOrderRespType`:
+- `new_order_resp_type`:
 
   (scalar\<character\>?) `"ACK"`, `"RESULT"`, or `"FULL"`.
 
-- `selfTradePreventionMode`:
+- `self_trade_prevention_mode`:
 
   (scalar\<character\>?)
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -494,9 +494,9 @@ Verified: 2026-05-22
 
     BinanceTrading$cancel_order(
       symbol,
-      orderId = NULL,
-      origClientOrderId = NULL,
-      recvWindow = NULL
+      order_id = NULL,
+      orig_client_order_id = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -505,15 +505,15 @@ Verified: 2026-05-22
 
   (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
-- `orderId`:
+- `order_id`:
 
   (scalar\<count\>?) the order ID to cancel.
 
-- `origClientOrderId`:
+- `orig_client_order_id`:
 
   (scalar\<character\>?) the client order ID to cancel.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -556,7 +556,7 @@ Verified: 2026-05-22
 
     \dontrun{
     trading <- BinanceTrading$new()
-    cancelled <- trading$cancel_order("BTCUSDT", orderId = 12345)
+    cancelled <- trading$cancel_order("BTCUSDT", order_id = 12345)
     print(cancelled)
     }
 
@@ -624,7 +624,7 @@ Verified: 2026-05-22
 
 #### Usage
 
-    BinanceTrading$cancel_all_orders(symbol, recvWindow = NULL)
+    BinanceTrading$cancel_all_orders(symbol, recv_window = NULL)
 
 #### Arguments
 
@@ -632,7 +632,7 @@ Verified: 2026-05-22
 
   (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -732,9 +732,9 @@ Verified: 2026-05-22
 
     BinanceTrading$get_order(
       symbol,
-      orderId = NULL,
-      origClientOrderId = NULL,
-      recvWindow = NULL
+      order_id = NULL,
+      orig_client_order_id = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -743,15 +743,15 @@ Verified: 2026-05-22
 
   (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
-- `orderId`:
+- `order_id`:
 
   (scalar\<count\>?) the order ID.
 
-- `origClientOrderId`:
+- `orig_client_order_id`:
 
   (scalar\<character\>?) the client order ID.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -763,7 +763,7 @@ Verified: 2026-05-22
 
     \dontrun{
     trading <- BinanceTrading$new()
-    order <- trading$get_order("BTCUSDT", orderId = 12345)
+    order <- trading$get_order("BTCUSDT", order_id = 12345)
     print(order)
     }
 
@@ -819,7 +819,7 @@ Verified: 2026-05-22
 
 #### Usage
 
-    BinanceTrading$get_open_orders(symbol = NULL, recvWindow = NULL)
+    BinanceTrading$get_open_orders(symbol = NULL, recv_window = NULL)
 
 #### Arguments
 
@@ -828,7 +828,7 @@ Verified: 2026-05-22
   (scalar\<character\>?) trading pair (e.g., `"BTCUSDT"`). If NULL,
   returns open orders for all symbols (weight 80).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -961,11 +961,11 @@ Verified: 2026-05-22
 
     BinanceTrading$get_all_orders(
       symbol,
-      orderId = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      order_id = NULL,
+      start_time = NULL,
+      end_time = NULL,
       limit = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
@@ -974,15 +974,15 @@ Verified: 2026-05-22
 
   (scalar\<character\>) trading pair (e.g., `"BTCUSDT"`).
 
-- `orderId`:
+- `order_id`:
 
   (scalar\<count\>?) pagination cursor.
 
-- `startTime`:
+- `start_time`:
 
   (scalar\<count\>?) start timestamp in milliseconds.
 
-- `endTime`:
+- `end_time`:
 
   (scalar\<count\>?) end timestamp in milliseconds.
 
@@ -990,7 +990,7 @@ Verified: 2026-05-22
 
   (scalar\<count\>?) max results (default 500, max 1000).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -1117,7 +1117,7 @@ stopifnot(test$validated)
 
 if (FALSE) { # \dontrun{
 trading <- BinanceTrading$new()
-cancelled <- trading$cancel_order("BTCUSDT", orderId = 12345)
+cancelled <- trading$cancel_order("BTCUSDT", order_id = 12345)
 print(cancelled)
 } # }
 
@@ -1137,7 +1137,7 @@ print(cancelled)
 
 if (FALSE) { # \dontrun{
 trading <- BinanceTrading$new()
-order <- trading$get_order("BTCUSDT", orderId = 12345)
+order <- trading$get_order("BTCUSDT", order_id = 12345)
 print(order)
 } # }
 

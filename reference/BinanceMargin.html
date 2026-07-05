@@ -9,7 +9,7 @@ BinanceMargin: Margin Trading Operations"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@ BinanceMargin: Margin Trading Operations"></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>BinanceMargin: Margin Trading Operations</h1>
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/master/R/BinanceMargin.R" class="external-link"><code>R/BinanceMargin.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.6.0/R/BinanceMargin.R" class="external-link"><code>R/BinanceMargin.R</code></a></small>
       <div class="d-none name"><code>BinanceMargin.Rd</code></div>
     </div>
 
@@ -178,9 +178,9 @@ Uses the consolidated borrow-repay endpoint with <code>type = "BORROW"</code>.</
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">add_borrow</span><span class="op">(</span></span>
 <span>  <span class="va">asset</span>,</span>
 <span>  <span class="va">amount</span>,</span>
-<span>  isIsolated <span class="op">=</span> <span class="st">"FALSE"</span>,</span>
+<span>  is_isolated <span class="op">=</span> <span class="st">"FALSE"</span>,</span>
 <span>  symbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -194,15 +194,15 @@ Uses the consolidated borrow-repay endpoint with <code>type = "BORROW"</code>.</
 <dd><p>(scalar&lt;numeric&gt;) amount to borrow.</p></dd>
 
 
-<dt><code>isIsolated</code></dt>
+<dt><code>is_isolated</code></dt>
 <dd><p>(scalar&lt;character&gt;) <code>"TRUE"</code> or <code>"FALSE"</code> for isolated margin. Default <code>"FALSE"</code>.</p></dd>
 
 
 <dt><code>symbol</code></dt>
-<dd><p>(scalar&lt;character&gt;?) required when <code>isIsolated = "TRUE"</code>.</p></dd>
+<dd><p>(scalar&lt;character&gt;?) required when <code>is_isolated = "TRUE"</code>.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -276,9 +276,9 @@ Uses the consolidated borrow-repay endpoint with <code>type = "REPAY"</code>.</p
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">add_repay</span><span class="op">(</span></span>
 <span>  <span class="va">asset</span>,</span>
 <span>  <span class="va">amount</span>,</span>
-<span>  isIsolated <span class="op">=</span> <span class="st">"FALSE"</span>,</span>
+<span>  is_isolated <span class="op">=</span> <span class="st">"FALSE"</span>,</span>
 <span>  symbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -292,15 +292,15 @@ Uses the consolidated borrow-repay endpoint with <code>type = "REPAY"</code>.</p
 <dd><p>(scalar&lt;numeric&gt;) amount to repay.</p></dd>
 
 
-<dt><code>isIsolated</code></dt>
+<dt><code>is_isolated</code></dt>
 <dd><p>(scalar&lt;character&gt;) <code>"TRUE"</code> or <code>"FALSE"</code> for isolated margin. Default <code>"FALSE"</code>.</p></dd>
 
 
 <dt><code>symbol</code></dt>
-<dd><p>(scalar&lt;character&gt;?) required when <code>isIsolated = "TRUE"</code>.</p></dd>
+<dd><p>(scalar&lt;character&gt;?) required when <code>is_isolated = "TRUE"</code>.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -390,15 +390,15 @@ print(result)
 <span>  <span class="va">side</span>,</span>
 <span>  <span class="va">type</span>,</span>
 <span>  quantity <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  quoteOrderQty <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  quote_order_qty <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  price <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  stopPrice <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  timeInForce <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  newClientOrderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  newOrderRespType <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sideEffectType <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  isIsolated <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  stop_price <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time_in_force <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  new_client_order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  new_order_resp_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  side_effect_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  is_isolated <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -421,7 +421,7 @@ print(result)
 <dd><p>(scalar&lt;numeric&gt;?) base asset quantity.</p></dd>
 
 
-<dt><code>quoteOrderQty</code></dt>
+<dt><code>quote_order_qty</code></dt>
 <dd><p>(scalar&lt;numeric&gt;?) quote asset quantity (market orders only).</p></dd>
 
 
@@ -429,31 +429,31 @@ print(result)
 <dd><p>(scalar&lt;numeric&gt;?) price for limit orders.</p></dd>
 
 
-<dt><code>stopPrice</code></dt>
+<dt><code>stop_price</code></dt>
 <dd><p>(scalar&lt;numeric&gt;?) trigger price for stop orders.</p></dd>
 
 
-<dt><code>timeInForce</code></dt>
+<dt><code>time_in_force</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"GTC"</code>, <code>"IOC"</code>, <code>"FOK"</code>.</p></dd>
 
 
-<dt><code>newClientOrderId</code></dt>
+<dt><code>new_client_order_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) unique client order ID.</p></dd>
 
 
-<dt><code>newOrderRespType</code></dt>
+<dt><code>new_order_resp_type</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"ACK"</code>, <code>"RESULT"</code>, or <code>"FULL"</code>.</p></dd>
 
 
-<dt><code>sideEffectType</code></dt>
+<dt><code>side_effect_type</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"NO_SIDE_EFFECT"</code>, <code>"MARGIN_BUY"</code>, <code>"AUTO_REPAY"</code>.</p></dd>
 
 
-<dt><code>isIsolated</code></dt>
+<dt><code>is_isolated</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"TRUE"</code> or <code>"FALSE"</code> for isolated margin.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -479,7 +479,7 @@ print(result)
 margin &lt;- BinanceMargin$new()
 order &lt;- margin$add_order(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
-  price = 50000, quantity = 0.0001, timeInForce = "GTC"
+  price = 50000, quantity = 0.0001, time_in_force = "GTC"
 )
 print(order)
 }
@@ -548,10 +548,10 @@ print(order)
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">cancel_order</span><span class="op">(</span></span>
 <span>  <span class="va">symbol</span>,</span>
-<span>  orderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  origClientOrderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  isIsolated <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  orig_client_order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  is_isolated <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -561,19 +561,19 @@ print(order)
 <dd><p>(scalar&lt;character&gt;) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>orderId</code></dt>
+<dt><code>order_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) the order ID to cancel.</p></dd>
 
 
-<dt><code>origClientOrderId</code></dt>
+<dt><code>orig_client_order_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) the client order ID to cancel.</p></dd>
 
 
-<dt><code>isIsolated</code></dt>
+<dt><code>is_isolated</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"TRUE"</code> or <code>"FALSE"</code> for isolated margin.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -592,7 +592,7 @@ print(order)
 <h4 id="examples-3">Examples<a class="anchor" aria-label="anchor" href="#examples-3"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 margin &lt;- BinanceMargin$new()
-cancelled &lt;- margin$cancel_order("BTCUSDT", orderId = 28)
+cancelled &lt;- margin$cancel_order("BTCUSDT", order_id = 28)
 print(cancelled)
 }
 </code></pre></div><p></p></div>
@@ -659,7 +659,7 @@ print(cancelled)
 </div>
 <div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">cancel_all_orders</span><span class="op">(</span><span class="va">symbol</span>, isIsolated <span class="op">=</span> <span class="cn">NULL</span>, recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">cancel_all_orders</span><span class="op">(</span><span class="va">symbol</span>, is_isolated <span class="op">=</span> <span class="cn">NULL</span>, recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -668,11 +668,11 @@ print(cancelled)
 <dd><p>(scalar&lt;character&gt;) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>isIsolated</code></dt>
+<dt><code>is_isolated</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"TRUE"</code> or <code>"FALSE"</code> for isolated margin.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -754,10 +754,10 @@ print(cancelled)
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">get_order</span><span class="op">(</span></span>
 <span>  <span class="va">symbol</span>,</span>
-<span>  orderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  origClientOrderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  isIsolated <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  orig_client_order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  is_isolated <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -767,19 +767,19 @@ print(cancelled)
 <dd><p>(scalar&lt;character&gt;) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>orderId</code></dt>
+<dt><code>order_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) the order ID.</p></dd>
 
 
-<dt><code>origClientOrderId</code></dt>
+<dt><code>orig_client_order_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) the client order ID.</p></dd>
 
 
-<dt><code>isIsolated</code></dt>
+<dt><code>is_isolated</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"TRUE"</code> or <code>"FALSE"</code> for isolated margin.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -804,7 +804,7 @@ print(cancelled)
 <h4 id="examples-5">Examples<a class="anchor" aria-label="anchor" href="#examples-5"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 margin &lt;- BinanceMargin$new()
-order &lt;- margin$get_order("BTCUSDT", orderId = 28)
+order &lt;- margin$get_order("BTCUSDT", order_id = 28)
 print(order)
 }
 </code></pre></div><p></p></div>
@@ -866,8 +866,8 @@ print(order)
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">get_open_orders</span><span class="op">(</span></span>
 <span>  symbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  isIsolated <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  is_isolated <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -877,11 +877,11 @@ print(order)
 <dd><p>(scalar&lt;character&gt;?) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>isIsolated</code></dt>
+<dt><code>is_isolated</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"TRUE"</code> or <code>"FALSE"</code> for isolated margin.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -987,12 +987,12 @@ print(open)
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">get_all_orders</span><span class="op">(</span></span>
 <span>  <span class="va">symbol</span>,</span>
-<span>  orderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  limit <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  isIsolated <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  is_isolated <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -1002,15 +1002,15 @@ print(open)
 <dd><p>(scalar&lt;character&gt;) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>orderId</code></dt>
+<dt><code>order_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) pagination cursor.</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) start timestamp in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) end timestamp in milliseconds.</p></dd>
 
 
@@ -1018,11 +1018,11 @@ print(open)
 <dd><p>(scalar&lt;count&gt;?) max results (default 500, max 500).</p></dd>
 
 
-<dt><code>isIsolated</code></dt>
+<dt><code>is_isolated</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"TRUE"</code> or <code>"FALSE"</code> for isolated margin.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1116,12 +1116,12 @@ print(all)
 </div>
 <div class="section">
 <h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">get_account</span><span class="op">(</span>recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">get_account</span><span class="op">(</span>recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>recvWindow</code></dt>
+<p></p><div class="arguments"><dl><dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1190,8 +1190,8 @@ print(account)
 <h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">get_max_borrowable</span><span class="op">(</span></span>
 <span>  <span class="va">asset</span>,</span>
-<span>  isolatedSymbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  isolated_symbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -1201,11 +1201,11 @@ print(account)
 <dd><p>(scalar&lt;character&gt;) asset to query (e.g., <code>"USDT"</code>).</p></dd>
 
 
-<dt><code>isolatedSymbol</code></dt>
+<dt><code>isolated_symbol</code></dt>
 <dd><p>(scalar&lt;character&gt;?) isolated margin pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1265,8 +1265,8 @@ print(max_borrow)
 <h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">get_max_transferable</span><span class="op">(</span></span>
 <span>  <span class="va">asset</span>,</span>
-<span>  isolatedSymbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  isolated_symbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -1276,11 +1276,11 @@ print(max_borrow)
 <dd><p>(scalar&lt;character&gt;) asset to query (e.g., <code>"USDT"</code>).</p></dd>
 
 
-<dt><code>isolatedSymbol</code></dt>
+<dt><code>isolated_symbol</code></dt>
 <dd><p>(scalar&lt;character&gt;?) isolated margin pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1361,12 +1361,12 @@ print(max_transfer)
 <h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">get_interest_history</span><span class="op">(</span></span>
 <span>  asset <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  current <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  size <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  archived <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -1376,11 +1376,11 @@ print(max_transfer)
 <dd><p>(scalar&lt;character&gt;?) filter by asset (e.g., <code>"USDT"</code>).</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) start timestamp in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) end timestamp in milliseconds.</p></dd>
 
 
@@ -1396,7 +1396,7 @@ print(max_transfer)
 <dd><p>(scalar&lt;character&gt;?) <code>"true"</code> to query 6-month archived data.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1476,26 +1476,26 @@ print(history)
 <div class="section">
 <h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">get_force_liquidation_history</span><span class="op">(</span></span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  isolatedSymbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  isolated_symbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  current <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  size <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-12">Arguments<a class="anchor" aria-label="anchor" href="#arguments-12"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>startTime</code></dt>
+<p></p><div class="arguments"><dl><dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) start timestamp in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) end timestamp in milliseconds.</p></dd>
 
 
-<dt><code>isolatedSymbol</code></dt>
+<dt><code>isolated_symbol</code></dt>
 <dd><p>(scalar&lt;character&gt;?) isolated margin pair.</p></dd>
 
 
@@ -1507,7 +1507,7 @@ print(history)
 <dd><p>(scalar&lt;count&gt;?) page size (default 10, max 100).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1589,13 +1589,13 @@ print(liquidations)
 <h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">get_trades</span><span class="op">(</span></span>
 <span>  <span class="va">symbol</span>,</span>
-<span>  orderId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  fromId <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  order_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  from_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  limit <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  isIsolated <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  is_isolated <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -1605,19 +1605,19 @@ print(liquidations)
 <dd><p>(scalar&lt;character&gt;) trading pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>orderId</code></dt>
+<dt><code>order_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) filter by order ID.</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) start timestamp in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) end timestamp in milliseconds.</p></dd>
 
 
-<dt><code>fromId</code></dt>
+<dt><code>from_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) trade ID to fetch from.</p></dd>
 
 
@@ -1625,11 +1625,11 @@ print(liquidations)
 <dd><p>(scalar&lt;count&gt;?) max results (default 500, max 1000).</p></dd>
 
 
-<dt><code>isIsolated</code></dt>
+<dt><code>is_isolated</code></dt>
 <dd><p>(scalar&lt;character&gt;?) <code>"TRUE"</code> or <code>"FALSE"</code> for isolated margin.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1736,7 +1736,7 @@ print(trades)
 </div>
 <div class="section">
 <h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">get_isolated_account</span><span class="op">(</span>symbols <span class="op">=</span> <span class="cn">NULL</span>, recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">get_isolated_account</span><span class="op">(</span>symbols <span class="op">=</span> <span class="cn">NULL</span>, recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -1745,7 +1745,7 @@ print(trades)
 <dd><p>(scalar&lt;character&gt;?) comma-separated symbols (max 5, e.g., <code>"BTCUSDT,ETHUSDT"</code>).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1832,10 +1832,10 @@ calls still works at the time of writing.)</p>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">add_isolated_transfer</span><span class="op">(</span></span>
 <span>  <span class="va">asset</span>,</span>
 <span>  <span class="va">symbol</span>,</span>
-<span>  <span class="va">transFrom</span>,</span>
-<span>  <span class="va">transTo</span>,</span>
+<span>  <span class="va">trans_from</span>,</span>
+<span>  <span class="va">trans_to</span>,</span>
 <span>  <span class="va">amount</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -1849,11 +1849,11 @@ calls still works at the time of writing.)</p>
 <dd><p>(scalar&lt;character&gt;) isolated margin pair (e.g., <code>"BTCUSDT"</code>).</p></dd>
 
 
-<dt><code>transFrom</code></dt>
+<dt><code>trans_from</code></dt>
 <dd><p>(scalar&lt;character&gt;) source account: <code>"SPOT"</code> or <code>"ISOLATED_MARGIN"</code>.</p></dd>
 
 
-<dt><code>transTo</code></dt>
+<dt><code>trans_to</code></dt>
 <dd><p>(scalar&lt;character&gt;) destination account: <code>"SPOT"</code> or <code>"ISOLATED_MARGIN"</code>.</p></dd>
 
 
@@ -1861,7 +1861,7 @@ calls still works at the time of writing.)</p>
 <dd><p>(scalar&lt;numeric&gt;) amount to transfer.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1878,7 +1878,7 @@ R's 32-bit <code>integer</code>, so it is coerced to a double).</p></li>
 margin &lt;- BinanceMargin$new()
 result &lt;- margin$add_isolated_transfer(
   asset = "USDT", symbol = "BTCUSDT",
-  transFrom = "SPOT", transTo = "ISOLATED_MARGIN",
+  trans_from = "SPOT", trans_to = "ISOLATED_MARGIN",
   amount = 100
 )
 print(result)
@@ -1954,7 +1954,7 @@ print(result)
 <span class="r-in"><span><span class="va">margin</span> <span class="op">&lt;-</span> <span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">order</span> <span class="op">&lt;-</span> <span class="va">margin</span><span class="op">$</span><span class="fu">add_order</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, side <span class="op">=</span> <span class="st">"BUY"</span>, type <span class="op">=</span> <span class="st">"LIMIT"</span>,</span></span>
-<span class="r-in"><span>  price <span class="op">=</span> <span class="fl">50000</span>, quantity <span class="op">=</span> <span class="fl">0.0001</span>, timeInForce <span class="op">=</span> <span class="st">"GTC"</span></span></span>
+<span class="r-in"><span>  price <span class="op">=</span> <span class="fl">50000</span>, quantity <span class="op">=</span> <span class="fl">0.0001</span>, time_in_force <span class="op">=</span> <span class="st">"GTC"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">order</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
@@ -1965,7 +1965,7 @@ print(result)
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">margin</span> <span class="op">&lt;-</span> <span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">cancelled</span> <span class="op">&lt;-</span> <span class="va">margin</span><span class="op">$</span><span class="fu">cancel_order</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, orderId <span class="op">=</span> <span class="fl">28</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cancelled</span> <span class="op">&lt;-</span> <span class="va">margin</span><span class="op">$</span><span class="fu">cancel_order</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, order_id <span class="op">=</span> <span class="fl">28</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">cancelled</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
@@ -1985,7 +1985,7 @@ print(result)
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">margin</span> <span class="op">&lt;-</span> <span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">order</span> <span class="op">&lt;-</span> <span class="va">margin</span><span class="op">$</span><span class="fu">get_order</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, orderId <span class="op">=</span> <span class="fl">28</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">order</span> <span class="op">&lt;-</span> <span class="va">margin</span><span class="op">$</span><span class="fu">get_order</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, order_id <span class="op">=</span> <span class="fl">28</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">order</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
@@ -2087,7 +2087,7 @@ print(result)
 <span class="r-in"><span><span class="va">margin</span> <span class="op">&lt;-</span> <span class="va">BinanceMargin</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">margin</span><span class="op">$</span><span class="fu">add_isolated_transfer</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  asset <span class="op">=</span> <span class="st">"USDT"</span>, symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>,</span></span>
-<span class="r-in"><span>  transFrom <span class="op">=</span> <span class="st">"SPOT"</span>, transTo <span class="op">=</span> <span class="st">"ISOLATED_MARGIN"</span>,</span></span>
+<span class="r-in"><span>  trans_from <span class="op">=</span> <span class="st">"SPOT"</span>, trans_to <span class="op">=</span> <span class="st">"ISOLATED_MARGIN"</span>,</span></span>
 <span class="r-in"><span>  amount <span class="op">=</span> <span class="fl">100</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></span>

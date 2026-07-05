@@ -131,15 +131,15 @@ Verified: 2026-05-22
 
 #### Usage
 
-    BinanceSubAccount$add_sub_account(subAccountString, recvWindow = NULL)
+    BinanceSubAccount$add_sub_account(sub_account_string, recv_window = NULL)
 
 #### Arguments
 
-- `subAccountString`:
+- `sub_account_string`:
 
   (scalar\<character\>) the sub-account name/string identifier.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -153,7 +153,7 @@ Verified: 2026-05-22
 
     \dontrun{
     sub <- BinanceSubAccount$new()
-    result <- sub$add_sub_account(subAccountString = "mysubaccount")
+    result <- sub$add_sub_account(sub_account_string = "mysubaccount")
     print(result$email)
     }
 
@@ -199,10 +199,10 @@ Verified: 2026-05-22
 
     BinanceSubAccount$get_sub_accounts(
       email = NULL,
-      isFreeze = NULL,
+      is_freeze = NULL,
       page = NULL,
       limit = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
@@ -211,7 +211,7 @@ Verified: 2026-05-22
 
   (scalar\<character\>?) filter by sub-account email.
 
-- `isFreeze`:
+- `is_freeze`:
 
   (scalar\<logical\>?) filter by freeze status.
 
@@ -223,7 +223,7 @@ Verified: 2026-05-22
 
   (scalar\<count\>?) results per page (default 1, max 200).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -286,7 +286,7 @@ Verified: 2026-05-22
 
 #### Usage
 
-    BinanceSubAccount$get_balances(email, recvWindow = NULL)
+    BinanceSubAccount$get_balances(email, recv_window = NULL)
 
 #### Arguments
 
@@ -294,7 +294,7 @@ Verified: 2026-05-22
 
   (scalar\<character\>) the sub-account email.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -363,7 +363,7 @@ Verified: 2026-05-22
       email = NULL,
       page = NULL,
       size = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
@@ -380,7 +380,7 @@ Verified: 2026-05-22
 
   (scalar\<count\>?) results per page (default 10, max 20).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -454,32 +454,32 @@ Verified: 2026-05-22
 #### Usage
 
     BinanceSubAccount$add_transfer(
-      fromEmail = NULL,
-      toEmail = NULL,
-      fromAccountType,
-      toAccountType,
+      from_email = NULL,
+      to_email = NULL,
+      from_account_type,
+      to_account_type,
       asset,
       amount,
-      clientTranId = NULL,
-      recvWindow = NULL
+      client_tran_id = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
 
-- `fromEmail`:
+- `from_email`:
 
   (scalar\<character\>?) sender sub-account email.
 
-- `toEmail`:
+- `to_email`:
 
   (scalar\<character\>?) recipient sub-account email.
 
-- `fromAccountType`:
+- `from_account_type`:
 
   (scalar\<character\>) source account type. One of `"SPOT"`,
   `"USDT_FUTURE"`, `"COIN_FUTURE"`, `"MARGIN"`, `"ISOLATED_MARGIN"`.
 
-- `toAccountType`:
+- `to_account_type`:
 
   (scalar\<character\>) destination account type. One of `"SPOT"`,
   `"USDT_FUTURE"`, `"COIN_FUTURE"`, `"MARGIN"`, `"ISOLATED_MARGIN"`.
@@ -492,11 +492,11 @@ Verified: 2026-05-22
 
   (scalar\<numeric\>) amount to transfer.
 
-- `clientTranId`:
+- `client_tran_id`:
 
   (scalar\<character\>?) client-defined transfer ID.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -514,8 +514,8 @@ Verified: 2026-05-22
     \dontrun{
     sub <- BinanceSubAccount$new()
     result <- sub$add_transfer(
-      toEmail = "sub@virtual.com",
-      fromAccountType = "SPOT", toAccountType = "SPOT",
+      to_email = "sub@virtual.com",
+      from_account_type = "SPOT", to_account_type = "SPOT",
       asset = "USDT", amount = 100
     )
     print(result$tran_id)
@@ -566,35 +566,35 @@ Verified: 2026-05-22
 #### Usage
 
     BinanceSubAccount$get_transfer_history(
-      fromEmail = NULL,
-      toEmail = NULL,
-      clientTranId = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      from_email = NULL,
+      to_email = NULL,
+      client_tran_id = NULL,
+      start_time = NULL,
+      end_time = NULL,
       page = NULL,
       limit = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
 
-- `fromEmail`:
+- `from_email`:
 
   (scalar\<character\>?) filter by sender email.
 
-- `toEmail`:
+- `to_email`:
 
   (scalar\<character\>?) filter by recipient email.
 
-- `clientTranId`:
+- `client_tran_id`:
 
   (scalar\<character\>?) filter by client transfer ID.
 
-- `startTime`:
+- `start_time`:
 
   (scalar\<count\>?) start timestamp in milliseconds.
 
-- `endTime`:
+- `end_time`:
 
   (scalar\<count\>?) end timestamp in milliseconds.
 
@@ -606,7 +606,7 @@ Verified: 2026-05-22
 
   (scalar\<count\>?) results per page (default 500, max 500).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -641,7 +641,7 @@ there are none):
 
     \dontrun{
     sub <- BinanceSubAccount$new()
-    history <- sub$get_transfer_history(toEmail = "sub@virtual.com")
+    history <- sub$get_transfer_history(to_email = "sub@virtual.com")
     print(history)
     }
 
@@ -702,7 +702,7 @@ Verified: 2026-05-22
 
 #### Usage
 
-    BinanceSubAccount$get_futures_account(email, futuresType, recvWindow = NULL)
+    BinanceSubAccount$get_futures_account(email, futures_type, recv_window = NULL)
 
 #### Arguments
 
@@ -710,12 +710,12 @@ Verified: 2026-05-22
 
   (scalar\<character\>) the sub-account email.
 
-- `futuresType`:
+- `futures_type`:
 
   (scalar\<count\>) `1` for USDT-margined futures, `2` for COIN-margined
   futures.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -738,7 +738,7 @@ single row without asset-level columns is returned.
 
     \dontrun{
     sub <- BinanceSubAccount$new()
-    futures <- sub$get_futures_account(email = "sub@virtual.com", futuresType = 1)
+    futures <- sub$get_futures_account(email = "sub@virtual.com", futures_type = 1)
     print(futures)
     }
 
@@ -782,7 +782,7 @@ Verified: 2026-05-22
 
 #### Usage
 
-    BinanceSubAccount$get_margin_account(email, recvWindow = NULL)
+    BinanceSubAccount$get_margin_account(email, recv_window = NULL)
 
 #### Arguments
 
@@ -790,7 +790,7 @@ Verified: 2026-05-22
 
   (scalar\<character\>) the sub-account email.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -851,7 +851,7 @@ Verified: 2026-05-22
 
 #### Usage
 
-    BinanceSubAccount$get_status(email = NULL, recvWindow = NULL)
+    BinanceSubAccount$get_status(email = NULL, recv_window = NULL)
 
 #### Arguments
 
@@ -859,7 +859,7 @@ Verified: 2026-05-22
 
   (scalar\<character\>?) filter by sub-account email.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -932,7 +932,7 @@ while (!later::loop_empty()) later::run_now()
 
 if (FALSE) { # \dontrun{
 sub <- BinanceSubAccount$new()
-result <- sub$add_sub_account(subAccountString = "mysubaccount")
+result <- sub$add_sub_account(sub_account_string = "mysubaccount")
 print(result$email)
 } # }
 
@@ -973,8 +973,8 @@ print(summary)
 if (FALSE) { # \dontrun{
 sub <- BinanceSubAccount$new()
 result <- sub$add_transfer(
-  toEmail = "sub@virtual.com",
-  fromAccountType = "SPOT", toAccountType = "SPOT",
+  to_email = "sub@virtual.com",
+  from_account_type = "SPOT", to_account_type = "SPOT",
   asset = "USDT", amount = 100
 )
 print(result$tran_id)
@@ -986,7 +986,7 @@ print(result$tran_id)
 
 if (FALSE) { # \dontrun{
 sub <- BinanceSubAccount$new()
-history <- sub$get_transfer_history(toEmail = "sub@virtual.com")
+history <- sub$get_transfer_history(to_email = "sub@virtual.com")
 print(history)
 } # }
 
@@ -996,7 +996,7 @@ print(history)
 
 if (FALSE) { # \dontrun{
 sub <- BinanceSubAccount$new()
-futures <- sub$get_futures_account(email = "sub@virtual.com", futuresType = 1)
+futures <- sub$get_futures_account(email = "sub@virtual.com", futures_type = 1)
 print(futures)
 } # }
 

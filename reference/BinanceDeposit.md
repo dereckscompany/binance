@@ -115,7 +115,7 @@ Verified: 2026-05-22
 
 #### Usage
 
-    BinanceDeposit$get_deposit_address(coin, network = NULL, recvWindow = NULL)
+    BinanceDeposit$get_deposit_address(coin, network = NULL, recv_window = NULL)
 
 #### Arguments
 
@@ -128,7 +128,7 @@ Verified: 2026-05-22
   (scalar\<character\>?) blockchain network (e.g., `"ETH"`, `"TRX"`,
   `"BSC"`). If NULL, uses the coin's default network.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count in \[1, Inf\[\>?) max 60000.
 
@@ -219,12 +219,12 @@ Verified: 2026-05-22
     BinanceDeposit$get_deposit_history(
       coin = NULL,
       status = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      start_time = NULL,
+      end_time = NULL,
       offset = NULL,
       limit = NULL,
-      txId = NULL,
-      recvWindow = NULL
+      tx_id = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -238,11 +238,11 @@ Verified: 2026-05-22
   (scalar\<count\>?) filter by status: `0` (pending), `1` (success), `6`
   (credited), `7` (wrong), `8` (waiting confirm).
 
-- `startTime`:
+- `start_time`:
 
   (scalar\<count\>?) start timestamp in milliseconds.
 
-- `endTime`:
+- `end_time`:
 
   (scalar\<count\>?) end timestamp in milliseconds.
 
@@ -254,11 +254,11 @@ Verified: 2026-05-22
 
   (scalar\<count\>?) max results (default 1000, max 1000).
 
-- `txId`:
+- `tx_id`:
 
   (scalar\<character\>?) filter by transaction ID.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -308,8 +308,8 @@ there are no matching deposits):
     # Get deposits from the last 24 hours
     now_ms <- as.integer(as.numeric(Sys.time()) * 1000)
     recent <- deposit$get_deposit_history(
-      startTime = now_ms - 86400000L,
-      endTime = now_ms
+      start_time = now_ms - 86400000L,
+      end_time = now_ms
     )
     }
 
@@ -379,8 +379,8 @@ print(history[, .(amount, coin, status, insert_time)])
 # Get deposits from the last 24 hours
 now_ms <- as.integer(as.numeric(Sys.time()) * 1000)
 recent <- deposit$get_deposit_history(
-  startTime = now_ms - 86400000L,
-  endTime = now_ms
+  start_time = now_ms - 86400000L,
+  end_time = now_ms
 )
 } # }
 ```

@@ -9,7 +9,7 @@ BinanceTransfer: Universal Transfer Management"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@ BinanceTransfer: Universal Transfer Management"></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>BinanceTransfer: Universal Transfer Management</h1>
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/master/R/BinanceTransfer.R" class="external-link"><code>R/BinanceTransfer.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.6.0/R/BinanceTransfer.R" class="external-link"><code>R/BinanceTransfer.R</code></a></small>
       <div class="d-none name"><code>BinanceTransfer.Rd</code></div>
     </div>
 
@@ -170,9 +170,9 @@ Verified: 2026-05-22</p>
 <span>  <span class="va">type</span>,</span>
 <span>  <span class="va">asset</span>,</span>
 <span>  <span class="va">amount</span>,</span>
-<span>  fromSymbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  toSymbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  from_symbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  to_symbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -196,17 +196,17 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;numeric&gt;) amount to transfer.</p></dd>
 
 
-<dt><code>fromSymbol</code></dt>
+<dt><code>from_symbol</code></dt>
 <dd><p>(scalar&lt;character&gt;?) mandatory when <code>type</code> involves
 isolated margin (e.g., <code>"BNBUSDT"</code>).</p></dd>
 
 
-<dt><code>toSymbol</code></dt>
+<dt><code>to_symbol</code></dt>
 <dd><p>(scalar&lt;character&gt;?) mandatory when <code>type</code> involves
 isolated margin (e.g., <code>"BNBUSDT"</code>).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -278,13 +278,13 @@ Verified: 2026-05-22</p>
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceTransfer</span><span class="op">$</span><span class="fu">get_transfer_history</span><span class="op">(</span></span>
 <span>  <span class="va">type</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  current <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  size <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  fromSymbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  toSymbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  from_symbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  to_symbol <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -294,11 +294,11 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;character&gt;) transfer type. Same options as <code>add_transfer()</code>.</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) start timestamp in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) end timestamp in milliseconds.</p></dd>
 
 
@@ -310,17 +310,17 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;count&gt;?) page size (default 10, max 100).</p></dd>
 
 
-<dt><code>fromSymbol</code></dt>
+<dt><code>from_symbol</code></dt>
 <dd><p>(scalar&lt;character&gt;?) must be sent when <code>type</code> involves
 isolated margin.</p></dd>
 
 
-<dt><code>toSymbol</code></dt>
+<dt><code>to_symbol</code></dt>
 <dd><p>(scalar&lt;character&gt;?) must be sent when <code>type</code> involves
 isolated margin.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 

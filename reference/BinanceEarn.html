@@ -9,7 +9,7 @@ BinanceEarn: Simple Earn Management"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@ BinanceEarn: Simple Earn Management"></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>BinanceEarn: Simple Earn Management</h1>
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/master/R/BinanceEarn.R" class="external-link"><code>R/BinanceEarn.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.6.0/R/BinanceEarn.R" class="external-link"><code>R/BinanceEarn.R</code></a></small>
       <div class="d-none name"><code>BinanceEarn.Rd</code></div>
     </div>
 
@@ -164,7 +164,7 @@ Verified: 2026-05-22</p>
 <span>  asset <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  current <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  size <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -182,7 +182,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;count&gt;?) page size (default 10, max 100).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -284,7 +284,7 @@ fields; older internal examples that still show <code>apy</code> are stale.</p>
 <span>  asset <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  current <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  size <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -302,7 +302,7 @@ fields; older internal examples that still show <code>apy</code> are stale.</p>
 <dd><p>(scalar&lt;count&gt;?) page size (default 10, max 100).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -400,17 +400,17 @@ Verified: 2026-05-22</p>
 <div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceEarn</span><span class="op">$</span><span class="fu">add_flexible_subscription</span><span class="op">(</span></span>
-<span>  <span class="va">productId</span>,</span>
+<span>  <span class="va">product_id</span>,</span>
 <span>  <span class="va">amount</span>,</span>
-<span>  autoSubscribe <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sourceAccount <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  auto_subscribe <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  source_account <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>productId</code></dt>
+<p></p><div class="arguments"><dl><dt><code>product_id</code></dt>
 <dd><p>(scalar&lt;character&gt;) the product ID to subscribe to.</p></dd>
 
 
@@ -418,15 +418,15 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;numeric&gt;) amount to subscribe.</p></dd>
 
 
-<dt><code>autoSubscribe</code></dt>
+<dt><code>auto_subscribe</code></dt>
 <dd><p>(scalar&lt;logical&gt;?) whether to enable auto-subscription.</p></dd>
 
 
-<dt><code>sourceAccount</code></dt>
+<dt><code>source_account</code></dt>
 <dd><p>(scalar&lt;character&gt;?) source wallet: <code>"SPOT"</code>, <code>"FUND"</code>, or <code>"ALL"</code>. Default <code>"SPOT"</code>.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -441,7 +441,7 @@ Verified: 2026-05-22</p>
 <h4 id="examples-2">Examples<a class="anchor" aria-label="anchor" href="#examples-2"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 earn &lt;- BinanceEarn$new()
-result &lt;- earn$add_flexible_subscription(productId = "USDT001", amount = 100)
+result &lt;- earn$add_flexible_subscription(product_id = "USDT001", amount = 100)
 print(result)
 }
 </code></pre></div><p></p></div>
@@ -499,16 +499,16 @@ Verified: 2026-05-22</p>
 <div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceEarn</span><span class="op">$</span><span class="fu">add_locked_subscription</span><span class="op">(</span></span>
-<span>  <span class="va">projectId</span>,</span>
+<span>  <span class="va">project_id</span>,</span>
 <span>  <span class="va">amount</span>,</span>
-<span>  autoSubscribe <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  auto_subscribe <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>projectId</code></dt>
+<p></p><div class="arguments"><dl><dt><code>project_id</code></dt>
 <dd><p>(scalar&lt;character&gt;) the project ID to subscribe to.</p></dd>
 
 
@@ -516,11 +516,11 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;numeric&gt;) amount to subscribe.</p></dd>
 
 
-<dt><code>autoSubscribe</code></dt>
+<dt><code>auto_subscribe</code></dt>
 <dd><p>(scalar&lt;logical&gt;?) whether to enable auto-subscription.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -536,7 +536,7 @@ Verified: 2026-05-22</p>
 <h4 id="examples-3">Examples<a class="anchor" aria-label="anchor" href="#examples-3"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 earn &lt;- BinanceEarn$new()
-result &lt;- earn$add_locked_subscription(projectId = "BTC30d001", amount = 0.01)
+result &lt;- earn$add_locked_subscription(project_id = "BTC30d001", amount = 0.01)
 print(result)
 }
 </code></pre></div><p></p></div>
@@ -594,17 +594,17 @@ Verified: 2026-05-22</p>
 <div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceEarn</span><span class="op">$</span><span class="fu">add_flexible_redemption</span><span class="op">(</span></span>
-<span>  <span class="va">productId</span>,</span>
+<span>  <span class="va">product_id</span>,</span>
 <span>  amount <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  redeemAll <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  destAccount <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  redeem_all <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dest_account <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>productId</code></dt>
+<p></p><div class="arguments"><dl><dt><code>product_id</code></dt>
 <dd><p>(scalar&lt;character&gt;) the product ID to redeem from.</p></dd>
 
 
@@ -612,15 +612,15 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;numeric&gt;?) amount to redeem. If NULL, use <code>redeemAll</code>.</p></dd>
 
 
-<dt><code>redeemAll</code></dt>
+<dt><code>redeem_all</code></dt>
 <dd><p>(scalar&lt;logical&gt;?) if TRUE, redeem entire position.</p></dd>
 
 
-<dt><code>destAccount</code></dt>
+<dt><code>dest_account</code></dt>
 <dd><p>(scalar&lt;character&gt;?) destination wallet: <code>"SPOT"</code> or <code>"FUND"</code>. Default <code>"SPOT"</code>.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -635,7 +635,7 @@ Verified: 2026-05-22</p>
 <h4 id="examples-4">Examples<a class="anchor" aria-label="anchor" href="#examples-4"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 earn &lt;- BinanceEarn$new()
-result &lt;- earn$add_flexible_redemption(productId = "USDT001", amount = 50)
+result &lt;- earn$add_flexible_redemption(product_id = "USDT001", amount = 50)
 print(result)
 }
 </code></pre></div><p></p></div>
@@ -689,16 +689,16 @@ Verified: 2026-05-22</p>
 </div>
 <div class="section">
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceEarn</span><span class="op">$</span><span class="fu">add_locked_redemption</span><span class="op">(</span><span class="va">positionId</span>, recvWindow <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceEarn</span><span class="op">$</span><span class="fu">add_locked_redemption</span><span class="op">(</span><span class="va">position_id</span>, recv_window <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>positionId</code></dt>
+<p></p><div class="arguments"><dl><dt><code>position_id</code></dt>
 <dd><p>(scalar&lt;character&gt;) the position ID to redeem.</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -713,7 +713,7 @@ Verified: 2026-05-22</p>
 <h4 id="examples-5">Examples<a class="anchor" aria-label="anchor" href="#examples-5"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
 earn &lt;- BinanceEarn$new()
-result &lt;- earn$add_locked_redemption(positionId = "12345")
+result &lt;- earn$add_locked_redemption(position_id = "12345")
 print(result)
 }
 </code></pre></div><p></p></div>
@@ -780,10 +780,10 @@ Verified: 2026-05-22</p>
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceEarn</span><span class="op">$</span><span class="fu">get_flexible_position</span><span class="op">(</span></span>
 <span>  asset <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  productId <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  product_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  current <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  size <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -793,7 +793,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;character&gt;?) filter by asset (e.g., <code>"USDT"</code>).</p></dd>
 
 
-<dt><code>productId</code></dt>
+<dt><code>product_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) filter by product ID.</p></dd>
 
 
@@ -805,7 +805,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;count&gt;?) page size (default 10, max 100).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -929,11 +929,11 @@ converter lowers it to <code>apy</code> in the data.table.</p>
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceEarn</span><span class="op">$</span><span class="fu">get_locked_position</span><span class="op">(</span></span>
 <span>  asset <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  positionId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  projectId <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  position_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  project_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  current <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  size <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -943,11 +943,11 @@ converter lowers it to <code>apy</code> in the data.table.</p>
 <dd><p>(scalar&lt;character&gt;?) filter by asset (e.g., <code>"BTC"</code>).</p></dd>
 
 
-<dt><code>positionId</code></dt>
+<dt><code>position_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) filter by position ID.</p></dd>
 
 
-<dt><code>projectId</code></dt>
+<dt><code>project_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) filter by project ID.</p></dd>
 
 
@@ -959,7 +959,7 @@ converter lowers it to <code>apy</code> in the data.table.</p>
 <dd><p>(scalar&lt;count&gt;?) page size (default 10, max 100).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1041,24 +1041,24 @@ Verified: 2026-05-22</p>
 <div class="section">
 <h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceEarn</span><span class="op">$</span><span class="fu">get_flexible_subscription_history</span><span class="op">(</span></span>
-<span>  productId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  purchaseId <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  product_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  purchase_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  asset <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  current <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  size <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>productId</code></dt>
+<p></p><div class="arguments"><dl><dt><code>product_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) filter by product ID.</p></dd>
 
 
-<dt><code>purchaseId</code></dt>
+<dt><code>purchase_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) filter by purchase ID.</p></dd>
 
 
@@ -1066,11 +1066,11 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;character&gt;?) filter by asset (e.g., <code>"USDT"</code>).</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) start timestamp in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) end timestamp in milliseconds.</p></dd>
 
 
@@ -1082,7 +1082,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;count&gt;?) page size (default 10, max 100).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1160,19 +1160,19 @@ Verified: 2026-05-22</p>
 <div class="section">
 <h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceEarn</span><span class="op">$</span><span class="fu">get_locked_subscription_history</span><span class="op">(</span></span>
-<span>  purchaseId <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  purchase_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  asset <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  current <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  size <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>purchaseId</code></dt>
+<p></p><div class="arguments"><dl><dt><code>purchase_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) filter by purchase ID.</p></dd>
 
 
@@ -1180,11 +1180,11 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;character&gt;?) filter by asset (e.g., <code>"BTC"</code>).</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) start timestamp in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) end timestamp in milliseconds.</p></dd>
 
 
@@ -1196,7 +1196,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;count&gt;?) page size (default 10, max 100).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1274,24 +1274,24 @@ Verified: 2026-05-22</p>
 <div class="section">
 <h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceEarn</span><span class="op">$</span><span class="fu">get_flexible_redemption_history</span><span class="op">(</span></span>
-<span>  productId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  redeemId <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  product_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  redeem_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  asset <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  current <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  size <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>productId</code></dt>
+<p></p><div class="arguments"><dl><dt><code>product_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) filter by product ID.</p></dd>
 
 
-<dt><code>redeemId</code></dt>
+<dt><code>redeem_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) filter by redeem ID.</p></dd>
 
 
@@ -1299,11 +1299,11 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;character&gt;?) filter by asset (e.g., <code>"USDT"</code>).</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) start timestamp in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) end timestamp in milliseconds.</p></dd>
 
 
@@ -1315,7 +1315,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;count&gt;?) page size (default 10, max 100).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1391,24 +1391,24 @@ Verified: 2026-05-22</p>
 <div class="section">
 <h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceEarn</span><span class="op">$</span><span class="fu">get_locked_redemption_history</span><span class="op">(</span></span>
-<span>  positionId <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  redeemId <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  position_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  redeem_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  asset <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  current <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  size <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  recvWindow <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  recv_window <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-11">Arguments<a class="anchor" aria-label="anchor" href="#arguments-11"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>positionId</code></dt>
+<p></p><div class="arguments"><dl><dt><code>position_id</code></dt>
 <dd><p>(scalar&lt;character&gt;?) filter by position ID.</p></dd>
 
 
-<dt><code>redeemId</code></dt>
+<dt><code>redeem_id</code></dt>
 <dd><p>(scalar&lt;count&gt;?) filter by redeem ID.</p></dd>
 
 
@@ -1416,11 +1416,11 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;character&gt;?) filter by asset (e.g., <code>"BTC"</code>).</p></dd>
 
 
-<dt><code>startTime</code></dt>
+<dt><code>start_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) start timestamp in milliseconds.</p></dd>
 
 
-<dt><code>endTime</code></dt>
+<dt><code>end_time</code></dt>
 <dd><p>(scalar&lt;count&gt;?) end timestamp in milliseconds.</p></dd>
 
 
@@ -1432,7 +1432,7 @@ Verified: 2026-05-22</p>
 <dd><p>(scalar&lt;count&gt;?) page size (default 10, max 100).</p></dd>
 
 
-<dt><code>recvWindow</code></dt>
+<dt><code>recv_window</code></dt>
 <dd><p>(scalar&lt;count&gt;?) max 60000.</p></dd>
 
 
@@ -1489,7 +1489,7 @@ print(history)
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">products</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Subscribe</span></span></span>
-<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">earn</span><span class="op">$</span><span class="fu">add_flexible_subscription</span><span class="op">(</span>productId <span class="op">=</span> <span class="st">"USDT001"</span>, amount <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">earn</span><span class="op">$</span><span class="fu">add_flexible_subscription</span><span class="op">(</span>product_id <span class="op">=</span> <span class="st">"USDT001"</span>, amount <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Asynchronous</span></span></span>
@@ -1529,7 +1529,7 @@ print(history)
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">earn</span> <span class="op">&lt;-</span> <span class="va">BinanceEarn</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">earn</span><span class="op">$</span><span class="fu">add_flexible_subscription</span><span class="op">(</span>productId <span class="op">=</span> <span class="st">"USDT001"</span>, amount <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">earn</span><span class="op">$</span><span class="fu">add_flexible_subscription</span><span class="op">(</span>product_id <span class="op">=</span> <span class="st">"USDT001"</span>, amount <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
@@ -1539,7 +1539,7 @@ print(history)
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">earn</span> <span class="op">&lt;-</span> <span class="va">BinanceEarn</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">earn</span><span class="op">$</span><span class="fu">add_locked_subscription</span><span class="op">(</span>projectId <span class="op">=</span> <span class="st">"BTC30d001"</span>, amount <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">earn</span><span class="op">$</span><span class="fu">add_locked_subscription</span><span class="op">(</span>project_id <span class="op">=</span> <span class="st">"BTC30d001"</span>, amount <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
@@ -1549,7 +1549,7 @@ print(history)
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">earn</span> <span class="op">&lt;-</span> <span class="va">BinanceEarn</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">earn</span><span class="op">$</span><span class="fu">add_flexible_redemption</span><span class="op">(</span>productId <span class="op">=</span> <span class="st">"USDT001"</span>, amount <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">earn</span><span class="op">$</span><span class="fu">add_flexible_redemption</span><span class="op">(</span>product_id <span class="op">=</span> <span class="st">"USDT001"</span>, amount <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
@@ -1559,7 +1559,7 @@ print(history)
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">earn</span> <span class="op">&lt;-</span> <span class="va">BinanceEarn</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">earn</span><span class="op">$</span><span class="fu">add_locked_redemption</span><span class="op">(</span>positionId <span class="op">=</span> <span class="st">"12345"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="va">earn</span><span class="op">$</span><span class="fu">add_locked_redemption</span><span class="op">(</span>position_id <span class="op">=</span> <span class="st">"12345"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>

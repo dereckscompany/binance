@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +64,7 @@
 Mezquita</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/master/vignettes/margin-futures-trading.Rmd" class="external-link"><code>vignettes/margin-futures-trading.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.6.0/vignettes/margin-futures-trading.Rmd" class="external-link"><code>vignettes/margin-futures-trading.Rmd</code></a></small>
       <div class="d-none name"><code>margin-futures-trading.Rmd</code></div>
     </div>
 
@@ -232,8 +232,8 @@ balance.</li>
 <span>  type <span class="op">=</span> <span class="st">"LIMIT"</span>,</span>
 <span>  quantity <span class="op">=</span> <span class="fl">0.001</span>,</span>
 <span>  price <span class="op">=</span> <span class="fl">50000</span>,</span>
-<span>  timeInForce <span class="op">=</span> <span class="st">"GTC"</span>,</span>
-<span>  sideEffectType <span class="op">=</span> <span class="st">"MARGIN_BUY"</span></span>
+<span>  time_in_force <span class="op">=</span> <span class="st">"GTC"</span>,</span>
+<span>  side_effect_type <span class="op">=</span> <span class="st">"MARGIN_BUY"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">order</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;     symbol order_id        client_order_id       transact_time          price</span></span>
@@ -346,7 +346,7 @@ positions:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">klines</span> <span class="op">&lt;-</span> <span class="va">futures_data</span><span class="op">$</span><span class="fu">get_klines</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, interval <span class="op">=</span> <span class="st">"1h"</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">klines</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt;     open_time      open   high      low    close   volume          close_time</span></span>
+<pre><code><span><span class="co">#&gt;      datetime      open   high      low    close   volume          close_time</span></span>
 <span><span class="co">#&gt;        &lt;POSc&gt;     &lt;num&gt;  &lt;num&gt;    &lt;num&gt;    &lt;num&gt;    &lt;num&gt;              &lt;POSc&gt;</span></span>
 <span><span class="co">#&gt; 1: 2017-07-03 0.0163479 0.8000 0.015758 0.015771 148976.1 2017-07-09 23:59:59</span></span>
 <span><span class="co">#&gt; 2: 2017-07-10 0.0157710 0.0158 0.015730 0.015788  95432.0 2017-07-16 23:59:59</span></span>
@@ -438,7 +438,7 @@ real order:</p>
 <span>  type <span class="op">=</span> <span class="st">"LIMIT"</span>,</span>
 <span>  quantity <span class="op">=</span> <span class="fl">0.001</span>,</span>
 <span>  price <span class="op">=</span> <span class="fl">50000</span>,</span>
-<span>  timeInForce <span class="op">=</span> <span class="st">"GTC"</span></span>
+<span>  time_in_force <span class="op">=</span> <span class="st">"GTC"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">test</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt;    validated</span></span>
@@ -452,7 +452,7 @@ real order:</p>
 <span>  type <span class="op">=</span> <span class="st">"LIMIT"</span>,</span>
 <span>  quantity <span class="op">=</span> <span class="fl">0.001</span>,</span>
 <span>  price <span class="op">=</span> <span class="fl">50000</span>,</span>
-<span>  timeInForce <span class="op">=</span> <span class="st">"GTC"</span></span>
+<span>  time_in_force <span class="op">=</span> <span class="st">"GTC"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">order</span><span class="op">)</span></span></code></pre></div>
 <p>Market orders require only the quantity:</p>
@@ -472,10 +472,10 @@ real order:</p>
 hedge mode:</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Switch to isolated margin</span></span>
-<span><span class="va">futures</span><span class="op">$</span><span class="fu">set_margin_type</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, marginType <span class="op">=</span> <span class="st">"ISOLATED"</span><span class="op">)</span></span>
+<span><span class="va">futures</span><span class="op">$</span><span class="fu">set_margin_type</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, margin_type <span class="op">=</span> <span class="st">"ISOLATED"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Enable hedge mode (dual side positions)</span></span>
-<span><span class="va">futures</span><span class="op">$</span><span class="fu">set_position_mode</span><span class="op">(</span>dualSidePosition <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">futures</span><span class="op">$</span><span class="fu">set_position_mode</span><span class="op">(</span>dual_side_position <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="income-history">Income History<a class="anchor" aria-label="anchor" href="#income-history"></a>

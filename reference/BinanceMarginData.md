@@ -128,11 +128,11 @@ Verified: 2026-05-22
 
 #### Usage
 
-    BinanceMarginData$get_all_pairs(recvWindow = NULL)
+    BinanceMarginData$get_all_pairs(recv_window = NULL)
 
 #### Arguments
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) request validity window in milliseconds.
 
@@ -210,11 +210,11 @@ Verified: 2026-05-22
 
 #### Usage
 
-    BinanceMarginData$get_isolated_pairs(recvWindow = NULL)
+    BinanceMarginData$get_isolated_pairs(recv_window = NULL)
 
 #### Arguments
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) request validity window in milliseconds.
 
@@ -343,10 +343,10 @@ Verified: 2026-05-22
 
     BinanceMarginData$get_interest_rate_history(
       asset,
-      vipLevel = NULL,
-      startTime = NULL,
-      endTime = NULL,
-      recvWindow = NULL
+      vip_level = NULL,
+      start_time = NULL,
+      end_time = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -355,19 +355,19 @@ Verified: 2026-05-22
 
   (scalar\<character\>) asset code (e.g., `"BTC"`).
 
-- `vipLevel`:
+- `vip_level`:
 
   (scalar\<count\>?) VIP level to query. Defaults to user's VIP level.
 
-- `startTime`:
+- `start_time`:
 
   (scalar\<numeric\>?) start time in milliseconds.
 
-- `endTime`:
+- `end_time`:
 
   (scalar\<numeric\>?) end time in milliseconds.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) request validity window in milliseconds.
 
@@ -444,14 +444,14 @@ Verified: 2026-05-22
 #### Usage
 
     BinanceMarginData$get_cross_margin_data(
-      vipLevel = NULL,
+      vip_level = NULL,
       coin = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
 
-- `vipLevel`:
+- `vip_level`:
 
   (scalar\<count\>?) VIP level to query. Defaults to user's VIP level.
 
@@ -459,7 +459,7 @@ Verified: 2026-05-22
 
   (scalar\<character\>?) specific coin to query (e.g., `"BTC"`).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) request validity window in milliseconds.
 
@@ -561,14 +561,14 @@ Verified: 2026-05-22
 #### Usage
 
     BinanceMarginData$get_isolated_margin_data(
-      vipLevel = NULL,
+      vip_level = NULL,
       symbol = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
 
-- `vipLevel`:
+- `vip_level`:
 
   (scalar\<count\>?) VIP level to query. Defaults to user's VIP level.
 
@@ -576,7 +576,7 @@ Verified: 2026-05-22
 
   (scalar\<character\>?) specific symbol to query (e.g., `"BTCUSDT"`).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) request validity window in milliseconds.
 

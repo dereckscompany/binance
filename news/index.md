@@ -1,5 +1,65 @@
 # Changelog
 
+## binance 0.6.0
+
+This release brings binance into line with the fleet-wide connector
+conventions. Every method argument is now plain snake_case (the words
+you type in R), while the Binance API still receives its own camelCase
+field names on the wire — the translation now happens inside each method
+rather than leaking the exchange’s spelling into your R code. It is a
+clean break with no deprecation shims, so calls that passed camelCase
+argument names by keyword must be updated (for example
+`cancel_order("BTCUSDT", orderId = 123)` becomes
+`cancel_order("BTCUSDT", order_id = 123)`).
+
+### Breaking changes
+
+- **All method arguments are now snake_case.** The ~275 camelCase
+  arguments across every R6 class (`recvWindow`, `orderId`, `startTime`,
+  `origClientOrderId`, `quoteOrderQty`, `timeInForce`,
+  `newOrderRespType`, `selfTradePreventionMode`, and the rest) are
+  renamed to snake_case; the Binance vocabulary survives untouched as
+  the wire payload keys (`recvWindow = recv_window`) and accepted
+  values. The blessed `.lintr` drops its camelCase allowance and now
+  enforces pure snake_case. No deprecation shims — update
+  keyword-argument call sites.
+- **The OHLCV bar-reference column is renamed `open_time` to
+  `datetime`.** Per the fleet datetime convention (`datetime` for a
+  bar/candle reference time, `timestamp` for an event time),
+  `get_klines()` and the futures kline methods,
+  [`binance_backfill_klines()`](https://dereckscompany.github.io/binance/reference/binance_backfill_klines.md),
+  and the bundled `binance_btc_usdt_4h_ohlcv` sample dataset now name
+  the candle open time `datetime`. The candle `close_time` keeps its
+  name as a documented venue extra. The 24-hour ticker’s `open_time` /
+  `close_time` window bounds are unchanged (they are not a bar-reference
+  time).
+
+### Internal
+
+- **The generic JSON-to-data.table toolkit is imported from connectcore,
+  not inlined.** `to_snake_case()`, `as_dt_row()`, `as_dt_list()`,
+  `coerce_cols()`, `collapse_string_array_fields()`, and
+  `ms_to_datetime()` were local copies in `R/helpers_parse.R`; they are
+  now imported from connectcore (floor raised to
+  `connectcore (>= 0.3.0)`), which is where the fleet-canonical,
+  NA-preserving `ms_to_datetime()` now lives. Binance-specific parsers
+  (`parse_klines()`, `parse_orderbook()`, `parse_paginated()`,
+  `utc_string_to_datetime()`) and every `empty_dt_*()` constructor stay
+  local.
+- **A `test-empty-constructors.R` guards the 57 `empty_dt_*()`
+  constructors** — each returns a zero-row, fully-typed, non-column-less
+  `data.table` with no list columns (bar the two documented
+  isolated-margin nested shapes).
+- **`renv.lock` and shared infrastructure refreshed.** The lockfile
+  records connectcore 0.3.0 and the previously-missing dev dependencies
+  (`covr`, `DT`, `rcmdcheck`, `devtools`, `lintr`) so the CI runners
+  restore a complete environment; `.cruft.json` is re-pinned to the
+  current templates-cookiecutter master.
+- **Folds in the open add_order ACK-test repair** (previously PR
+  [\#29](https://github.com/dereckscompany/binance/issues/29)): the
+  shared order fixture is stripped to a resting `NEW` order before the
+  fills-free ACK assertion.
+
 ## binance 0.5.4
 
 ### Bug fixes

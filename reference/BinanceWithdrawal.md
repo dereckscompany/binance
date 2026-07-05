@@ -131,12 +131,12 @@ Verified: 2026-05-22
       address,
       amount,
       network = NULL,
-      withdrawOrderId = NULL,
-      addressTag = NULL,
-      transactionFeeFlag = NULL,
+      withdraw_order_id = NULL,
+      address_tag = NULL,
+      transaction_fee_flag = NULL,
       name = NULL,
-      walletType = NULL,
-      recvWindow = NULL
+      wallet_type = NULL,
+      recv_window = NULL
     )
 
 #### Arguments
@@ -158,16 +158,16 @@ Verified: 2026-05-22
   (scalar\<character\>?) blockchain network (e.g., `"ETH"`, `"TRX"`,
   `"BSC"`). If NULL, uses the coin's default network.
 
-- `withdrawOrderId`:
+- `withdraw_order_id`:
 
   (scalar\<character\>?) client-side withdrawal ID for tracking.
 
-- `addressTag`:
+- `address_tag`:
 
   (scalar\<character\>?) secondary address identifier (required for
   coins like XRP, XMR, XLM).
 
-- `transactionFeeFlag`:
+- `transaction_fee_flag`:
 
   (scalar\<logical\>?) for internal transfers: `TRUE` returns fee to
   destination, `FALSE` to origin.
@@ -177,11 +177,11 @@ Verified: 2026-05-22
   (scalar\<character\>?) description for the address (max 200 entries in
   address book).
 
-- `walletType`:
+- `wallet_type`:
 
   (scalar\<count\>?) `0` for spot wallet, `1` for funding wallet.
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -268,13 +268,13 @@ Verified: 2026-05-22
 
     BinanceWithdrawal$get_withdrawal_history(
       coin = NULL,
-      withdrawOrderId = NULL,
+      withdraw_order_id = NULL,
       status = NULL,
-      startTime = NULL,
-      endTime = NULL,
+      start_time = NULL,
+      end_time = NULL,
       offset = NULL,
       limit = NULL,
-      recvWindow = NULL
+      recv_window = NULL
     )
 
 #### Arguments
@@ -283,7 +283,7 @@ Verified: 2026-05-22
 
   (scalar\<character\>?) filter by coin (e.g., `"BTC"`, `"USDT"`).
 
-- `withdrawOrderId`:
+- `withdraw_order_id`:
 
   (scalar\<character\>?) filter by client-side withdrawal ID.
 
@@ -293,11 +293,11 @@ Verified: 2026-05-22
   (cancelled), `2` (awaiting approval), `3` (rejected), `4`
   (processing), `5` (failure), `6` (completed).
 
-- `startTime`:
+- `start_time`:
 
   (scalar\<count\>?) start timestamp in milliseconds.
 
-- `endTime`:
+- `end_time`:
 
   (scalar\<count\>?) end timestamp in milliseconds.
 
@@ -309,7 +309,7 @@ Verified: 2026-05-22
 
   (scalar\<count\>?) max results (default 1000, max 1000).
 
-- `recvWindow`:
+- `recv_window`:
 
   (scalar\<count\>?) max 60000.
 
@@ -365,8 +365,8 @@ there are no matching withdrawals):
     # Get withdrawals from the last 7 days
     now_ms <- as.integer(as.numeric(Sys.time()) * 1000)
     recent <- withdrawal$get_withdrawal_history(
-      startTime = now_ms - 7 * 86400000L,
-      endTime = now_ms
+      start_time = now_ms - 7 * 86400000L,
+      end_time = now_ms
     )
     }
 
@@ -437,8 +437,8 @@ print(history[, .(amount, coin, status, address, apply_time)])
 # Get withdrawals from the last 7 days
 now_ms <- as.integer(as.numeric(Sys.time()) * 1000)
 recent <- withdrawal$get_withdrawal_history(
-  startTime = now_ms - 7 * 86400000L,
-  endTime = now_ms
+  start_time = now_ms - 7 * 86400000L,
+  end_time = now_ms
 )
 } # }
 ```
