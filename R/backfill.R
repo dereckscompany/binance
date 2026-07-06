@@ -32,9 +32,10 @@
 #' @param sleep (scalar<numeric in [0, Inf[>) seconds to sleep between each
 #'   symbol-timeframe combination to respect rate limits.
 #' @param verbose (scalar<logical>) if `TRUE`, prints progress messages via [rlang::inform()].
-#' @param timeout (scalar<numeric in ]0, Inf[>) per-request timeout in seconds.
-#'   A deep backfill issues hundreds of sequential page requests, so a single
-#'   slow response should not abort the combo; this bounds each attempt before
+#' @param timeout (scalar<numeric in ]0, Inf[> | scalar<integer in [1, Inf[>)
+#'   per-request timeout in seconds — a whole number or a decimal is accepted. A
+#'   deep backfill issues hundreds of sequential page requests, so a single slow
+#'   response should not abort the combo; this bounds each attempt before
 #'   `max_tries` retries it. Default `30`.
 #' @param max_tries (scalar<count in [1, Inf[>) retry each page request up to
 #'   this many times with backoff on a transient failure (timeout, dropped
