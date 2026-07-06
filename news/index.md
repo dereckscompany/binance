@@ -1,5 +1,19 @@
 # Changelog
 
+## binance 0.6.1
+
+### Bug fixes
+
+- **[`binance_backfill_klines()`](https://dereckscompany.github.io/binance/reference/binance_backfill_klines.md)’s
+  `timeout` now accepts a whole number, not only a decimal.** It was
+  contracted as `scalar<numeric in ]0, Inf[>` — a strict double — so a
+  caller passing an integer (e.g. a `timeout` read from a YAML config,
+  where `30` parses as an R integer) hit
+  `` `timeout` must be a single double value ``. The contract is widened
+  to `scalar<numeric in ]0, Inf[> | scalar<integer in [1, Inf[>`, so
+  both a whole-number and a decimal timeout are accepted while a
+  non-positive value is still rejected.
+
 ## binance 0.6.0
 
 This release brings binance into line with the fleet-wide connector

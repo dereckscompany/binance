@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,14 @@
       <small>Source: <a href="https://github.com/dereckscompany/binance/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.1" id="binance-061">binance 0.6.1<a class="anchor" aria-label="anchor" href="#binance-061"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-0-6-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-6-1"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/binance_backfill_klines.html">binance_backfill_klines()</a></code>’s <code>timeout</code> now accepts a whole number, not only a decimal.</strong> It was contracted as <code>scalar&lt;numeric in ]0, Inf[&gt;</code> — a strict double — so a caller passing an integer (e.g. a <code>timeout</code> read from a YAML config, where <code>30</code> parses as an R integer) hit <code>`timeout` must be a single double value</code>. The contract is widened to <code>scalar&lt;numeric in ]0, Inf[&gt; | scalar&lt;integer in [1, Inf[&gt;</code>, so both a whole-number and a decimal timeout are accepted while a non-positive value is still rejected.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0" id="binance-060">binance 0.6.0<a class="anchor" aria-label="anchor" href="#binance-060"></a></h2>
 <p>This release brings binance into line with the fleet-wide connector conventions. Every method argument is now plain snake_case (the words you type in R), while the Binance API still receives its own camelCase field names on the wire — the translation now happens inside each method rather than leaking the exchange’s spelling into your R code. It is a clean break with no deprecation shims, so calls that passed camelCase argument names by keyword must be updated (for example <code>cancel_order("BTCUSDT", orderId = 123)</code> becomes <code>cancel_order("BTCUSDT", order_id = 123)</code>).</p>

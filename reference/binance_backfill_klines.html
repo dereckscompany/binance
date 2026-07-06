@@ -13,7 +13,7 @@ symbol-timeframe combinations that are already up to date."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -114,9 +114,10 @@ symbol-timeframe combination to respect rate limits.</p></dd>
 
 
 <dt id="arg-timeout">timeout<a class="anchor" aria-label="anchor" href="#arg-timeout"></a></dt>
-<dd><p>(scalar&lt;numeric in ]0, Inf[&gt;) per-request timeout in seconds.
-A deep backfill issues hundreds of sequential page requests, so a single
-slow response should not abort the combo; this bounds each attempt before
+<dd><p>(scalar&lt;numeric in ]0, Inf[&gt; | scalar&lt;integer in [1, Inf[&gt;)
+per-request timeout in seconds — a whole number or a decimal is accepted. A
+deep backfill issues hundreds of sequential page requests, so a single slow
+response should not abort the combo; this bounds each attempt before
 <code>max_tries</code> retries it. Default <code>30</code>.</p></dd>
 
 
