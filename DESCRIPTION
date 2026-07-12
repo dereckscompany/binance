@@ -1,6 +1,6 @@
 Package: binance
 Title: API Wrapper to Binance Cryptocurrency Exchange
-Version: 0.6.1
+Version: 0.7.0
 URL: https://dereckscompany.github.io/binance/
 BugReports: https://github.com/dereckscompany/binance/issues
 Authors@R:
@@ -21,8 +21,7 @@ License: MIT
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 7.3.3
-Config/roxygen2/version: 7.3.3
+Config/roxygen2/version: 8.0.0
 Roxygen: list(markdown = TRUE, roclets = c("namespace", "rd", "roxyassert::contract_roclet"))
 Depends: R (>= 4.1.0)
 Imports:
@@ -37,7 +36,7 @@ Imports:
     later,
     websocket,
     promises,
-    connectcore (>= 0.3.0)
+    connectcore (>= 0.4.0)
 Suggests:
     coro,
     box,
