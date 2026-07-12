@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,9 +36,18 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/dereckscompany/binance/blob/v0.6.1/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/dereckscompany/binance/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.7.0" id="binance-070">binance 0.7.0<a class="anchor" aria-label="anchor" href="#binance-070"></a></h2>
+<div class="section level3">
+<h3 id="typed-api-error-conditions-0-7-0">Typed API-error conditions<a class="anchor" aria-label="anchor" href="#typed-api-error-conditions-0-7-0"></a></h3>
+<ul><li>Both failure surfaces of the request funnel (<code>parse_binance_response()</code>) now signal a <strong>classed condition</strong> instead of a bare <code><a href="https://rlang.r-lib.org/reference/abort.html" class="external-link">rlang::abort()</a></code>, so a caller branches on error <em>type</em> and reads structured <em>fields</em> rather than grepping the message text. This covers the venue-code surface (a negative <code>code</code> in the JSON body, which can arrive even on an HTTP 200) and the plain non-2xx HTTP surface. The class vector is ordered specific -&gt; general: <code>binance_api_error_&lt;status&gt;</code> (keyed on the HTTP status), <code>binance_api_error</code> (any Binance failure), then the inherited connectcore family <code>connectcore_api_error_&lt;status&gt;</code> / <code>connectcore_api_error</code> / <code>connectcore_error</code> (any HTTP or transport failure fleet-wide). The condition carries <code>status</code> (integer), <code>code</code> (the Binance venue error code, <code>NULL</code> on a plain HTTP failure), <code>url</code> (query-string credentials redacted), and <code>body_snippet</code> (the response body) as fields — read <code>e$code</code>, not a regex.</li>
+<li>The message strings are <strong>byte-identical</strong> to the previous <code>"Binance API error &lt;code&gt;: &lt;msg&gt;"</code> (venue-code path) and <code>"Binance HTTP error &lt;status&gt;\n&lt;body&gt;"</code> (HTTP path), so existing tests and downstream message greps keep matching. The classes and fields are purely additive.</li>
+<li>This follows the connector-subclass recipe documented in connectcore 0.4.0 (<code>?connectcore_conditions</code>); the floor is bumped to <code>connectcore (&gt;= 0.4.0)</code>.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.1" id="binance-061">binance 0.6.1<a class="anchor" aria-label="anchor" href="#binance-061"></a></h2>
 <div class="section level3">
