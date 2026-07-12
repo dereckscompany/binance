@@ -58,6 +58,44 @@ test_that("parse_binance_response raises error on HTTP failure", {
   )
 })
 
+test_that("parse_binance_response negative-code path raises a typed condition (venue code carried)", {
+  resp <- mock_binance_error(code = -1021, msg = "Timestamp outside recvWindow.", status_code = 400L)
+
+  # per-status class is keyed on the HTTP status (400), not the venue code
+  status_hit <- tryCatch(binance:::parse_binance_response(resp), binance_api_error_400 = function(e) e)
+  expect_s3_class(status_hit, "binance_api_error_400")
+  expect_equal(status_hit$status, 400L)
+  expect_equal(status_hit$code, -1021)
+  expect_match(status_hit$body_snippet, "-1021")
+
+  # package family and connectcore family both catch it
+  expect_s3_class(
+    tryCatch(binance:::parse_binance_response(resp), binance_api_error = function(e) e),
+    "binance_api_error"
+  )
+  cc_root <- tryCatch(binance:::parse_binance_response(resp), connectcore_error = function(e) e)
+  expect_s3_class(cc_root, "connectcore_api_error")
+  expect_s3_class(cc_root, "connectcore_error")
+
+  # message byte-identical to the legacy venue-code string
+  err <- tryCatch(binance:::parse_binance_response(resp), error = function(e) e)
+  expect_equal(conditionMessage(err), "Binance API error -1021: Timestamp outside recvWindow.")
+})
+
+test_that("parse_binance_response HTTP path raises a typed condition (no venue code)", {
+  resp <- mock_http_error(status_code = 503L, body_text = "Service Unavailable")
+
+  status_hit <- tryCatch(binance:::parse_binance_response(resp), binance_api_error_503 = function(e) e)
+  expect_s3_class(status_hit, "binance_api_error_503")
+  expect_equal(status_hit$status, 503L)
+  expect_null(status_hit$code)
+  expect_s3_class(status_hit, "connectcore_api_error")
+
+  # message byte-identical to the legacy HTTP string
+  err <- tryCatch(binance:::parse_binance_response(resp), error = function(e) e)
+  expect_equal(conditionMessage(err), "Binance HTTP error 503\nService Unavailable")
+})
+
 # -- binance_build_request --
 
 test_that("binance_build_request sends correct endpoint", {

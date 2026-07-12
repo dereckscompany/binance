@@ -1,3 +1,11 @@
+# binance 0.7.0
+
+## Typed API-error conditions
+
+* Both failure surfaces of the request funnel (`parse_binance_response()`) now signal a **classed condition** instead of a bare `rlang::abort()`, so a caller branches on error *type* and reads structured *fields* rather than grepping the message text. This covers the venue-code surface (a negative `code` in the JSON body, which can arrive even on an HTTP 200) and the plain non-2xx HTTP surface. The class vector is ordered specific -> general: `binance_api_error_<status>` (keyed on the HTTP status), `binance_api_error` (any Binance failure), then the inherited connectcore family `connectcore_api_error_<status>` / `connectcore_api_error` / `connectcore_error` (any HTTP or transport failure fleet-wide). The condition carries `status` (integer), `code` (the Binance venue error code, `NULL` on a plain HTTP failure), `url` (query-string credentials redacted), and `body_snippet` (the response body) as fields — read `e$code`, not a regex.
+* The message strings are **byte-identical** to the previous `"Binance API error <code>: <msg>"` (venue-code path) and `"Binance HTTP error <status>\n<body>"` (HTTP path), so existing tests and downstream message greps keep matching. The classes and fields are purely additive.
+* This follows the connector-subclass recipe documented in connectcore 0.4.0 (`?connectcore_conditions`); the floor is bumped to `connectcore (>= 0.4.0)`.
+
 # binance 0.6.1
 
 ## Bug fixes

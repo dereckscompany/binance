@@ -498,7 +498,7 @@
     },
     "connectcore": {
       "Package": "connectcore",
-      "Version": "0.3.0",
+      "Version": "0.4.0",
       "Source": "GitHub",
       "Title": "Reusable Base for REST and WebSocket Data-Source Connectors",
       "URL": "https://dereckscompany.github.io/connectcore, https://github.com/dereckscompany/connectcore",
@@ -509,6 +509,7 @@
       "Encoding": "UTF-8",
       "Roxygen": "list(markdown = TRUE, roclets = c(\"namespace\", \"rd\", \"roxyassert::contract_roclet\"))",
       "RoxygenNote": "7.3.3",
+      "Config/roxygen2/version": "7.3.3",
       "Depends": [
         "R (>= 4.1.0)"
       ],
@@ -524,9 +525,9 @@
         "later",
         "websocket",
         "promises",
+        "withr",
         "stats",
-        "utils",
-        "withr"
+        "utils"
       ],
       "Suggests": [
         "box",
@@ -536,21 +537,18 @@
         "pkgdown",
         "rcmdcheck",
         "rmarkdown",
-        "roxyassert",
-        "testthat (>= 3.0.0)",
-        "withr"
+        "roxyassert (>= 0.9.1)",
+        "testthat (>= 3.0.0)"
       ],
+      "Remotes": "dereckscompany/assert, dereckscompany/roxyassert",
       "VignetteBuilder": "knitr",
       "Config/testthat/edition": "3",
-      "Author": "Dereck Mezquita [aut, cre] (ORCID: <https://orcid.org/0000-0002-9307-6762>)",
-      "Maintainer": "Dereck Mezquita <dereck@mezquita.io>",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteUsername": "dereckscompany",
       "RemoteRepo": "connectcore",
-      "RemoteRef": "v0.3.0",
-      "RemoteSha": "a0410fd349aa924f431f4df9fcbf3c4fc91612af",
-      "Remotes": "dereckscompany/assert, dereckscompany/roxyassert"
+      "RemoteRef": "v0.4.0",
+      "RemoteSha": "30a5be7b5e6ee08bb38b52d98b0e3aeb963c6850"
     },
     "coro": {
       "Package": "coro",

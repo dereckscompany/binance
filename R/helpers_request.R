@@ -142,12 +142,14 @@ parse_binance_response <- function(resp) {
   # Binance returns error codes in the JSON body even on non-200 status
 
   if (!is.null(parsed) && !is.null(parsed$code) && parsed$code < 0) {
-    rlang::abort(paste0(
-      "Binance API error ",
-      parsed$code,
-      ": ",
-      if (is.null(parsed$msg)) "No error message provided." else parsed$msg
-    ))
+    body_text <- tryCatch(httr2::resp_body_string(resp), error = function(e) NULL)
+    abort_binance_error(
+      status = status,
+      code = parsed$code,
+      msg = parsed$msg,
+      url = resp$url,
+      body = body_text
+    )
   }
 
   if (status < 200L || status >= 300L) {
@@ -155,7 +157,12 @@ parse_binance_response <- function(resp) {
       httr2::resp_body_string(resp),
       error = function(e) "<unable to read body>"
     )
-    rlang::abort(paste0("Binance HTTP error ", status, "\n", body_text))
+    abort_binance_error(
+      status = status,
+      url = resp$url,
+      body = body_text,
+      message = paste0("Binance HTTP error ", status, "\n", body_text)
+    )
   }
 
   return(parsed)
