@@ -4,11 +4,6 @@
 \alias{BinanceWithdrawal}
 \title{BinanceWithdrawal: Withdrawal Management}
 \description{
-BinanceWithdrawal: Withdrawal Management
-
-BinanceWithdrawal: Withdrawal Management
-}
-\details{
 Provides methods for submitting withdrawals and querying withdrawal history
 on Binance. Inherits from \link{BinanceBase}.
 \subsection{Purpose and Scope}{
@@ -70,7 +65,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceWithdrawal$add_withdrawal`
+## Method `BinanceWithdrawal$add_withdrawal()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -87,7 +82,7 @@ print(result$id)
 }
 
 ## ------------------------------------------------
-## Method `BinanceWithdrawal$get_withdrawal_history`
+## Method `BinanceWithdrawal$get_withdrawal_history()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -106,28 +101,26 @@ recent <- withdrawal$get_withdrawal_history(
 }
 }
 \section{Super classes}{
-\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceWithdrawal}
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{BinanceBase}} -> \code{BinanceWithdrawal}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-BinanceWithdrawal-add_withdrawal}{\code{BinanceWithdrawal$add_withdrawal()}}
-\item \href{#method-BinanceWithdrawal-get_withdrawal_history}{\code{BinanceWithdrawal$get_withdrawal_history()}}
-\item \href{#method-BinanceWithdrawal-clone}{\code{BinanceWithdrawal$clone()}}
+  \itemize{
+    \item \href{#method-BinanceWithdrawal-add_withdrawal}{\code{BinanceWithdrawal$add_withdrawal()}}
+    \item \href{#method-BinanceWithdrawal-get_withdrawal_history}{\code{BinanceWithdrawal$get_withdrawal_history()}}
+    \item \href{#method-BinanceWithdrawal-clone}{\code{BinanceWithdrawal$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>binance::BinanceBase$initialize()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>BinanceBase$initialize()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceWithdrawal-add_withdrawal"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceWithdrawal-add_withdrawal}{}}}
-\subsection{Method \code{add_withdrawal()}}{
-Submit Withdrawal
+\subsection{\code{BinanceWithdrawal$add_withdrawal()}}{
+  Submit Withdrawal
 
 Initiates a withdrawal request. The API key must have Withdrawal permission
 enabled. Returns a withdrawal ID on success.
@@ -177,8 +170,9 @@ to select the cheapest or fastest network.
 \if{html}{\out{<div class="sourceCode json">}}\preformatted{\{ "id": "7213fea8e94b4a5593d507237e5a555b" \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceWithdrawal$add_withdrawal(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceWithdrawal$add_withdrawal(
   coin,
   address,
   amount,
@@ -189,47 +183,37 @@ to select the cheapest or fastest network.
   name = NULL,
   wallet_type = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{coin}}{(scalar<character>) coin symbol (e.g., \code{"BTC"}, \code{"USDT"}).}
-
-\item{\code{address}}{(scalar<character>) destination wallet address.}
-
-\item{\code{amount}}{(scalar<numeric> | scalar<character>) withdrawal amount.}
-
-\item{\code{network}}{(scalar<character>?) blockchain network (e.g., \code{"ETH"}, \code{"TRX"}, \code{"BSC"}).
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{coin}}{(scalar<character>) coin symbol (e.g., \code{"BTC"}, \code{"USDT"}).}
+      \item{\code{address}}{(scalar<character>) destination wallet address.}
+      \item{\code{amount}}{(scalar<numeric> | scalar<character>) withdrawal amount.}
+      \item{\code{network}}{(scalar<character>?) blockchain network (e.g., \code{"ETH"}, \code{"TRX"}, \code{"BSC"}).
 If NULL, uses the coin's default network.}
-
-\item{\code{withdraw_order_id}}{(scalar<character>?) client-side withdrawal ID for tracking.}
-
-\item{\code{address_tag}}{(scalar<character>?) secondary address identifier (required for
+      \item{\code{withdraw_order_id}}{(scalar<character>?) client-side withdrawal ID for tracking.}
+      \item{\code{address_tag}}{(scalar<character>?) secondary address identifier (required for
 coins like XRP, XMR, XLM).}
-
-\item{\code{transaction_fee_flag}}{(scalar<logical>?) for internal transfers: \code{TRUE} returns
+      \item{\code{transaction_fee_flag}}{(scalar<logical>?) for internal transfers: \code{TRUE} returns
 fee to destination, \code{FALSE} to origin.}
-
-\item{\code{name}}{(scalar<character>?) description for the address (max 200 entries in address book).}
-
-\item{\code{wallet_type}}{(scalar<count>?) \code{0} for spot wallet, \code{1} for funding wallet.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+      \item{\code{name}}{(scalar<character>?) description for the address (max 200 entries in address book).}
+      \item{\code{wallet_type}}{(scalar<count>?) \code{0} for spot wallet, \code{1} for funding wallet.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item id (character) Unique withdrawal identifier assigned by Binance.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-withdrawal <- BinanceWithdrawal$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{withdrawal <- BinanceWithdrawal$new()
 
 # Withdraw USDT via TRC20
 result <- withdrawal$add_withdrawal(
@@ -240,17 +224,15 @@ result <- withdrawal$add_withdrawal(
 )
 print(result$id)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceWithdrawal-get_withdrawal_history"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceWithdrawal-get_withdrawal_history}{}}}
-\subsection{Method \code{get_withdrawal_history()}}{
-Get Withdrawal History
+\subsection{\code{BinanceWithdrawal$get_withdrawal_history()}}{
+  Get Withdrawal History
 
 Retrieves withdrawal transaction history with optional filtering by coin,
 status, and time range. Max time range is 90 days.
@@ -305,8 +287,9 @@ left the exchange.
 ]
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceWithdrawal$get_withdrawal_history(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceWithdrawal$get_withdrawal_history(
   coin = NULL,
   withdraw_order_id = NULL,
   status = NULL,
@@ -315,34 +298,27 @@ left the exchange.
   offset = NULL,
   limit = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{coin}}{(scalar<character>?) filter by coin (e.g., \code{"BTC"}, \code{"USDT"}).}
-
-\item{\code{withdraw_order_id}}{(scalar<character>?) filter by client-side withdrawal ID.}
-
-\item{\code{status}}{(scalar<count>?) filter by status:
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{coin}}{(scalar<character>?) filter by coin (e.g., \code{"BTC"}, \code{"USDT"}).}
+      \item{\code{withdraw_order_id}}{(scalar<character>?) filter by client-side withdrawal ID.}
+      \item{\code{status}}{(scalar<count>?) filter by status:
 \code{0} (email sent), \code{1} (cancelled), \code{2} (awaiting approval),
 \code{3} (rejected), \code{4} (processing), \code{5} (failure), \code{6} (completed).}
-
-\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-
-\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-
-\item{\code{offset}}{(scalar<count>?) pagination offset (default 0).}
-
-\item{\code{limit}}{(scalar<count>?) max results (default 1000, max 1000).}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per withdrawal
+      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+      \item{\code{offset}}{(scalar<count>?) pagination offset (default 0).}
+      \item{\code{limit}}{(scalar<count>?) max results (default 1000, max 1000).}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per withdrawal
 (empty when there are no matching withdrawals):
 \itemize{
 \item id (character) Unique withdrawal identifier.
@@ -364,11 +340,10 @@ left the exchange.
 Binance returns; \code{NA} for in-progress withdrawals, which Binance sends as
 an empty string).
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-withdrawal <- BinanceWithdrawal$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{withdrawal <- BinanceWithdrawal$new()
 
 # Get all completed USDT withdrawals
 history <- withdrawal$get_withdrawal_history(coin = "USDT", status = 6)
@@ -381,27 +356,27 @@ recent <- withdrawal$get_withdrawal_history(
   end_time = now_ms
 )
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceWithdrawal-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceWithdrawal-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceWithdrawal$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{BinanceWithdrawal$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceWithdrawal$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

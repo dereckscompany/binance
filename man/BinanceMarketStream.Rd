@@ -4,11 +4,6 @@
 \alias{BinanceMarketStream}
 \title{BinanceMarketStream: Spot Market-Data WebSocket Streams}
 \description{
-BinanceMarketStream: Spot Market-Data WebSocket Streams
-
-BinanceMarketStream: Spot Market-Data WebSocket Streams
-}
-\details{
 Typed, event-driven client for Binance's \strong{public} spot market-data streams.
 Inherits the Node.js-style event API and connection management from
 \link{BinanceWsBase} (\verb{$on()}, \verb{$subscribe()}, \verb{$run()}, auto-reconnect). No API key
@@ -42,7 +37,7 @@ stream$run() # blocks, pumping the event loop; interrupt to stop
 
 
 ## ------------------------------------------------
-## Method `BinanceMarketStream$depth`
+## Method `BinanceMarketStream$depth()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -52,71 +47,69 @@ stream$run()
 }
 }
 \section{Super classes}{
-\code{\link[connectcore:StreamClient]{connectcore::StreamClient}} -> \code{\link[binance:BinanceWsBase]{binance::BinanceWsBase}} -> \code{BinanceMarketStream}
+\code{\link[connectcore:StreamClient]{connectcore::StreamClient}} -> \code{\link[binance:BinanceWsBase]{BinanceWsBase}} -> \code{BinanceMarketStream}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-BinanceMarketStream-new}{\code{BinanceMarketStream$new()}}
-\item \href{#method-BinanceMarketStream-depth}{\code{BinanceMarketStream$depth()}}
-\item \href{#method-BinanceMarketStream-clone}{\code{BinanceMarketStream$clone()}}
+  \itemize{
+    \item \href{#method-BinanceMarketStream-initialize}{\code{BinanceMarketStream$new()}}
+    \item \href{#method-BinanceMarketStream-depth}{\code{BinanceMarketStream$depth()}}
+    \item \href{#method-BinanceMarketStream-clone}{\code{BinanceMarketStream$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="close"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-close'><code>connectcore::StreamClient$close()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="connect"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-connect'><code>connectcore::StreamClient$connect()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="is_open"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-is_open'><code>connectcore::StreamClient$is_open()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="run"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-run'><code>connectcore::StreamClient$run()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="send"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-send'><code>connectcore::StreamClient$send()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceWsBase" data-id="on"><a href='../../binance/html/BinanceWsBase.html#method-BinanceWsBase-on'><code>binance::BinanceWsBase$on()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceWsBase" data-id="subscribe"><a href='../../binance/html/BinanceWsBase.html#method-BinanceWsBase-subscribe'><code>binance::BinanceWsBase$subscribe()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceWsBase" data-id="subscriptions"><a href='../../binance/html/BinanceWsBase.html#method-BinanceWsBase-subscriptions'><code>binance::BinanceWsBase$subscriptions()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceWsBase" data-id="unsubscribe"><a href='../../binance/html/BinanceWsBase.html#method-BinanceWsBase-unsubscribe'><code>binance::BinanceWsBase$unsubscribe()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="close"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-close'><code>connectcore::StreamClient$close()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="connect"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-connect'><code>connectcore::StreamClient$connect()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="is_open"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-is_open'><code>connectcore::StreamClient$is_open()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="on_event"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-on_event'><code>connectcore::StreamClient$on_event()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="run"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-run'><code>connectcore::StreamClient$run()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="send"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-send'><code>connectcore::StreamClient$send()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceWsBase" data-id="on"><a href='../../binance/html/BinanceWsBase.html#method-BinanceWsBase-on'><code>BinanceWsBase$on()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceWsBase" data-id="subscribe"><a href='../../binance/html/BinanceWsBase.html#method-BinanceWsBase-subscribe'><code>BinanceWsBase$subscribe()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceWsBase" data-id="subscriptions"><a href='../../binance/html/BinanceWsBase.html#method-BinanceWsBase-subscriptions'><code>BinanceWsBase$subscriptions()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceWsBase" data-id="unsubscribe"><a href='../../binance/html/BinanceWsBase.html#method-BinanceWsBase-unsubscribe'><code>BinanceWsBase$unsubscribe()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BinanceMarketStream-new"></a>}}
-\if{latex}{\out{\hypertarget{method-BinanceMarketStream-new}{}}}
-\subsection{Method \code{new()}}{
-Initialise a BinanceMarketStream Object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketStream$new(
+\if{html}{\out{<a id="method-BinanceMarketStream-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceMarketStream-initialize}{}}}
+\subsection{\code{BinanceMarketStream$new()}}{
+  Initialise a BinanceMarketStream Object
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMarketStream$new(
   base_url = "wss://stream.binance.com:9443/stream",
   auto_reconnect = TRUE,
   max_reconnects = 10L,
   proactive_reconnect = TRUE
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{base_url}}{(scalar<character>) WebSocket base URL. Defaults to the spot
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{base_url}}{(scalar<character>) WebSocket base URL. Defaults to the spot
 combined-stream endpoint.}
-
-\item{\code{auto_reconnect}}{(scalar<logical>) auto-reconnect with backoff. Default
+      \item{\code{auto_reconnect}}{(scalar<logical>) auto-reconnect with backoff. Default
 \code{TRUE}.}
-
-\item{\code{max_reconnects}}{(scalar<count in [1, Inf[>) give up after this many
+      \item{\code{max_reconnects}}{(scalar<count in [1, Inf[>) give up after this many
 failed reconnects. Default \code{10}.}
-
-\item{\code{proactive_reconnect}}{(scalar<logical>) reconnect at 23h to beat the 24h
+      \item{\code{proactive_reconnect}}{(scalar<logical>) reconnect at 23h to beat the 24h
 cutoff. Default \code{TRUE}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (class<BinanceMarketStream>) invisibly, self.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(class<BinanceMarketStream>) invisibly, self.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarketStream-depth"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarketStream-depth}{}}}
-\subsection{Method \code{depth()}}{
-Subscribe to the Order-Book Diff-Depth Stream
+\subsection{\code{BinanceMarketStream$depth()}}{
+  Subscribe to the Order-Book Diff-Depth Stream
 
 Subscribes to \verb{<symbol>@depth} — the full stream of order-book changes
 (each message lists the bid/ask levels that changed; quantity \code{0} means the
@@ -141,56 +134,54 @@ it must be streamed live.
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketStream$depth(symbol, speed = "1000ms", handler = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g. \code{"BTCUSDT"}).}
-
-\item{\code{speed}}{(scalar<character in c("1000ms", "100ms")>) update cadence,
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMarketStream$depth(symbol, speed = "1000ms", handler = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g. \code{"BTCUSDT"}).}
+      \item{\code{speed}}{(scalar<character in c("1000ms", "100ms")>) update cadence,
 \code{"1000ms"} (Binance default) or \code{"100ms"} (full fidelity). Default
 \code{"1000ms"}.}
-
-\item{\code{handler}}{(function?) if supplied, called with the raw JSON string for
+      \item{\code{handler}}{(function?) if supplied, called with the raw JSON string for
 \strong{this} stream only. If \code{NULL}, use a global \verb{$on("message")} handler
 instead. Default \code{NULL}.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(class<BinanceMarketStream>) invisibly, self (chainable).
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-stream <- BinanceMarketStream$new()
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (class<BinanceMarketStream>) invisibly, self (chainable).
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{stream <- BinanceMarketStream$new()
 stream$depth("BTCUSDT", speed = "100ms", handler = function(msg) print(msg))
 stream$run()
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarketStream-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarketStream-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketStream$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{BinanceMarketStream$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMarketStream$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

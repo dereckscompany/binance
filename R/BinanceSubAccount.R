@@ -477,7 +477,7 @@ BinanceSubAccount <- R6::R6Class(
       assert::assert_nonempty_strings(asset)
       valid_types <- c("SPOT", "USDT_FUTURE", "COIN_FUTURE", "MARGIN", "ISOLATED_MARGIN")
       if (!from_account_type %in% valid_types) {
-        rlang::abort(paste0(
+        abort_binance_validation_error(paste0(
           "'from_account_type' must be one of: ",
           paste(valid_types, collapse = ", "),
           ". Got: '",
@@ -486,7 +486,7 @@ BinanceSubAccount <- R6::R6Class(
         ))
       }
       if (!to_account_type %in% valid_types) {
-        rlang::abort(paste0(
+        abort_binance_validation_error(paste0(
           "'to_account_type' must be one of: ",
           paste(valid_types, collapse = ", "),
           ". Got: '",

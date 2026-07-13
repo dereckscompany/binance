@@ -90,7 +90,7 @@ binance_backfill_klines <- function(
     max_tries
   )
   if (is.null(symbols) || length(symbols) == 0L) {
-    rlang::abort("`symbols` must be a non-empty character vector of trading pairs.")
+    abort_binance_validation_error("`symbols` must be a non-empty character vector of trading pairs.")
   }
 
   # Clamp from / to

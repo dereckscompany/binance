@@ -531,7 +531,7 @@ BinanceFuturesData <- R6::R6Class(
       # fetch_all mode: segment the time range into multiple API calls
       if (isTRUE(fetch_all)) {
         if (is.null(start_time) || is.null(end_time)) {
-          rlang::abort("Both `startTime` and `endTime` are required when `fetch_all = TRUE`.")
+          abort_binance_validation_error("Both `startTime` and `endTime` are required when `fetch_all = TRUE`.")
         }
         from <- start_time
         if (!inherits(start_time, "POSIXct")) {

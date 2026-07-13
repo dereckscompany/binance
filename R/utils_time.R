@@ -25,7 +25,7 @@ time_convert_from_binance <- function(time_value, unit = c("ms", "ns", "s")) {
   unit <- match.arg(unit)
   assert_args_time_convert_from_binance(unit)
   if (!is.numeric(time_value)) {
-    rlang::abort("Input must be a numeric value.")
+    abort_binance_validation_error("Input must be a numeric value.")
   }
 
   seconds <- switch(
@@ -62,7 +62,7 @@ time_convert_to_binance <- function(datetime, unit = c("ms", "ns", "s")) {
   unit <- match.arg(unit)
   assert_args_time_convert_to_binance(unit)
   if (!inherits(datetime, "POSIXct")) {
-    rlang::abort("Input must be a POSIXct object.")
+    abort_binance_validation_error("Input must be a POSIXct object.")
   }
 
   seconds <- as.numeric(datetime)

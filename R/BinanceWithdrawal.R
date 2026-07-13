@@ -158,10 +158,10 @@ BinanceWithdrawal <- R6::R6Class(
       assert::assert_nonempty_strings(withdraw_order_id, null_ok = TRUE)
       assert::assert_nonempty_strings(address_tag, null_ok = TRUE)
       if (!is.character(coin) || !nzchar(coin)) {
-        rlang::abort("Parameter 'coin' must be a non-empty string.")
+        abort_binance_validation_error("Parameter 'coin' must be a non-empty string.")
       }
       if (!is.character(address) || !nzchar(address)) {
-        rlang::abort("Parameter 'address' must be a non-empty string.")
+        abort_binance_validation_error("Parameter 'address' must be a non-empty string.")
       }
 
       body <- list(

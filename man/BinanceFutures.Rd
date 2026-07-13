@@ -4,11 +4,6 @@
 \alias{BinanceFutures}
 \title{BinanceFutures: USD-M Futures Trading}
 \description{
-BinanceFutures: USD-M Futures Trading
-
-BinanceFutures: USD-M Futures Trading
-}
-\details{
 Provides methods for placing, cancelling, and querying USD-M futures orders,
 managing positions, leverage, and margin on Binance. Inherits from \link{BinanceBase}.
 \subsection{Purpose and Scope}{
@@ -98,7 +93,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceFutures$add_order`
+## Method `BinanceFutures$add_order()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -111,7 +106,7 @@ print(order)
 }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$add_order_test`
+## Method `BinanceFutures$add_order_test()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -124,7 +119,7 @@ stopifnot(test$validated)
 }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$cancel_order`
+## Method `BinanceFutures$cancel_order()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -134,7 +129,7 @@ print(cancelled)
 }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$cancel_all_orders`
+## Method `BinanceFutures$cancel_all_orders()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -144,7 +139,7 @@ print(result)
 }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_order`
+## Method `BinanceFutures$get_order()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -154,7 +149,7 @@ print(order)
 }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_open_orders`
+## Method `BinanceFutures$get_open_orders()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -164,7 +159,7 @@ print(open)
 }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_all_orders`
+## Method `BinanceFutures$get_all_orders()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -174,7 +169,7 @@ print(all)
 }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_account`
+## Method `BinanceFutures$get_account()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -186,7 +181,7 @@ print(positions)
 }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_balances`
+## Method `BinanceFutures$get_balances()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -196,7 +191,7 @@ print(balances)
 }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_positions`
+## Method `BinanceFutures$get_positions()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -206,7 +201,7 @@ print(positions)
 }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$set_leverage`
+## Method `BinanceFutures$set_leverage()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -216,7 +211,7 @@ print(result)
 }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$set_margin_type`
+## Method `BinanceFutures$set_margin_type()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -226,7 +221,7 @@ print(result)
 }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$modify_position_margin`
+## Method `BinanceFutures$modify_position_margin()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -236,7 +231,7 @@ print(result)
 }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_position_margin_history`
+## Method `BinanceFutures$get_position_margin_history()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -246,7 +241,7 @@ print(history)
 }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_trades`
+## Method `BinanceFutures$get_trades()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -256,7 +251,7 @@ print(trades)
 }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_income_history`
+## Method `BinanceFutures$get_income_history()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -266,7 +261,7 @@ print(income)
 }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$set_position_mode`
+## Method `BinanceFutures$set_position_mode()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -276,7 +271,7 @@ print(result)
 }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_position_mode`
+## Method `BinanceFutures$get_position_mode()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -286,74 +281,73 @@ print(mode$dual_side_position)
 }
 }
 \section{Super classes}{
-\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceFutures}
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{BinanceBase}} -> \code{BinanceFutures}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-BinanceFutures-new}{\code{BinanceFutures$new()}}
-\item \href{#method-BinanceFutures-add_order}{\code{BinanceFutures$add_order()}}
-\item \href{#method-BinanceFutures-add_order_test}{\code{BinanceFutures$add_order_test()}}
-\item \href{#method-BinanceFutures-cancel_order}{\code{BinanceFutures$cancel_order()}}
-\item \href{#method-BinanceFutures-cancel_all_orders}{\code{BinanceFutures$cancel_all_orders()}}
-\item \href{#method-BinanceFutures-get_order}{\code{BinanceFutures$get_order()}}
-\item \href{#method-BinanceFutures-get_open_orders}{\code{BinanceFutures$get_open_orders()}}
-\item \href{#method-BinanceFutures-get_all_orders}{\code{BinanceFutures$get_all_orders()}}
-\item \href{#method-BinanceFutures-get_account}{\code{BinanceFutures$get_account()}}
-\item \href{#method-BinanceFutures-get_balances}{\code{BinanceFutures$get_balances()}}
-\item \href{#method-BinanceFutures-get_positions}{\code{BinanceFutures$get_positions()}}
-\item \href{#method-BinanceFutures-set_leverage}{\code{BinanceFutures$set_leverage()}}
-\item \href{#method-BinanceFutures-set_margin_type}{\code{BinanceFutures$set_margin_type()}}
-\item \href{#method-BinanceFutures-modify_position_margin}{\code{BinanceFutures$modify_position_margin()}}
-\item \href{#method-BinanceFutures-get_position_margin_history}{\code{BinanceFutures$get_position_margin_history()}}
-\item \href{#method-BinanceFutures-get_trades}{\code{BinanceFutures$get_trades()}}
-\item \href{#method-BinanceFutures-get_income_history}{\code{BinanceFutures$get_income_history()}}
-\item \href{#method-BinanceFutures-set_position_mode}{\code{BinanceFutures$set_position_mode()}}
-\item \href{#method-BinanceFutures-get_position_mode}{\code{BinanceFutures$get_position_mode()}}
-\item \href{#method-BinanceFutures-clone}{\code{BinanceFutures$clone()}}
-}
+  \itemize{
+    \item \href{#method-BinanceFutures-initialize}{\code{BinanceFutures$new()}}
+    \item \href{#method-BinanceFutures-add_order}{\code{BinanceFutures$add_order()}}
+    \item \href{#method-BinanceFutures-add_order_test}{\code{BinanceFutures$add_order_test()}}
+    \item \href{#method-BinanceFutures-cancel_order}{\code{BinanceFutures$cancel_order()}}
+    \item \href{#method-BinanceFutures-cancel_all_orders}{\code{BinanceFutures$cancel_all_orders()}}
+    \item \href{#method-BinanceFutures-get_order}{\code{BinanceFutures$get_order()}}
+    \item \href{#method-BinanceFutures-get_open_orders}{\code{BinanceFutures$get_open_orders()}}
+    \item \href{#method-BinanceFutures-get_all_orders}{\code{BinanceFutures$get_all_orders()}}
+    \item \href{#method-BinanceFutures-get_account}{\code{BinanceFutures$get_account()}}
+    \item \href{#method-BinanceFutures-get_balances}{\code{BinanceFutures$get_balances()}}
+    \item \href{#method-BinanceFutures-get_positions}{\code{BinanceFutures$get_positions()}}
+    \item \href{#method-BinanceFutures-set_leverage}{\code{BinanceFutures$set_leverage()}}
+    \item \href{#method-BinanceFutures-set_margin_type}{\code{BinanceFutures$set_margin_type()}}
+    \item \href{#method-BinanceFutures-modify_position_margin}{\code{BinanceFutures$modify_position_margin()}}
+    \item \href{#method-BinanceFutures-get_position_margin_history}{\code{BinanceFutures$get_position_margin_history()}}
+    \item \href{#method-BinanceFutures-get_trades}{\code{BinanceFutures$get_trades()}}
+    \item \href{#method-BinanceFutures-get_income_history}{\code{BinanceFutures$get_income_history()}}
+    \item \href{#method-BinanceFutures-set_position_mode}{\code{BinanceFutures$set_position_mode()}}
+    \item \href{#method-BinanceFutures-get_position_mode}{\code{BinanceFutures$get_position_mode()}}
+    \item \href{#method-BinanceFutures-clone}{\code{BinanceFutures$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BinanceFutures-new"></a>}}
-\if{latex}{\out{\hypertarget{method-BinanceFutures-new}{}}}
-\subsection{Method \code{new()}}{
-Initialise a BinanceFutures Object
+\if{html}{\out{<a id="method-BinanceFutures-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceFutures-initialize}{}}}
+\subsection{\code{BinanceFutures$new()}}{
+  Initialise a BinanceFutures Object
 
 Overrides the base constructor to use the futures base URL and
 the futures-specific server time endpoint (\verb{/fapi/v1/time}).
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$new(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$new(
   keys = get_api_keys(),
   base_url = get_futures_base_url(),
   async = FALSE,
   time_source = c("local", "server")
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{keys}}{(list) API credentials from \code{\link[=get_api_keys]{get_api_keys()}}.}
-
-\item{\code{base_url}}{(scalar<character>) API base URL. Defaults to \code{\link[=get_futures_base_url]{get_futures_base_url()}}.}
-
-\item{\code{async}}{(scalar<logical>) if \code{TRUE}, methods return promises. Default \code{FALSE}.}
-
-\item{\code{time_source}}{(scalar<character>) clock source for HMAC request signing.
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{keys}}{(list) API credentials from \code{\link[=get_api_keys]{get_api_keys()}}.}
+      \item{\code{base_url}}{(scalar<character>) API base URL. Defaults to \code{\link[=get_futures_base_url]{get_futures_base_url()}}.}
+      \item{\code{async}}{(scalar<logical>) if \code{TRUE}, methods return promises. Default \code{FALSE}.}
+      \item{\code{time_source}}{(scalar<character>) clock source for HMAC request signing.
 \code{"local"} (default) uses \code{Sys.time()}. \code{"server"} fetches the Binance
 Futures server time before each authenticated request.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (class<BinanceFutures>) invisibly, self.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(class<BinanceFutures>) invisibly, self.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-add_order"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-add_order}{}}}
-\subsection{Method \code{add_order()}}{
-Place a Futures Order
+\subsection{\code{BinanceFutures$add_order()}}{
+  Place a Futures Order
 
 Places a new USD-M futures order on Binance.
 \subsection{API Endpoint}{
@@ -418,8 +412,9 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$add_order(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$add_order(
   symbol,
   side,
   type,
@@ -434,46 +429,33 @@ Verified: 2026-05-22
   working_type = NULL,
   new_order_resp_type = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
-
-\item{\code{type}}{(scalar<character>) order type: \code{"LIMIT"}, \code{"MARKET"}, \code{"STOP"},
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
+      \item{\code{type}}{(scalar<character>) order type: \code{"LIMIT"}, \code{"MARKET"}, \code{"STOP"},
 \code{"STOP_MARKET"}, \code{"TAKE_PROFIT"}, \code{"TAKE_PROFIT_MARKET"},
 \code{"TRAILING_STOP_MARKET"}.}
-
-\item{\code{quantity}}{(scalar<numeric>?) order quantity.}
-
-\item{\code{price}}{(scalar<numeric>?) price for limit orders.}
-
-\item{\code{stop_price}}{(scalar<numeric>?) trigger price for stop orders.}
-
-\item{\code{time_in_force}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
-
-\item{\code{position_side}}{(scalar<character>?) \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
-
-\item{\code{reduce_only}}{(scalar<logical>?) reduce-only flag.}
-
-\item{\code{new_client_order_id}}{(scalar<character>?) unique client order ID.}
-
-\item{\code{close_position}}{(scalar<logical>?) close all position flag.}
-
-\item{\code{working_type}}{(scalar<character>?) \code{"MARK_PRICE"} or \code{"CONTRACT_PRICE"}.}
-
-\item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+      \item{\code{quantity}}{(scalar<numeric>?) order quantity.}
+      \item{\code{price}}{(scalar<numeric>?) price for limit orders.}
+      \item{\code{stop_price}}{(scalar<numeric>?) trigger price for stop orders.}
+      \item{\code{time_in_force}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
+      \item{\code{position_side}}{(scalar<character>?) \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
+      \item{\code{reduce_only}}{(scalar<logical>?) reduce-only flag.}
+      \item{\code{new_client_order_id}}{(scalar<character>?) unique client order ID.}
+      \item{\code{close_position}}{(scalar<logical>?) close all position flag.}
+      \item{\code{working_type}}{(scalar<character>?) \code{"MARK_PRICE"} or \code{"CONTRACT_PRICE"}.}
+      \item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair (e.g., \code{"BTCUSDT"}).
 \item order_id (numeric) Unique order identifier.
@@ -489,28 +471,25 @@ Verified: 2026-05-22
 \item position_side (character) Position side (\code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}).
 \item update_time (POSIXct) Last update time.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 order <- futures$add_order(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
   quantity = 0.001, price = 50000, time_in_force = "GTC"
 )
 print(order)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-add_order_test"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-add_order_test}{}}}
-\subsection{Method \code{add_order_test()}}{
-Test Futures Order Placement
+\subsection{\code{BinanceFutures$add_order_test()}}{
+  Test Futures Order Placement
 
 Simulates placing a futures order without execution. Validates all parameters
 and authentication exactly as \code{add_order()}, but no order is actually created.
@@ -554,8 +533,9 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="sourceCode json">}}\preformatted{\{\}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$add_order_test(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$add_order_test(
   symbol,
   side,
   type,
@@ -570,71 +550,55 @@ Verified: 2026-05-22
   working_type = NULL,
   new_order_resp_type = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
-
-\item{\code{type}}{(scalar<character>) order type.}
-
-\item{\code{quantity}}{(scalar<numeric>?) order quantity.}
-
-\item{\code{price}}{(scalar<numeric>?) price for limit orders.}
-
-\item{\code{stop_price}}{(scalar<numeric>?) trigger price for stop orders.}
-
-\item{\code{time_in_force}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
-
-\item{\code{position_side}}{(scalar<character>?) \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
-
-\item{\code{reduce_only}}{(scalar<logical>?) reduce-only flag.}
-
-\item{\code{new_client_order_id}}{(scalar<character>?) unique client order ID.}
-
-\item{\code{close_position}}{(scalar<logical>?) close all position flag.}
-
-\item{\code{working_type}}{(scalar<character>?) \code{"MARK_PRICE"} or \code{"CONTRACT_PRICE"}.}
-
-\item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) a single row. Binance returns
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
+      \item{\code{type}}{(scalar<character>) order type.}
+      \item{\code{quantity}}{(scalar<numeric>?) order quantity.}
+      \item{\code{price}}{(scalar<numeric>?) price for limit orders.}
+      \item{\code{stop_price}}{(scalar<numeric>?) trigger price for stop orders.}
+      \item{\code{time_in_force}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
+      \item{\code{position_side}}{(scalar<character>?) \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
+      \item{\code{reduce_only}}{(scalar<logical>?) reduce-only flag.}
+      \item{\code{new_client_order_id}}{(scalar<character>?) unique client order ID.}
+      \item{\code{close_position}}{(scalar<logical>?) close all position flag.}
+      \item{\code{working_type}}{(scalar<character>?) \code{"MARK_PRICE"} or \code{"CONTRACT_PRICE"}.}
+      \item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) a single row. Binance returns
 \code{{}} on a successful test order; the absence of an error is the
 validation signal.
 \itemize{
 \item validated (logical) \code{TRUE} on a successful test order.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 test <- futures$add_order_test(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
   quantity = 0.001, price = 50000, time_in_force = "GTC"
 )
 stopifnot(test$validated)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-cancel_order"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-cancel_order}{}}}
-\subsection{Method \code{cancel_order()}}{
-Cancel a Futures Order
+\subsection{\code{BinanceFutures$cancel_order()}}{
+  Cancel a Futures Order
 
 Cancels an active futures order by order ID or client order ID.
 \subsection{API Endpoint}{
@@ -692,30 +656,28 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$cancel_order(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$cancel_order(
   symbol,
   order_id = NULL,
   orig_client_order_id = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{order_id}}{(scalar<count>?) the order ID to cancel.}
-
-\item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID to cancel.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{order_id}}{(scalar<count>?) the order ID to cancel.}
+      \item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID to cancel.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair.
 \item order_id (numeric) Unique order identifier.
@@ -727,25 +689,22 @@ Verified: 2026-05-22
 \item side (character) \code{"BUY"} or \code{"SELL"}.
 \item update_time (POSIXct) Cancellation time.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 cancelled <- futures$cancel_order("BTCUSDT", order_id = 283194212)
 print(cancelled)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-cancel_all_orders"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-cancel_all_orders}{}}}
-\subsection{Method \code{cancel_all_orders()}}{
-Cancel All Open Futures Orders
+\subsection{\code{BinanceFutures$cancel_all_orders()}}{
+  Cancel All Open Futures Orders
 
 Cancels all active futures orders on a trading pair.
 \subsection{API Endpoint}{
@@ -785,44 +744,41 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$cancel_all_orders(symbol, recv_window = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$cancel_all_orders(symbol, recv_window = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item code (integer) Response code (\code{200} on success).
 \item msg (character) Response message.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 result <- futures$cancel_all_orders("BTCUSDT")
 print(result)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-get_order"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-get_order}{}}}
-\subsection{Method \code{get_order()}}{
-Query a Futures Order
+\subsection{\code{BinanceFutures$get_order()}}{
+  Query a Futures Order
 
 Retrieves details for a specific futures order by order ID or client order ID.
 \subsection{API Endpoint}{
@@ -870,30 +826,28 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_order(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$get_order(
   symbol,
   order_id = NULL,
   orig_client_order_id = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{order_id}}{(scalar<count>?) the order ID.}
-
-\item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{order_id}}{(scalar<count>?) the order ID.}
+      \item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair.
 \item order_id (numeric) Unique order identifier.
@@ -910,25 +864,22 @@ Verified: 2026-05-22
 \item time (POSIXct) Order creation time.
 \item update_time (POSIXct) Last update time.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 order <- futures$get_order("BTCUSDT", order_id = 283194212)
 print(order)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-get_open_orders"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-get_open_orders}{}}}
-\subsection{Method \code{get_open_orders()}}{
-Get Open Futures Orders
+\subsection{\code{BinanceFutures$get_open_orders()}}{
+  Get Open Futures Orders
 
 Retrieves all currently open futures orders, optionally filtered by symbol.
 \subsection{API Endpoint}{
@@ -978,21 +929,21 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_open_orders(symbol = NULL, recv_window = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per open order
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$get_open_orders(symbol = NULL, recv_window = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per open order
 (empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
@@ -1008,25 +959,22 @@ Verified: 2026-05-22
 \item time (POSIXct) Order creation time.
 \item update_time (POSIXct) Last update time.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 open <- futures$get_open_orders("BTCUSDT")
 print(open)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-get_all_orders"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-get_all_orders}{}}}
-\subsection{Method \code{get_all_orders()}}{
-Get All Futures Orders
+\subsection{\code{BinanceFutures$get_all_orders()}}{
+  Get All Futures Orders
 
 Retrieves all futures orders for a symbol (open, cancelled, filled).
 \subsection{API Endpoint}{
@@ -1076,36 +1024,32 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_all_orders(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$get_all_orders(
   symbol,
   order_id = NULL,
   start_time = NULL,
   end_time = NULL,
   limit = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{order_id}}{(scalar<count>?) pagination cursor.}
-
-\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-
-\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-
-\item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per order
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{order_id}}{(scalar<count>?) pagination cursor.}
+      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+      \item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per order
 (empty when there are no matching orders):
 \itemize{
 \item symbol (character) Trading pair.
@@ -1121,25 +1065,22 @@ Verified: 2026-05-22
 \item time (POSIXct) Order creation time.
 \item update_time (POSIXct) Last update time.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 all <- futures$get_all_orders("BTCUSDT", limit = 50)
 print(all)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-get_account"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-get_account}{}}}
-\subsection{Method \code{get_account()}}{
-Get Futures Account Information
+\subsection{\code{BinanceFutures$get_account()}}{
+  Get Futures Account Information
 
 Retrieves comprehensive futures account information including balances
 and positions (kept as list columns).
@@ -1222,19 +1163,20 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_account(recv_window = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per asset balance in
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$get_account(recv_window = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per asset balance in
 the account; account-level fields are replicated on each row. The
 companion \code{positions} array Binance returns is intentionally
 dropped — see the long note below. Columns:
@@ -1269,27 +1211,24 @@ position) and combining them would require a Cartesian join no
 user expects. We therefore intentionally drop the \code{positions}
 array here; \code{get_positions()} hits \verb{/fapi/v2/positionRisk} and
 returns one row per open position.
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 account <- futures$get_account()
 print(account)
 positions <- futures$get_positions()
 print(positions)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-get_balances"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-get_balances}{}}}
-\subsection{Method \code{get_balances()}}{
-Get Futures Account Balances
+\subsection{\code{BinanceFutures$get_balances()}}{
+  Get Futures Account Balances
 
 Retrieves all asset balances for the futures account.
 \subsection{API Endpoint}{
@@ -1339,19 +1278,20 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_balances(recv_window = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per asset
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$get_balances(recv_window = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per asset
 (empty when there are none):
 \itemize{
 \item account_alias (character) Account alias (e.g., \code{"SgsR"}).
@@ -1364,25 +1304,22 @@ Verified: 2026-05-22
 \item margin_available (logical) Whether margin is available.
 \item update_time (POSIXct) Last balance update time.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 balances <- futures$get_balances()
 print(balances)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-get_positions"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-get_positions}{}}}
-\subsection{Method \code{get_positions()}}{
-Get Futures Position Information
+\subsection{\code{BinanceFutures$get_positions()}}{
+  Get Futures Position Information
 
 Retrieves position risk information, optionally filtered by symbol.
 \subsection{API Endpoint}{
@@ -1427,21 +1364,21 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_positions(symbol = NULL, recv_window = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per position
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$get_positions(symbol = NULL, recv_window = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per position
 (empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
@@ -1457,25 +1394,22 @@ Verified: 2026-05-22
 \item notional (character) Position notional value.
 \item update_time (POSIXct) Last position update time.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 positions <- futures$get_positions("BTCUSDT")
 print(positions)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-set_leverage"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-set_leverage}{}}}
-\subsection{Method \code{set_leverage()}}{
-Set Leverage
+\subsection{\code{BinanceFutures$set_leverage()}}{
+  Set Leverage
 
 Changes the initial leverage for a futures symbol.
 \subsection{API Endpoint}{
@@ -1518,47 +1452,43 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$set_leverage(symbol, leverage, recv_window = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{leverage}}{(scalar<count>) target leverage (1-125).}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$set_leverage(symbol, leverage, recv_window = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{leverage}}{(scalar<count>) target leverage (1-125).}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item leverage (integer) New leverage setting.
 \item max_notional_value (character) Maximum notional value for this leverage.
 \item symbol (character) Trading pair.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 result <- futures$set_leverage("BTCUSDT", 20)
 print(result)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-set_margin_type"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-set_margin_type}{}}}
-\subsection{Method \code{set_margin_type()}}{
-Set Margin Type
+\subsection{\code{BinanceFutures$set_margin_type()}}{
+  Set Margin Type
 
 Changes the margin type for a futures symbol.
 \subsection{API Endpoint}{
@@ -1600,46 +1530,42 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$set_margin_type(symbol, margin_type, recv_window = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{margin_type}}{(scalar<character>) \code{"ISOLATED"} or \code{"CROSSED"}.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$set_margin_type(symbol, margin_type, recv_window = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{margin_type}}{(scalar<character>) \code{"ISOLATED"} or \code{"CROSSED"}.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item code (integer) Response code (\code{200} on success).
 \item msg (character) Response message.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 result <- futures$set_margin_type("BTCUSDT", "ISOLATED")
 print(result)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-modify_position_margin"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-modify_position_margin}{}}}
-\subsection{Method \code{modify_position_margin()}}{
-Modify Position Margin
+\subsection{\code{BinanceFutures$modify_position_margin()}}{
+  Modify Position Margin
 
 Adds or reduces the isolated margin for a position.
 \subsection{API Endpoint}{
@@ -1684,33 +1610,30 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$modify_position_margin(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$modify_position_margin(
   symbol,
   amount,
   type,
   position_side = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{amount}}{(scalar<numeric>) margin amount.}
-
-\item{\code{type}}{(scalar<count>) 1 = add margin, 2 = reduce margin.}
-
-\item{\code{position_side}}{(scalar<character>?) \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{amount}}{(scalar<numeric>) margin amount.}
+      \item{\code{type}}{(scalar<count>) 1 = add margin, 2 = reduce margin.}
+      \item{\code{position_side}}{(scalar<character>?) \code{"BOTH"}, \code{"LONG"}, \code{"SHORT"}.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item code (integer) Response code (\code{200} on success).
 \item msg (character) Response message.
@@ -1718,25 +1641,22 @@ Verified: 2026-05-22
 decimal, so it is parsed as a double, not an integer).
 \item type (integer) Margin change type (1 = add, 2 = reduce).
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 result <- futures$modify_position_margin("BTCUSDT", amount = 100, type = 1)
 print(result)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-get_position_margin_history"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-get_position_margin_history}{}}}
-\subsection{Method \code{get_position_margin_history()}}{
-Get Position Margin Change History
+\subsection{\code{BinanceFutures$get_position_margin_history()}}{
+  Get Position Margin Change History
 
 Retrieves the history of position margin changes.
 \subsection{API Endpoint}{
@@ -1773,36 +1693,32 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_position_margin_history(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$get_position_margin_history(
   symbol,
   type = NULL,
   start_time = NULL,
   end_time = NULL,
   limit = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{type}}{(scalar<count>?) 1 = add margin, 2 = reduce margin.}
-
-\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-
-\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-
-\item{\code{limit}}{(scalar<count>?) max results (default 500).}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per margin change
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{type}}{(scalar<count>?) 1 = add margin, 2 = reduce margin.}
+      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+      \item{\code{limit}}{(scalar<count>?) max results (default 500).}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per margin change
 (empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
@@ -1813,25 +1729,22 @@ Verified: 2026-05-22
 \item time (POSIXct) Time of the margin change.
 \item position_side (character) Position side.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 history <- futures$get_position_margin_history("BTCUSDT")
 print(history)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-get_trades"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-get_trades}{}}}
-\subsection{Method \code{get_trades()}}{
-Get Futures Account Trade List
+\subsection{\code{BinanceFutures$get_trades()}}{
+  Get Futures Account Trade List
 
 Retrieves the trade history for the futures account.
 \subsection{API Endpoint}{
@@ -1876,8 +1789,9 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_trades(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$get_trades(
   symbol,
   order_id = NULL,
   start_time = NULL,
@@ -1885,30 +1799,24 @@ Verified: 2026-05-22
   from_id = NULL,
   limit = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{order_id}}{(scalar<count>?) filter by order ID.}
-
-\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-
-\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-
-\item{\code{from_id}}{(scalar<count>?) trade ID to fetch from.}
-
-\item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per trade
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{order_id}}{(scalar<count>?) filter by order ID.}
+      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+      \item{\code{from_id}}{(scalar<count>?) trade ID to fetch from.}
+      \item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per trade
 (empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
@@ -1926,25 +1834,22 @@ Verified: 2026-05-22
 \item maker (logical) Whether the trade was a maker.
 \item time (POSIXct) Trade execution time.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 trades <- futures$get_trades("BTCUSDT", limit = 50)
 print(trades)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-get_income_history"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-get_income_history}{}}}
-\subsection{Method \code{get_income_history()}}{
-Get Income History
+\subsection{\code{BinanceFutures$get_income_history()}}{
+  Get Income History
 
 Retrieves the income history for the futures account (funding fees,
 realized PnL, commissions, etc.).
@@ -1993,23 +1898,23 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_income_history(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$get_income_history(
   symbol = NULL,
   income_type = NULL,
   start_time = NULL,
   end_time = NULL,
   limit = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{income_type}}{(scalar<character>?) income type filter. Valid values:
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{income_type}}{(scalar<character>?) income type filter. Valid values:
 \code{"TRANSFER"}, \code{"WELCOME_BONUS"}, \code{"REALIZED_PNL"}, \code{"FUNDING_FEE"},
 \code{"COMMISSION"}, \code{"INSURANCE_CLEAR"}, \code{"REFERRAL_KICKBACK"},
 \code{"COMMISSION_REBATE"}, \code{"API_REBATE"}, \code{"CONTEST_REWARD"},
@@ -2017,19 +1922,15 @@ Verified: 2026-05-22
 \code{"OPTIONS_SETTLE_PROFIT"}, \code{"INTERNAL_TRANSFER"}, \code{"AUTO_EXCHANGE"},
 \code{"DELIVERED_SETTELMENT"}, \code{"COIN_SWAP_DEPOSIT"}, \code{"COIN_SWAP_WITHDRAW"},
 \code{"POSITION_LIMIT_INCREASE_FEE"}.}
-
-\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-
-\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-
-\item{\code{limit}}{(scalar<count>?) max results (default 100, max 1000).}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per income entry
+      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+      \item{\code{limit}}{(scalar<count>?) max results (default 100, max 1000).}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per income entry
 (empty when there are none):
 \itemize{
 \item symbol (character) Trading pair (may be empty for some income types).
@@ -2042,25 +1943,22 @@ Verified: 2026-05-22
 R's 32-bit \code{integer}, so it is coerced to a double).
 \item trade_id (character) Associated trade ID if applicable.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 income <- futures$get_income_history(symbol = "BTCUSDT", income_type = "FUNDING_FEE")
 print(income)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-set_position_mode"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-set_position_mode}{}}}
-\subsection{Method \code{set_position_mode()}}{
-Set Position Mode
+\subsection{\code{BinanceFutures$set_position_mode()}}{
+  Set Position Mode
 
 Changes the position mode between one-way and hedge mode.
 \subsection{API Endpoint}{
@@ -2101,44 +1999,41 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$set_position_mode(dual_side_position, recv_window = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{dual_side_position}}{(scalar<logical>) \code{TRUE} for hedge mode, \code{FALSE} for one-way.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$set_position_mode(dual_side_position, recv_window = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{dual_side_position}}{(scalar<logical>) \code{TRUE} for hedge mode, \code{FALSE} for one-way.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item code (integer) Response code (\code{200} on success).
 \item msg (character) Response message.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 result <- futures$set_position_mode(TRUE)
 print(result)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-get_position_mode"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-get_position_mode}{}}}
-\subsection{Method \code{get_position_mode()}}{
-Get Position Mode
+\subsection{\code{BinanceFutures$get_position_mode()}}{
+  Get Position Mode
 
 Retrieves the current position mode (one-way or hedge mode).
 \subsection{API Endpoint}{
@@ -2167,51 +2062,51 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$get_position_mode(recv_window = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$get_position_mode(recv_window = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item dual_side_position (logical) \code{TRUE} if hedge mode, \code{FALSE} if one-way mode.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-futures <- BinanceFutures$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFutures$new()
 mode <- futures$get_position_mode()
 print(mode$dual_side_position)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceFutures-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceFutures-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceFutures$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{BinanceFutures$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFutures$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

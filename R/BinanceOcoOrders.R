@@ -385,7 +385,7 @@ BinanceOcoOrders <- R6::R6Class(
       assert::assert_nonempty_strings(symbol)
       assert::assert_nonempty_strings(list_client_order_id, null_ok = TRUE)
       if (is.null(order_list_id) && is.null(list_client_order_id)) {
-        rlang::abort("Either 'order_list_id' or 'list_client_order_id' must be provided.")
+        abort_binance_validation_error("Either 'order_list_id' or 'list_client_order_id' must be provided.")
       }
 
       res <- private$.request(
@@ -508,7 +508,7 @@ BinanceOcoOrders <- R6::R6Class(
       assert_args_BinanceOcoOrders__get_oco_order(order_list_id, orig_client_order_id, recv_window)
       assert::assert_nonempty_strings(orig_client_order_id, null_ok = TRUE)
       if (is.null(order_list_id) && is.null(orig_client_order_id)) {
-        rlang::abort("Either 'order_list_id' or 'orig_client_order_id' must be provided.")
+        abort_binance_validation_error("Either 'order_list_id' or 'orig_client_order_id' must be provided.")
       }
 
       res <- private$.request(

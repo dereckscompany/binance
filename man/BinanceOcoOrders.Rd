@@ -4,11 +4,6 @@
 \alias{BinanceOcoOrders}
 \title{BinanceOcoOrders: OCO Order Management}
 \description{
-BinanceOcoOrders: OCO Order Management
-
-BinanceOcoOrders: OCO Order Management
-}
-\details{
 Provides methods for placing, cancelling, and querying OCO (One-Cancels-Other)
 orders on Binance. Inherits from \link{BinanceBase}.
 \subsection{Purpose and Scope}{
@@ -63,7 +58,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceOcoOrders$add_oco_order`
+## Method `BinanceOcoOrders$add_oco_order()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -77,7 +72,7 @@ print(result)
 }
 
 ## ------------------------------------------------
-## Method `BinanceOcoOrders$cancel_oco_order`
+## Method `BinanceOcoOrders$cancel_oco_order()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -87,7 +82,7 @@ print(cancelled)
 }
 
 ## ------------------------------------------------
-## Method `BinanceOcoOrders$get_oco_order`
+## Method `BinanceOcoOrders$get_oco_order()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -97,7 +92,7 @@ print(order)
 }
 
 ## ------------------------------------------------
-## Method `BinanceOcoOrders$get_open_oco_orders`
+## Method `BinanceOcoOrders$get_open_oco_orders()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -107,7 +102,7 @@ print(open)
 }
 
 ## ------------------------------------------------
-## Method `BinanceOcoOrders$get_all_oco_orders`
+## Method `BinanceOcoOrders$get_all_oco_orders()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -117,31 +112,29 @@ print(all)
 }
 }
 \section{Super classes}{
-\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceOcoOrders}
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{BinanceBase}} -> \code{BinanceOcoOrders}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-BinanceOcoOrders-add_oco_order}{\code{BinanceOcoOrders$add_oco_order()}}
-\item \href{#method-BinanceOcoOrders-cancel_oco_order}{\code{BinanceOcoOrders$cancel_oco_order()}}
-\item \href{#method-BinanceOcoOrders-get_oco_order}{\code{BinanceOcoOrders$get_oco_order()}}
-\item \href{#method-BinanceOcoOrders-get_open_oco_orders}{\code{BinanceOcoOrders$get_open_oco_orders()}}
-\item \href{#method-BinanceOcoOrders-get_all_oco_orders}{\code{BinanceOcoOrders$get_all_oco_orders()}}
-\item \href{#method-BinanceOcoOrders-clone}{\code{BinanceOcoOrders$clone()}}
+  \itemize{
+    \item \href{#method-BinanceOcoOrders-add_oco_order}{\code{BinanceOcoOrders$add_oco_order()}}
+    \item \href{#method-BinanceOcoOrders-cancel_oco_order}{\code{BinanceOcoOrders$cancel_oco_order()}}
+    \item \href{#method-BinanceOcoOrders-get_oco_order}{\code{BinanceOcoOrders$get_oco_order()}}
+    \item \href{#method-BinanceOcoOrders-get_open_oco_orders}{\code{BinanceOcoOrders$get_open_oco_orders()}}
+    \item \href{#method-BinanceOcoOrders-get_all_oco_orders}{\code{BinanceOcoOrders$get_all_oco_orders()}}
+    \item \href{#method-BinanceOcoOrders-clone}{\code{BinanceOcoOrders$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>binance::BinanceBase$initialize()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>BinanceBase$initialize()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceOcoOrders-add_oco_order"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceOcoOrders-add_oco_order}{}}}
-\subsection{Method \code{add_oco_order()}}{
-Place an OCO Order
+\subsection{\code{BinanceOcoOrders$add_oco_order()}}{
+  Place an OCO Order
 
 Places a new OCO (One-Cancels-Other) order on Binance. An OCO combines
 a limit order and a stop-loss (or stop-loss-limit) order.
@@ -195,8 +188,9 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceOcoOrders$add_oco_order(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceOcoOrders$add_oco_order(
   symbol,
   side,
   quantity,
@@ -212,47 +206,33 @@ Verified: 2026-05-22
   new_order_resp_type = NULL,
   self_trade_prevention_mode = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
-
-\item{\code{quantity}}{(scalar<numeric>) base asset quantity.}
-
-\item{\code{price}}{(scalar<numeric>) price for the limit leg.}
-
-\item{\code{stop_price}}{(scalar<numeric>) trigger price for the stop-loss leg.}
-
-\item{\code{stop_limit_price}}{(scalar<numeric>?) limit price for the stop-loss-limit leg.}
-
-\item{\code{stop_limit_time_in_force}}{(scalar<character>?) time-in-force for the stop-limit leg
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
+      \item{\code{quantity}}{(scalar<numeric>) base asset quantity.}
+      \item{\code{price}}{(scalar<numeric>) price for the limit leg.}
+      \item{\code{stop_price}}{(scalar<numeric>) trigger price for the stop-loss leg.}
+      \item{\code{stop_limit_price}}{(scalar<numeric>?) limit price for the stop-loss-limit leg.}
+      \item{\code{stop_limit_time_in_force}}{(scalar<character>?) time-in-force for the stop-limit leg
 (\code{"GTC"}, \code{"IOC"}, \code{"FOK"}). Required if \code{stopLimitPrice} is provided.}
-
-\item{\code{list_client_order_id}}{(scalar<character>?) unique ID for the entire OCO list.}
-
-\item{\code{limit_client_order_id}}{(scalar<character>?) unique ID for the limit leg.}
-
-\item{\code{stop_client_order_id}}{(scalar<character>?) unique ID for the stop-loss leg.}
-
-\item{\code{limit_iceberg_qty}}{(scalar<numeric>?) iceberg quantity for the limit leg.}
-
-\item{\code{stop_iceberg_qty}}{(scalar<numeric>?) iceberg quantity for the stop-loss leg.}
-
-\item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
-
-\item{\code{self_trade_prevention_mode}}{(scalar<character>?)}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per child order report
+      \item{\code{list_client_order_id}}{(scalar<character>?) unique ID for the entire OCO list.}
+      \item{\code{limit_client_order_id}}{(scalar<character>?) unique ID for the limit leg.}
+      \item{\code{stop_client_order_id}}{(scalar<character>?) unique ID for the stop-loss leg.}
+      \item{\code{limit_iceberg_qty}}{(scalar<numeric>?) iceberg quantity for the limit leg.}
+      \item{\code{stop_iceberg_qty}}{(scalar<numeric>?) iceberg quantity for the stop-loss leg.}
+      \item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
+      \item{\code{self_trade_prevention_mode}}{(scalar<character>?)}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per child order report
 (long format):
 \itemize{
 \item order_list_id (numeric) OCO order list identifier (repeated per child order).
@@ -281,11 +261,10 @@ non-stop leg, e.g. the \code{LIMIT_MAKER} order).
 \item order_report_self_trade_prevention_mode (character) Self-trade-prevention
 mode.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-oco <- BinanceOcoOrders$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{oco <- BinanceOcoOrders$new()
 result <- oco$add_oco_order(
   symbol = "BTCUSDT", side = "SELL",
   quantity = 0.0001, price = 55000, stop_price = 49000,
@@ -293,17 +272,15 @@ result <- oco$add_oco_order(
 )
 print(result)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceOcoOrders-cancel_oco_order"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceOcoOrders-cancel_oco_order}{}}}
-\subsection{Method \code{cancel_oco_order()}}{
-Cancel an OCO Order
+\subsection{\code{BinanceOcoOrders$cancel_oco_order()}}{
+  Cancel an OCO Order
 
 Cancels an entire OCO order list by order list ID or client order ID.
 \subsection{API Endpoint}{
@@ -382,30 +359,28 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceOcoOrders$cancel_oco_order(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceOcoOrders$cancel_oco_order(
   symbol,
   order_list_id = NULL,
   list_client_order_id = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{order_list_id}}{(scalar<count>?) the OCO order list ID.}
-
-\item{\code{list_client_order_id}}{(scalar<character>?) the client order list ID.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per child order report
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{order_list_id}}{(scalar<count>?) the OCO order list ID.}
+      \item{\code{list_client_order_id}}{(scalar<character>?) the client order list ID.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per child order report
 (long format), matching the shape returned by \code{add_oco_order()}. The
 thinner \code{orders} array Binance returns is dropped in favour of
 the richer \code{orderReports} payload, which includes the
@@ -438,25 +413,22 @@ non-stop leg).
 \item order_report_self_trade_prevention_mode (character) Self-trade-prevention
 mode.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-oco <- BinanceOcoOrders$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{oco <- BinanceOcoOrders$new()
 cancelled <- oco$cancel_oco_order("BTCUSDT", order_list_id = 0)
 print(cancelled)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceOcoOrders-get_oco_order"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceOcoOrders-get_oco_order}{}}}
-\subsection{Method \code{get_oco_order()}}{
-Query an OCO Order
+\subsection{\code{BinanceOcoOrders$get_oco_order()}}{
+  Query an OCO Order
 
 Retrieves details for a specific OCO order by order list ID or
 original client order ID.
@@ -503,27 +475,26 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceOcoOrders$get_oco_order(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceOcoOrders$get_oco_order(
   order_list_id = NULL,
   orig_client_order_id = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{order_list_id}}{(scalar<count>?) the OCO order list ID.}
-
-\item{\code{orig_client_order_id}}{(scalar<character>?) the original client order list ID.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per child order
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{order_list_id}}{(scalar<count>?) the OCO order list ID.}
+      \item{\code{orig_client_order_id}}{(scalar<character>?) the original client order list ID.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per child order
 (long format):
 \itemize{
 \item order_list_id (numeric) OCO order list identifier (repeated per child order).
@@ -537,25 +508,22 @@ Verified: 2026-05-22
 \item order_order_id (numeric) Child order ID.
 \item order_client_order_id (character) Child order client ID.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-oco <- BinanceOcoOrders$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{oco <- BinanceOcoOrders$new()
 order <- oco$get_oco_order(order_list_id = 0)
 print(order)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceOcoOrders-get_open_oco_orders"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceOcoOrders-get_open_oco_orders}{}}}
-\subsection{Method \code{get_open_oco_orders()}}{
-Get Open OCO Orders
+\subsection{\code{BinanceOcoOrders$get_open_oco_orders()}}{
+  Get Open OCO Orders
 
 Retrieves all currently open OCO order lists.
 \subsection{API Endpoint}{
@@ -603,19 +571,20 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceOcoOrders$get_open_oco_orders(recv_window = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per child order across
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceOcoOrders$get_open_oco_orders(recv_window = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per child order across
 all open OCOs (long format; empty when there are no open OCOs):
 \itemize{
 \item order_list_id (numeric) OCO order list identifier (repeated per child order).
@@ -629,25 +598,22 @@ all open OCOs (long format; empty when there are no open OCOs):
 \item order_order_id (numeric) Child order ID.
 \item order_client_order_id (character) Child order client ID.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-oco <- BinanceOcoOrders$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{oco <- BinanceOcoOrders$new()
 open <- oco$get_open_oco_orders()
 print(open)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceOcoOrders-get_all_oco_orders"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceOcoOrders-get_all_oco_orders}{}}}
-\subsection{Method \code{get_all_oco_orders()}}{
-Get All OCO Orders
+\subsection{\code{BinanceOcoOrders$get_all_oco_orders()}}{
+  Get All OCO Orders
 
 Retrieves all OCO order lists (open, cancelled, done). If \code{fromId} is set,
 returns OCOs with order list ID >= that value. Otherwise returns the most
@@ -718,33 +684,30 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceOcoOrders$get_all_oco_orders(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceOcoOrders$get_all_oco_orders(
   from_id = NULL,
   start_time = NULL,
   end_time = NULL,
   limit = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{from_id}}{(scalar<count>?) pagination cursor (orderListId).}
-
-\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-
-\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-
-\item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per child order across
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{from_id}}{(scalar<count>?) pagination cursor (orderListId).}
+      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+      \item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per child order across
 all OCOs (long format; empty when there are no matching OCOs):
 \itemize{
 \item order_list_id (numeric) OCO order list identifier (repeated per child order).
@@ -758,35 +721,34 @@ all OCOs (long format; empty when there are no matching OCOs):
 \item order_order_id (numeric) Child order ID.
 \item order_client_order_id (character) Child order client ID.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-oco <- BinanceOcoOrders$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{oco <- BinanceOcoOrders$new()
 all <- oco$get_all_oco_orders(limit = 50)
 print(all)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceOcoOrders-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceOcoOrders-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceOcoOrders$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{BinanceOcoOrders$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceOcoOrders$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

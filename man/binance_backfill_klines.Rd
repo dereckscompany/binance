@@ -40,7 +40,7 @@ incrementally so progress is saved even if the process is interrupted.}
 \item{sleep}{(scalar<numeric in [0, Inf[>) seconds to sleep between each
 symbol-timeframe combination to respect rate limits.}
 
-\item{verbose}{(scalar<logical>) if \code{TRUE}, prints progress messages via \code{\link[rlang:abort]{rlang::inform()}}.}
+\item{verbose}{(scalar<logical>) if \code{TRUE}, prints progress messages via \code{\link[rlang:inform]{rlang::inform()}}.}
 
 \item{timeout}{(scalar<numeric in ]0, Inf[> | scalar<integer in [1, Inf[>)
 per-request timeout in seconds — a whole number or a decimal is accepted. A
