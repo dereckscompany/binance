@@ -4,6 +4,11 @@
 \alias{BinanceSubAccount}
 \title{BinanceSubAccount: Sub-Account Management}
 \description{
+BinanceSubAccount: Sub-Account Management
+
+BinanceSubAccount: Sub-Account Management
+}
+\details{
 Provides methods for creating and managing Binance sub-accounts,
 querying balances, performing universal transfers, and retrieving
 futures/margin account details. Inherits from \link{BinanceBase}.
@@ -74,7 +79,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$add_sub_account()`
+## Method `BinanceSubAccount$add_sub_account`
 ## ------------------------------------------------
 
 \dontrun{
@@ -84,7 +89,7 @@ print(result$email)
 }
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$get_sub_accounts()`
+## Method `BinanceSubAccount$get_sub_accounts`
 ## ------------------------------------------------
 
 \dontrun{
@@ -94,7 +99,7 @@ print(accounts[, .(email, is_freeze, create_time)])
 }
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$get_balances()`
+## Method `BinanceSubAccount$get_balances`
 ## ------------------------------------------------
 
 \dontrun{
@@ -104,7 +109,7 @@ print(balances)
 }
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$get_spot_summary()`
+## Method `BinanceSubAccount$get_spot_summary`
 ## ------------------------------------------------
 
 \dontrun{
@@ -114,7 +119,7 @@ print(summary)
 }
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$add_transfer()`
+## Method `BinanceSubAccount$add_transfer`
 ## ------------------------------------------------
 
 \dontrun{
@@ -128,7 +133,7 @@ print(result$tran_id)
 }
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$get_transfer_history()`
+## Method `BinanceSubAccount$get_transfer_history`
 ## ------------------------------------------------
 
 \dontrun{
@@ -138,7 +143,7 @@ print(history)
 }
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$get_futures_account()`
+## Method `BinanceSubAccount$get_futures_account`
 ## ------------------------------------------------
 
 \dontrun{
@@ -148,7 +153,7 @@ print(futures)
 }
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$get_margin_account()`
+## Method `BinanceSubAccount$get_margin_account`
 ## ------------------------------------------------
 
 \dontrun{
@@ -158,7 +163,7 @@ print(margin)
 }
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$get_status()`
+## Method `BinanceSubAccount$get_status`
 ## ------------------------------------------------
 
 \dontrun{
@@ -168,33 +173,35 @@ print(status)
 }
 }
 \section{Super classes}{
-\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{BinanceBase}} -> \code{BinanceSubAccount}
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceSubAccount}
 }
 \section{Methods}{
 \subsection{Public methods}{
-  \itemize{
-    \item \href{#method-BinanceSubAccount-add_sub_account}{\code{BinanceSubAccount$add_sub_account()}}
-    \item \href{#method-BinanceSubAccount-get_sub_accounts}{\code{BinanceSubAccount$get_sub_accounts()}}
-    \item \href{#method-BinanceSubAccount-get_balances}{\code{BinanceSubAccount$get_balances()}}
-    \item \href{#method-BinanceSubAccount-get_spot_summary}{\code{BinanceSubAccount$get_spot_summary()}}
-    \item \href{#method-BinanceSubAccount-add_transfer}{\code{BinanceSubAccount$add_transfer()}}
-    \item \href{#method-BinanceSubAccount-get_transfer_history}{\code{BinanceSubAccount$get_transfer_history()}}
-    \item \href{#method-BinanceSubAccount-get_futures_account}{\code{BinanceSubAccount$get_futures_account()}}
-    \item \href{#method-BinanceSubAccount-get_margin_account}{\code{BinanceSubAccount$get_margin_account()}}
-    \item \href{#method-BinanceSubAccount-get_status}{\code{BinanceSubAccount$get_status()}}
-    \item \href{#method-BinanceSubAccount-clone}{\code{BinanceSubAccount$clone()}}
-  }
+\itemize{
+\item \href{#method-BinanceSubAccount-add_sub_account}{\code{BinanceSubAccount$add_sub_account()}}
+\item \href{#method-BinanceSubAccount-get_sub_accounts}{\code{BinanceSubAccount$get_sub_accounts()}}
+\item \href{#method-BinanceSubAccount-get_balances}{\code{BinanceSubAccount$get_balances()}}
+\item \href{#method-BinanceSubAccount-get_spot_summary}{\code{BinanceSubAccount$get_spot_summary()}}
+\item \href{#method-BinanceSubAccount-add_transfer}{\code{BinanceSubAccount$add_transfer()}}
+\item \href{#method-BinanceSubAccount-get_transfer_history}{\code{BinanceSubAccount$get_transfer_history()}}
+\item \href{#method-BinanceSubAccount-get_futures_account}{\code{BinanceSubAccount$get_futures_account()}}
+\item \href{#method-BinanceSubAccount-get_margin_account}{\code{BinanceSubAccount$get_margin_account()}}
+\item \href{#method-BinanceSubAccount-get_status}{\code{BinanceSubAccount$get_status()}}
+\item \href{#method-BinanceSubAccount-clone}{\code{BinanceSubAccount$clone()}}
 }
-\if{html}{\out{<details open><summary>Inherited methods</summary>
+}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
 <ul>
-  <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>BinanceBase$initialize()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>binance::BinanceBase$initialize()</code></a></span></li>
 </ul>
-</details>}}
+</details>
+}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceSubAccount-add_sub_account"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceSubAccount-add_sub_account}{}}}
-\subsection{\code{BinanceSubAccount$add_sub_account()}}{
-  Create a Virtual Sub-Account
+\subsection{Method \code{add_sub_account()}}{
+Create a Virtual Sub-Account
 
 Creates a new virtual sub-account under the master account.
 \subsection{API Endpoint}{
@@ -223,40 +230,43 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceSubAccount$add_sub_account(sub_account_string, recv_window = NULL)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{sub_account_string}}{(scalar<character>) the sub-account name/string identifier.}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row:
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$add_sub_account(sub_account_string, recv_window = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{sub_account_string}}{(scalar<character>) the sub-account name/string identifier.}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row:
 \itemize{
 \item email (character) The email of the newly created sub-account.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{sub <- BinanceSubAccount$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+sub <- BinanceSubAccount$new()
 result <- sub$add_sub_account(sub_account_string = "mysubaccount")
 print(result$email)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceSubAccount-get_sub_accounts"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceSubAccount-get_sub_accounts}{}}}
-\subsection{\code{BinanceSubAccount$get_sub_accounts()}}{
-  List Sub-Accounts
+\subsection{Method \code{get_sub_accounts()}}{
+List Sub-Accounts
 
 Retrieves a list of sub-accounts under the master account, optionally
 filtered by email or freeze status.
@@ -293,30 +303,33 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceSubAccount$get_sub_accounts(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_sub_accounts(
   email = NULL,
   is_freeze = NULL,
   page = NULL,
   limit = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{email}}{(scalar<character>?) filter by sub-account email.}
-      \item{\code{is_freeze}}{(scalar<logical>?) filter by freeze status.}
-      \item{\code{page}}{(scalar<count>?) page number (default 1).}
-      \item{\code{limit}}{(scalar<count>?) results per page (default 1, max 200).}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per sub-account
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{email}}{(scalar<character>?) filter by sub-account email.}
+
+\item{\code{is_freeze}}{(scalar<logical>?) filter by freeze status.}
+
+\item{\code{page}}{(scalar<count>?) page number (default 1).}
+
+\item{\code{limit}}{(scalar<count>?) results per page (default 1, max 200).}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per sub-account
 (empty when there are none):
 \itemize{
 \item email (character) Sub-account email.
@@ -325,22 +338,25 @@ Verified: 2026-05-22
 \item is_managed_sub_account (logical) Whether it is a managed sub-account.
 \item is_asset_management_sub_account (logical) Whether it is an asset management sub-account.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{sub <- BinanceSubAccount$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+sub <- BinanceSubAccount$new()
 accounts <- sub$get_sub_accounts()
 print(accounts[, .(email, is_freeze, create_time)])
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceSubAccount-get_balances"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceSubAccount-get_balances}{}}}
-\subsection{\code{BinanceSubAccount$get_balances()}}{
-  Get Sub-Account Balances
+\subsection{Method \code{get_balances()}}{
+Get Sub-Account Balances
 
 Retrieves asset balances for a specific sub-account.
 \subsection{API Endpoint}{
@@ -371,43 +387,46 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceSubAccount$get_balances(email, recv_window = NULL)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{email}}{(scalar<character>) the sub-account email.}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per asset
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_balances(email, recv_window = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{email}}{(scalar<character>) the sub-account email.}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per asset
 (empty when there are none):
 \itemize{
 \item asset (character) Asset symbol (e.g., \code{"BTC"}).
 \item free (numeric) Available balance.
 \item locked (numeric) Locked balance.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{sub <- BinanceSubAccount$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+sub <- BinanceSubAccount$new()
 balances <- sub$get_balances(email = "sub@virtual.com")
 print(balances)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceSubAccount-get_spot_summary"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceSubAccount-get_spot_summary}{}}}
-\subsection{\code{BinanceSubAccount$get_spot_summary()}}{
-  Get Sub-Account Spot Summary
+\subsection{Method \code{get_spot_summary()}}{
+Get Sub-Account Spot Summary
 
 Retrieves spot account summary for sub-accounts.
 \subsection{API Endpoint}{
@@ -446,28 +465,30 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceSubAccount$get_spot_summary(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_spot_summary(
   email = NULL,
   page = NULL,
   size = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{email}}{(scalar<character>?) filter by sub-account email.}
-      \item{\code{page}}{(scalar<count>?) page number (default 1).}
-      \item{\code{size}}{(scalar<count>?) results per page (default 10, max 20).}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per sub-account
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{email}}{(scalar<character>?) filter by sub-account email.}
+
+\item{\code{page}}{(scalar<count>?) page number (default 1).}
+
+\item{\code{size}}{(scalar<count>?) results per page (default 10, max 20).}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per sub-account
 (empty when there are none); the master-level summary fields are
 replicated on each row:
 \itemize{
@@ -477,22 +498,25 @@ asset value in BTC (repeated per row).
 \item sub_user_email (character) Sub-account email.
 \item sub_user_total_asset (character) Sub-account total asset value in BTC.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{sub <- BinanceSubAccount$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+sub <- BinanceSubAccount$new()
 summary <- sub$get_spot_summary()
 print(summary)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceSubAccount-add_transfer"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceSubAccount-add_transfer}{}}}
-\subsection{\code{BinanceSubAccount$add_transfer()}}{
-  Universal Transfer
+\subsection{Method \code{add_transfer()}}{
+Universal Transfer
 
 Transfers assets between master and sub-accounts or between sub-accounts,
 across different account types (SPOT, futures, margin).
@@ -537,9 +561,8 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceSubAccount$add_transfer(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$add_transfer(
   from_email = NULL,
   to_email = NULL,
   from_account_type,
@@ -548,36 +571,44 @@ Verified: 2026-05-22
   amount,
   client_tran_id = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{from_email}}{(scalar<character>?) sender sub-account email.}
-      \item{\code{to_email}}{(scalar<character>?) recipient sub-account email.}
-      \item{\code{from_account_type}}{(scalar<character>) source account type. One of
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{from_email}}{(scalar<character>?) sender sub-account email.}
+
+\item{\code{to_email}}{(scalar<character>?) recipient sub-account email.}
+
+\item{\code{from_account_type}}{(scalar<character>) source account type. One of
 \code{"SPOT"}, \code{"USDT_FUTURE"}, \code{"COIN_FUTURE"}, \code{"MARGIN"}, \code{"ISOLATED_MARGIN"}.}
-      \item{\code{to_account_type}}{(scalar<character>) destination account type. One of
+
+\item{\code{to_account_type}}{(scalar<character>) destination account type. One of
 \code{"SPOT"}, \code{"USDT_FUTURE"}, \code{"COIN_FUTURE"}, \code{"MARGIN"}, \code{"ISOLATED_MARGIN"}.}
-      \item{\code{asset}}{(scalar<character>) asset to transfer (e.g., \code{"USDT"}).}
-      \item{\code{amount}}{(scalar<numeric>) amount to transfer.}
-      \item{\code{client_tran_id}}{(scalar<character>?) client-defined transfer ID.}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row:
+
+\item{\code{asset}}{(scalar<character>) asset to transfer (e.g., \code{"USDT"}).}
+
+\item{\code{amount}}{(scalar<numeric>) amount to transfer.}
+
+\item{\code{client_tran_id}}{(scalar<character>?) client-defined transfer ID.}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row:
 \itemize{
 \item tran_id (numeric) Binance-assigned transfer ID (a large integer that
 overflows R's 32-bit \code{integer}, so it arrives as a double).
 \item client_tran_id (character) Client-defined transfer ID.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{sub <- BinanceSubAccount$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+sub <- BinanceSubAccount$new()
 result <- sub$add_transfer(
   to_email = "sub@virtual.com",
   from_account_type = "SPOT", to_account_type = "SPOT",
@@ -585,15 +616,17 @@ result <- sub$add_transfer(
 )
 print(result$tran_id)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceSubAccount-get_transfer_history"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceSubAccount-get_transfer_history}{}}}
-\subsection{\code{BinanceSubAccount$get_transfer_history()}}{
-  Get Universal Transfer History
+\subsection{Method \code{get_transfer_history()}}{
+Get Universal Transfer History
 
 Retrieves universal transfer history between master and sub-accounts.
 \subsection{API Endpoint}{
@@ -634,9 +667,8 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceSubAccount$get_transfer_history(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_transfer_history(
   from_email = NULL,
   to_email = NULL,
   client_tran_id = NULL,
@@ -645,25 +677,32 @@ Verified: 2026-05-22
   page = NULL,
   limit = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{from_email}}{(scalar<character>?) filter by sender email.}
-      \item{\code{to_email}}{(scalar<character>?) filter by recipient email.}
-      \item{\code{client_tran_id}}{(scalar<character>?) filter by client transfer ID.}
-      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-      \item{\code{page}}{(scalar<count>?) page number (default 1).}
-      \item{\code{limit}}{(scalar<count>?) results per page (default 500, max 500).}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per transfer
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{from_email}}{(scalar<character>?) filter by sender email.}
+
+\item{\code{to_email}}{(scalar<character>?) filter by recipient email.}
+
+\item{\code{client_tran_id}}{(scalar<character>?) filter by client transfer ID.}
+
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+
+\item{\code{page}}{(scalar<count>?) page number (default 1).}
+
+\item{\code{limit}}{(scalar<count>?) results per page (default 500, max 500).}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per transfer
 (empty when there are none):
 \itemize{
 \item tran_id (numeric) Binance-assigned transfer ID (a large integer that
@@ -678,22 +717,25 @@ overflows R's 32-bit \code{integer}, so it arrives as a double).
 \item status (character) Transfer status.
 \item client_tran_id (character) Client-defined transfer ID.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{sub <- BinanceSubAccount$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+sub <- BinanceSubAccount$new()
 history <- sub$get_transfer_history(to_email = "sub@virtual.com")
 print(history)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceSubAccount-get_futures_account"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceSubAccount-get_futures_account}{}}}
-\subsection{\code{BinanceSubAccount$get_futures_account()}}{
-  Get Sub-Account Futures Account
+\subsection{Method \code{get_futures_account()}}{
+Get Sub-Account Futures Account
 
 Retrieves futures account details for a sub-account.
 \subsection{API Endpoint}{
@@ -747,22 +789,23 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceSubAccount$get_futures_account(email, futures_type, recv_window = NULL)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{email}}{(scalar<character>) the sub-account email.}
-      \item{\code{futures_type}}{(scalar<count>) \code{1} for USDT-margined futures, \code{2} for COIN-margined futures.}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per asset (long
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_futures_account(email, futures_type, recv_window = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{email}}{(scalar<character>) the sub-account email.}
+
+\item{\code{futures_type}}{(scalar<count>) \code{1} for USDT-margined futures, \code{2} for COIN-margined futures.}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per asset (long
 format). Account-level fields (\code{email}, \code{asset}, \code{can_deposit},
 \code{can_trade}, \code{can_withdraw}, \code{fee_tier}, \code{max_withdraw_amount},
 \code{total_initial_margin}, \code{total_margin_balance}, \code{total_wallet_balance},
@@ -774,22 +817,25 @@ the return is typed only as a \code{data.table} (no fixed-column contract).
 When the response contains an \code{assets} list, it is expanded to long
 format with parent account fields repeated; when there are no assets, a
 single row without asset-level columns is returned.
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{sub <- BinanceSubAccount$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+sub <- BinanceSubAccount$new()
 futures <- sub$get_futures_account(email = "sub@virtual.com", futures_type = 1)
 print(futures)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceSubAccount-get_margin_account"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceSubAccount-get_margin_account}{}}}
-\subsection{\code{BinanceSubAccount$get_margin_account()}}{
-  Get Sub-Account Margin Account
+\subsection{Method \code{get_margin_account()}}{
+Get Sub-Account Margin Account
 
 Retrieves margin account details for a sub-account.
 \subsection{API Endpoint}{
@@ -826,42 +872,45 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceSubAccount$get_margin_account(email, recv_window = NULL)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{email}}{(scalar<character>) the sub-account email.}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row, whichever margin
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_margin_account(email, recv_window = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{email}}{(scalar<character>) the sub-account email.}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row, whichever margin
 account fields Binance returns (\code{email}, \code{margin_level},
 \code{total_asset_of_btc}, \code{total_liability_of_btc},
 \code{total_net_asset_of_btc}, and a \code{margin_trade_coeff_vo} list-column of
 nested coefficients). The exact column set follows the payload, so the
 return is typed only as a \code{data.table} (no fixed-column contract).
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{sub <- BinanceSubAccount$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+sub <- BinanceSubAccount$new()
 margin <- sub$get_margin_account(email = "sub@virtual.com")
 print(margin)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceSubAccount-get_status"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceSubAccount-get_status}{}}}
-\subsection{\code{BinanceSubAccount$get_status()}}{
-  Get Sub-Account Status
+\subsection{Method \code{get_status()}}{
+Get Sub-Account Status
 
 Retrieves the status of sub-accounts, including enablement flags and
 activity state.
@@ -898,21 +947,21 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceSubAccount$get_status(email = NULL, recv_window = NULL)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{email}}{(scalar<character>?) filter by sub-account email.}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per sub-account
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$get_status(email = NULL, recv_window = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{email}}{(scalar<character>?) filter by sub-account email.}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per sub-account
 (empty when there are none):
 \itemize{
 \item email (character) Sub-account email.
@@ -923,34 +972,35 @@ Verified: 2026-05-22
 \item is_future_enabled (logical) Whether futures trading is enabled.
 \item mobile (integer) Mobile verification status.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{sub <- BinanceSubAccount$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+sub <- BinanceSubAccount$new()
 status <- sub$get_status()
 print(status)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceSubAccount-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceSubAccount-clone}{}}}
-\subsection{\code{BinanceSubAccount$clone()}}{
-  The objects of this class are cloneable with this method.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceSubAccount$clone(deep = FALSE)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{deep}}{Whether to make a deep clone.}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceSubAccount$clone(deep = FALSE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

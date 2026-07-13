@@ -4,6 +4,11 @@
 \alias{BinanceWsBase}
 \title{BinanceWsBase: Abstract Base Class for Binance WebSocket Streams}
 \description{
+BinanceWsBase: Abstract Base Class for Binance WebSocket Streams
+
+BinanceWsBase: Abstract Base Class for Binance WebSocket Streams
+}
+\details{
 Node.js-style event-driven base for Binance's public market-data WebSocket
 streams. You register handlers with \verb{$on(event, handler)} — exactly like
 \code{ws.on("message", ...)} in JavaScript — and the library calls them as messages
@@ -71,166 +76,159 @@ ws$run() # keeps the process alive and pumps the event loop
 }
 \section{Methods}{
 \subsection{Public methods}{
-  \itemize{
-    \item \href{#method-BinanceWsBase-initialize}{\code{BinanceWsBase$new()}}
-    \item \href{#method-BinanceWsBase-on}{\code{BinanceWsBase$on()}}
-    \item \href{#method-BinanceWsBase-subscribe}{\code{BinanceWsBase$subscribe()}}
-    \item \href{#method-BinanceWsBase-unsubscribe}{\code{BinanceWsBase$unsubscribe()}}
-    \item \href{#method-BinanceWsBase-subscriptions}{\code{BinanceWsBase$subscriptions()}}
-    \item \href{#method-BinanceWsBase-clone}{\code{BinanceWsBase$clone()}}
-  }
+\itemize{
+\item \href{#method-BinanceWsBase-new}{\code{BinanceWsBase$new()}}
+\item \href{#method-BinanceWsBase-on}{\code{BinanceWsBase$on()}}
+\item \href{#method-BinanceWsBase-subscribe}{\code{BinanceWsBase$subscribe()}}
+\item \href{#method-BinanceWsBase-unsubscribe}{\code{BinanceWsBase$unsubscribe()}}
+\item \href{#method-BinanceWsBase-subscriptions}{\code{BinanceWsBase$subscriptions()}}
+\item \href{#method-BinanceWsBase-clone}{\code{BinanceWsBase$clone()}}
 }
-\if{html}{\out{<details><summary>Inherited methods</summary>
+}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
 <ul>
-  <li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="close"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-close'><code>connectcore::StreamClient$close()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="connect"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-connect'><code>connectcore::StreamClient$connect()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="is_open"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-is_open'><code>connectcore::StreamClient$is_open()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="on_event"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-on_event'><code>connectcore::StreamClient$on_event()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="run"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-run'><code>connectcore::StreamClient$run()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="send"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-send'><code>connectcore::StreamClient$send()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="close"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-close'><code>connectcore::StreamClient$close()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="connect"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-connect'><code>connectcore::StreamClient$connect()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="is_open"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-is_open'><code>connectcore::StreamClient$is_open()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="run"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-run'><code>connectcore::StreamClient$run()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="connectcore" data-topic="StreamClient" data-id="send"><a href='../../connectcore/html/StreamClient.html#method-StreamClient-send'><code>connectcore::StreamClient$send()</code></a></span></li>
 </ul>
-</details>}}
+</details>
+}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BinanceWsBase-initialize"></a>}}
-\if{latex}{\out{\hypertarget{method-BinanceWsBase-initialize}{}}}
-\subsection{\code{BinanceWsBase$new()}}{
-  Initialise a BinanceWsBase Object
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceWsBase$new(
+\if{html}{\out{<a id="method-BinanceWsBase-new"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceWsBase-new}{}}}
+\subsection{Method \code{new()}}{
+Initialise a BinanceWsBase Object
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceWsBase$new(
   base_url = "wss://stream.binance.com:9443/stream",
   auto_reconnect = TRUE,
   max_reconnects = 10L,
   proactive_reconnect = TRUE
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{base_url}}{(scalar<character>) the WebSocket base URL. Defaults to the
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{base_url}}{(scalar<character>) the WebSocket base URL. Defaults to the
 spot combined-stream endpoint, so every message arrives tagged as
 \verb{\{"stream":...,"data":...\}} and can be routed per stream. Pass a different
 URL (e.g. the USD-M futures endpoint) to point the client elsewhere.}
-      \item{\code{auto_reconnect}}{(scalar<logical>) reconnect automatically (with
+
+\item{\code{auto_reconnect}}{(scalar<logical>) reconnect automatically (with
 backoff) when the socket drops. Default \code{TRUE}.}
-      \item{\code{max_reconnects}}{(scalar<count in [1, Inf[>) give up after this many
+
+\item{\code{max_reconnects}}{(scalar<count in [1, Inf[>) give up after this many
 consecutive failed reconnects (the process then exits its \verb{$run()} loop, so
 an external supervisor can restart it). Default \code{10}.}
-      \item{\code{proactive_reconnect}}{(scalar<logical>) reconnect proactively after 23
-hours to beat Binance's 24-hour forced disconnect. Default \code{TRUE}.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (class<BinanceWsBase>) invisibly, self.
-  }
-}
 
+\item{\code{proactive_reconnect}}{(scalar<logical>) reconnect proactively after 23
+hours to beat Binance's 24-hour forced disconnect. Default \code{TRUE}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(class<BinanceWsBase>) invisibly, self.
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceWsBase-on"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceWsBase-on}{}}}
-\subsection{\code{BinanceWsBase$on()}}{
-  Register an Event Handler (Node-style \code{ws.on})
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceWsBase$on(event, handler)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{event}}{(scalar<character in c("open", "message", "close", "error")>)
-the event to handle.}
-      \item{\code{handler}}{(function) called when the event fires. For \code{"message"} it
-receives the raw JSON string; for the others it receives the socket event.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (class<BinanceWsBase>) invisibly, self (chainable).
-  }
+\subsection{Method \code{on()}}{
+Register an Event Handler (Node-style \code{ws.on})
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceWsBase$on(event, handler)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{event}}{(scalar<character in c("open", "message", "close", "error")>)
+the event to handle.}
+
+\item{\code{handler}}{(function) called when the event fires. For \code{"message"} it
+receives the raw JSON string; for the others it receives the socket event.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(class<BinanceWsBase>) invisibly, self (chainable).
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceWsBase-subscribe"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceWsBase-subscribe}{}}}
-\subsection{\code{BinanceWsBase$subscribe()}}{
-  Subscribe to Streams
+\subsection{Method \code{subscribe()}}{
+Subscribe to Streams
 
 Tracks the streams (so they are restored after a reconnect) and sends a
 \code{SUBSCRIBE} frame if connected; otherwise they are sent on the next open.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceWsBase$subscribe(streams)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{streams}}{(character) stream names (e.g. \code{"btcusdt@depth"}).}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (class<BinanceWsBase>) invisibly, self.
-  }
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceWsBase$subscribe(streams)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{streams}}{(character) stream names (e.g. \code{"btcusdt@depth"}).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(class<BinanceWsBase>) invisibly, self.
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceWsBase-unsubscribe"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceWsBase-unsubscribe}{}}}
-\subsection{\code{BinanceWsBase$unsubscribe()}}{
-  Unsubscribe from Streams
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceWsBase$unsubscribe(streams)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{streams}}{(character) stream names to drop.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (class<BinanceWsBase>) invisibly, self.
-  }
+\subsection{Method \code{unsubscribe()}}{
+Unsubscribe from Streams
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceWsBase$unsubscribe(streams)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{streams}}{(character) stream names to drop.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(class<BinanceWsBase>) invisibly, self.
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceWsBase-subscriptions"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceWsBase-subscriptions}{}}}
-\subsection{\code{BinanceWsBase$subscriptions()}}{
-  Currently Tracked Subscriptions
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceWsBase$subscriptions()}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (character) subscribed stream names (possibly length 0).
-  }
+\subsection{Method \code{subscriptions()}}{
+Currently Tracked Subscriptions
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceWsBase$subscriptions()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+(character) subscribed stream names (possibly length 0).
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceWsBase-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceWsBase-clone}{}}}
-\subsection{\code{BinanceWsBase$clone()}}{
-  The objects of this class are cloneable with this method.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceWsBase$clone(deep = FALSE)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{deep}}{Whether to make a deep clone.}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceWsBase$clone(deep = FALSE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

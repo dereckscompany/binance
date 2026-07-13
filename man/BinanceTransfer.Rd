@@ -4,6 +4,11 @@
 \alias{BinanceTransfer}
 \title{BinanceTransfer: Universal Transfer Management}
 \description{
+BinanceTransfer: Universal Transfer Management
+
+BinanceTransfer: Universal Transfer Management
+}
+\details{
 Provides methods for initiating and querying universal transfers between
 wallet types on Binance. Inherits from \link{BinanceBase}.
 \subsection{Purpose and Scope}{
@@ -79,7 +84,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceTransfer$add_transfer()`
+## Method `BinanceTransfer$add_transfer`
 ## ------------------------------------------------
 
 \dontrun{
@@ -91,7 +96,7 @@ print(result)
 }
 
 ## ------------------------------------------------
-## Method `BinanceTransfer$get_transfer_history()`
+## Method `BinanceTransfer$get_transfer_history`
 ## ------------------------------------------------
 
 \dontrun{
@@ -101,26 +106,28 @@ print(history)
 }
 }
 \section{Super classes}{
-\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{BinanceBase}} -> \code{BinanceTransfer}
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceTransfer}
 }
 \section{Methods}{
 \subsection{Public methods}{
-  \itemize{
-    \item \href{#method-BinanceTransfer-add_transfer}{\code{BinanceTransfer$add_transfer()}}
-    \item \href{#method-BinanceTransfer-get_transfer_history}{\code{BinanceTransfer$get_transfer_history()}}
-    \item \href{#method-BinanceTransfer-clone}{\code{BinanceTransfer$clone()}}
-  }
+\itemize{
+\item \href{#method-BinanceTransfer-add_transfer}{\code{BinanceTransfer$add_transfer()}}
+\item \href{#method-BinanceTransfer-get_transfer_history}{\code{BinanceTransfer$get_transfer_history()}}
+\item \href{#method-BinanceTransfer-clone}{\code{BinanceTransfer$clone()}}
 }
-\if{html}{\out{<details open><summary>Inherited methods</summary>
+}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
 <ul>
-  <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>BinanceBase$initialize()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>binance::BinanceBase$initialize()</code></a></span></li>
 </ul>
-</details>}}
+</details>
+}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceTransfer-add_transfer"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceTransfer-add_transfer}{}}}
-\subsection{\code{BinanceTransfer$add_transfer()}}{
-  Initiate a Universal Transfer
+\subsection{Method \code{add_transfer()}}{
+Initiate a Universal Transfer
 
 Transfers assets between wallet types (spot, margin, futures, funding).
 \subsection{API Endpoint}{
@@ -161,61 +168,68 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceTransfer$add_transfer(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceTransfer$add_transfer(
   type,
   asset,
   amount,
   from_symbol = NULL,
   to_symbol = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{type}}{(scalar<character>) transfer type. One of \code{"MAIN_UMFUTURE"},
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{type}}{(scalar<character>) transfer type. One of \code{"MAIN_UMFUTURE"},
 \code{"MAIN_CMFUTURE"}, \code{"MAIN_MARGIN"}, \code{"UMFUTURE_MAIN"},
 \code{"UMFUTURE_MARGIN"}, \code{"CMFUTURE_MAIN"}, \code{"MARGIN_MAIN"},
 \code{"MARGIN_UMFUTURE"}, \code{"MAIN_FUNDING"}, \code{"FUNDING_MAIN"},
 \code{"FUNDING_UMFUTURE"}, \code{"UMFUTURE_FUNDING"}, \code{"MARGIN_FUNDING"},
 \code{"FUNDING_MARGIN"}, \code{"FUNDING_CMFUTURE"}, \code{"CMFUTURE_FUNDING"},
 \code{"MAIN_ISOLATED_MARGIN"}, \code{"ISOLATED_MARGIN_MAIN"}.}
-      \item{\code{asset}}{(scalar<character>) asset to transfer (e.g., \code{"USDT"}).}
-      \item{\code{amount}}{(scalar<numeric>) amount to transfer.}
-      \item{\code{from_symbol}}{(scalar<character>?) mandatory when \code{type} involves
+
+\item{\code{asset}}{(scalar<character>) asset to transfer (e.g., \code{"USDT"}).}
+
+\item{\code{amount}}{(scalar<numeric>) amount to transfer.}
+
+\item{\code{from_symbol}}{(scalar<character>?) mandatory when \code{type} involves
 isolated margin (e.g., \code{"BNBUSDT"}).}
-      \item{\code{to_symbol}}{(scalar<character>?) mandatory when \code{type} involves
+
+\item{\code{to_symbol}}{(scalar<character>?) mandatory when \code{type} involves
 isolated margin (e.g., \code{"BNBUSDT"}).}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row:
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row:
 \itemize{
 \item tran_id (numeric) Unique transfer identifier assigned by Binance.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{transfer <- BinanceTransfer$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+transfer <- BinanceTransfer$new()
 result <- transfer$add_transfer(
   type = "MAIN_UMFUTURE", asset = "USDT", amount = 100
 )
 print(result)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceTransfer-get_transfer_history"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceTransfer-get_transfer_history}{}}}
-\subsection{\code{BinanceTransfer$get_transfer_history()}}{
-  Query Universal Transfer History
+\subsection{Method \code{get_transfer_history()}}{
+Query Universal Transfer History
 
 Retrieves transfer history for a given transfer type, with optional
 time range and pagination.
@@ -254,9 +268,8 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceTransfer$get_transfer_history(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceTransfer$get_transfer_history(
   type,
   start_time = NULL,
   end_time = NULL,
@@ -265,27 +278,34 @@ Verified: 2026-05-22
   from_symbol = NULL,
   to_symbol = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{type}}{(scalar<character>) transfer type. Same options as \code{add_transfer()}.}
-      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-      \item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
-      \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
-      \item{\code{from_symbol}}{(scalar<character>?) must be sent when \code{type} involves
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{type}}{(scalar<character>) transfer type. Same options as \code{add_transfer()}.}
+
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
+
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
+
+\item{\code{from_symbol}}{(scalar<character>?) must be sent when \code{type} involves
 isolated margin.}
-      \item{\code{to_symbol}}{(scalar<character>?) must be sent when \code{type} involves
+
+\item{\code{to_symbol}}{(scalar<character>?) must be sent when \code{type} involves
 isolated margin.}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per transfer
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per transfer
 (empty when there are no matching transfers):
 \itemize{
 \item asset (character) Transferred asset (e.g., \code{"USDT"}).
@@ -295,34 +315,35 @@ isolated margin.}
 \item tran_id (numeric) Unique transfer identifier.
 \item timestamp (POSIXct) Transfer time converted from milliseconds.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{transfer <- BinanceTransfer$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+transfer <- BinanceTransfer$new()
 history <- transfer$get_transfer_history(type = "MAIN_UMFUTURE")
 print(history)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceTransfer-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceTransfer-clone}{}}}
-\subsection{\code{BinanceTransfer$clone()}}{
-  The objects of this class are cloneable with this method.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceTransfer$clone(deep = FALSE)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{deep}}{Whether to make a deep clone.}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceTransfer$clone(deep = FALSE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

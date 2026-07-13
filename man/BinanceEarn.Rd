@@ -4,6 +4,11 @@
 \alias{BinanceEarn}
 \title{BinanceEarn: Simple Earn Management}
 \description{
+BinanceEarn: Simple Earn Management
+
+BinanceEarn: Simple Earn Management
+}
+\details{
 Provides methods for subscribing, redeeming, and querying Simple Earn
 flexible and locked products on Binance. Inherits from \link{BinanceBase}.
 \subsection{Purpose and Scope}{
@@ -68,7 +73,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceEarn$get_flexible_products()`
+## Method `BinanceEarn$get_flexible_products`
 ## ------------------------------------------------
 
 \dontrun{
@@ -78,7 +83,7 @@ print(products)
 }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$get_locked_products()`
+## Method `BinanceEarn$get_locked_products`
 ## ------------------------------------------------
 
 \dontrun{
@@ -88,7 +93,7 @@ print(products)
 }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$add_flexible_subscription()`
+## Method `BinanceEarn$add_flexible_subscription`
 ## ------------------------------------------------
 
 \dontrun{
@@ -98,7 +103,7 @@ print(result)
 }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$add_locked_subscription()`
+## Method `BinanceEarn$add_locked_subscription`
 ## ------------------------------------------------
 
 \dontrun{
@@ -108,7 +113,7 @@ print(result)
 }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$add_flexible_redemption()`
+## Method `BinanceEarn$add_flexible_redemption`
 ## ------------------------------------------------
 
 \dontrun{
@@ -118,7 +123,7 @@ print(result)
 }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$add_locked_redemption()`
+## Method `BinanceEarn$add_locked_redemption`
 ## ------------------------------------------------
 
 \dontrun{
@@ -128,7 +133,7 @@ print(result)
 }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$get_flexible_position()`
+## Method `BinanceEarn$get_flexible_position`
 ## ------------------------------------------------
 
 \dontrun{
@@ -138,7 +143,7 @@ print(positions)
 }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$get_locked_position()`
+## Method `BinanceEarn$get_locked_position`
 ## ------------------------------------------------
 
 \dontrun{
@@ -148,7 +153,7 @@ print(positions)
 }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$get_flexible_subscription_history()`
+## Method `BinanceEarn$get_flexible_subscription_history`
 ## ------------------------------------------------
 
 \dontrun{
@@ -158,7 +163,7 @@ print(history)
 }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$get_locked_subscription_history()`
+## Method `BinanceEarn$get_locked_subscription_history`
 ## ------------------------------------------------
 
 \dontrun{
@@ -168,7 +173,7 @@ print(history)
 }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$get_flexible_redemption_history()`
+## Method `BinanceEarn$get_flexible_redemption_history`
 ## ------------------------------------------------
 
 \dontrun{
@@ -178,7 +183,7 @@ print(history)
 }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$get_locked_redemption_history()`
+## Method `BinanceEarn$get_locked_redemption_history`
 ## ------------------------------------------------
 
 \dontrun{
@@ -188,36 +193,38 @@ print(history)
 }
 }
 \section{Super classes}{
-\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{BinanceBase}} -> \code{BinanceEarn}
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceEarn}
 }
 \section{Methods}{
 \subsection{Public methods}{
-  \itemize{
-    \item \href{#method-BinanceEarn-get_flexible_products}{\code{BinanceEarn$get_flexible_products()}}
-    \item \href{#method-BinanceEarn-get_locked_products}{\code{BinanceEarn$get_locked_products()}}
-    \item \href{#method-BinanceEarn-add_flexible_subscription}{\code{BinanceEarn$add_flexible_subscription()}}
-    \item \href{#method-BinanceEarn-add_locked_subscription}{\code{BinanceEarn$add_locked_subscription()}}
-    \item \href{#method-BinanceEarn-add_flexible_redemption}{\code{BinanceEarn$add_flexible_redemption()}}
-    \item \href{#method-BinanceEarn-add_locked_redemption}{\code{BinanceEarn$add_locked_redemption()}}
-    \item \href{#method-BinanceEarn-get_flexible_position}{\code{BinanceEarn$get_flexible_position()}}
-    \item \href{#method-BinanceEarn-get_locked_position}{\code{BinanceEarn$get_locked_position()}}
-    \item \href{#method-BinanceEarn-get_flexible_subscription_history}{\code{BinanceEarn$get_flexible_subscription_history()}}
-    \item \href{#method-BinanceEarn-get_locked_subscription_history}{\code{BinanceEarn$get_locked_subscription_history()}}
-    \item \href{#method-BinanceEarn-get_flexible_redemption_history}{\code{BinanceEarn$get_flexible_redemption_history()}}
-    \item \href{#method-BinanceEarn-get_locked_redemption_history}{\code{BinanceEarn$get_locked_redemption_history()}}
-    \item \href{#method-BinanceEarn-clone}{\code{BinanceEarn$clone()}}
-  }
+\itemize{
+\item \href{#method-BinanceEarn-get_flexible_products}{\code{BinanceEarn$get_flexible_products()}}
+\item \href{#method-BinanceEarn-get_locked_products}{\code{BinanceEarn$get_locked_products()}}
+\item \href{#method-BinanceEarn-add_flexible_subscription}{\code{BinanceEarn$add_flexible_subscription()}}
+\item \href{#method-BinanceEarn-add_locked_subscription}{\code{BinanceEarn$add_locked_subscription()}}
+\item \href{#method-BinanceEarn-add_flexible_redemption}{\code{BinanceEarn$add_flexible_redemption()}}
+\item \href{#method-BinanceEarn-add_locked_redemption}{\code{BinanceEarn$add_locked_redemption()}}
+\item \href{#method-BinanceEarn-get_flexible_position}{\code{BinanceEarn$get_flexible_position()}}
+\item \href{#method-BinanceEarn-get_locked_position}{\code{BinanceEarn$get_locked_position()}}
+\item \href{#method-BinanceEarn-get_flexible_subscription_history}{\code{BinanceEarn$get_flexible_subscription_history()}}
+\item \href{#method-BinanceEarn-get_locked_subscription_history}{\code{BinanceEarn$get_locked_subscription_history()}}
+\item \href{#method-BinanceEarn-get_flexible_redemption_history}{\code{BinanceEarn$get_flexible_redemption_history()}}
+\item \href{#method-BinanceEarn-get_locked_redemption_history}{\code{BinanceEarn$get_locked_redemption_history()}}
+\item \href{#method-BinanceEarn-clone}{\code{BinanceEarn$clone()}}
 }
-\if{html}{\out{<details open><summary>Inherited methods</summary>
+}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
 <ul>
-  <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>BinanceBase$initialize()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>binance::BinanceBase$initialize()</code></a></span></li>
 </ul>
-</details>}}
+</details>
+}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceEarn-get_flexible_products"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceEarn-get_flexible_products}{}}}
-\subsection{\code{BinanceEarn$get_flexible_products()}}{
-  Get Flexible Products
+\subsection{Method \code{get_flexible_products()}}{
+Get Flexible Products
 
 Lists available Simple Earn flexible products, optionally filtered by asset.
 \subsection{API Endpoint}{
@@ -264,28 +271,30 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceEarn$get_flexible_products(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$get_flexible_products(
   asset = NULL,
   current = NULL,
   size = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
-      \item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
-      \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per product
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
+
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
+
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per product
 (empty when there are none):
 \itemize{
 \item asset (character) Asset symbol (e.g., \code{"USDT"}).
@@ -303,22 +312,25 @@ Recover via \code{jsonlite::fromJSON(dt$tier_annual_percentage_rate[1])}.
 \item subscription_start_time (POSIXct) Subscription start time.
 \item status (character) Product status (e.g., \code{"PURCHASING"}).
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{earn <- BinanceEarn$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+earn <- BinanceEarn$new()
 products <- earn$get_flexible_products(asset = "USDT")
 print(products)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceEarn-get_locked_products"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceEarn-get_locked_products}{}}}
-\subsection{\code{BinanceEarn$get_locked_products()}}{
-  Get Locked Products
+\subsection{Method \code{get_locked_products()}}{
+Get Locked Products
 
 Lists available Simple Earn locked products, optionally filtered by asset.
 \subsection{API Endpoint}{
@@ -374,28 +386,30 @@ fields; older internal examples that still show \code{apy} are stale.
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceEarn$get_locked_products(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$get_locked_products(
   asset = NULL,
   current = NULL,
   size = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"BTC"}).}
-      \item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
-      \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per product (empty when
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"BTC"}).}
+
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
+
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per product (empty when
 there are none).
 Nested \code{detail} and \code{quota} objects are wide-prefixed
 (\verb{detail_*} and \verb{quota_*}) per the package's "no list columns"
@@ -425,22 +439,25 @@ asset, if the product carries a boost.
 \item quota_total_personal_quota (character) Per-user maximum.
 \item quota_minimum (character) Per-user minimum.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{earn <- BinanceEarn$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+earn <- BinanceEarn$new()
 products <- earn$get_locked_products(asset = "BTC")
 print(products)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceEarn-add_flexible_subscription"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceEarn-add_flexible_subscription}{}}}
-\subsection{\code{BinanceEarn$add_flexible_subscription()}}{
-  Subscribe to Flexible Product
+\subsection{Method \code{add_flexible_subscription()}}{
+Subscribe to Flexible Product
 
 Subscribes to a Simple Earn flexible product.
 \subsection{API Endpoint}{
@@ -481,50 +498,56 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceEarn$add_flexible_subscription(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$add_flexible_subscription(
   product_id,
   amount,
   auto_subscribe = NULL,
   source_account = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{product_id}}{(scalar<character>) the product ID to subscribe to.}
-      \item{\code{amount}}{(scalar<numeric>) amount to subscribe.}
-      \item{\code{auto_subscribe}}{(scalar<logical>?) whether to enable auto-subscription.}
-      \item{\code{source_account}}{(scalar<character>?) source wallet: \code{"SPOT"}, \code{"FUND"}, or \code{"ALL"}. Default \code{"SPOT"}.}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row:
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{product_id}}{(scalar<character>) the product ID to subscribe to.}
+
+\item{\code{amount}}{(scalar<numeric>) amount to subscribe.}
+
+\item{\code{auto_subscribe}}{(scalar<logical>?) whether to enable auto-subscription.}
+
+\item{\code{source_account}}{(scalar<character>?) source wallet: \code{"SPOT"}, \code{"FUND"}, or \code{"ALL"}. Default \code{"SPOT"}.}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row:
 \itemize{
 \item purchase_id (numeric) Unique purchase identifier.
 \item success (logical) Whether the subscription was successful.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{earn <- BinanceEarn$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+earn <- BinanceEarn$new()
 result <- earn$add_flexible_subscription(product_id = "USDT001", amount = 100)
 print(result)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceEarn-add_locked_subscription"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceEarn-add_locked_subscription}{}}}
-\subsection{\code{BinanceEarn$add_locked_subscription()}}{
-  Subscribe to Locked Product
+\subsection{Method \code{add_locked_subscription()}}{
+Subscribe to Locked Product
 
 Subscribes to a Simple Earn locked product.
 \subsection{API Endpoint}{
@@ -565,49 +588,54 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceEarn$add_locked_subscription(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$add_locked_subscription(
   project_id,
   amount,
   auto_subscribe = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{project_id}}{(scalar<character>) the project ID to subscribe to.}
-      \item{\code{amount}}{(scalar<numeric>) amount to subscribe.}
-      \item{\code{auto_subscribe}}{(scalar<logical>?) whether to enable auto-subscription.}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row:
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{project_id}}{(scalar<character>) the project ID to subscribe to.}
+
+\item{\code{amount}}{(scalar<numeric>) amount to subscribe.}
+
+\item{\code{auto_subscribe}}{(scalar<logical>?) whether to enable auto-subscription.}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row:
 \itemize{
 \item purchase_id (numeric) Unique purchase identifier.
 \item position_id (character) Position identifier for the locked subscription.
 \item success (logical) Whether the subscription was successful.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{earn <- BinanceEarn$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+earn <- BinanceEarn$new()
 result <- earn$add_locked_subscription(project_id = "BTC30d001", amount = 0.01)
 print(result)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceEarn-add_flexible_redemption"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceEarn-add_flexible_redemption}{}}}
-\subsection{\code{BinanceEarn$add_flexible_redemption()}}{
-  Redeem Flexible Product
+\subsection{Method \code{add_flexible_redemption()}}{
+Redeem Flexible Product
 
 Redeems from a Simple Earn flexible product.
 \subsection{API Endpoint}{
@@ -648,50 +676,56 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceEarn$add_flexible_redemption(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$add_flexible_redemption(
   product_id,
   amount = NULL,
   redeem_all = NULL,
   dest_account = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{product_id}}{(scalar<character>) the product ID to redeem from.}
-      \item{\code{amount}}{(scalar<numeric>?) amount to redeem. If NULL, use \code{redeemAll}.}
-      \item{\code{redeem_all}}{(scalar<logical>?) if TRUE, redeem entire position.}
-      \item{\code{dest_account}}{(scalar<character>?) destination wallet: \code{"SPOT"} or \code{"FUND"}. Default \code{"SPOT"}.}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row:
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{product_id}}{(scalar<character>) the product ID to redeem from.}
+
+\item{\code{amount}}{(scalar<numeric>?) amount to redeem. If NULL, use \code{redeemAll}.}
+
+\item{\code{redeem_all}}{(scalar<logical>?) if TRUE, redeem entire position.}
+
+\item{\code{dest_account}}{(scalar<character>?) destination wallet: \code{"SPOT"} or \code{"FUND"}. Default \code{"SPOT"}.}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row:
 \itemize{
 \item redeem_id (numeric) Unique redemption identifier.
 \item success (logical) Whether the redemption was successful.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{earn <- BinanceEarn$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+earn <- BinanceEarn$new()
 result <- earn$add_flexible_redemption(product_id = "USDT001", amount = 50)
 print(result)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceEarn-add_locked_redemption"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceEarn-add_locked_redemption}{}}}
-\subsection{\code{BinanceEarn$add_locked_redemption()}}{
-  Redeem Locked Product
+\subsection{Method \code{add_locked_redemption()}}{
+Redeem Locked Product
 
 Redeems from a Simple Earn locked product.
 \subsection{API Endpoint}{
@@ -729,41 +763,44 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceEarn$add_locked_redemption(position_id, recv_window = NULL)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{position_id}}{(scalar<character>) the position ID to redeem.}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row:
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$add_locked_redemption(position_id, recv_window = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{position_id}}{(scalar<character>) the position ID to redeem.}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row:
 \itemize{
 \item redeem_id (numeric) Unique redemption identifier.
 \item success (logical) Whether the redemption was successful.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{earn <- BinanceEarn$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+earn <- BinanceEarn$new()
 result <- earn$add_locked_redemption(position_id = "12345")
 print(result)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceEarn-get_flexible_position"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceEarn-get_flexible_position}{}}}
-\subsection{\code{BinanceEarn$get_flexible_position()}}{
-  Get Flexible Position
+\subsection{Method \code{get_flexible_position()}}{
+Get Flexible Position
 
 Retrieves current flexible earn positions, optionally filtered by asset or product.
 \subsection{API Endpoint}{
@@ -814,30 +851,33 @@ Shape captured 2026-05-22 from the live docs.
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceEarn$get_flexible_position(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$get_flexible_position(
   asset = NULL,
   product_id = NULL,
   current = NULL,
   size = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
-      \item{\code{product_id}}{(scalar<character>?) filter by product ID.}
-      \item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
-      \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per position
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
+
+\item{\code{product_id}}{(scalar<character>?) filter by product ID.}
+
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
+
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per position
 (empty when there are none):
 \itemize{
 \item total_amount (character) Total amount in the position.
@@ -865,22 +905,25 @@ real-time rewards.
 rewards (bonus + real-time).
 \item auto_subscribe (logical) Whether auto-subscription is enabled.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{earn <- BinanceEarn$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+earn <- BinanceEarn$new()
 positions <- earn$get_flexible_position(asset = "USDT")
 print(positions)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceEarn-get_locked_position"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceEarn-get_locked_position}{}}}
-\subsection{\code{BinanceEarn$get_locked_position()}}{
-  Get Locked Position
+\subsection{Method \code{get_locked_position()}}{
+Get Locked Position
 
 Retrieves current locked earn positions, optionally filtered by asset,
 position ID, or project ID.
@@ -950,32 +993,36 @@ converter lowers it to \code{apy} in the data.table.
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceEarn$get_locked_position(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$get_locked_position(
   asset = NULL,
   position_id = NULL,
   project_id = NULL,
   current = NULL,
   size = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"BTC"}).}
-      \item{\code{position_id}}{(scalar<character>?) filter by position ID.}
-      \item{\code{project_id}}{(scalar<character>?) filter by project ID.}
-      \item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
-      \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per locked position
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"BTC"}).}
+
+\item{\code{position_id}}{(scalar<character>?) filter by position ID.}
+
+\item{\code{project_id}}{(scalar<character>?) filter by project ID.}
+
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
+
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per locked position
 (empty when there are none), with whichever fields Binance returns,
 snake-cased (Binance's uppercase \code{APY} lowers to \code{apy}). Common
 columns: \code{position_id}, \code{parent_position_id}, \code{project_id}, \code{asset},
@@ -989,22 +1036,25 @@ columns: \code{position_id}, \code{parent_position_id}, \code{project_id}, \code
 \code{can_fast_redemption}, \code{auto_subscribe}, \code{type}, \code{status},
 \code{can_re_stake}. The exact column set follows the payload, so the return
 is typed only as a \code{data.table} (no fixed-column contract).
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{earn <- BinanceEarn$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+earn <- BinanceEarn$new()
 positions <- earn$get_locked_position(asset = "BTC")
 print(positions)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceEarn-get_flexible_subscription_history"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceEarn-get_flexible_subscription_history}{}}}
-\subsection{\code{BinanceEarn$get_flexible_subscription_history()}}{
-  Get Flexible Subscription History
+\subsection{Method \code{get_flexible_subscription_history()}}{
+Get Flexible Subscription History
 
 Retrieves subscription history for flexible earn products.
 \subsection{API Endpoint}{
@@ -1043,9 +1093,8 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceEarn$get_flexible_subscription_history(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$get_flexible_subscription_history(
   product_id = NULL,
   purchase_id = NULL,
   asset = NULL,
@@ -1054,25 +1103,32 @@ Verified: 2026-05-22
   current = NULL,
   size = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{product_id}}{(scalar<character>?) filter by product ID.}
-      \item{\code{purchase_id}}{(scalar<count>?) filter by purchase ID.}
-      \item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
-      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-      \item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
-      \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per subscription record
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{product_id}}{(scalar<character>?) filter by product ID.}
+
+\item{\code{purchase_id}}{(scalar<count>?) filter by purchase ID.}
+
+\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
+
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
+
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per subscription record
 (empty when there are none):
 \itemize{
 \item amount (character) Subscription amount.
@@ -1083,22 +1139,25 @@ Verified: 2026-05-22
 \item source_account (character) Source account (e.g., \code{"SPOT"}).
 \item status (character) Subscription status (e.g., \code{"SUCCESS"}).
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{earn <- BinanceEarn$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+earn <- BinanceEarn$new()
 history <- earn$get_flexible_subscription_history(asset = "USDT")
 print(history)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceEarn-get_locked_subscription_history"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceEarn-get_locked_subscription_history}{}}}
-\subsection{\code{BinanceEarn$get_locked_subscription_history()}}{
-  Get Locked Subscription History
+\subsection{Method \code{get_locked_subscription_history()}}{
+Get Locked Subscription History
 
 Retrieves subscription history for locked earn products.
 \subsection{API Endpoint}{
@@ -1139,9 +1198,8 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceEarn$get_locked_subscription_history(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$get_locked_subscription_history(
   purchase_id = NULL,
   asset = NULL,
   start_time = NULL,
@@ -1149,24 +1207,30 @@ Verified: 2026-05-22
   current = NULL,
   size = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{purchase_id}}{(scalar<count>?) filter by purchase ID.}
-      \item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"BTC"}).}
-      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-      \item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
-      \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per subscription record
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{purchase_id}}{(scalar<count>?) filter by purchase ID.}
+
+\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"BTC"}).}
+
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
+
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per subscription record
 (empty when there are none):
 \itemize{
 \item amount (character) Subscription amount.
@@ -1179,22 +1243,25 @@ Verified: 2026-05-22
 \item source_account (character) Source account.
 \item status (character) Subscription status.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{earn <- BinanceEarn$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+earn <- BinanceEarn$new()
 history <- earn$get_locked_subscription_history(asset = "BTC")
 print(history)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceEarn-get_flexible_redemption_history"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceEarn-get_flexible_redemption_history}{}}}
-\subsection{\code{BinanceEarn$get_flexible_redemption_history()}}{
-  Get Flexible Redemption History
+\subsection{Method \code{get_flexible_redemption_history()}}{
+Get Flexible Redemption History
 
 Retrieves redemption history for flexible earn products.
 \subsection{API Endpoint}{
@@ -1233,9 +1300,8 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceEarn$get_flexible_redemption_history(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$get_flexible_redemption_history(
   product_id = NULL,
   redeem_id = NULL,
   asset = NULL,
@@ -1244,25 +1310,32 @@ Verified: 2026-05-22
   current = NULL,
   size = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{product_id}}{(scalar<character>?) filter by product ID.}
-      \item{\code{redeem_id}}{(scalar<count>?) filter by redeem ID.}
-      \item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
-      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-      \item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
-      \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per redemption record
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{product_id}}{(scalar<character>?) filter by product ID.}
+
+\item{\code{redeem_id}}{(scalar<count>?) filter by redeem ID.}
+
+\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
+
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
+
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per redemption record
 (empty when there are none):
 \itemize{
 \item amount (character) Redemption amount.
@@ -1273,22 +1346,25 @@ Verified: 2026-05-22
 \item dest_account (character) Destination account.
 \item status (character) Redemption status (e.g., \code{"PAID"}).
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{earn <- BinanceEarn$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+earn <- BinanceEarn$new()
 history <- earn$get_flexible_redemption_history(asset = "USDT")
 print(history)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceEarn-get_locked_redemption_history"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceEarn-get_locked_redemption_history}{}}}
-\subsection{\code{BinanceEarn$get_locked_redemption_history()}}{
-  Get Locked Redemption History
+\subsection{Method \code{get_locked_redemption_history()}}{
+Get Locked Redemption History
 
 Retrieves redemption history for locked earn products.
 \subsection{API Endpoint}{
@@ -1327,9 +1403,8 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceEarn$get_locked_redemption_history(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$get_locked_redemption_history(
   position_id = NULL,
   redeem_id = NULL,
   asset = NULL,
@@ -1338,25 +1413,32 @@ Verified: 2026-05-22
   current = NULL,
   size = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{position_id}}{(scalar<character>?) filter by position ID.}
-      \item{\code{redeem_id}}{(scalar<count>?) filter by redeem ID.}
-      \item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"BTC"}).}
-      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-      \item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
-      \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per redemption record
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{position_id}}{(scalar<character>?) filter by position ID.}
+
+\item{\code{redeem_id}}{(scalar<count>?) filter by redeem ID.}
+
+\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"BTC"}).}
+
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+
+\item{\code{current}}{(scalar<count>?) current page (default 1, starting from 1).}
+
+\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per redemption record
 (empty when there are none):
 \itemize{
 \item amount (character) Redemption amount.
@@ -1367,34 +1449,35 @@ Verified: 2026-05-22
 \item deliver_date (POSIXct) Expected delivery time.
 \item status (character) Redemption status.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{earn <- BinanceEarn$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+earn <- BinanceEarn$new()
 history <- earn$get_locked_redemption_history(asset = "BTC")
 print(history)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceEarn-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceEarn-clone}{}}}
-\subsection{\code{BinanceEarn$clone()}}{
-  The objects of this class are cloneable with this method.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceEarn$clone(deep = FALSE)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{deep}}{Whether to make a deep clone.}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceEarn$clone(deep = FALSE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

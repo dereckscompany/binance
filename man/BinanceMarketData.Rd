@@ -4,6 +4,11 @@
 \alias{BinanceMarketData}
 \title{BinanceMarketData: Spot Market Data Retrieval}
 \description{
+BinanceMarketData: Spot Market Data Retrieval
+
+BinanceMarketData: Spot Market Data Retrieval
+}
+\details{
 Provides methods for retrieving market data from Binance's Spot trading API,
 including exchange info, klines, tickers, orderbooks, trade history, and
 24-hour statistics.
@@ -69,7 +74,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_server_time()`
+## Method `BinanceMarketData$get_server_time`
 ## ------------------------------------------------
 
 \dontrun{
@@ -80,7 +85,7 @@ cat("Clock drift:", round(drift * 1000), "ms\n")
 }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_exchange_info()`
+## Method `BinanceMarketData$get_exchange_info`
 ## ------------------------------------------------
 
 \dontrun{
@@ -97,7 +102,7 @@ market$get_exchange_filters()
 }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_rate_limits()`
+## Method `BinanceMarketData$get_rate_limits`
 ## ------------------------------------------------
 
 \dontrun{
@@ -106,7 +111,7 @@ market$get_rate_limits()
 }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_exchange_filters()`
+## Method `BinanceMarketData$get_exchange_filters`
 ## ------------------------------------------------
 
 \dontrun{
@@ -115,7 +120,7 @@ market$get_exchange_filters()
 }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_ticker()`
+## Method `BinanceMarketData$get_ticker`
 ## ------------------------------------------------
 
 \dontrun{
@@ -125,7 +130,7 @@ print(ticker)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_all_tickers()`
+## Method `BinanceMarketData$get_all_tickers`
 ## ------------------------------------------------
 
 \dontrun{
@@ -135,7 +140,7 @@ print(all_tickers[1:5])
 }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_book_ticker()`
+## Method `BinanceMarketData$get_book_ticker`
 ## ------------------------------------------------
 
 \dontrun{
@@ -145,7 +150,7 @@ print(book)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_24hr_stats()`
+## Method `BinanceMarketData$get_24hr_stats`
 ## ------------------------------------------------
 
 \dontrun{
@@ -155,7 +160,7 @@ print(stats[, .(symbol, last_price, price_change_percent, volume)])
 }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_all_24hr_stats()`
+## Method `BinanceMarketData$get_all_24hr_stats`
 ## ------------------------------------------------
 
 \dontrun{
@@ -165,7 +170,7 @@ print(all_stats[1:5, .(symbol, last_price, price_change_percent, volume)])
 }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_avg_price()`
+## Method `BinanceMarketData$get_avg_price`
 ## ------------------------------------------------
 
 \dontrun{
@@ -175,7 +180,7 @@ print(avg)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_depth()`
+## Method `BinanceMarketData$get_depth`
 ## ------------------------------------------------
 
 \dontrun{
@@ -185,7 +190,7 @@ print(depth)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_trades()`
+## Method `BinanceMarketData$get_trades`
 ## ------------------------------------------------
 
 \dontrun{
@@ -195,7 +200,7 @@ print(trades)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_klines()`
+## Method `BinanceMarketData$get_klines`
 ## ------------------------------------------------
 
 \dontrun{
@@ -212,37 +217,39 @@ all_klines <- market$get_klines(
 }
 }
 \section{Super classes}{
-\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{BinanceBase}} -> \code{BinanceMarketData}
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceMarketData}
 }
 \section{Methods}{
 \subsection{Public methods}{
-  \itemize{
-    \item \href{#method-BinanceMarketData-get_server_time}{\code{BinanceMarketData$get_server_time()}}
-    \item \href{#method-BinanceMarketData-get_exchange_info}{\code{BinanceMarketData$get_exchange_info()}}
-    \item \href{#method-BinanceMarketData-get_rate_limits}{\code{BinanceMarketData$get_rate_limits()}}
-    \item \href{#method-BinanceMarketData-get_exchange_filters}{\code{BinanceMarketData$get_exchange_filters()}}
-    \item \href{#method-BinanceMarketData-get_ticker}{\code{BinanceMarketData$get_ticker()}}
-    \item \href{#method-BinanceMarketData-get_all_tickers}{\code{BinanceMarketData$get_all_tickers()}}
-    \item \href{#method-BinanceMarketData-get_book_ticker}{\code{BinanceMarketData$get_book_ticker()}}
-    \item \href{#method-BinanceMarketData-get_24hr_stats}{\code{BinanceMarketData$get_24hr_stats()}}
-    \item \href{#method-BinanceMarketData-get_all_24hr_stats}{\code{BinanceMarketData$get_all_24hr_stats()}}
-    \item \href{#method-BinanceMarketData-get_avg_price}{\code{BinanceMarketData$get_avg_price()}}
-    \item \href{#method-BinanceMarketData-get_depth}{\code{BinanceMarketData$get_depth()}}
-    \item \href{#method-BinanceMarketData-get_trades}{\code{BinanceMarketData$get_trades()}}
-    \item \href{#method-BinanceMarketData-get_klines}{\code{BinanceMarketData$get_klines()}}
-    \item \href{#method-BinanceMarketData-clone}{\code{BinanceMarketData$clone()}}
-  }
+\itemize{
+\item \href{#method-BinanceMarketData-get_server_time}{\code{BinanceMarketData$get_server_time()}}
+\item \href{#method-BinanceMarketData-get_exchange_info}{\code{BinanceMarketData$get_exchange_info()}}
+\item \href{#method-BinanceMarketData-get_rate_limits}{\code{BinanceMarketData$get_rate_limits()}}
+\item \href{#method-BinanceMarketData-get_exchange_filters}{\code{BinanceMarketData$get_exchange_filters()}}
+\item \href{#method-BinanceMarketData-get_ticker}{\code{BinanceMarketData$get_ticker()}}
+\item \href{#method-BinanceMarketData-get_all_tickers}{\code{BinanceMarketData$get_all_tickers()}}
+\item \href{#method-BinanceMarketData-get_book_ticker}{\code{BinanceMarketData$get_book_ticker()}}
+\item \href{#method-BinanceMarketData-get_24hr_stats}{\code{BinanceMarketData$get_24hr_stats()}}
+\item \href{#method-BinanceMarketData-get_all_24hr_stats}{\code{BinanceMarketData$get_all_24hr_stats()}}
+\item \href{#method-BinanceMarketData-get_avg_price}{\code{BinanceMarketData$get_avg_price()}}
+\item \href{#method-BinanceMarketData-get_depth}{\code{BinanceMarketData$get_depth()}}
+\item \href{#method-BinanceMarketData-get_trades}{\code{BinanceMarketData$get_trades()}}
+\item \href{#method-BinanceMarketData-get_klines}{\code{BinanceMarketData$get_klines()}}
+\item \href{#method-BinanceMarketData-clone}{\code{BinanceMarketData$clone()}}
 }
-\if{html}{\out{<details open><summary>Inherited methods</summary>
+}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
 <ul>
-  <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>BinanceBase$initialize()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>binance::BinanceBase$initialize()</code></a></span></li>
 </ul>
-</details>}}
+</details>
+}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarketData-get_server_time"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarketData-get_server_time}{}}}
-\subsection{\code{BinanceMarketData$get_server_time()}}{
-  Get Server Time
+\subsection{Method \code{get_server_time()}}{
+Get Server Time
 
 Retrieves the current server timestamp from Binance in milliseconds.
 Useful for detecting clock drift and ensuring HMAC signatures are valid.
@@ -276,33 +283,35 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="sourceCode json">}}\preformatted{\{ "serverTime": 1499827319559 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarketData$get_server_time()}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row:
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_server_time()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+(data.table | promise<data.table>) one row:
 \itemize{
 \item server_time (POSIXct) Server time as UTC datetime.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{market <- BinanceMarketData$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
 st <- market$get_server_time()
 drift <- as.numeric(difftime(Sys.time(), st$server_time, units = "secs"))
 cat("Clock drift:", round(drift * 1000), "ms\n")
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarketData-get_exchange_info"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarketData-get_exchange_info}{}}}
-\subsection{\code{BinanceMarketData$get_exchange_info()}}{
-  Get Exchange Info
+\subsection{Method \code{get_exchange_info()}}{
+Get Exchange Info
 
 Retrieves exchange trading rules and symbol information. Includes
 precision, order types, filters, and trading status for each symbol.
@@ -367,21 +376,21 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarketData$get_exchange_info(symbol = NULL, symbols = NULL)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{symbol}}{(scalar<character>?) specific symbol (e.g., \code{"BTCUSDT"}).}
-      \item{\code{symbols}}{(character?) multiple symbols.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per symbol, with all
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_exchange_info(symbol = NULL, symbols = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{symbol}}{(scalar<character>?) specific symbol (e.g., \code{"BTCUSDT"}).}
+
+\item{\code{symbols}}{(character?) multiple symbols.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per symbol, with all
 symbol fields returned by the API, converted to snake_case (empty when
 Binance returns no symbols). Key columns include:
 \itemize{
@@ -443,10 +452,11 @@ methods — see \code{\link[=BinanceMarketData]{get_rate_limits()}} and
 \code{\link[=BinanceMarketData]{get_exchange_filters()}}. The scalar
 \code{serverTime} is available via the existing
 \code{\link[=BinanceMarketData]{get_server_time()}}.
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{market <- BinanceMarketData$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
 info <- market$get_exchange_info("BTCUSDT")
 print(info[, .(symbol, status, base_asset, quote_asset)])
 
@@ -457,15 +467,17 @@ jsonlite::fromJSON(info$filters_raw[1])
 market$get_rate_limits()
 market$get_exchange_filters()
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarketData-get_rate_limits"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarketData-get_rate_limits}{}}}
-\subsection{\code{BinanceMarketData$get_rate_limits()}}{
-  Get Exchange Rate Limits
+\subsection{Method \code{get_rate_limits()}}{
+Get Exchange Rate Limits
 
 Retrieves the exchange-wide API rate-limit rules (request weight
 per minute, orders per second / per day, etc.). These rules apply
@@ -484,13 +496,12 @@ this method extracts the \code{rateLimits} slice.)
 \href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/general-endpoints#exchange-information}{Binance Exchange Info}
 Verified: 2026-05-22
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarketData$get_rate_limits()}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per rate-limit rule
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_rate_limits()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per rate-limit rule
 (empty when Binance returned no \code{rateLimits} block):
 \itemize{
 \item rate_limit_type (character) \code{"REQUEST_WEIGHT"}, \code{"ORDERS"},
@@ -500,21 +511,24 @@ Verified: 2026-05-22
 \item limit (integer) Maximum requests / orders permitted in the
 interval.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{market <- BinanceMarketData$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
 market$get_rate_limits()
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarketData-get_exchange_filters"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarketData-get_exchange_filters}{}}}
-\subsection{\code{BinanceMarketData$get_exchange_filters()}}{
-  Get Exchange-Wide Filters
+\subsection{Method \code{get_exchange_filters()}}{
+Get Exchange-Wide Filters
 
 Retrieves the exchange-wide filter rules (e.g. \code{EXCHANGE_MAX_NUM_ORDERS},
 \code{EXCHANGE_MAX_NUM_ALGO_ORDERS}). These constrain the user across all
@@ -529,30 +543,32 @@ for future use but currently leaves it as \verb{[]} on most accounts.
 (returns the same payload as \code{\link[=BinanceMarketData]{get_exchange_info()}};
 this method extracts the \code{exchangeFilters} slice.)
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarketData$get_exchange_filters()}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per exchange-wide
-filter rule. Empty when Binance returns no \code{exchangeFilters} (the
-common case), so this return is schemaless (no fixed columns).
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{market <- BinanceMarketData$new()
-market$get_exchange_filters()
-}
-    \if{html}{\out{</div>}}
-  }
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_exchange_filters()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per exchange-wide
+filter rule. Empty when Binance returns no \code{exchangeFilters} (the
+common case), so this return is schemaless (no fixed columns).
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
+market$get_exchange_filters()
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarketData-get_ticker"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarketData-get_ticker}{}}}
-\subsection{\code{BinanceMarketData$get_ticker()}}{
-  Get Symbol Price Ticker
+\subsection{Method \code{get_ticker()}}{
+Get Symbol Price Ticker
 
 Retrieves the latest price for a specific symbol.
 \subsection{API Endpoint}{
@@ -577,40 +593,42 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="sourceCode json">}}\preformatted{\{ "symbol": "BTCUSDT", "price": "67232.90000000" \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarketData$get_ticker(symbol)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row:
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_ticker(symbol)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair identifier.
 \item price (character) Latest traded price as string.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{market <- BinanceMarketData$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
 ticker <- market$get_ticker("BTCUSDT")
 print(ticker)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarketData-get_all_tickers"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarketData-get_all_tickers}{}}}
-\subsection{\code{BinanceMarketData$get_all_tickers()}}{
-  Get All Symbol Price Tickers
+\subsection{Method \code{get_all_tickers()}}{
+Get All Symbol Price Tickers
 
 Retrieves the latest price for all trading pairs in a single request.
 \subsection{API Endpoint}{
@@ -639,33 +657,35 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarketData$get_all_tickers()}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per symbol:
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_all_tickers()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per symbol:
 \itemize{
 \item symbol (character) Trading pair identifier.
 \item price (character) Latest traded price as string.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{market <- BinanceMarketData$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
 all_tickers <- market$get_all_tickers()
 print(all_tickers[1:5])
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarketData-get_book_ticker"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarketData-get_book_ticker}{}}}
-\subsection{\code{BinanceMarketData$get_book_ticker()}}{
-  Get Best Bid/Ask (Book Ticker)
+\subsection{Method \code{get_book_ticker()}}{
+Get Best Bid/Ask (Book Ticker)
 
 Retrieves the best bid and ask price and quantity for a symbol.
 \subsection{API Endpoint}{
@@ -696,36 +716,38 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarketData$get_book_ticker(symbol)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (BookTicker | promise<BookTicker>) one row, best bid/ask.
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{market <- BinanceMarketData$new()
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_book_ticker(symbol)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(BookTicker | promise<BookTicker>) one row, best bid/ask.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
 book <- market$get_book_ticker("BTCUSDT")
 print(book)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarketData-get_24hr_stats"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarketData-get_24hr_stats}{}}}
-\subsection{\code{BinanceMarketData$get_24hr_stats()}}{
-  Get 24hr Ticker Statistics
+\subsection{Method \code{get_24hr_stats()}}{
+Get 24hr Ticker Statistics
 
 Retrieves rolling 24-hour price change statistics for a symbol.
 \subsection{API Endpoint}{
@@ -772,20 +794,19 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarketData$get_24hr_stats(symbol)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row:
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_24hr_stats(symbol)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair identifier.
 \item price_change (character) Absolute price change over 24h.
@@ -809,22 +830,25 @@ Verified: 2026-05-22
 \item last_id (numeric) Last trade ID in the window.
 \item count (integer) Total number of trades in 24h.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{market <- BinanceMarketData$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
 stats <- market$get_24hr_stats("BTCUSDT")
 print(stats[, .(symbol, last_price, price_change_percent, volume)])
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarketData-get_all_24hr_stats"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarketData-get_all_24hr_stats}{}}}
-\subsection{\code{BinanceMarketData$get_all_24hr_stats()}}{
-  Get 24hr Ticker Statistics for All Symbols
+\subsection{Method \code{get_all_24hr_stats()}}{
+Get 24hr Ticker Statistics for All Symbols
 
 Retrieves rolling 24-hour price change statistics for all trading pairs
 in a single request.
@@ -837,13 +861,12 @@ in a single request.
 
 \href{https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-data-endpoints#24hr-ticker-price-change-statistics}{Binance 24hr Ticker Price Change Statistics}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarketData$get_all_24hr_stats()}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per symbol, the same
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_all_24hr_stats()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per symbol, the same
 columns as \code{get_24hr_stats()}.
 \itemize{
 \item symbol (character) Trading pair identifier.
@@ -868,22 +891,25 @@ columns as \code{get_24hr_stats()}.
 \item last_id (numeric) Last trade ID in the window.
 \item count (integer) Total number of trades in 24h.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{market <- BinanceMarketData$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
 all_stats <- market$get_all_24hr_stats()
 print(all_stats[1:5, .(symbol, last_price, price_change_percent, volume)])
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarketData-get_avg_price"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarketData-get_avg_price}{}}}
-\subsection{\code{BinanceMarketData$get_avg_price()}}{
-  Get Average Price
+\subsection{Method \code{get_avg_price()}}{
+Get Average Price
 
 Retrieves the current average price for a symbol (5-minute weighted average).
 \subsection{API Endpoint}{
@@ -908,41 +934,43 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="sourceCode json">}}\preformatted{\{ "mins": 5, "price": "67232.45000000", "closeTime": 1694061154503 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarketData$get_avg_price(symbol)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row:
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_avg_price(symbol)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row:
 \itemize{
 \item mins (integer) Number of minutes in the averaging window.
 \item price (character) Weighted average price over the window.
 \item close_time (POSIXct) End of the averaging window.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{market <- BinanceMarketData$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
 avg <- market$get_avg_price("BTCUSDT")
 print(avg)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarketData-get_depth"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarketData-get_depth}{}}}
-\subsection{\code{BinanceMarketData$get_depth()}}{
-  Get Order Book Depth
+\subsection{Method \code{get_depth()}}{
+Get Order Book Depth
 
 Retrieves the order book (bids and asks) for a symbol.
 \subsection{API Endpoint}{
@@ -977,39 +1005,42 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarketData$get_depth(symbol, limit = NULL)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-      \item{\code{limit}}{(scalar<count>?) depth limit. Valid values: 5, 10, 20, 50, 100,
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_depth(symbol, limit = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+
+\item{\code{limit}}{(scalar<count>?) depth limit. Valid values: 5, 10, 20, 50, 100,
 500, 1000, 5000. Default 100.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (OrderBook | promise<OrderBook>) one row per price level
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(OrderBook | promise<OrderBook>) one row per price level
 (bids first, then asks).
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{market <- BinanceMarketData$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
 depth <- market$get_depth("BTCUSDT", limit = 20)
 print(depth)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarketData-get_trades"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarketData-get_trades}{}}}
-\subsection{\code{BinanceMarketData$get_trades()}}{
-  Get Recent Trades
+\subsection{Method \code{get_trades()}}{
+Get Recent Trades
 
 Retrieves the most recent trades for a symbol.
 \subsection{API Endpoint}{
@@ -1044,37 +1075,40 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarketData$get_trades(symbol, limit = NULL)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-      \item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (Trade | promise<Trade>) one row per public trade.
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{market <- BinanceMarketData$new()
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_trades(symbol, limit = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+
+\item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(Trade | promise<Trade>) one row per public trade.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
 trades <- market$get_trades("BTCUSDT", limit = 10)
 print(trades)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarketData-get_klines"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarketData-get_klines}{}}}
-\subsection{\code{BinanceMarketData$get_klines()}}{
-  Get Klines (Candlestick Data)
+\subsection{Method \code{get_klines()}}{
+Get Klines (Candlestick Data)
 
 Retrieves historical kline/candlestick data for a symbol.
 \subsection{API Endpoint}{
@@ -1122,9 +1156,8 @@ Verified: 2026-05-22
 \item \strong{Volume Analysis}: Use \code{volume} and \code{quote_volume} for liquidity assessment.
 }
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarketData$get_klines(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$get_klines(
   symbol,
   interval = "1h",
   start_time = NULL,
@@ -1133,49 +1166,57 @@ Verified: 2026-05-22
   fetch_all = FALSE,
   sleep = 0.2,
   on_page = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-      \item{\code{interval}}{(scalar<character>) candle interval. Valid values:
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+
+\item{\code{interval}}{(scalar<character>) candle interval. Valid values:
 \code{"1s"}, \code{"1m"}, \code{"3m"}, \code{"5m"}, \code{"15m"}, \code{"30m"},
 \code{"1h"}, \code{"2h"}, \code{"4h"}, \code{"6h"}, \code{"8h"}, \code{"12h"},
 \code{"1d"}, \code{"3d"}, \code{"1w"}, \code{"1M"}.}
-      \item{\code{start_time}}{(scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).}
-      \item{\code{end_time}}{(scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).}
-      \item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
-      \item{\code{fetch_all}}{(scalar<logical>) if \code{TRUE}, automatically pages forward through the
+
+\item{\code{start_time}}{(scalar<POSIXct> | scalar<numeric>?) start time (ms or POSIXct).}
+
+\item{\code{end_time}}{(scalar<POSIXct> | scalar<numeric>?) end time (ms or POSIXct).}
+
+\item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
+
+\item{\code{fetch_all}}{(scalar<logical>) if \code{TRUE}, automatically pages forward through the
 time range — following the data and stopping at the first empty or short
 page — and returns the combined result sorted by \code{datetime}. Both
 \code{startTime} and \code{endTime} are required when enabled. \strong{Warning}: large
 date ranges will consume multiple API requests and may impact your
 rate-limit quota. Default \code{FALSE}.}
-      \item{\code{sleep}}{(scalar<numeric>) seconds to wait between consecutive API calls when
+
+\item{\code{sleep}}{(scalar<numeric>) seconds to wait between consecutive API calls when
 \code{fetch_all = TRUE}. Use this to avoid hitting Binance rate limits. Only
 applies in synchronous mode; async mode chains requests sequentially via
 promises. Default \code{0.2}.}
-      \item{\code{on_page}}{(function?) optional \verb{function(page)} called with each page (a
+
+\item{\code{on_page}}{(function?) optional \verb{function(page)} called with each page (a
 \code{data.table}) as it is fetched, when \code{fetch_all = TRUE}. When supplied,
 pages are streamed to the callback and \strong{not} accumulated — the method
 returns invisibly, so the callback owns the data (e.g. writes it to disk).
 Use it to process arbitrarily large ranges without holding everything in
 memory. Ignored in single-call mode (\code{fetch_all = FALSE}), where there is
 only one page. Default \code{NULL} (buffer and return the combined table).}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (Ohlcv | promise<Ohlcv>) one row per candle. When
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(Ohlcv | promise<Ohlcv>) one row per candle. When
 \code{fetch_all = TRUE} with an \code{on_page} callback the pages are streamed to
 the callback and the method returns invisibly (\code{NULL}); the contract
 below describes the buffered (returned) case.
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{market <- BinanceMarketData$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+market <- BinanceMarketData$new()
 klines <- market$get_klines("BTCUSDT", "1h", limit = 24)
 
 # Fetch all candles across a large date range (multiple API calls)
@@ -1186,27 +1227,27 @@ all_klines <- market$get_klines(
   fetch_all = TRUE, sleep = 0.5
 )
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarketData-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarketData-clone}{}}}
-\subsection{\code{BinanceMarketData$clone()}}{
-  The objects of this class are cloneable with this method.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarketData$clone(deep = FALSE)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{deep}}{Whether to make a deep clone.}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarketData$clone(deep = FALSE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

@@ -4,6 +4,11 @@
 \alias{BinanceMarginData}
 \title{BinanceMarginData: Margin Market Data Retrieval}
 \description{
+BinanceMarginData: Margin Market Data Retrieval
+
+BinanceMarginData: Margin Market Data Retrieval
+}
+\details{
 Provides methods for retrieving margin-specific market data from Binance,
 including cross/isolated margin pairs, price indices, interest rate history,
 and margin data summaries.
@@ -66,7 +71,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceMarginData$get_all_pairs()`
+## Method `BinanceMarginData$get_all_pairs`
 ## ------------------------------------------------
 
 \dontrun{
@@ -76,7 +81,7 @@ print(pairs)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMarginData$get_isolated_pairs()`
+## Method `BinanceMarginData$get_isolated_pairs`
 ## ------------------------------------------------
 
 \dontrun{
@@ -86,7 +91,7 @@ print(pairs)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMarginData$get_price_index()`
+## Method `BinanceMarginData$get_price_index`
 ## ------------------------------------------------
 
 \dontrun{
@@ -96,7 +101,7 @@ print(idx)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMarginData$get_interest_rate_history()`
+## Method `BinanceMarginData$get_interest_rate_history`
 ## ------------------------------------------------
 
 \dontrun{
@@ -106,7 +111,7 @@ print(history)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMarginData$get_cross_margin_data()`
+## Method `BinanceMarginData$get_cross_margin_data`
 ## ------------------------------------------------
 
 \dontrun{
@@ -116,7 +121,7 @@ print(data)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMarginData$get_isolated_margin_data()`
+## Method `BinanceMarginData$get_isolated_margin_data`
 ## ------------------------------------------------
 
 \dontrun{
@@ -126,30 +131,32 @@ print(data)
 }
 }
 \section{Super classes}{
-\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{BinanceBase}} -> \code{BinanceMarginData}
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceMarginData}
 }
 \section{Methods}{
 \subsection{Public methods}{
-  \itemize{
-    \item \href{#method-BinanceMarginData-get_all_pairs}{\code{BinanceMarginData$get_all_pairs()}}
-    \item \href{#method-BinanceMarginData-get_isolated_pairs}{\code{BinanceMarginData$get_isolated_pairs()}}
-    \item \href{#method-BinanceMarginData-get_price_index}{\code{BinanceMarginData$get_price_index()}}
-    \item \href{#method-BinanceMarginData-get_interest_rate_history}{\code{BinanceMarginData$get_interest_rate_history()}}
-    \item \href{#method-BinanceMarginData-get_cross_margin_data}{\code{BinanceMarginData$get_cross_margin_data()}}
-    \item \href{#method-BinanceMarginData-get_isolated_margin_data}{\code{BinanceMarginData$get_isolated_margin_data()}}
-    \item \href{#method-BinanceMarginData-clone}{\code{BinanceMarginData$clone()}}
-  }
+\itemize{
+\item \href{#method-BinanceMarginData-get_all_pairs}{\code{BinanceMarginData$get_all_pairs()}}
+\item \href{#method-BinanceMarginData-get_isolated_pairs}{\code{BinanceMarginData$get_isolated_pairs()}}
+\item \href{#method-BinanceMarginData-get_price_index}{\code{BinanceMarginData$get_price_index()}}
+\item \href{#method-BinanceMarginData-get_interest_rate_history}{\code{BinanceMarginData$get_interest_rate_history()}}
+\item \href{#method-BinanceMarginData-get_cross_margin_data}{\code{BinanceMarginData$get_cross_margin_data()}}
+\item \href{#method-BinanceMarginData-get_isolated_margin_data}{\code{BinanceMarginData$get_isolated_margin_data()}}
+\item \href{#method-BinanceMarginData-clone}{\code{BinanceMarginData$clone()}}
 }
-\if{html}{\out{<details open><summary>Inherited methods</summary>
+}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
 <ul>
-  <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>BinanceBase$initialize()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>binance::BinanceBase$initialize()</code></a></span></li>
 </ul>
-</details>}}
+</details>
+}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarginData-get_all_pairs"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarginData-get_all_pairs}{}}}
-\subsection{\code{BinanceMarginData$get_all_pairs()}}{
-  Get All Cross Margin Pairs
+\subsection{Method \code{get_all_pairs()}}{
+Get All Cross Margin Pairs
 
 Retrieves a list of all cross margin trading pairs available on Binance.
 \subsection{API Endpoint}{
@@ -195,20 +202,19 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarginData$get_all_pairs(recv_window = NULL)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{recv_window}}{(scalar<count>?) request validity window in milliseconds.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per pair:
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarginData$get_all_pairs(recv_window = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{recv_window}}{(scalar<count>?) request validity window in milliseconds.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per pair:
 \itemize{
 \item base (character) Base asset code (e.g., \code{"BTC"}).
 \item id (numeric) Pair identifier.
@@ -218,22 +224,25 @@ Verified: 2026-05-22
 \item quote (character) Quote asset code (e.g., \code{"USDT"}).
 \item symbol (character) Trading pair identifier (e.g., \code{"BTCUSDT"}).
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{margin <- BinanceMarginData$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+margin <- BinanceMarginData$new()
 pairs <- margin$get_all_pairs()
 print(pairs)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarginData-get_isolated_pairs"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarginData-get_isolated_pairs}{}}}
-\subsection{\code{BinanceMarginData$get_isolated_pairs()}}{
-  Get All Isolated Margin Pairs
+\subsection{Method \code{get_isolated_pairs()}}{
+Get All Isolated Margin Pairs
 
 Retrieves a list of all isolated margin trading pairs available on Binance.
 \subsection{API Endpoint}{
@@ -277,20 +286,19 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarginData$get_isolated_pairs(recv_window = NULL)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{recv_window}}{(scalar<count>?) request validity window in milliseconds.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per pair:
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarginData$get_isolated_pairs(recv_window = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{recv_window}}{(scalar<count>?) request validity window in milliseconds.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per pair:
 \itemize{
 \item symbol (character) Trading pair identifier (e.g., \code{"BTCUSDT"}).
 \item base (character) Base asset code (e.g., \code{"BTC"}).
@@ -299,22 +307,25 @@ Verified: 2026-05-22
 \item is_buy_allowed (logical) Whether buying is allowed.
 \item is_sell_allowed (logical) Whether selling is allowed.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{margin <- BinanceMarginData$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+margin <- BinanceMarginData$new()
 pairs <- margin$get_isolated_pairs()
 print(pairs)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarginData-get_price_index"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarginData-get_price_index}{}}}
-\subsection{\code{BinanceMarginData$get_price_index()}}{
-  Get Margin Price Index
+\subsection{Method \code{get_price_index()}}{
+Get Margin Price Index
 
 Retrieves the margin price index for a given symbol. This is a public
 endpoint that does not require authentication.
@@ -341,41 +352,43 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="sourceCode json">}}\preformatted{\{ "calcTime": 1562046418000, "price": "67232.90000000", "symbol": "BTCUSDT" \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarginData$get_price_index(symbol)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row:
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarginData$get_price_index(symbol)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row:
 \itemize{
 \item calc_time (POSIXct) Calculation time as UTC datetime.
 \item price (character) Margin price index value.
 \item symbol (character) Trading pair identifier.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{margin <- BinanceMarginData$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+margin <- BinanceMarginData$new()
 idx <- margin$get_price_index("BTCUSDT")
 print(idx)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarginData-get_interest_rate_history"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarginData-get_interest_rate_history}{}}}
-\subsection{\code{BinanceMarginData$get_interest_rate_history()}}{
-  Get Interest Rate History
+\subsection{Method \code{get_interest_rate_history()}}{
+Get Interest Rate History
 
 Retrieves historical interest rate data for a given asset.
 \subsection{API Endpoint}{
@@ -415,52 +428,58 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarginData$get_interest_rate_history(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarginData$get_interest_rate_history(
   asset,
   vip_level = NULL,
   start_time = NULL,
   end_time = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{asset}}{(scalar<character>) asset code (e.g., \code{"BTC"}).}
-      \item{\code{vip_level}}{(scalar<count>?) VIP level to query. Defaults to user's VIP level.}
-      \item{\code{start_time}}{(scalar<numeric>?) start time in milliseconds.}
-      \item{\code{end_time}}{(scalar<numeric>?) end time in milliseconds.}
-      \item{\code{recv_window}}{(scalar<count>?) request validity window in milliseconds.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per rate record:
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{asset}}{(scalar<character>) asset code (e.g., \code{"BTC"}).}
+
+\item{\code{vip_level}}{(scalar<count>?) VIP level to query. Defaults to user's VIP level.}
+
+\item{\code{start_time}}{(scalar<numeric>?) start time in milliseconds.}
+
+\item{\code{end_time}}{(scalar<numeric>?) end time in milliseconds.}
+
+\item{\code{recv_window}}{(scalar<count>?) request validity window in milliseconds.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per rate record:
 \itemize{
 \item asset (character) Asset code (e.g., \code{"BTC"}).
 \item daily_interest_rate (character) Daily interest rate as string.
 \item timestamp (POSIXct) Record timestamp as UTC datetime.
 \item vip_level (integer) VIP level for this rate.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{margin <- BinanceMarginData$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+margin <- BinanceMarginData$new()
 history <- margin$get_interest_rate_history("BTC")
 print(history)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarginData-get_cross_margin_data"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarginData-get_cross_margin_data}{}}}
-\subsection{\code{BinanceMarginData$get_cross_margin_data()}}{
-  Get Cross Margin Data
+\subsection{Method \code{get_cross_margin_data()}}{
+Get Cross Margin Data
 
 Retrieves cross margin data including borrowing limits and interest rates.
 \subsection{API Endpoint}{
@@ -508,26 +527,27 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarginData$get_cross_margin_data(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarginData$get_cross_margin_data(
   vip_level = NULL,
   coin = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{vip_level}}{(scalar<count>?) VIP level to query. Defaults to user's VIP level.}
-      \item{\code{coin}}{(scalar<character>?) specific coin to query (e.g., \code{"BTC"}).}
-      \item{\code{recv_window}}{(scalar<count>?) request validity window in milliseconds.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per coin-pair combination:
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{vip_level}}{(scalar<count>?) VIP level to query. Defaults to user's VIP level.}
+
+\item{\code{coin}}{(scalar<character>?) specific coin to query (e.g., \code{"BTC"}).}
+
+\item{\code{recv_window}}{(scalar<count>?) request validity window in milliseconds.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per coin-pair combination:
 \itemize{
 \item vip_level (integer) VIP level tier.
 \item coin (character) Coin code (e.g., \code{"BTC"}).
@@ -540,22 +560,25 @@ Verified: 2026-05-22
 }
 
 When a coin has multiple marginable pairs, coin-level fields are repeated on each row.
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{margin <- BinanceMarginData$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+margin <- BinanceMarginData$new()
 data <- margin$get_cross_margin_data()
 print(data)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarginData-get_isolated_margin_data"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarginData-get_isolated_margin_data}{}}}
-\subsection{\code{BinanceMarginData$get_isolated_margin_data()}}{
-  Get Isolated Margin Data
+\subsection{Method \code{get_isolated_margin_data()}}{
+Get Isolated Margin Data
 
 Retrieves isolated margin data including leverage and borrowing limits.
 \subsection{API Endpoint}{
@@ -617,60 +640,62 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarginData$get_isolated_margin_data(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarginData$get_isolated_margin_data(
   vip_level = NULL,
   symbol = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{vip_level}}{(scalar<count>?) VIP level to query. Defaults to user's VIP level.}
-      \item{\code{symbol}}{(scalar<character>?) specific symbol to query (e.g., \code{"BTCUSDT"}).}
-      \item{\code{recv_window}}{(scalar<count>?) request validity window in milliseconds.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per symbol:
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{vip_level}}{(scalar<count>?) VIP level to query. Defaults to user's VIP level.}
+
+\item{\code{symbol}}{(scalar<character>?) specific symbol to query (e.g., \code{"BTCUSDT"}).}
+
+\item{\code{recv_window}}{(scalar<count>?) request validity window in milliseconds.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per symbol:
 \itemize{
 \item vip_level (integer) VIP level tier.
 \item symbol (character) Trading pair identifier.
 \item leverage (character) Maximum leverage available.
 \item data (list) Nested list of coin-level margin details.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{margin <- BinanceMarginData$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+margin <- BinanceMarginData$new()
 data <- margin$get_isolated_margin_data()
 print(data)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMarginData-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMarginData-clone}{}}}
-\subsection{\code{BinanceMarginData$clone()}}{
-  The objects of this class are cloneable with this method.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceMarginData$clone(deep = FALSE)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{deep}}{Whether to make a deep clone.}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceMarginData$clone(deep = FALSE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

@@ -4,6 +4,11 @@
 \alias{BinanceTrading}
 \title{BinanceTrading: Spot Order Management}
 \description{
+BinanceTrading: Spot Order Management
+
+BinanceTrading: Spot Order Management
+}
+\details{
 Provides methods for placing, cancelling, and querying spot orders on Binance.
 Inherits from \link{BinanceBase}.
 \subsection{Purpose and Scope}{
@@ -87,7 +92,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceTrading$add_order()`
+## Method `BinanceTrading$add_order`
 ## ------------------------------------------------
 
 \dontrun{
@@ -100,7 +105,7 @@ print(order)
 }
 
 ## ------------------------------------------------
-## Method `BinanceTrading$add_order_test()`
+## Method `BinanceTrading$add_order_test`
 ## ------------------------------------------------
 
 \dontrun{
@@ -113,7 +118,7 @@ stopifnot(test$validated)
 }
 
 ## ------------------------------------------------
-## Method `BinanceTrading$cancel_order()`
+## Method `BinanceTrading$cancel_order`
 ## ------------------------------------------------
 
 \dontrun{
@@ -123,7 +128,7 @@ print(cancelled)
 }
 
 ## ------------------------------------------------
-## Method `BinanceTrading$cancel_all_orders()`
+## Method `BinanceTrading$cancel_all_orders`
 ## ------------------------------------------------
 
 \dontrun{
@@ -133,7 +138,7 @@ print(cancelled)
 }
 
 ## ------------------------------------------------
-## Method `BinanceTrading$get_order()`
+## Method `BinanceTrading$get_order`
 ## ------------------------------------------------
 
 \dontrun{
@@ -143,7 +148,7 @@ print(order)
 }
 
 ## ------------------------------------------------
-## Method `BinanceTrading$get_open_orders()`
+## Method `BinanceTrading$get_open_orders`
 ## ------------------------------------------------
 
 \dontrun{
@@ -153,7 +158,7 @@ print(open)
 }
 
 ## ------------------------------------------------
-## Method `BinanceTrading$get_all_orders()`
+## Method `BinanceTrading$get_all_orders`
 ## ------------------------------------------------
 
 \dontrun{
@@ -163,31 +168,33 @@ print(all[, .(order_id, side, price, status, time)])
 }
 }
 \section{Super classes}{
-\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{BinanceBase}} -> \code{BinanceTrading}
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceTrading}
 }
 \section{Methods}{
 \subsection{Public methods}{
-  \itemize{
-    \item \href{#method-BinanceTrading-add_order}{\code{BinanceTrading$add_order()}}
-    \item \href{#method-BinanceTrading-add_order_test}{\code{BinanceTrading$add_order_test()}}
-    \item \href{#method-BinanceTrading-cancel_order}{\code{BinanceTrading$cancel_order()}}
-    \item \href{#method-BinanceTrading-cancel_all_orders}{\code{BinanceTrading$cancel_all_orders()}}
-    \item \href{#method-BinanceTrading-get_order}{\code{BinanceTrading$get_order()}}
-    \item \href{#method-BinanceTrading-get_open_orders}{\code{BinanceTrading$get_open_orders()}}
-    \item \href{#method-BinanceTrading-get_all_orders}{\code{BinanceTrading$get_all_orders()}}
-    \item \href{#method-BinanceTrading-clone}{\code{BinanceTrading$clone()}}
-  }
+\itemize{
+\item \href{#method-BinanceTrading-add_order}{\code{BinanceTrading$add_order()}}
+\item \href{#method-BinanceTrading-add_order_test}{\code{BinanceTrading$add_order_test()}}
+\item \href{#method-BinanceTrading-cancel_order}{\code{BinanceTrading$cancel_order()}}
+\item \href{#method-BinanceTrading-cancel_all_orders}{\code{BinanceTrading$cancel_all_orders()}}
+\item \href{#method-BinanceTrading-get_order}{\code{BinanceTrading$get_order()}}
+\item \href{#method-BinanceTrading-get_open_orders}{\code{BinanceTrading$get_open_orders()}}
+\item \href{#method-BinanceTrading-get_all_orders}{\code{BinanceTrading$get_all_orders()}}
+\item \href{#method-BinanceTrading-clone}{\code{BinanceTrading$clone()}}
 }
-\if{html}{\out{<details open><summary>Inherited methods</summary>
+}
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
 <ul>
-  <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>BinanceBase$initialize()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>binance::BinanceBase$initialize()</code></a></span></li>
 </ul>
-</details>}}
+</details>
+}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceTrading-add_order"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceTrading-add_order}{}}}
-\subsection{\code{BinanceTrading$add_order()}}{
-  Place an Order
+\subsection{Method \code{add_order()}}{
+Place an Order
 
 Places a new spot order on Binance.
 \subsection{API Endpoint}{
@@ -237,9 +244,8 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceTrading$add_order(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$add_order(
   type,
   symbol,
   side,
@@ -253,30 +259,42 @@ Verified: 2026-05-22
   new_order_resp_type = NULL,
   self_trade_prevention_mode = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{type}}{(scalar<character>) \code{"LIMIT"} or \code{"MARKET"} (and stop/take-profit variants).}
-      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-      \item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
-      \item{\code{quantity}}{(scalar<numeric>?) base asset quantity.}
-      \item{\code{quote_order_qty}}{(scalar<numeric>?) quote asset quantity (market orders only).}
-      \item{\code{price}}{(scalar<numeric>?) price for limit orders.}
-      \item{\code{time_in_force}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
-      \item{\code{new_client_order_id}}{(scalar<character>?) unique client order ID.}
-      \item{\code{stop_price}}{(scalar<numeric>?) trigger price for stop orders.}
-      \item{\code{iceberg_qty}}{(scalar<numeric>?) iceberg quantity.}
-      \item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
-      \item{\code{self_trade_prevention_mode}}{(scalar<character>?)}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per fill (one row with
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{type}}{(scalar<character>) \code{"LIMIT"} or \code{"MARKET"} (and stop/take-profit variants).}
+
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+
+\item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
+
+\item{\code{quantity}}{(scalar<numeric>?) base asset quantity.}
+
+\item{\code{quote_order_qty}}{(scalar<numeric>?) quote asset quantity (market orders only).}
+
+\item{\code{price}}{(scalar<numeric>?) price for limit orders.}
+
+\item{\code{time_in_force}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
+
+\item{\code{new_client_order_id}}{(scalar<character>?) unique client order ID.}
+
+\item{\code{stop_price}}{(scalar<numeric>?) trigger price for stop orders.}
+
+\item{\code{iceberg_qty}}{(scalar<numeric>?) iceberg quantity.}
+
+\item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
+
+\item{\code{self_trade_prevention_mode}}{(scalar<character>?)}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per fill (one row with
 \code{NA} \verb{fill_*} columns when the order had no fills):
 \itemize{
 \item symbol (character) Trading pair (e.g., \code{"BTCUSDT"}).
@@ -311,25 +329,28 @@ each of the N rows and \code{fill_index} runs \verb{1..N}. When the order has
 no fills (e.g. a resting \code{LIMIT} order with \code{new_order_resp_type = "ACK"}
 / \code{"RESULT"}), a single row is returned with the \verb{fill_*} columns
 present as \code{NA} so the schema is stable across response types.
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{trading <- BinanceTrading$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+trading <- BinanceTrading$new()
 order <- trading$add_order(
   type = "LIMIT", symbol = "BTCUSDT", side = "BUY",
   price = 50000, quantity = 0.0001
 )
 print(order)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceTrading-add_order_test"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceTrading-add_order_test}{}}}
-\subsection{\code{BinanceTrading$add_order_test()}}{
-  Test Order Placement
+\subsection{Method \code{add_order_test()}}{
+Test Order Placement
 
 Simulates placing an order without execution. Validates all parameters
 and authentication exactly as \code{add_order()}, but no order is actually created.
@@ -381,9 +402,8 @@ Verified: 2026-05-22
 \if{html}{\out{<div class="sourceCode json">}}\preformatted{\{\}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceTrading$add_order_test(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$add_order_test(
   type,
   symbol,
   side,
@@ -397,55 +417,70 @@ Verified: 2026-05-22
   new_order_resp_type = NULL,
   self_trade_prevention_mode = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{type}}{(scalar<character>) \code{"LIMIT"} or \code{"MARKET"} (and stop/take-profit variants).}
-      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-      \item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
-      \item{\code{quantity}}{(scalar<numeric>?) base asset quantity.}
-      \item{\code{quote_order_qty}}{(scalar<numeric>?) quote asset quantity (market orders only).}
-      \item{\code{price}}{(scalar<numeric>?) price for limit orders.}
-      \item{\code{time_in_force}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
-      \item{\code{new_client_order_id}}{(scalar<character>?) unique client order ID.}
-      \item{\code{stop_price}}{(scalar<numeric>?) trigger price for stop orders.}
-      \item{\code{iceberg_qty}}{(scalar<numeric>?) iceberg quantity.}
-      \item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
-      \item{\code{self_trade_prevention_mode}}{(scalar<character>?)}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) a single row. Binance returns
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{type}}{(scalar<character>) \code{"LIMIT"} or \code{"MARKET"} (and stop/take-profit variants).}
+
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+
+\item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
+
+\item{\code{quantity}}{(scalar<numeric>?) base asset quantity.}
+
+\item{\code{quote_order_qty}}{(scalar<numeric>?) quote asset quantity (market orders only).}
+
+\item{\code{price}}{(scalar<numeric>?) price for limit orders.}
+
+\item{\code{time_in_force}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
+
+\item{\code{new_client_order_id}}{(scalar<character>?) unique client order ID.}
+
+\item{\code{stop_price}}{(scalar<numeric>?) trigger price for stop orders.}
+
+\item{\code{iceberg_qty}}{(scalar<numeric>?) iceberg quantity.}
+
+\item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
+
+\item{\code{self_trade_prevention_mode}}{(scalar<character>?)}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) a single row. Binance returns
 \code{{}} on a successful test order — the absence of an error is the
 validation signal, so we don't fabricate a stub row echoing the request
 parameters (per the cross-package "no stub rows" convention).
 \itemize{
 \item validated (logical) \code{TRUE} on a successful test order.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{trading <- BinanceTrading$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+trading <- BinanceTrading$new()
 test <- trading$add_order_test(
   type = "LIMIT", symbol = "BTCUSDT", side = "BUY",
   price = 50000, quantity = 0.0001
 )
 stopifnot(test$validated)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceTrading-cancel_order"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceTrading-cancel_order}{}}}
-\subsection{\code{BinanceTrading$cancel_order()}}{
-  Cancel an Order
+\subsection{Method \code{cancel_order()}}{
+Cancel an Order
 
 Cancels an active order by order ID or client order ID.
 \subsection{API Endpoint}{
@@ -487,28 +522,30 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceTrading$cancel_order(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$cancel_order(
   symbol,
   order_id = NULL,
   orig_client_order_id = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-      \item{\code{order_id}}{(scalar<count>?) the order ID to cancel.}
-      \item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID to cancel.}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row:
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+
+\item{\code{order_id}}{(scalar<count>?) the order ID to cancel.}
+
+\item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID to cancel.}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair.
 \item orig_client_order_id (character) Original client order ID.
@@ -526,22 +563,25 @@ Verified: 2026-05-22
 \item self_trade_prevention_mode (character) STP mode applied.
 \item transact_time (POSIXct) Cancellation time converted from \code{transactTime}.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{trading <- BinanceTrading$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+trading <- BinanceTrading$new()
 cancelled <- trading$cancel_order("BTCUSDT", order_id = 12345)
 print(cancelled)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceTrading-cancel_all_orders"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceTrading-cancel_all_orders}{}}}
-\subsection{\code{BinanceTrading$cancel_all_orders()}}{
-  Cancel All Open Orders on a Symbol
+\subsection{Method \code{cancel_all_orders()}}{
+Cancel All Open Orders on a Symbol
 
 Cancels all active orders on a trading pair.
 \subsection{API Endpoint}{
@@ -602,21 +642,21 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceTrading$cancel_all_orders(symbol, recv_window = NULL)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per cancelled order
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$cancel_all_orders(symbol, recv_window = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per cancelled order
 (empty when there were no open orders to cancel, per the cross-package
 "no stub rows" convention — the absence of an error is the success
 signal):
@@ -637,22 +677,25 @@ signal):
 \item self_trade_prevention_mode (character) STP mode applied.
 \item transact_time (POSIXct) Cancellation time.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{trading <- BinanceTrading$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+trading <- BinanceTrading$new()
 cancelled <- trading$cancel_all_orders("BTCUSDT")
 print(cancelled)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceTrading-get_order"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceTrading-get_order}{}}}
-\subsection{\code{BinanceTrading$get_order()}}{
-  Query Order
+\subsection{Method \code{get_order()}}{
+Query Order
 
 Retrieves details for a specific order by order ID or client order ID.
 \subsection{API Endpoint}{
@@ -699,44 +742,49 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceTrading$get_order(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$get_order(
   symbol,
   order_id = NULL,
   orig_client_order_id = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-      \item{\code{order_id}}{(scalar<count>?) the order ID.}
-      \item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID.}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (SpotOrderQuery | promise<SpotOrderQuery>) one row, the order.
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{trading <- BinanceTrading$new()
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+
+\item{\code{order_id}}{(scalar<count>?) the order ID.}
+
+\item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID.}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(SpotOrderQuery | promise<SpotOrderQuery>) one row, the order.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+trading <- BinanceTrading$new()
 order <- trading$get_order("BTCUSDT", order_id = 12345)
 print(order)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceTrading-get_open_orders"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceTrading-get_open_orders}{}}}
-\subsection{\code{BinanceTrading$get_open_orders()}}{
-  Get Open Orders
+\subsection{Method \code{get_open_orders()}}{
+Get Open Orders
 
 Retrieves all currently open orders, optionally filtered by symbol.
 \subsection{API Endpoint}{
@@ -785,22 +833,22 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceTrading$get_open_orders(symbol = NULL, recv_window = NULL)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$get_open_orders(symbol = NULL, recv_window = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).
 If NULL, returns open orders for all symbols (weight 80).}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per open order
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per open order
 (empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
@@ -823,22 +871,25 @@ If NULL, returns open orders for all symbols (weight 80).}
 \item working_time (POSIXct) Time the order started working.
 \item self_trade_prevention_mode (character) Self-trade-prevention mode.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{trading <- BinanceTrading$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+trading <- BinanceTrading$new()
 open <- trading$get_open_orders("BTCUSDT")
 print(open)
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceTrading-get_all_orders"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceTrading-get_all_orders}{}}}
-\subsection{\code{BinanceTrading$get_all_orders()}}{
-  Get All Orders
+\subsection{Method \code{get_all_orders()}}{
+Get All Orders
 
 Retrieves all orders for a symbol (open, cancelled, filled).
 If \code{orderId} is set, orders >= that ID are returned. Otherwise
@@ -911,32 +962,36 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceTrading$get_all_orders(
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$get_all_orders(
   symbol,
   order_id = NULL,
   start_time = NULL,
   end_time = NULL,
   limit = NULL,
   recv_window = NULL
-)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-      \item{\code{order_id}}{(scalar<count>?) pagination cursor.}
-      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-      \item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
-      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    (data.table | promise<data.table>) one row per order
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+
+\item{\code{order_id}}{(scalar<count>?) pagination cursor.}
+
+\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+
+\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+
+\item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
+
+\item{\code{recv_window}}{(scalar<count>?) max 60000.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+(data.table | promise<data.table>) one row per order
 (empty when there are no matching orders):
 \itemize{
 \item symbol (character) Trading pair.
@@ -959,34 +1014,35 @@ Verified: 2026-05-22
 \item working_time (POSIXct) Time the order started working.
 \item self_trade_prevention_mode (character) Self-trade-prevention mode.
 }
-  }
-  \subsection{Examples}{
-    \if{html}{\out{<div class="r example copy">}}
-    \preformatted{trading <- BinanceTrading$new()
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+trading <- BinanceTrading$new()
 all <- trading$get_all_orders("BTCUSDT", limit = 50)
 print(all[, .(order_id, side, price, status, time)])
 }
-    \if{html}{\out{</div>}}
-  }
+}
+\if{html}{\out{</div>}}
+
 }
 
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceTrading-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceTrading-clone}{}}}
-\subsection{\code{BinanceTrading$clone()}}{
-  The objects of this class are cloneable with this method.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{BinanceTrading$clone(deep = FALSE)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{deep}}{Whether to make a deep clone.}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BinanceTrading$clone(deep = FALSE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }
