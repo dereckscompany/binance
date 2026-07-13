@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/dereckscompany/binance/blob/master/inst/CITATION)
+[`inst/CITATION`](https://github.com/dereckscompany/binance/blob/v0.8.0/inst/CITATION)
 
 Mezquita, D. (2026). binance: R API Wrapper to Binance Cryptocurrency
 Exchange. R package version 0.0.1.
