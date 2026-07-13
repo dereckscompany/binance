@@ -584,7 +584,7 @@ BinanceFutures <- R6::R6Class(
       assert::assert_nonempty_strings(symbol)
       assert::assert_nonempty_strings(orig_client_order_id, null_ok = TRUE)
       if (is.null(order_id) && is.null(orig_client_order_id)) {
-        rlang::abort("Either 'order_id' or 'orig_client_order_id' must be provided.")
+        abort_binance_validation_error("Either 'order_id' or 'orig_client_order_id' must be provided.")
       }
 
       res <- private$.request(
@@ -760,7 +760,7 @@ BinanceFutures <- R6::R6Class(
       assert::assert_nonempty_strings(symbol)
       assert::assert_nonempty_strings(orig_client_order_id, null_ok = TRUE)
       if (is.null(order_id) && is.null(orig_client_order_id)) {
-        rlang::abort("Either 'order_id' or 'orig_client_order_id' must be provided.")
+        abort_binance_validation_error("Either 'order_id' or 'orig_client_order_id' must be provided.")
       }
 
       res <- private$.request(

@@ -73,7 +73,7 @@ validate_order_params <- function(
   rlang::arg_match0(side, c("BUY", "SELL"))
 
   if (!verify_symbol(symbol)) {
-    rlang::abort("Parameter 'symbol' must be a valid Binance ticker (e.g., 'BTCUSDT').")
+    abort_binance_validation_error("Parameter 'symbol' must be a valid Binance ticker (e.g., 'BTCUSDT').")
   }
 
   # Convert numerics to character for the API
@@ -96,21 +96,23 @@ validate_order_params <- function(
   # Type-specific validation
   if (type == "LIMIT") {
     if (is.null(price)) {
-      rlang::abort("Parameter 'price' is required for LIMIT orders.")
+      abort_binance_validation_error("Parameter 'price' is required for LIMIT orders.")
     }
     if (is.null(quantity)) {
-      rlang::abort("Parameter 'quantity' is required for LIMIT orders.")
+      abort_binance_validation_error("Parameter 'quantity' is required for LIMIT orders.")
     }
     if (is.null(time_in_force)) time_in_force <- "GTC"
   } else if (type == "MARKET") {
     if (!is.null(price)) {
-      rlang::abort("Parameter 'price' is not applicable for MARKET orders.")
+      abort_binance_validation_error("Parameter 'price' is not applicable for MARKET orders.")
     }
     if (is.null(quantity) && is.null(quote_order_qty)) {
-      rlang::abort("Either 'quantity' or 'quote_order_qty' must be specified for MARKET orders.")
+      abort_binance_validation_error("Either 'quantity' or 'quote_order_qty' must be specified for MARKET orders.")
     }
     if (!is.null(quantity) && !is.null(quote_order_qty)) {
-      rlang::abort("Parameters 'quantity' and 'quote_order_qty' are mutually exclusive for MARKET orders.")
+      abort_binance_validation_error(
+        "Parameters 'quantity' and 'quote_order_qty' are mutually exclusive for MARKET orders."
+      )
     }
   }
 
@@ -129,7 +131,7 @@ validate_order_params <- function(
   }
   if (!is.null(recv_window)) {
     recv_window <- as.integer(recv_window)
-    if (recv_window > 60000L) rlang::abort("Parameter 'recv_window' must not exceed 60000.")
+    if (recv_window > 60000L) abort_binance_validation_error("Parameter 'recv_window' must not exceed 60000.")
   }
 
   # Build the result list, dropping NULLs

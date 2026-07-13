@@ -1,3 +1,12 @@
+# binance 0.8.0
+
+## Typed input-validation conditions (the non-transport half of the taxonomy)
+
+* The connector's 25 non-transport `rlang::abort()` sites — a method's argument or parameter is malformed or violates a rule *before* any request is made (a missing required order id, an unset LIMIT price, a bad ticker, a `recv_window` over the cap) — now signal a **classed condition** through a new `abort_binance_validation_error()` raiser, so a caller branches on error *type* instead of grepping the message text. This completes the taxonomy: the request funnel already raised typed transport conditions (0.7.0); this covers the input-validation surface.
+* The class vector is `c("binance_validation_error", "binance_error")` (on top of rlang's error classes). `binance_error` is the connector's DOMAIN root, parallel to the transport `connectcore_error` root: a validation failure is not a transport failure, so the two roots never meet — exactly the `core_error` / `connectcore_error` split the fleet already uses. Catch `binance_validation_error` for input bugs specifically, or `binance_error` for any non-transport binance failure.
+* The message strings are **byte-identical** to the bare `rlang::abort()` calls they replaced (a reverse-substitution proves every one of the 25 reproduces master exactly; golden tests pin a representative site), so existing tests and downstream message greps keep matching. The classes are purely additive; `conditionMessage()` and `inherits(e, "error")` are unchanged. No behaviour changes.
+* Follows the org convention (dereckscompany/tradebot-core#30; discussion "throw typed errors, not bare strings"). The transport/API funnel (`abort_binance_error`, rooted at `connectcore_error`) is untouched.
+
 # binance 0.7.0
 
 ## Typed API-error conditions

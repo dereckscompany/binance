@@ -58,7 +58,7 @@ binance_fetch_klines <- function(
   on_page = NULL
 ) {
   if (!timeframe %in% names(binance_timeframe_map)) {
-    rlang::abort(paste0(
+    abort_binance_validation_error(paste0(
       "Invalid timeframe '",
       timeframe,
       "'. Valid: ",
