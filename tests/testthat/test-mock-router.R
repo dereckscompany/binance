@@ -42,6 +42,7 @@ test_that("BinanceFuturesData public methods round-trip through the router", {
   expect_equal(nrow(fdata$get_exchange_info()), 1L)
   expect_equal(nrow(fdata$get_mark_price("BTCUSDT")), 1L)
   expect_true(data.table::is.data.table(fdata$get_funding_rate("BTCUSDT")))
+  expect_equal(nrow(fdata$get_funding_info()), 2L)
   expect_equal(nrow(fdata$get_open_interest("BTCUSDT")), 1L)
   expect_equal(nrow(fdata$get_klines("BTCUSDT", "1d")), 3L)
 })

@@ -286,6 +286,95 @@ test_that("get_funding_rate hits correct endpoint", {
   expect_true(grepl("/fapi/v1/fundingRate", captured_url))
 })
 
+# -- get_funding_info --
+
+test_that("get_funding_info returns the typed funding-interval declarations", {
+  resp <- mock_binance_response(data = mock_futures_funding_info_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures_data()$get_funding_info()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 2L)
+  expect_equal(
+    names(dt),
+    c(
+      "symbol",
+      "adjusted_funding_rate_cap",
+      "adjusted_funding_rate_floor",
+      "funding_interval_hours",
+      "disclaimer",
+      "update_time"
+    )
+  )
+  # symbol structural (character); cap/floor measurements coerced to numeric;
+  # interval a whole-hour integer; disclaimer a logical flag; update_time POSIXct.
+  expect_type(dt$symbol, "character")
+  expect_type(dt$adjusted_funding_rate_cap, "double")
+  expect_type(dt$adjusted_funding_rate_floor, "double")
+  expect_type(dt$funding_interval_hours, "integer")
+  expect_type(dt$disclaimer, "logical")
+  expect_s3_class(dt$update_time, "POSIXct")
+  expect_equal(dt$funding_interval_hours, c(8L, 4L))
+  expect_equal(dt$adjusted_funding_rate_cap, c(0.02, 0.03))
+  expect_equal(dt$disclaimer, c(FALSE, TRUE))
+  # No list columns anywhere.
+  list_cols <- names(dt)[vapply(dt, is.list, logical(1))]
+  expect_equal(length(list_cols), 0L)
+})
+
+test_that("get_funding_info returns the typed empty on an empty declaration list", {
+  resp <- mock_binance_response(data = list())
+  httr2::local_mocked_responses(function(req) resp)
+
+  dt <- new_futures_data()$get_funding_info()
+  expect_s3_class(dt, "data.table")
+  expect_equal(nrow(dt), 0L)
+  expect_equal(
+    names(dt),
+    c(
+      "symbol",
+      "adjusted_funding_rate_cap",
+      "adjusted_funding_rate_floor",
+      "funding_interval_hours",
+      "disclaimer",
+      "update_time"
+    )
+  )
+  expect_s3_class(dt$update_time, "POSIXct")
+})
+
+test_that("get_funding_info hits correct endpoint", {
+  captured_url <- NULL
+  resp <- mock_binance_response(data = mock_futures_funding_info_data())
+  httr2::local_mocked_responses(function(req) {
+    captured_url <<- req$url
+    return(resp)
+  })
+
+  new_futures_data()$get_funding_info()
+  expect_true(grepl("/fapi/v1/fundingInfo", captured_url))
+})
+
+test_that("get_funding_info resolves the same typed table in async mode", {
+  resp <- mock_binance_response(data = mock_futures_funding_info_data())
+  httr2::local_mocked_responses(function(req) resp)
+
+  fd <- BinanceFuturesData$new(keys = KEYS, base_url = BASE, async = TRUE)
+  p <- fd$get_funding_info()
+  expect_s3_class(p, "promise")
+
+  resolved <- NULL
+  promises::then(p, function(val) resolved <<- val)
+  for (i in 1:20) {
+    later::run_now(0.1)
+  }
+
+  expect_s3_class(resolved, "data.table")
+  expect_equal(nrow(resolved), 2L)
+  expect_equal(resolved$funding_interval_hours, c(8L, 4L))
+  expect_s3_class(resolved$update_time, "POSIXct")
+})
+
 # -- get_24hr_stats --
 
 test_that("get_24hr_stats returns stats with datetime columns", {

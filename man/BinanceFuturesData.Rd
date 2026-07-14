@@ -44,6 +44,7 @@ The base URL defaults to \verb{https://fapi.binance.com} via \code{\link[=get_fu
    get_klines \tab GET /fapi/v1/klines \tab No \cr
    get_mark_price \tab GET /fapi/v1/premiumIndex \tab No \cr
    get_funding_rate \tab GET /fapi/v1/fundingRate \tab No \cr
+   get_funding_info \tab GET /fapi/v1/fundingInfo \tab No \cr
    get_24hr_stats \tab GET /fapi/v1/ticker/24hr \tab No \cr
    get_ticker \tab GET /fapi/v1/ticker/price \tab No \cr
    get_book_ticker \tab GET /fapi/v1/ticker/bookTicker \tab No \cr
@@ -160,6 +161,16 @@ print(rates)
 }
 
 ## ------------------------------------------------
+## Method `BinanceFuturesData$get_funding_info()`
+## ------------------------------------------------
+
+\dontrun{
+futures <- BinanceFuturesData$new()
+info <- futures$get_funding_info()
+print(info[funding_interval_hours != 8L, .(symbol, funding_interval_hours)])
+}
+
+## ------------------------------------------------
 ## Method `BinanceFuturesData$get_24hr_stats()`
 ## ------------------------------------------------
 
@@ -253,6 +264,7 @@ print(klines)
     \item \href{#method-BinanceFuturesData-get_klines}{\code{BinanceFuturesData$get_klines()}}
     \item \href{#method-BinanceFuturesData-get_mark_price}{\code{BinanceFuturesData$get_mark_price()}}
     \item \href{#method-BinanceFuturesData-get_funding_rate}{\code{BinanceFuturesData$get_funding_rate()}}
+    \item \href{#method-BinanceFuturesData-get_funding_info}{\code{BinanceFuturesData$get_funding_info()}}
     \item \href{#method-BinanceFuturesData-get_24hr_stats}{\code{BinanceFuturesData$get_24hr_stats()}}
     \item \href{#method-BinanceFuturesData-get_ticker}{\code{BinanceFuturesData$get_ticker()}}
     \item \href{#method-BinanceFuturesData-get_book_ticker}{\code{BinanceFuturesData$get_book_ticker()}}
@@ -802,6 +814,83 @@ Verified: 2026-05-22
     \preformatted{futures <- BinanceFuturesData$new()
 rates <- futures$get_funding_rate("BTCUSDT", limit = 10)
 print(rates)
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BinanceFuturesData-get_funding_info"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceFuturesData-get_funding_info}{}}}
+\subsection{\code{BinanceFuturesData$get_funding_info()}}{
+  Get Funding Info (Interval Declarations)
+
+Binance publishes a small list declaring the perpetuals whose funding
+parameters deviate from the venue defaults — chiefly the contracts on a
+non-standard funding interval (4h or 1h instead of the default 8h), plus
+the declared rate cap/floor for each such symbol. Symbols on the plain 8h
+default with no override are omitted, so the list is short and can even be
+empty. This is the declaration source; use \code{get_funding_rate()} for the
+realised funding-settlement history.
+\subsection{API Endpoint}{
+
+\verb{GET https://fapi.binance.com/fapi/v1/fundingInfo}
+}
+
+\subsection{Official Documentation}{
+
+\href{https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Get-Funding-Rate-Info}{Binance Futures Get Funding Rate Info}
+Verified: 2026-07-14
+}
+
+\subsection{curl}{
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X GET 'https://fapi.binance.com/fapi/v1/fundingInfo'
+}\if{html}{\out{</div>}}
+}
+
+\subsection{JSON Response}{
+
+\if{html}{\out{<div class="sourceCode json">}}\preformatted{[
+  \{
+    "symbol": "BTCUSDT",
+    "adjustedFundingRateCap": "0.02000000",
+    "adjustedFundingRateFloor": "-0.02000000",
+    "fundingIntervalHours": 8,
+    "disclaimer": false,
+    "updateTime": 1710028800000
+  \}
+]
+}\if{html}{\out{</div>}}
+}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceFuturesData$get_funding_info()}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per declared symbol
+(empty when Binance returns no declarations, e.g. every symbol on the
+default schedule):
+\itemize{
+\item symbol (character) Trading pair identifier (e.g., \code{"BTCUSDT"}).
+\item adjusted_funding_rate_cap (numeric | NA) Upper bound applied to the
+symbol's funding rate (\code{NA} when Binance omits the field).
+\item adjusted_funding_rate_floor (numeric | NA) Lower bound applied to the
+symbol's funding rate (\code{NA} when Binance omits the field).
+\item funding_interval_hours (integer | NA) Declared funding interval in
+whole hours (e.g. \code{4}; \code{NA} when Binance omits the field). Symbols
+absent from this list settle on the 8-hour default.
+\item disclaimer (logical) Whether Binance attaches a funding disclaimer to
+the symbol.
+\item update_time (POSIXct) Time the declaration was last updated.
+}
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{futures <- BinanceFuturesData$new()
+info <- futures$get_funding_info()
+print(info[funding_interval_hours != 8L, .(symbol, funding_interval_hours)])
 }
     \if{html}{\out{</div>}}
   }

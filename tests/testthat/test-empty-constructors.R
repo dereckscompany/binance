@@ -18,7 +18,7 @@ nested_list_col_ctors <- c(
 empty_ctors <- ls(asNamespace("binance"), pattern = "^empty_dt_")
 
 test_that("the package exposes the full set of empty_dt_* constructors", {
-  expect_gte(length(empty_ctors), 57L)
+  expect_gte(length(empty_ctors), 58L)
 })
 
 test_that("every empty_dt_* returns a zero-row, typed, non-column-less data.table", {

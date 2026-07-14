@@ -1051,6 +1051,20 @@ empty_dt_futures_funding_rate <- function() {
 #' @keywords internal
 #' @noRd
 #' @noassert
+empty_dt_futures_funding_info <- function() {
+  return(data.table::data.table(
+    symbol = character(0),
+    adjusted_funding_rate_cap = numeric(0),
+    adjusted_funding_rate_floor = numeric(0),
+    funding_interval_hours = integer(0),
+    disclaimer = logical(0),
+    update_time = ms_to_datetime(numeric(0))
+  ))
+}
+
+#' @keywords internal
+#' @noRd
+#' @noassert
 empty_dt_futures_mark_price <- function() {
   return(data.table::data.table(
     symbol = character(0),

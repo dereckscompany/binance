@@ -1601,6 +1601,21 @@ assert_return_BinanceFuturesData__get_funding_rate <- function(value) {
   return(value)
 }
 
+assert_return_BinanceFuturesData__get_funding_info <- function(value) {
+  assert_data_table(value)
+  assert_has_columns(value, c("symbol", "adjusted_funding_rate_cap", "adjusted_funding_rate_floor", "funding_interval_hours", "disclaimer", "update_time"))
+  assert_character(value[["symbol"]])
+  assert_no_missing_values(value[["symbol"]])
+  assert_double(value[["adjusted_funding_rate_cap"]])
+  assert_double(value[["adjusted_funding_rate_floor"]])
+  assert_integer(value[["funding_interval_hours"]])
+  assert_logical(value[["disclaimer"]])
+  assert_no_missing_values(value[["disclaimer"]])
+  assert_datetime(value[["update_time"]])
+  assert_no_missing_values(value[["update_time"]])
+  return(value)
+}
+
 assert_args_BinanceFuturesData__get_24hr_stats <- function(symbol) {
   if (!is.null(symbol)) {
     assert_scalar_character(symbol)

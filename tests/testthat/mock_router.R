@@ -130,6 +130,7 @@ box::use(
   # ---- Futures data (fapi) ----
   list(pattern = "fapi/v1/exchangeInfo", fixture = .fixtures$futures_exchange_info_data),
   list(pattern = "fapi/v1/premiumIndex", fixture = .fixtures$futures_mark_price_data),
+  list(pattern = "fapi/v1/fundingInfo", fixture = .fixtures$futures_funding_info_data),
   list(pattern = "fapi/v1/fundingRate", fixture = .fixtures$futures_funding_rate_data),
   list(pattern = "fapi/v1/openInterest", fixture = .fixtures$futures_open_interest_data),
   list(pattern = "fapi/v1/ticker/24hr", fixture = .fixtures$"24hr_stats_data"),
