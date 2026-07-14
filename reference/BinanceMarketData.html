@@ -115,7 +115,7 @@ get_klinesGET /api/v3/klinesNo
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -375,12 +375,15 @@ Binance returns no symbols). Key columns include:</p><ul><li><p>symbol (characte
 (<code>NA</code> when the symbol carries no LOT_SIZE filter).</p></li>
 <li><p>lot_max_qty (numeric | NA) Maximum order quantity from LOT_SIZE filter.</p></li>
 <li><p>lot_step_size (numeric | NA) Quantity step size from LOT_SIZE filter.</p></li>
-<li><p>price_min (numeric) Minimum price from PRICE_FILTER.</p></li>
-<li><p>price_max (numeric) Maximum price from PRICE_FILTER.</p></li>
-<li><p>price_tick_size (numeric) Price tick size from PRICE_FILTER.</p></li>
+<li><p>price_min (numeric | NA) Minimum price from PRICE_FILTER (<code>NA</code> when the
+symbol carries no PRICE_FILTER).</p></li>
+<li><p>price_max (numeric | NA) Maximum price from PRICE_FILTER (<code>NA</code> when the
+symbol carries no PRICE_FILTER).</p></li>
+<li><p>price_tick_size (numeric | NA) Price tick size from PRICE_FILTER (<code>NA</code>
+when the symbol carries no PRICE_FILTER).</p></li>
 <li><p>min_notional (numeric | NA) Minimum notional value from MIN_NOTIONAL
 filter (<code>NA</code> when the symbol carries no NOTIONAL filter).</p></li>
-<li><p>filters_raw (character) JSON-encoded copy of the full per-symbol
+<li><p>filters_raw (character | NA) JSON-encoded copy of the full per-symbol
 <code>filters</code> array. Preserves filter types not pulled into curated
 columns (<code>PERCENT_PRICE</code>, <code>PERCENT_PRICE_BY_SIDE</code>, <code>MARKET_LOT_SIZE</code>,
 <code>MAX_NUM_ORDERS</code>, <code>MAX_NUM_ALGO_ORDERS</code>, <code>MAX_NUM_ICEBERG_ORDERS</code>,
