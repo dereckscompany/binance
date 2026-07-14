@@ -407,12 +407,15 @@ Binance returns no symbols). Key columns include:
 (\code{NA} when the symbol carries no LOT_SIZE filter).
 \item lot_max_qty (numeric | NA) Maximum order quantity from LOT_SIZE filter.
 \item lot_step_size (numeric | NA) Quantity step size from LOT_SIZE filter.
-\item price_min (numeric) Minimum price from PRICE_FILTER.
-\item price_max (numeric) Maximum price from PRICE_FILTER.
-\item price_tick_size (numeric) Price tick size from PRICE_FILTER.
+\item price_min (numeric | NA) Minimum price from PRICE_FILTER (\code{NA} when the
+symbol carries no PRICE_FILTER).
+\item price_max (numeric | NA) Maximum price from PRICE_FILTER (\code{NA} when the
+symbol carries no PRICE_FILTER).
+\item price_tick_size (numeric | NA) Price tick size from PRICE_FILTER (\code{NA}
+when the symbol carries no PRICE_FILTER).
 \item min_notional (numeric | NA) Minimum notional value from MIN_NOTIONAL
 filter (\code{NA} when the symbol carries no NOTIONAL filter).
-\item filters_raw (character) JSON-encoded copy of the full per-symbol
+\item filters_raw (character | NA) JSON-encoded copy of the full per-symbol
 \code{filters} array. Preserves filter types not pulled into curated
 columns (\code{PERCENT_PRICE}, \code{PERCENT_PRICE_BY_SIDE}, \code{MARKET_LOT_SIZE},
 \code{MAX_NUM_ORDERS}, \code{MAX_NUM_ALGO_ORDERS}, \code{MAX_NUM_ICEBERG_ORDERS},
