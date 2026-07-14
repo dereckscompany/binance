@@ -4,11 +4,6 @@
 \alias{BinanceAccount}
 \title{BinanceAccount: Account and Funding Management}
 \description{
-BinanceAccount: Account and Funding Management
-
-BinanceAccount: Account and Funding Management
-}
-\details{
 Provides methods for querying account information, balances, and trade
 history on Binance. Inherits from \link{BinanceBase}.
 \subsection{Purpose and Scope}{
@@ -59,7 +54,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceAccount$get_account_info`
+## Method `BinanceAccount$get_account_info()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -69,7 +64,7 @@ print(info[, .(maker_commission, taker_commission, can_trade, account_type)])
 }
 
 ## ------------------------------------------------
-## Method `BinanceAccount$get_balances`
+## Method `BinanceAccount$get_balances()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -79,7 +74,7 @@ print(balances[free != "0.00000000"])
 }
 
 ## ------------------------------------------------
-## Method `BinanceAccount$get_trades`
+## Method `BinanceAccount$get_trades()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -89,29 +84,27 @@ print(trades[, .(id, price, qty, commission, time)])
 }
 }
 \section{Super classes}{
-\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceAccount}
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{BinanceBase}} -> \code{BinanceAccount}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-BinanceAccount-get_account_info}{\code{BinanceAccount$get_account_info()}}
-\item \href{#method-BinanceAccount-get_balances}{\code{BinanceAccount$get_balances()}}
-\item \href{#method-BinanceAccount-get_trades}{\code{BinanceAccount$get_trades()}}
-\item \href{#method-BinanceAccount-clone}{\code{BinanceAccount$clone()}}
+  \itemize{
+    \item \href{#method-BinanceAccount-get_account_info}{\code{BinanceAccount$get_account_info()}}
+    \item \href{#method-BinanceAccount-get_balances}{\code{BinanceAccount$get_balances()}}
+    \item \href{#method-BinanceAccount-get_trades}{\code{BinanceAccount$get_trades()}}
+    \item \href{#method-BinanceAccount-clone}{\code{BinanceAccount$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>binance::BinanceBase$initialize()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>BinanceBase$initialize()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceAccount-get_account_info"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceAccount-get_account_info}{}}}
-\subsection{Method \code{get_account_info()}}{
-Get Account Information
+\subsection{\code{BinanceAccount$get_account_info()}}{
+  Get Account Information
 
 Retrieves account metadata including commission rates, trading permissions,
 and account type. For balances, use \code{get_balances()}.
@@ -177,19 +170,20 @@ for the per-asset shape. \code{commissionRates} is flattened to wide
 \verb{commission_rates_*} columns and \code{permissions} is \verb{;}-collapsed
 so the return is always one row per account.
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceAccount$get_account_info(recv_window = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per account:
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceAccount$get_account_info(recv_window = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per account:
 \itemize{
 \item maker_commission (integer) Maker commission rate (basis points).
 \item taker_commission (integer) Taker commission rate (basis points).
@@ -215,25 +209,22 @@ row per account — collapsed via the shared
 consistency.
 \item uid (numeric) Unique account identifier.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-account <- BinanceAccount$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{account <- BinanceAccount$new()
 info <- account$get_account_info()
 print(info[, .(maker_commission, taker_commission, can_trade, account_type)])
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceAccount-get_balances"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceAccount-get_balances}{}}}
-\subsection{Method \code{get_balances()}}{
-Get Account Balances
+\subsection{\code{BinanceAccount$get_balances()}}{
+  Get Account Balances
 
 Retrieves asset balances for the account.
 \subsection{API Endpoint}{
@@ -278,45 +269,42 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceAccount$get_balances(omit_zero_balances = NULL, recv_window = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{omit_zero_balances}}{(scalar<logical>?) if TRUE, omit assets with zero balance.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per asset:
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceAccount$get_balances(omit_zero_balances = NULL, recv_window = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{omit_zero_balances}}{(scalar<logical>?) if TRUE, omit assets with zero balance.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per asset:
 \itemize{
 \item asset (character) Asset ticker (e.g., \code{"BTC"}, \code{"USDT"}).
 \item free (character) Available balance for trading.
 \item locked (character) Balance locked in open orders.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-account <- BinanceAccount$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{account <- BinanceAccount$new()
 balances <- account$get_balances()
 print(balances[free != "0.00000000"])
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceAccount-get_trades"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceAccount-get_trades}{}}}
-\subsection{Method \code{get_trades()}}{
-Get Account Trade List
+\subsection{\code{BinanceAccount$get_trades()}}{
+  Get Account Trade List
 
 Retrieves trades for a specific symbol. Requires authentication.
 \subsection{API Endpoint}{
@@ -366,8 +354,9 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceAccount$get_trades(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceAccount$get_trades(
   symbol,
   order_id = NULL,
   start_time = NULL,
@@ -375,30 +364,24 @@ Verified: 2026-05-22
   from_id = NULL,
   limit = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{order_id}}{(scalar<count>?) filter by order ID.}
-
-\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-
-\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-
-\item{\code{from_id}}{(scalar<count>?) trade ID to fetch from.}
-
-\item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per trade:
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{order_id}}{(scalar<count>?) filter by order ID.}
+      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+      \item{\code{from_id}}{(scalar<count>?) trade ID to fetch from.}
+      \item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per trade:
 \itemize{
 \item symbol (character) Trading pair (e.g., \code{"BTCUSDT"}).
 \item id (numeric) Unique trade identifier.
@@ -414,35 +397,34 @@ Verified: 2026-05-22
 \item is_best_match (logical) \code{TRUE} if this was the best price match.
 \item time (POSIXct) Trade execution time converted from \code{time}.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-account <- BinanceAccount$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{account <- BinanceAccount$new()
 trades <- account$get_trades("BTCUSDT", limit = 50)
 print(trades[, .(id, price, qty, commission, time)])
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceAccount-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceAccount-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceAccount$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{BinanceAccount$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceAccount$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

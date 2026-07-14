@@ -4,11 +4,6 @@
 \alias{BinanceDeposit}
 \title{BinanceDeposit: Deposit Management}
 \description{
-BinanceDeposit: Deposit Management
-
-BinanceDeposit: Deposit Management
-}
-\details{
 Provides methods for retrieving deposit addresses and deposit history
 on Binance. Inherits from \link{BinanceBase}.
 \subsection{Purpose and Scope}{
@@ -68,7 +63,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceDeposit$get_deposit_address`
+## Method `BinanceDeposit$get_deposit_address()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -84,7 +79,7 @@ print(usdt[, .(address, coin, tag)])
 }
 
 ## ------------------------------------------------
-## Method `BinanceDeposit$get_deposit_history`
+## Method `BinanceDeposit$get_deposit_history()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -103,28 +98,26 @@ recent <- deposit$get_deposit_history(
 }
 }
 \section{Super classes}{
-\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceDeposit}
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{BinanceBase}} -> \code{BinanceDeposit}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-BinanceDeposit-get_deposit_address}{\code{BinanceDeposit$get_deposit_address()}}
-\item \href{#method-BinanceDeposit-get_deposit_history}{\code{BinanceDeposit$get_deposit_history()}}
-\item \href{#method-BinanceDeposit-clone}{\code{BinanceDeposit$clone()}}
+  \itemize{
+    \item \href{#method-BinanceDeposit-get_deposit_address}{\code{BinanceDeposit$get_deposit_address()}}
+    \item \href{#method-BinanceDeposit-get_deposit_history}{\code{BinanceDeposit$get_deposit_history()}}
+    \item \href{#method-BinanceDeposit-clone}{\code{BinanceDeposit$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>binance::BinanceBase$initialize()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>BinanceBase$initialize()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceDeposit-get_deposit_address"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceDeposit-get_deposit_address}{}}}
-\subsection{Method \code{get_deposit_address()}}{
-Get Deposit Address
+\subsection{\code{BinanceDeposit$get_deposit_address()}}{
+  Get Deposit Address
 
 Retrieves the deposit address for a specific coin. If \code{network} is not
 specified, returns the address for the coin's default network.
@@ -165,35 +158,33 @@ the address on the correct chain.
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceDeposit$get_deposit_address(coin, network = NULL, recv_window = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{coin}}{(scalar<character>) coin symbol (e.g., \code{"BTC"}, \code{"ETH"}, \code{"USDT"}).}
-
-\item{\code{network}}{(scalar<character>?) blockchain network (e.g., \code{"ETH"},
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceDeposit$get_deposit_address(coin, network = NULL, recv_window = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{coin}}{(scalar<character>) coin symbol (e.g., \code{"BTC"}, \code{"ETH"}, \code{"USDT"}).}
+      \item{\code{network}}{(scalar<character>?) blockchain network (e.g., \code{"ETH"},
 \code{"TRX"}, \code{"BSC"}). If NULL, uses the coin's default network.}
-
-\item{\code{recv_window}}{(scalar<count in [1, Inf[>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+      \item{\code{recv_window}}{(scalar<count in [1, Inf[>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item address (character) the deposit wallet address.
 \item coin (character) coin symbol (e.g., \code{"BTC"}).
 \item tag (character) address tag/memo (empty string if not applicable).
 \item url (character) blockchain explorer URL for the address.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-deposit <- BinanceDeposit$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{deposit <- BinanceDeposit$new()
 
 # Get BTC deposit address (default network)
 btc <- deposit$get_deposit_address(coin = "BTC")
@@ -203,17 +194,15 @@ print(btc$address)
 usdt <- deposit$get_deposit_address(coin = "USDT", network = "TRX")
 print(usdt[, .(address, coin, tag)])
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceDeposit-get_deposit_history"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceDeposit-get_deposit_history}{}}}
-\subsection{Method \code{get_deposit_history()}}{
-Get Deposit History
+\subsection{\code{BinanceDeposit$get_deposit_history()}}{
+  Get Deposit History
 
 Retrieves deposit transaction history with optional filtering by coin,
 status, and time range. Converts \code{insertTime} timestamps to POSIXct.
@@ -267,8 +256,9 @@ specific period. Max range is 90 days.
 ]
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceDeposit$get_deposit_history(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceDeposit$get_deposit_history(
   coin = NULL,
   status = NULL,
   start_time = NULL,
@@ -277,33 +267,26 @@ specific period. Max range is 90 days.
   limit = NULL,
   tx_id = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{coin}}{(scalar<character>?) filter by coin (e.g., \code{"BTC"}, \code{"USDT"}).}
-
-\item{\code{status}}{(scalar<count>?) filter by status:
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{coin}}{(scalar<character>?) filter by coin (e.g., \code{"BTC"}, \code{"USDT"}).}
+      \item{\code{status}}{(scalar<count>?) filter by status:
 \code{0} (pending), \code{1} (success), \code{6} (credited), \code{7} (wrong), \code{8} (waiting confirm).}
-
-\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-
-\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-
-\item{\code{offset}}{(scalar<count>?) pagination offset (default 0).}
-
-\item{\code{limit}}{(scalar<count>?) max results (default 1000, max 1000).}
-
-\item{\code{tx_id}}{(scalar<character>?) filter by transaction ID.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per deposit
+      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+      \item{\code{offset}}{(scalar<count>?) pagination offset (default 0).}
+      \item{\code{limit}}{(scalar<count>?) max results (default 1000, max 1000).}
+      \item{\code{tx_id}}{(scalar<character>?) filter by transaction ID.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per deposit
 (empty when there are no matching deposits):
 \itemize{
 \item id (character) unique deposit identifier.
@@ -321,11 +304,10 @@ specific period. Max range is 90 days.
 \item insert_time (POSIXct) deposit time converted from \code{insertTime}.
 \item complete_time (POSIXct) completion time converted from \code{completeTime}.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-deposit <- BinanceDeposit$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{deposit <- BinanceDeposit$new()
 
 # Get all successful BTC deposits
 history <- deposit$get_deposit_history(coin = "BTC", status = 1)
@@ -338,27 +320,27 @@ recent <- deposit$get_deposit_history(
   end_time = now_ms
 )
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceDeposit-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceDeposit-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceDeposit$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{BinanceDeposit$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceDeposit$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }

@@ -4,11 +4,6 @@
 \alias{BinanceMargin}
 \title{BinanceMargin: Margin Trading Operations}
 \description{
-BinanceMargin: Margin Trading Operations
-
-BinanceMargin: Margin Trading Operations
-}
-\details{
 Provides methods for margin borrowing, repaying, order management, and
 account queries on Binance. Inherits from \link{BinanceBase}.
 \subsection{Purpose and Scope}{
@@ -92,7 +87,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceMargin$add_borrow`
+## Method `BinanceMargin$add_borrow()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -102,7 +97,7 @@ print(result)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$add_repay`
+## Method `BinanceMargin$add_repay()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -112,7 +107,7 @@ print(result)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$add_order`
+## Method `BinanceMargin$add_order()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -125,7 +120,7 @@ print(order)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$cancel_order`
+## Method `BinanceMargin$cancel_order()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -135,7 +130,7 @@ print(cancelled)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$cancel_all_orders`
+## Method `BinanceMargin$cancel_all_orders()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -145,7 +140,7 @@ print(cancelled)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_order`
+## Method `BinanceMargin$get_order()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -155,7 +150,7 @@ print(order)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_open_orders`
+## Method `BinanceMargin$get_open_orders()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -165,7 +160,7 @@ print(open)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_all_orders`
+## Method `BinanceMargin$get_all_orders()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -175,7 +170,7 @@ print(all)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_account`
+## Method `BinanceMargin$get_account()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -185,7 +180,7 @@ print(account)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_max_borrowable`
+## Method `BinanceMargin$get_max_borrowable()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -195,7 +190,7 @@ print(max_borrow)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_max_transferable`
+## Method `BinanceMargin$get_max_transferable()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -205,7 +200,7 @@ print(max_transfer)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_interest_history`
+## Method `BinanceMargin$get_interest_history()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -215,7 +210,7 @@ print(history)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_force_liquidation_history`
+## Method `BinanceMargin$get_force_liquidation_history()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -225,7 +220,7 @@ print(liquidations)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_trades`
+## Method `BinanceMargin$get_trades()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -235,7 +230,7 @@ print(trades)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_isolated_account`
+## Method `BinanceMargin$get_isolated_account()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -245,7 +240,7 @@ print(isolated)
 }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$add_isolated_transfer`
+## Method `BinanceMargin$add_isolated_transfer()`
 ## ------------------------------------------------
 
 \dontrun{
@@ -259,42 +254,40 @@ print(result)
 }
 }
 \section{Super classes}{
-\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{binance::BinanceBase}} -> \code{BinanceMargin}
+\code{\link[connectcore:RestClient]{connectcore::RestClient}} -> \code{\link[binance:BinanceBase]{BinanceBase}} -> \code{BinanceMargin}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-BinanceMargin-add_borrow}{\code{BinanceMargin$add_borrow()}}
-\item \href{#method-BinanceMargin-add_repay}{\code{BinanceMargin$add_repay()}}
-\item \href{#method-BinanceMargin-add_order}{\code{BinanceMargin$add_order()}}
-\item \href{#method-BinanceMargin-cancel_order}{\code{BinanceMargin$cancel_order()}}
-\item \href{#method-BinanceMargin-cancel_all_orders}{\code{BinanceMargin$cancel_all_orders()}}
-\item \href{#method-BinanceMargin-get_order}{\code{BinanceMargin$get_order()}}
-\item \href{#method-BinanceMargin-get_open_orders}{\code{BinanceMargin$get_open_orders()}}
-\item \href{#method-BinanceMargin-get_all_orders}{\code{BinanceMargin$get_all_orders()}}
-\item \href{#method-BinanceMargin-get_account}{\code{BinanceMargin$get_account()}}
-\item \href{#method-BinanceMargin-get_max_borrowable}{\code{BinanceMargin$get_max_borrowable()}}
-\item \href{#method-BinanceMargin-get_max_transferable}{\code{BinanceMargin$get_max_transferable()}}
-\item \href{#method-BinanceMargin-get_interest_history}{\code{BinanceMargin$get_interest_history()}}
-\item \href{#method-BinanceMargin-get_force_liquidation_history}{\code{BinanceMargin$get_force_liquidation_history()}}
-\item \href{#method-BinanceMargin-get_trades}{\code{BinanceMargin$get_trades()}}
-\item \href{#method-BinanceMargin-get_isolated_account}{\code{BinanceMargin$get_isolated_account()}}
-\item \href{#method-BinanceMargin-add_isolated_transfer}{\code{BinanceMargin$add_isolated_transfer()}}
-\item \href{#method-BinanceMargin-clone}{\code{BinanceMargin$clone()}}
+  \itemize{
+    \item \href{#method-BinanceMargin-add_borrow}{\code{BinanceMargin$add_borrow()}}
+    \item \href{#method-BinanceMargin-add_repay}{\code{BinanceMargin$add_repay()}}
+    \item \href{#method-BinanceMargin-add_order}{\code{BinanceMargin$add_order()}}
+    \item \href{#method-BinanceMargin-cancel_order}{\code{BinanceMargin$cancel_order()}}
+    \item \href{#method-BinanceMargin-cancel_all_orders}{\code{BinanceMargin$cancel_all_orders()}}
+    \item \href{#method-BinanceMargin-get_order}{\code{BinanceMargin$get_order()}}
+    \item \href{#method-BinanceMargin-get_open_orders}{\code{BinanceMargin$get_open_orders()}}
+    \item \href{#method-BinanceMargin-get_all_orders}{\code{BinanceMargin$get_all_orders()}}
+    \item \href{#method-BinanceMargin-get_account}{\code{BinanceMargin$get_account()}}
+    \item \href{#method-BinanceMargin-get_max_borrowable}{\code{BinanceMargin$get_max_borrowable()}}
+    \item \href{#method-BinanceMargin-get_max_transferable}{\code{BinanceMargin$get_max_transferable()}}
+    \item \href{#method-BinanceMargin-get_interest_history}{\code{BinanceMargin$get_interest_history()}}
+    \item \href{#method-BinanceMargin-get_force_liquidation_history}{\code{BinanceMargin$get_force_liquidation_history()}}
+    \item \href{#method-BinanceMargin-get_trades}{\code{BinanceMargin$get_trades()}}
+    \item \href{#method-BinanceMargin-get_isolated_account}{\code{BinanceMargin$get_isolated_account()}}
+    \item \href{#method-BinanceMargin-add_isolated_transfer}{\code{BinanceMargin$add_isolated_transfer()}}
+    \item \href{#method-BinanceMargin-clone}{\code{BinanceMargin$clone()}}
+  }
 }
-}
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
+\if{html}{\out{<details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>binance::BinanceBase$initialize()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="binance" data-topic="BinanceBase" data-id="initialize"><a href='../../binance/html/BinanceBase.html#method-BinanceBase-initialize'><code>BinanceBase$initialize()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMargin-add_borrow"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMargin-add_borrow}{}}}
-\subsection{Method \code{add_borrow()}}{
-Borrow on Margin
+\subsection{\code{BinanceMargin$add_borrow()}}{
+  Borrow on Margin
 
 Initiates a margin loan for the specified asset and amount.
 Uses the consolidated borrow-repay endpoint with \code{type = "BORROW"}.
@@ -335,56 +328,50 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$add_borrow(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMargin$add_borrow(
   asset,
   amount,
   is_isolated = "FALSE",
   symbol = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{asset}}{(scalar<character>) asset to borrow (e.g., \code{"USDT"}).}
-
-\item{\code{amount}}{(scalar<numeric>) amount to borrow.}
-
-\item{\code{is_isolated}}{(scalar<character>) \code{"TRUE"} or \code{"FALSE"} for isolated margin. Default \code{"FALSE"}.}
-
-\item{\code{symbol}}{(scalar<character>?) required when \code{is_isolated = "TRUE"}.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{asset}}{(scalar<character>) asset to borrow (e.g., \code{"USDT"}).}
+      \item{\code{amount}}{(scalar<numeric>) amount to borrow.}
+      \item{\code{is_isolated}}{(scalar<character>) \code{"TRUE"} or \code{"FALSE"} for isolated margin. Default \code{"FALSE"}.}
+      \item{\code{symbol}}{(scalar<character>?) required when \code{is_isolated = "TRUE"}.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item tran_id (numeric) Transaction identifier (a large integer that overflows
 R's 32-bit \code{integer}, so it is coerced to a double).
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-margin <- BinanceMargin$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{margin <- BinanceMargin$new()
 result <- margin$add_borrow(asset = "USDT", amount = 100)
 print(result)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMargin-add_repay"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMargin-add_repay}{}}}
-\subsection{Method \code{add_repay()}}{
-Repay Margin Loan
+\subsection{\code{BinanceMargin$add_repay()}}{
+  Repay Margin Loan
 
 Repays a margin loan for the specified asset and amount.
 Uses the consolidated borrow-repay endpoint with \code{type = "REPAY"}.
@@ -425,56 +412,50 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$add_repay(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMargin$add_repay(
   asset,
   amount,
   is_isolated = "FALSE",
   symbol = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{asset}}{(scalar<character>) asset to repay (e.g., \code{"USDT"}).}
-
-\item{\code{amount}}{(scalar<numeric>) amount to repay.}
-
-\item{\code{is_isolated}}{(scalar<character>) \code{"TRUE"} or \code{"FALSE"} for isolated margin. Default \code{"FALSE"}.}
-
-\item{\code{symbol}}{(scalar<character>?) required when \code{is_isolated = "TRUE"}.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{asset}}{(scalar<character>) asset to repay (e.g., \code{"USDT"}).}
+      \item{\code{amount}}{(scalar<numeric>) amount to repay.}
+      \item{\code{is_isolated}}{(scalar<character>) \code{"TRUE"} or \code{"FALSE"} for isolated margin. Default \code{"FALSE"}.}
+      \item{\code{symbol}}{(scalar<character>?) required when \code{is_isolated = "TRUE"}.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item tran_id (numeric) Transaction identifier (a large integer that overflows
 R's 32-bit \code{integer}, so it is coerced to a double).
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-margin <- BinanceMargin$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{margin <- BinanceMargin$new()
 result <- margin$add_repay(asset = "USDT", amount = 100)
 print(result)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMargin-add_order"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMargin-add_order}{}}}
-\subsection{Method \code{add_order()}}{
-Place a Margin Order
+\subsection{\code{BinanceMargin$add_order()}}{
+  Place a Margin Order
 
 Places a new margin order on Binance.
 \subsection{API Endpoint}{
@@ -529,8 +510,9 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$add_order(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMargin$add_order(
   symbol,
   side,
   type,
@@ -544,43 +526,31 @@ Verified: 2026-05-22
   side_effect_type = NULL,
   is_isolated = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
-
-\item{\code{type}}{(scalar<character>) order type: \code{"LIMIT"}, \code{"MARKET"}, \code{"STOP_LOSS"},
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{side}}{(scalar<character>) \code{"BUY"} or \code{"SELL"}.}
+      \item{\code{type}}{(scalar<character>) order type: \code{"LIMIT"}, \code{"MARKET"}, \code{"STOP_LOSS"},
 \code{"STOP_LOSS_LIMIT"}, \code{"TAKE_PROFIT"}, \code{"TAKE_PROFIT_LIMIT"}, \code{"LIMIT_MAKER"}.}
-
-\item{\code{quantity}}{(scalar<numeric>?) base asset quantity.}
-
-\item{\code{quote_order_qty}}{(scalar<numeric>?) quote asset quantity (market orders only).}
-
-\item{\code{price}}{(scalar<numeric>?) price for limit orders.}
-
-\item{\code{stop_price}}{(scalar<numeric>?) trigger price for stop orders.}
-
-\item{\code{time_in_force}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
-
-\item{\code{new_client_order_id}}{(scalar<character>?) unique client order ID.}
-
-\item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
-
-\item{\code{side_effect_type}}{(scalar<character>?) \code{"NO_SIDE_EFFECT"}, \code{"MARGIN_BUY"}, \code{"AUTO_REPAY"}.}
-
-\item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+      \item{\code{quantity}}{(scalar<numeric>?) base asset quantity.}
+      \item{\code{quote_order_qty}}{(scalar<numeric>?) quote asset quantity (market orders only).}
+      \item{\code{price}}{(scalar<numeric>?) price for limit orders.}
+      \item{\code{stop_price}}{(scalar<numeric>?) trigger price for stop orders.}
+      \item{\code{time_in_force}}{(scalar<character>?) \code{"GTC"}, \code{"IOC"}, \code{"FOK"}.}
+      \item{\code{new_client_order_id}}{(scalar<character>?) unique client order ID.}
+      \item{\code{new_order_resp_type}}{(scalar<character>?) \code{"ACK"}, \code{"RESULT"}, or \code{"FULL"}.}
+      \item{\code{side_effect_type}}{(scalar<character>?) \code{"NO_SIDE_EFFECT"}, \code{"MARGIN_BUY"}, \code{"AUTO_REPAY"}.}
+      \item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair.
 \item order_id (numeric) Unique order identifier.
@@ -594,28 +564,25 @@ Verified: 2026-05-22
 \item side (character) \code{"BUY"} or \code{"SELL"}.
 \item is_isolated (logical) Whether this is an isolated margin order.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-margin <- BinanceMargin$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{margin <- BinanceMargin$new()
 order <- margin$add_order(
   symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
   price = 50000, quantity = 0.0001, time_in_force = "GTC"
 )
 print(order)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMargin-cancel_order"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMargin-cancel_order}{}}}
-\subsection{Method \code{cancel_order()}}{
-Cancel a Margin Order
+\subsection{\code{BinanceMargin$cancel_order()}}{
+  Cancel a Margin Order
 
 Cancels an active margin order by order ID or client order ID.
 \subsection{API Endpoint}{
@@ -666,33 +633,30 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$cancel_order(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMargin$cancel_order(
   symbol,
   order_id = NULL,
   orig_client_order_id = NULL,
   is_isolated = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{order_id}}{(scalar<count>?) the order ID to cancel.}
-
-\item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID to cancel.}
-
-\item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{order_id}}{(scalar<count>?) the order ID to cancel.}
+      \item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID to cancel.}
+      \item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair.
 \item order_id (numeric) Unique order identifier.
@@ -701,25 +665,22 @@ Verified: 2026-05-22
 \item transact_time (POSIXct) Cancellation time.
 \item is_isolated (logical) Whether this is an isolated margin order.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-margin <- BinanceMargin$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{margin <- BinanceMargin$new()
 cancelled <- margin$cancel_order("BTCUSDT", order_id = 28)
 print(cancelled)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMargin-cancel_all_orders"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMargin-cancel_all_orders}{}}}
-\subsection{Method \code{cancel_all_orders()}}{
-Cancel All Open Margin Orders on a Symbol
+\subsection{\code{BinanceMargin$cancel_all_orders()}}{
+  Cancel All Open Margin Orders on a Symbol
 
 Cancels all active margin orders on a trading pair.
 \subsection{API Endpoint}{
@@ -771,23 +732,22 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$cancel_all_orders(symbol, is_isolated = NULL, recv_window = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per cancelled order
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMargin$cancel_all_orders(symbol, is_isolated = NULL, recv_window = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per cancelled order
 (empty when there were no open orders to cancel, per the cross-package
 "no stub rows" convention — the absence of an error is the success
 signal):
@@ -799,25 +759,22 @@ signal):
 \item transact_time (POSIXct) Cancellation time.
 \item is_isolated (logical) Whether this is an isolated margin order.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-margin <- BinanceMargin$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{margin <- BinanceMargin$new()
 cancelled <- margin$cancel_all_orders("BTCUSDT")
 print(cancelled)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMargin-get_order"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMargin-get_order}{}}}
-\subsection{Method \code{get_order()}}{
-Query a Margin Order
+\subsection{\code{BinanceMargin$get_order()}}{
+  Query a Margin Order
 
 Retrieves details for a specific margin order by order ID or client order ID.
 \subsection{API Endpoint}{
@@ -861,33 +818,30 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_order(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMargin$get_order(
   symbol,
   order_id = NULL,
   orig_client_order_id = NULL,
   is_isolated = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{order_id}}{(scalar<count>?) the order ID.}
-
-\item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID.}
-
-\item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{order_id}}{(scalar<count>?) the order ID.}
+      \item{\code{orig_client_order_id}}{(scalar<character>?) the client order ID.}
+      \item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item symbol (character) Trading pair.
 \item order_id (numeric) Unique order identifier.
@@ -902,25 +856,22 @@ Verified: 2026-05-22
 \item update_time (POSIXct) Last update time.
 \item is_isolated (logical) Whether this is an isolated margin order.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-margin <- BinanceMargin$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{margin <- BinanceMargin$new()
 order <- margin$get_order("BTCUSDT", order_id = 28)
 print(order)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMargin-get_open_orders"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMargin-get_open_orders}{}}}
-\subsection{Method \code{get_open_orders()}}{
-Get Open Margin Orders
+\subsection{\code{BinanceMargin$get_open_orders()}}{
+  Get Open Margin Orders
 
 Retrieves all currently open margin orders, optionally filtered by symbol.
 \subsection{API Endpoint}{
@@ -966,27 +917,26 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_open_orders(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMargin$get_open_orders(
   symbol = NULL,
   is_isolated = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per open order
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>?) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per open order
 (empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
@@ -1002,25 +952,22 @@ Verified: 2026-05-22
 \item update_time (POSIXct) Last update time.
 \item is_isolated (logical) Whether this is an isolated margin order.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-margin <- BinanceMargin$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{margin <- BinanceMargin$new()
 open <- margin$get_open_orders("BTCUSDT")
 print(open)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMargin-get_all_orders"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMargin-get_all_orders}{}}}
-\subsection{Method \code{get_all_orders()}}{
-Get All Margin Orders
+\subsection{\code{BinanceMargin$get_all_orders()}}{
+  Get All Margin Orders
 
 Retrieves all margin orders for a symbol (open, cancelled, filled).
 \subsection{API Endpoint}{
@@ -1084,8 +1031,9 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_all_orders(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMargin$get_all_orders(
   symbol,
   order_id = NULL,
   start_time = NULL,
@@ -1093,30 +1041,24 @@ Verified: 2026-05-22
   limit = NULL,
   is_isolated = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{order_id}}{(scalar<count>?) pagination cursor.}
-
-\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-
-\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-
-\item{\code{limit}}{(scalar<count>?) max results (default 500, max 500).}
-
-\item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per order
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{order_id}}{(scalar<count>?) pagination cursor.}
+      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+      \item{\code{limit}}{(scalar<count>?) max results (default 500, max 500).}
+      \item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per order
 (empty when there are no matching orders):
 \itemize{
 \item symbol (character) Trading pair.
@@ -1132,25 +1074,22 @@ Verified: 2026-05-22
 \item update_time (POSIXct) Last update time.
 \item is_isolated (logical) Whether this is an isolated margin order.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-margin <- BinanceMargin$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{margin <- BinanceMargin$new()
 all <- margin$get_all_orders("BTCUSDT", limit = 50)
 print(all)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMargin-get_account"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMargin-get_account}{}}}
-\subsection{Method \code{get_account()}}{
-Get Margin Account Information
+\subsection{\code{BinanceMargin$get_account()}}{
+  Get Margin Account Information
 
 Retrieves cross margin account details including balances and margin level.
 \subsection{API Endpoint}{
@@ -1204,19 +1143,20 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_account(recv_window = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per user asset:
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMargin$get_account(recv_window = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per user asset:
 \itemize{
 \item borrow_enabled (logical) Whether borrowing is enabled.
 \item margin_level (character) Current margin level.
@@ -1230,25 +1170,22 @@ Verified: 2026-05-22
 
 Per-asset fields are prefixed with \code{user_asset_}, one row per asset.
 When the account has multiple assets, account-level fields are repeated on each row.
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-margin <- BinanceMargin$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{margin <- BinanceMargin$new()
 account <- margin$get_account()
 print(account)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMargin-get_max_borrowable"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMargin-get_max_borrowable}{}}}
-\subsection{Method \code{get_max_borrowable()}}{
-Get Max Borrowable Amount
+\subsection{\code{BinanceMargin$get_max_borrowable()}}{
+  Get Max Borrowable Amount
 
 Queries the maximum borrowable amount for an asset on margin.
 \subsection{API Endpoint}{
@@ -1278,50 +1215,46 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_max_borrowable(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMargin$get_max_borrowable(
   asset,
   isolated_symbol = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{asset}}{(scalar<character>) asset to query (e.g., \code{"USDT"}).}
-
-\item{\code{isolated_symbol}}{(scalar<character>?) isolated margin pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{asset}}{(scalar<character>) asset to query (e.g., \code{"USDT"}).}
+      \item{\code{isolated_symbol}}{(scalar<character>?) isolated margin pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item amount (character) Maximum borrowable amount.
 \item borrow_limit (character) Borrow limit.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-margin <- BinanceMargin$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{margin <- BinanceMargin$new()
 max_borrow <- margin$get_max_borrowable(asset = "USDT")
 print(max_borrow)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMargin-get_max_transferable"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMargin-get_max_transferable}{}}}
-\subsection{Method \code{get_max_transferable()}}{
-Get Max Transferable Amount
+\subsection{\code{BinanceMargin$get_max_transferable()}}{
+  Get Max Transferable Amount
 
 Queries the maximum transferable-out amount for an asset on margin.
 \subsection{API Endpoint}{
@@ -1350,51 +1283,47 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_max_transferable(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMargin$get_max_transferable(
   asset,
   isolated_symbol = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{asset}}{(scalar<character>) asset to query (e.g., \code{"USDT"}).}
-
-\item{\code{isolated_symbol}}{(scalar<character>?) isolated margin pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{asset}}{(scalar<character>) asset to query (e.g., \code{"USDT"}).}
+      \item{\code{isolated_symbol}}{(scalar<character>?) isolated margin pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item amount (character) Maximum transferable-out amount.
 \item borrow_limit (character) Remaining borrow limit for the
 account, in the same asset units as \code{amount}.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-margin <- BinanceMargin$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{margin <- BinanceMargin$new()
 max_transfer <- margin$get_max_transferable(asset = "USDT")
 print(max_transfer)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMargin-get_interest_history"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMargin-get_interest_history}{}}}
-\subsection{Method \code{get_interest_history()}}{
-Get Margin Interest History
+\subsection{\code{BinanceMargin$get_interest_history()}}{
+  Get Margin Interest History
 
 Retrieves margin interest accrual history with pagination.
 \subsection{API Endpoint}{
@@ -1443,8 +1372,9 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_interest_history(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMargin$get_interest_history(
   asset = NULL,
   start_time = NULL,
   end_time = NULL,
@@ -1452,30 +1382,24 @@ Verified: 2026-05-22
   size = NULL,
   archived = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
-
-\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-
-\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-
-\item{\code{current}}{(scalar<count>?) current page (default 1).}
-
-\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
-
-\item{\code{archived}}{(scalar<character>?) \code{"true"} to query 6-month archived data.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per interest record
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{asset}}{(scalar<character>?) filter by asset (e.g., \code{"USDT"}).}
+      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+      \item{\code{current}}{(scalar<count>?) current page (default 1).}
+      \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
+      \item{\code{archived}}{(scalar<character>?) \code{"true"} to query 6-month archived data.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per interest record
 (empty when there are none):
 \itemize{
 \item asset (character) Asset charged interest.
@@ -1486,25 +1410,22 @@ Verified: 2026-05-22
 \item type (character) Margin type (\code{"ON_BORROW"}, \code{"PERIODIC"}, etc.).
 \item isolated_symbol (character) Isolated margin pair (if applicable).
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-margin <- BinanceMargin$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{margin <- BinanceMargin$new()
 history <- margin$get_interest_history(asset = "USDT")
 print(history)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMargin-get_force_liquidation_history"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMargin-get_force_liquidation_history}{}}}
-\subsection{Method \code{get_force_liquidation_history()}}{
-Get Force Liquidation History
+\subsection{\code{BinanceMargin$get_force_liquidation_history()}}{
+  Get Force Liquidation History
 
 Retrieves margin force liquidation records with pagination.
 \subsection{API Endpoint}{
@@ -1548,36 +1469,32 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_force_liquidation_history(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMargin$get_force_liquidation_history(
   start_time = NULL,
   end_time = NULL,
   isolated_symbol = NULL,
   current = NULL,
   size = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-
-\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-
-\item{\code{isolated_symbol}}{(scalar<character>?) isolated margin pair.}
-
-\item{\code{current}}{(scalar<count>?) current page (default 1).}
-
-\item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per liquidation record
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+      \item{\code{isolated_symbol}}{(scalar<character>?) isolated margin pair.}
+      \item{\code{current}}{(scalar<count>?) current page (default 1).}
+      \item{\code{size}}{(scalar<count>?) page size (default 10, max 100).}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per liquidation record
 (empty when there are none):
 \itemize{
 \item avg_price (character) Average liquidation price.
@@ -1591,25 +1508,22 @@ Verified: 2026-05-22
 \item is_isolated (logical) Whether this was an isolated margin liquidation.
 \item updated_time (POSIXct) Last update time.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-margin <- BinanceMargin$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{margin <- BinanceMargin$new()
 liquidations <- margin$get_force_liquidation_history()
 print(liquidations)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMargin-get_trades"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMargin-get_trades}{}}}
-\subsection{Method \code{get_trades()}}{
-Get Margin Trades
+\subsection{\code{BinanceMargin$get_trades()}}{
+  Get Margin Trades
 
 Retrieves margin trade history for a symbol.
 \subsection{API Endpoint}{
@@ -1651,8 +1565,9 @@ Verified: 2026-05-22
 ]
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_trades(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMargin$get_trades(
   symbol,
   order_id = NULL,
   start_time = NULL,
@@ -1661,32 +1576,25 @@ Verified: 2026-05-22
   limit = NULL,
   is_isolated = NULL,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{order_id}}{(scalar<count>?) filter by order ID.}
-
-\item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
-
-\item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
-
-\item{\code{from_id}}{(scalar<count>?) trade ID to fetch from.}
-
-\item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
-
-\item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per trade
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbol}}{(scalar<character>) trading pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{order_id}}{(scalar<count>?) filter by order ID.}
+      \item{\code{start_time}}{(scalar<count>?) start timestamp in milliseconds.}
+      \item{\code{end_time}}{(scalar<count>?) end timestamp in milliseconds.}
+      \item{\code{from_id}}{(scalar<count>?) trade ID to fetch from.}
+      \item{\code{limit}}{(scalar<count>?) max results (default 500, max 1000).}
+      \item{\code{is_isolated}}{(scalar<character>?) \code{"TRUE"} or \code{"FALSE"} for isolated margin.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per trade
 (empty when there are none):
 \itemize{
 \item symbol (character) Trading pair.
@@ -1701,25 +1609,22 @@ Verified: 2026-05-22
 \item is_maker (logical) Whether the trade was a maker.
 \item is_isolated (logical) Whether this is an isolated margin trade.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-margin <- BinanceMargin$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{margin <- BinanceMargin$new()
 trades <- margin$get_trades("BTCUSDT")
 print(trades)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMargin-get_isolated_account"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMargin-get_isolated_account}{}}}
-\subsection{Method \code{get_isolated_account()}}{
-Get Isolated Margin Account Info
+\subsection{\code{BinanceMargin$get_isolated_account()}}{
+  Get Isolated Margin Account Info
 
 Retrieves isolated margin account details.
 \subsection{API Endpoint}{
@@ -1787,21 +1692,21 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$get_isolated_account(symbols = NULL, recv_window = NULL)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{symbols}}{(scalar<character>?) comma-separated symbols (max 5, e.g., \code{"BTCUSDT,ETHUSDT"}).}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row per isolated margin
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMargin$get_isolated_account(symbols = NULL, recv_window = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{symbols}}{(scalar<character>?) comma-separated symbols (max 5, e.g., \code{"BTCUSDT,ETHUSDT"}).}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row per isolated margin
 pair (long format):
 \itemize{
 \item total_asset_of_btc (character) Total asset value in BTC (repeated per pair).
@@ -1815,25 +1720,22 @@ pair (long format):
 \item margin_level (character) Current margin level.
 \item trade_enabled (logical) Whether trading is enabled.
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-margin <- BinanceMargin$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{margin <- BinanceMargin$new()
 isolated <- margin$get_isolated_account()
 print(isolated)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMargin-add_isolated_transfer"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMargin-add_isolated_transfer}{}}}
-\subsection{Method \code{add_isolated_transfer()}}{
-Isolated Margin Transfer
+\subsection{\code{BinanceMargin$add_isolated_transfer()}}{
+  Isolated Margin Transfer
 
 Transfers assets between spot and isolated margin accounts.
 \subsection{API Endpoint}{
@@ -1878,45 +1780,40 @@ Verified: 2026-05-22
 \}
 }\if{html}{\out{</div>}}
 }
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$add_isolated_transfer(
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMargin$add_isolated_transfer(
   asset,
   symbol,
   trans_from,
   trans_to,
   amount,
   recv_window = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{asset}}{(scalar<character>) asset to transfer (e.g., \code{"USDT"}).}
-
-\item{\code{symbol}}{(scalar<character>) isolated margin pair (e.g., \code{"BTCUSDT"}).}
-
-\item{\code{trans_from}}{(scalar<character>) source account: \code{"SPOT"} or \code{"ISOLATED_MARGIN"}.}
-
-\item{\code{trans_to}}{(scalar<character>) destination account: \code{"SPOT"} or \code{"ISOLATED_MARGIN"}.}
-
-\item{\code{amount}}{(scalar<numeric>) amount to transfer.}
-
-\item{\code{recv_window}}{(scalar<count>?) max 60000.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(data.table | promise<data.table>) one row:
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{asset}}{(scalar<character>) asset to transfer (e.g., \code{"USDT"}).}
+      \item{\code{symbol}}{(scalar<character>) isolated margin pair (e.g., \code{"BTCUSDT"}).}
+      \item{\code{trans_from}}{(scalar<character>) source account: \code{"SPOT"} or \code{"ISOLATED_MARGIN"}.}
+      \item{\code{trans_to}}{(scalar<character>) destination account: \code{"SPOT"} or \code{"ISOLATED_MARGIN"}.}
+      \item{\code{amount}}{(scalar<numeric>) amount to transfer.}
+      \item{\code{recv_window}}{(scalar<count>?) max 60000.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (data.table | promise<data.table>) one row:
 \itemize{
 \item tran_id (numeric) Transaction identifier (a large integer that overflows
 R's 32-bit \code{integer}, so it is coerced to a double).
 }
-}
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-margin <- BinanceMargin$new()
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{margin <- BinanceMargin$new()
 result <- margin$add_isolated_transfer(
   asset = "USDT", symbol = "BTCUSDT",
   trans_from = "SPOT", trans_to = "ISOLATED_MARGIN",
@@ -1924,27 +1821,27 @@ result <- margin$add_isolated_transfer(
 )
 print(result)
 }
+    \if{html}{\out{</div>}}
+  }
 }
-\if{html}{\out{</div>}}
 
-}
-
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceMargin-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceMargin-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceMargin$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{BinanceMargin$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceMargin$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }
