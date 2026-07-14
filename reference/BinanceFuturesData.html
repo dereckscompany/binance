@@ -46,6 +46,7 @@ get_futures_assetsGET /fapi/v1/exchangeInfoNo
 get_klinesGET /fapi/v1/klinesNo
 get_mark_priceGET /fapi/v1/premiumIndexNo
 get_funding_rateGET /fapi/v1/fundingRateNo
+get_funding_infoGET /fapi/v1/fundingInfoNo
 get_24hr_statsGET /fapi/v1/ticker/24hrNo
 get_tickerGET /fapi/v1/ticker/priceNo
 get_book_tickerGET /fapi/v1/ticker/bookTickerNo
@@ -106,6 +107,7 @@ get_futures_assetsGET /fapi/v1/exchangeInfoNo
 get_klinesGET /fapi/v1/klinesNo
 get_mark_priceGET /fapi/v1/premiumIndexNo
 get_funding_rateGET /fapi/v1/fundingRateNo
+get_funding_infoGET /fapi/v1/fundingInfoNo
 get_24hr_statsGET /fapi/v1/ticker/24hrNo
 get_tickerGET /fapi/v1/ticker/priceNo
 get_book_tickerGET /fapi/v1/ticker/bookTickerNo
@@ -127,7 +129,7 @@ get_mark_price_klinesGET /fapi/v1/markPriceKlinesNo
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -156,7 +158,7 @@ get_mark_price_klinesGET /fapi/v1/markPriceKlinesNo
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>BinanceFuturesData: USD-M Futures Market Data Retrieval</h1>
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.10.0/R/BinanceFuturesData.R" class="external-link"><code>R/BinanceFuturesData.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/master/R/BinanceFuturesData.R" class="external-link"><code>R/BinanceFuturesData.R</code></a></small>
       <div class="d-none name"><code>BinanceFuturesData.Rd</code></div>
     </div>
 
@@ -196,7 +198,7 @@ The base URL defaults to <code>https://fapi.binance.com</code> via <code><a href
 
 <div class="section">
 <h3 id="endpoints-covered">Endpoints Covered<a class="anchor" aria-label="anchor" href="#endpoints-covered"></a></h3>
-<table class="table table"><tr><td>Method</td><td>Endpoint</td><td>Auth</td></tr><tr><td>get_exchange_info</td><td>GET /fapi/v1/exchangeInfo</td><td>No</td></tr><tr><td>get_rate_limits</td><td>GET /fapi/v1/exchangeInfo</td><td>No</td></tr><tr><td>get_exchange_filters</td><td>GET /fapi/v1/exchangeInfo</td><td>No</td></tr><tr><td>get_futures_assets</td><td>GET /fapi/v1/exchangeInfo</td><td>No</td></tr><tr><td>get_klines</td><td>GET /fapi/v1/klines</td><td>No</td></tr><tr><td>get_mark_price</td><td>GET /fapi/v1/premiumIndex</td><td>No</td></tr><tr><td>get_funding_rate</td><td>GET /fapi/v1/fundingRate</td><td>No</td></tr><tr><td>get_24hr_stats</td><td>GET /fapi/v1/ticker/24hr</td><td>No</td></tr><tr><td>get_ticker</td><td>GET /fapi/v1/ticker/price</td><td>No</td></tr><tr><td>get_book_ticker</td><td>GET /fapi/v1/ticker/bookTicker</td><td>No</td></tr><tr><td>get_open_interest</td><td>GET /fapi/v1/openInterest</td><td>No</td></tr><tr><td>get_depth</td><td>GET /fapi/v1/depth</td><td>No</td></tr><tr><td>get_trades</td><td>GET /fapi/v1/trades</td><td>No</td></tr><tr><td>get_index_price_klines</td><td>GET /fapi/v1/indexPriceKlines</td><td>No</td></tr><tr><td>get_mark_price_klines</td><td>GET /fapi/v1/markPriceKlines</td><td>No</td></tr></table></div>
+<table class="table table"><tr><td>Method</td><td>Endpoint</td><td>Auth</td></tr><tr><td>get_exchange_info</td><td>GET /fapi/v1/exchangeInfo</td><td>No</td></tr><tr><td>get_rate_limits</td><td>GET /fapi/v1/exchangeInfo</td><td>No</td></tr><tr><td>get_exchange_filters</td><td>GET /fapi/v1/exchangeInfo</td><td>No</td></tr><tr><td>get_futures_assets</td><td>GET /fapi/v1/exchangeInfo</td><td>No</td></tr><tr><td>get_klines</td><td>GET /fapi/v1/klines</td><td>No</td></tr><tr><td>get_mark_price</td><td>GET /fapi/v1/premiumIndex</td><td>No</td></tr><tr><td>get_funding_rate</td><td>GET /fapi/v1/fundingRate</td><td>No</td></tr><tr><td>get_funding_info</td><td>GET /fapi/v1/fundingInfo</td><td>No</td></tr><tr><td>get_24hr_stats</td><td>GET /fapi/v1/ticker/24hr</td><td>No</td></tr><tr><td>get_ticker</td><td>GET /fapi/v1/ticker/price</td><td>No</td></tr><tr><td>get_book_ticker</td><td>GET /fapi/v1/ticker/bookTicker</td><td>No</td></tr><tr><td>get_open_interest</td><td>GET /fapi/v1/openInterest</td><td>No</td></tr><tr><td>get_depth</td><td>GET /fapi/v1/depth</td><td>No</td></tr><tr><td>get_trades</td><td>GET /fapi/v1/trades</td><td>No</td></tr><tr><td>get_index_price_klines</td><td>GET /fapi/v1/indexPriceKlines</td><td>No</td></tr><tr><td>get_mark_price_klines</td><td>GET /fapi/v1/markPriceKlines</td><td>No</td></tr></table></div>
 
     </div>
 
@@ -218,6 +220,7 @@ The base URL defaults to <code>https://fapi.binance.com</code> via <code><a href
 <li><p><a href="#method-BinanceFuturesData-get_klines"><code>BinanceFuturesData$get_klines()</code></a></p></li>
 <li><p><a href="#method-BinanceFuturesData-get_mark_price"><code>BinanceFuturesData$get_mark_price()</code></a></p></li>
 <li><p><a href="#method-BinanceFuturesData-get_funding_rate"><code>BinanceFuturesData$get_funding_rate()</code></a></p></li>
+<li><p><a href="#method-BinanceFuturesData-get_funding_info"><code>BinanceFuturesData$get_funding_info()</code></a></p></li>
 <li><p><a href="#method-BinanceFuturesData-get_24hr_stats"><code>BinanceFuturesData$get_24hr_stats()</code></a></p></li>
 <li><p><a href="#method-BinanceFuturesData-get_ticker"><code>BinanceFuturesData$get_ticker()</code></a></p></li>
 <li><p><a href="#method-BinanceFuturesData-get_book_ticker"><code>BinanceFuturesData$get_book_ticker()</code></a></p></li>
@@ -754,19 +757,92 @@ Verified: 2026-05-22</p>
 
 </div>
 
+<p></p><hr><a id="method-BinanceFuturesData-get_funding_info"></a><div class="section">
+<h3 id="binancefuturesdata-get-funding-info-"><code>BinanceFuturesData$get_funding_info()</code><a class="anchor" aria-label="anchor" href="#binancefuturesdata-get-funding-info-"></a></h3>
+<p>Get Funding Info (Interval Declarations)</p>
+<p>Binance publishes a small list declaring the perpetuals whose funding
+parameters deviate from the venue defaults — chiefly the contracts on a
+non-standard funding interval (4h or 1h instead of the default 8h), plus
+the declared rate cap/floor for each such symbol. Symbols on the plain 8h
+default with no override are omitted, so the list is short and can even be
+empty. This is the declaration source; use <code>get_funding_rate()</code> for the
+realised funding-settlement history.</p><div class="section">
+<h4 id="api-endpoint-7">API Endpoint<a class="anchor" aria-label="anchor" href="#api-endpoint-7"></a></h4>
+
+
+<p><code>GET https://fapi.binance.com/fapi/v1/fundingInfo</code></p>
+</div>
+
+<div class="section">
+<h4 id="official-documentation-5">Official Documentation<a class="anchor" aria-label="anchor" href="#official-documentation-5"></a></h4>
+
+
+<p><a href="https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Get-Funding-Rate-Info" class="external-link">Binance Futures Get Funding Rate Info</a>
+Verified: 2026-07-14</p>
+</div>
+
+<div class="section">
+<h4 id="curl-4">curl<a class="anchor" aria-label="anchor" href="#curl-4"></a></h4>
+
+
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>curl <span class="sc">-</span>X GET <span class="st">'https://fapi.binance.com/fapi/v1/fundingInfo'</span></span></code></pre><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="json-response-4">JSON Response<a class="anchor" aria-label="anchor" href="#json-response-4"></a></h4>
+
+
+<p></p><div class="sourceCode json"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ot">[</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="fu">{</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>    <span class="dt">"symbol"</span><span class="fu">:</span> <span class="st">"BTCUSDT"</span><span class="fu">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>    <span class="dt">"adjustedFundingRateCap"</span><span class="fu">:</span> <span class="st">"0.02000000"</span><span class="fu">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    <span class="dt">"adjustedFundingRateFloor"</span><span class="fu">:</span> <span class="st">"-0.02000000"</span><span class="fu">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>    <span class="dt">"fundingIntervalHours"</span><span class="fu">:</span> <span class="dv">8</span><span class="fu">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>    <span class="dt">"disclaimer"</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    <span class="dt">"updateTime"</span><span class="fu">:</span> <span class="dv">1710028800000</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="ot">]</span></span></code></pre><p></p></div>
+</div><p></p><div class="section">
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFuturesData</span><span class="op">$</span><span class="fu">get_funding_info</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-8">Returns<a class="anchor" aria-label="anchor" href="#returns-8"></a></h4>
+<p>(data.table | promise&lt;data.table&gt;) one row per declared symbol
+(empty when Binance returns no declarations, e.g. every symbol on the
+default schedule):</p><ul><li><p>symbol (character) Trading pair identifier (e.g., <code>"BTCUSDT"</code>).</p></li>
+<li><p>adjusted_funding_rate_cap (numeric | NA) Upper bound applied to the
+symbol's funding rate (<code>NA</code> when Binance omits the field).</p></li>
+<li><p>adjusted_funding_rate_floor (numeric | NA) Lower bound applied to the
+symbol's funding rate (<code>NA</code> when Binance omits the field).</p></li>
+<li><p>funding_interval_hours (integer | NA) Declared funding interval in
+whole hours (e.g. <code>4</code>; <code>NA</code> when Binance omits the field). Symbols
+absent from this list settle on the 8-hour default.</p></li>
+<li><p>disclaimer (logical) Whether Binance attaches a funding disclaimer to
+the symbol.</p></li>
+<li><p>update_time (POSIXct) Time the declaration was last updated.</p></li>
+</ul><p></p>
+</div><p></p><div class="section">
+<h4 id="examples-7">Examples<a class="anchor" aria-label="anchor" href="#examples-7"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/BinanceFuturesData.html">BinanceFuturesData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">info</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_funding_info</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">info</span><span class="op">[</span><span class="va">funding_interval_hours</span> <span class="op">!=</span> <span class="fl">8L</span>, <span class="fu">.</span><span class="op">(</span><span class="va">symbol</span>, <span class="va">funding_interval_hours</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+</div>
+
 <p></p><hr><a id="method-BinanceFuturesData-get_24hr_stats"></a><div class="section">
 <h3 id="binancefuturesdata-get-hr-stats-"><code>BinanceFuturesData$get_24hr_stats()</code><a class="anchor" aria-label="anchor" href="#binancefuturesdata-get-hr-stats-"></a></h3>
 <p>Get 24hr Ticker Statistics</p>
 <p>Retrieves rolling 24-hour price change statistics for a futures symbol
 or all symbols.</p><div class="section">
-<h4 id="api-endpoint-7">API Endpoint<a class="anchor" aria-label="anchor" href="#api-endpoint-7"></a></h4>
+<h4 id="api-endpoint-8">API Endpoint<a class="anchor" aria-label="anchor" href="#api-endpoint-8"></a></h4>
 
 
 <p><code>GET https://fapi.binance.com/fapi/v1/ticker/24hr</code></p>
 </div>
 
 <div class="section">
-<h4 id="official-documentation-5">Official Documentation<a class="anchor" aria-label="anchor" href="#official-documentation-5"></a></h4>
+<h4 id="official-documentation-6">Official Documentation<a class="anchor" aria-label="anchor" href="#official-documentation-6"></a></h4>
 
 
 <p><a href="https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/24hr-Ticker-Price-Change-Statistics" class="external-link">Binance Futures 24hr Ticker</a>
@@ -774,14 +850,14 @@ Verified: 2026-05-22</p>
 </div>
 
 <div class="section">
-<h4 id="curl-4">curl<a class="anchor" aria-label="anchor" href="#curl-4"></a></h4>
+<h4 id="curl-5">curl<a class="anchor" aria-label="anchor" href="#curl-5"></a></h4>
 
 
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>curl <span class="sc">-</span>X GET <span class="st">'https://fapi.binance.com/fapi/v1/ticker/24hr?symbol=BTCUSDT'</span></span></code></pre><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="json-response-4">JSON Response<a class="anchor" aria-label="anchor" href="#json-response-4"></a></h4>
+<h4 id="json-response-5">JSON Response<a class="anchor" aria-label="anchor" href="#json-response-5"></a></h4>
 
 
 <p></p><div class="sourceCode json"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">{</span></span>
@@ -803,7 +879,7 @@ Verified: 2026-05-22</p>
 <span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>  <span class="dt">"count"</span><span class="fu">:</span> <span class="dv">530865</span></span>
 <span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a><span class="fu">}</span></span></code></pre><p></p></div>
 </div><p></p><div class="section">
-<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFuturesData</span><span class="op">$</span><span class="fu">get_24hr_stats</span><span class="op">(</span>symbol <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
@@ -814,7 +890,7 @@ If NULL, returns data for all symbols.</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-8">Returns<a class="anchor" aria-label="anchor" href="#returns-8"></a></h4>
+<h4 id="returns-9">Returns<a class="anchor" aria-label="anchor" href="#returns-9"></a></h4>
 <p>(data.table | promise&lt;data.table&gt;) one row per symbol (a single
 row when <code>symbol</code> is given):</p><ul><li><p>symbol (character) Trading pair identifier.</p></li>
 <li><p>price_change (character) Absolute price change over 24h.</p></li>
@@ -827,7 +903,7 @@ row when <code>symbol</code> is given):</p><ul><li><p>symbol (character) Trading
 <li><p>close_time (POSIXct) End of the 24h window.</p></li>
 </ul><p></p>
 </div><p></p><div class="section">
-<h4 id="examples-7">Examples<a class="anchor" aria-label="anchor" href="#examples-7"></a></h4>
+<h4 id="examples-8">Examples<a class="anchor" aria-label="anchor" href="#examples-8"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/BinanceFuturesData.html">BinanceFuturesData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">stats</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_24hr_stats</span><span class="op">(</span><span class="st">"BTCUSDT"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">stats</span><span class="op">[</span>, <span class="fu">.</span><span class="op">(</span><span class="va">symbol</span>, <span class="va">last_price</span>, <span class="va">price_change_percent</span>, <span class="va">volume</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -839,14 +915,14 @@ row when <code>symbol</code> is given):</p><ul><li><p>symbol (character) Trading
 <h3 id="binancefuturesdata-get-ticker-"><code>BinanceFuturesData$get_ticker()</code><a class="anchor" aria-label="anchor" href="#binancefuturesdata-get-ticker-"></a></h3>
 <p>Get Symbol Price Ticker</p>
 <p>Retrieves the latest price for a specific futures symbol or all symbols.</p><div class="section">
-<h4 id="api-endpoint-8">API Endpoint<a class="anchor" aria-label="anchor" href="#api-endpoint-8"></a></h4>
+<h4 id="api-endpoint-9">API Endpoint<a class="anchor" aria-label="anchor" href="#api-endpoint-9"></a></h4>
 
 
 <p><code>GET https://fapi.binance.com/fapi/v1/ticker/price</code></p>
 </div>
 
 <div class="section">
-<h4 id="official-documentation-6">Official Documentation<a class="anchor" aria-label="anchor" href="#official-documentation-6"></a></h4>
+<h4 id="official-documentation-7">Official Documentation<a class="anchor" aria-label="anchor" href="#official-documentation-7"></a></h4>
 
 
 <p><a href="https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Symbol-Price-Ticker" class="external-link">Binance Futures Symbol Price Ticker</a>
@@ -854,14 +930,14 @@ Verified: 2026-05-22</p>
 </div>
 
 <div class="section">
-<h4 id="curl-5">curl<a class="anchor" aria-label="anchor" href="#curl-5"></a></h4>
+<h4 id="curl-6">curl<a class="anchor" aria-label="anchor" href="#curl-6"></a></h4>
 
 
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>curl <span class="sc">-</span>X GET <span class="st">'https://fapi.binance.com/fapi/v1/ticker/price?symbol=BTCUSDT'</span></span></code></pre><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="json-response-5">JSON Response<a class="anchor" aria-label="anchor" href="#json-response-5"></a></h4>
+<h4 id="json-response-6">JSON Response<a class="anchor" aria-label="anchor" href="#json-response-6"></a></h4>
 
 
 <p></p><div class="sourceCode json"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">{</span></span>
@@ -870,7 +946,7 @@ Verified: 2026-05-22</p>
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="dt">"time"</span><span class="fu">:</span> <span class="dv">1710028800000</span></span>
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">}</span></span></code></pre><p></p></div>
 </div><p></p><div class="section">
-<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFuturesData</span><span class="op">$</span><span class="fu">get_ticker</span><span class="op">(</span>symbol <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
@@ -881,14 +957,14 @@ If NULL, returns data for all symbols.</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-9">Returns<a class="anchor" aria-label="anchor" href="#returns-9"></a></h4>
+<h4 id="returns-10">Returns<a class="anchor" aria-label="anchor" href="#returns-10"></a></h4>
 <p>(data.table | promise&lt;data.table&gt;) one row per symbol (a single
 row when <code>symbol</code> is given):</p><ul><li><p>symbol (character) Trading pair identifier.</p></li>
 <li><p>price (character) Latest traded price as string.</p></li>
 <li><p>time (POSIXct) Timestamp (if present in response).</p></li>
 </ul><p></p>
 </div><p></p><div class="section">
-<h4 id="examples-8">Examples<a class="anchor" aria-label="anchor" href="#examples-8"></a></h4>
+<h4 id="examples-9">Examples<a class="anchor" aria-label="anchor" href="#examples-9"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/BinanceFuturesData.html">BinanceFuturesData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ticker</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_ticker</span><span class="op">(</span><span class="st">"BTCUSDT"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">ticker</span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -901,14 +977,14 @@ row when <code>symbol</code> is given):</p><ul><li><p>symbol (character) Trading
 <p>Get Best Bid/Ask (Book Ticker)</p>
 <p>Retrieves the best bid and ask price and quantity for a futures symbol
 or all symbols.</p><div class="section">
-<h4 id="api-endpoint-9">API Endpoint<a class="anchor" aria-label="anchor" href="#api-endpoint-9"></a></h4>
+<h4 id="api-endpoint-10">API Endpoint<a class="anchor" aria-label="anchor" href="#api-endpoint-10"></a></h4>
 
 
 <p><code>GET https://fapi.binance.com/fapi/v1/ticker/bookTicker</code></p>
 </div>
 
 <div class="section">
-<h4 id="official-documentation-7">Official Documentation<a class="anchor" aria-label="anchor" href="#official-documentation-7"></a></h4>
+<h4 id="official-documentation-8">Official Documentation<a class="anchor" aria-label="anchor" href="#official-documentation-8"></a></h4>
 
 
 <p><a href="https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Symbol-Order-Book-Ticker" class="external-link">Binance Futures Symbol Order Book Ticker</a>
@@ -916,14 +992,14 @@ Verified: 2026-05-22</p>
 </div>
 
 <div class="section">
-<h4 id="curl-6">curl<a class="anchor" aria-label="anchor" href="#curl-6"></a></h4>
+<h4 id="curl-7">curl<a class="anchor" aria-label="anchor" href="#curl-7"></a></h4>
 
 
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>curl <span class="sc">-</span>X GET <span class="st">'https://fapi.binance.com/fapi/v1/ticker/bookTicker?symbol=BTCUSDT'</span></span></code></pre><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="json-response-6">JSON Response<a class="anchor" aria-label="anchor" href="#json-response-6"></a></h4>
+<h4 id="json-response-7">JSON Response<a class="anchor" aria-label="anchor" href="#json-response-7"></a></h4>
 
 
 <p></p><div class="sourceCode json"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">{</span></span>
@@ -935,7 +1011,7 @@ Verified: 2026-05-22</p>
 <span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="dt">"time"</span><span class="fu">:</span> <span class="dv">1710028800000</span></span>
 <span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="fu">}</span></span></code></pre><p></p></div>
 </div><p></p><div class="section">
-<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFuturesData</span><span class="op">$</span><span class="fu">get_book_ticker</span><span class="op">(</span>symbol <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
@@ -946,7 +1022,7 @@ If NULL, returns data for all symbols.</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-10">Returns<a class="anchor" aria-label="anchor" href="#returns-10"></a></h4>
+<h4 id="returns-11">Returns<a class="anchor" aria-label="anchor" href="#returns-11"></a></h4>
 <p>(data.table | promise&lt;data.table&gt;) one row per symbol (a single
 row when <code>symbol</code> is given):</p><ul><li><p>symbol (character) Trading pair identifier.</p></li>
 <li><p>bid_price (character) Best bid price.</p></li>
@@ -955,7 +1031,7 @@ row when <code>symbol</code> is given):</p><ul><li><p>symbol (character) Trading
 <li><p>ask_qty (character) Quantity available at best ask.</p></li>
 </ul><p></p>
 </div><p></p><div class="section">
-<h4 id="examples-9">Examples<a class="anchor" aria-label="anchor" href="#examples-9"></a></h4>
+<h4 id="examples-10">Examples<a class="anchor" aria-label="anchor" href="#examples-10"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/BinanceFuturesData.html">BinanceFuturesData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">book</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_book_ticker</span><span class="op">(</span><span class="st">"BTCUSDT"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">book</span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -967,14 +1043,14 @@ row when <code>symbol</code> is given):</p><ul><li><p>symbol (character) Trading
 <h3 id="binancefuturesdata-get-open-interest-"><code>BinanceFuturesData$get_open_interest()</code><a class="anchor" aria-label="anchor" href="#binancefuturesdata-get-open-interest-"></a></h3>
 <p>Get Open Interest</p>
 <p>Retrieves the current open interest for a futures symbol.</p><div class="section">
-<h4 id="api-endpoint-10">API Endpoint<a class="anchor" aria-label="anchor" href="#api-endpoint-10"></a></h4>
+<h4 id="api-endpoint-11">API Endpoint<a class="anchor" aria-label="anchor" href="#api-endpoint-11"></a></h4>
 
 
 <p><code>GET https://fapi.binance.com/fapi/v1/openInterest</code></p>
 </div>
 
 <div class="section">
-<h4 id="official-documentation-8">Official Documentation<a class="anchor" aria-label="anchor" href="#official-documentation-8"></a></h4>
+<h4 id="official-documentation-9">Official Documentation<a class="anchor" aria-label="anchor" href="#official-documentation-9"></a></h4>
 
 
 <p><a href="https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Open-Interest" class="external-link">Binance Futures Open Interest</a>
@@ -982,14 +1058,14 @@ Verified: 2026-05-22</p>
 </div>
 
 <div class="section">
-<h4 id="curl-7">curl<a class="anchor" aria-label="anchor" href="#curl-7"></a></h4>
+<h4 id="curl-8">curl<a class="anchor" aria-label="anchor" href="#curl-8"></a></h4>
 
 
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>curl <span class="sc">-</span>X GET <span class="st">'https://fapi.binance.com/fapi/v1/openInterest?symbol=BTCUSDT'</span></span></code></pre><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="json-response-7">JSON Response<a class="anchor" aria-label="anchor" href="#json-response-7"></a></h4>
+<h4 id="json-response-8">JSON Response<a class="anchor" aria-label="anchor" href="#json-response-8"></a></h4>
 
 
 <p></p><div class="sourceCode json"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">{</span></span>
@@ -998,7 +1074,7 @@ Verified: 2026-05-22</p>
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="dt">"time"</span><span class="fu">:</span> <span class="dv">1710028800000</span></span>
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">}</span></span></code></pre><p></p></div>
 </div><p></p><div class="section">
-<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
+<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFuturesData</span><span class="op">$</span><span class="fu">get_open_interest</span><span class="op">(</span><span class="va">symbol</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
@@ -1008,13 +1084,13 @@ Verified: 2026-05-22</p>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-11">Returns<a class="anchor" aria-label="anchor" href="#returns-11"></a></h4>
+<h4 id="returns-12">Returns<a class="anchor" aria-label="anchor" href="#returns-12"></a></h4>
 <p>(data.table | promise&lt;data.table&gt;) one row:</p><ul><li><p>symbol (character) Trading pair identifier.</p></li>
 <li><p>open_interest (character) Current open interest.</p></li>
 <li><p>time (POSIXct) Timestamp (if present in response).</p></li>
 </ul><p></p>
 </div><p></p><div class="section">
-<h4 id="examples-10">Examples<a class="anchor" aria-label="anchor" href="#examples-10"></a></h4>
+<h4 id="examples-11">Examples<a class="anchor" aria-label="anchor" href="#examples-11"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/BinanceFuturesData.html">BinanceFuturesData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">oi</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_open_interest</span><span class="op">(</span><span class="st">"BTCUSDT"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">oi</span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -1026,14 +1102,14 @@ Verified: 2026-05-22</p>
 <h3 id="binancefuturesdata-get-depth-"><code>BinanceFuturesData$get_depth()</code><a class="anchor" aria-label="anchor" href="#binancefuturesdata-get-depth-"></a></h3>
 <p>Get Order Book Depth</p>
 <p>Retrieves the order book (bids and asks) for a futures symbol.</p><div class="section">
-<h4 id="api-endpoint-11">API Endpoint<a class="anchor" aria-label="anchor" href="#api-endpoint-11"></a></h4>
+<h4 id="api-endpoint-12">API Endpoint<a class="anchor" aria-label="anchor" href="#api-endpoint-12"></a></h4>
 
 
 <p><code>GET https://fapi.binance.com/fapi/v1/depth</code></p>
 </div>
 
 <div class="section">
-<h4 id="official-documentation-9">Official Documentation<a class="anchor" aria-label="anchor" href="#official-documentation-9"></a></h4>
+<h4 id="official-documentation-10">Official Documentation<a class="anchor" aria-label="anchor" href="#official-documentation-10"></a></h4>
 
 
 <p><a href="https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Order-Book" class="external-link">Binance Futures Order Book</a>
@@ -1041,14 +1117,14 @@ Verified: 2026-05-22</p>
 </div>
 
 <div class="section">
-<h4 id="curl-8">curl<a class="anchor" aria-label="anchor" href="#curl-8"></a></h4>
+<h4 id="curl-9">curl<a class="anchor" aria-label="anchor" href="#curl-9"></a></h4>
 
 
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>curl <span class="sc">-</span>X GET <span class="st">'https://fapi.binance.com/fapi/v1/depth?symbol=BTCUSDT&amp;limit=20'</span></span></code></pre><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="json-response-8">JSON Response<a class="anchor" aria-label="anchor" href="#json-response-8"></a></h4>
+<h4 id="json-response-9">JSON Response<a class="anchor" aria-label="anchor" href="#json-response-9"></a></h4>
 
 
 <p></p><div class="sourceCode json"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">{</span></span>
@@ -1067,7 +1143,7 @@ Verified: 2026-05-22</p>
 <span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>  <span class="ot">]</span></span>
 <span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="fu">}</span></span></code></pre><p></p></div>
 </div><p></p><div class="section">
-<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
+<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFuturesData</span><span class="op">$</span><span class="fu">get_depth</span><span class="op">(</span><span class="va">symbol</span>, limit <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
@@ -1081,11 +1157,11 @@ Verified: 2026-05-22</p>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-12">Returns<a class="anchor" aria-label="anchor" href="#returns-12"></a></h4>
+<h4 id="returns-13">Returns<a class="anchor" aria-label="anchor" href="#returns-13"></a></h4>
 <p>(OrderBook | promise&lt;OrderBook&gt;) one row per price level
 (bids first, then asks).</p>
 </div><p></p><div class="section">
-<h4 id="examples-11">Examples<a class="anchor" aria-label="anchor" href="#examples-11"></a></h4>
+<h4 id="examples-12">Examples<a class="anchor" aria-label="anchor" href="#examples-12"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/BinanceFuturesData.html">BinanceFuturesData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">depth</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_depth</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, limit <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">depth</span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -1097,14 +1173,14 @@ Verified: 2026-05-22</p>
 <h3 id="binancefuturesdata-get-trades-"><code>BinanceFuturesData$get_trades()</code><a class="anchor" aria-label="anchor" href="#binancefuturesdata-get-trades-"></a></h3>
 <p>Get Recent Trades</p>
 <p>Retrieves the most recent trades for a futures symbol.</p><div class="section">
-<h4 id="api-endpoint-12">API Endpoint<a class="anchor" aria-label="anchor" href="#api-endpoint-12"></a></h4>
+<h4 id="api-endpoint-13">API Endpoint<a class="anchor" aria-label="anchor" href="#api-endpoint-13"></a></h4>
 
 
 <p><code>GET https://fapi.binance.com/fapi/v1/trades</code></p>
 </div>
 
 <div class="section">
-<h4 id="official-documentation-10">Official Documentation<a class="anchor" aria-label="anchor" href="#official-documentation-10"></a></h4>
+<h4 id="official-documentation-11">Official Documentation<a class="anchor" aria-label="anchor" href="#official-documentation-11"></a></h4>
 
 
 <p><a href="https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Recent-Trades-List" class="external-link">Binance Futures Recent Trades List</a>
@@ -1112,14 +1188,14 @@ Verified: 2026-05-22</p>
 </div>
 
 <div class="section">
-<h4 id="curl-9">curl<a class="anchor" aria-label="anchor" href="#curl-9"></a></h4>
+<h4 id="curl-10">curl<a class="anchor" aria-label="anchor" href="#curl-10"></a></h4>
 
 
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>curl <span class="sc">-</span>X GET <span class="st">'https://fapi.binance.com/fapi/v1/trades?symbol=BTCUSDT&amp;limit=10'</span></span></code></pre><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="json-response-9">JSON Response<a class="anchor" aria-label="anchor" href="#json-response-9"></a></h4>
+<h4 id="json-response-10">JSON Response<a class="anchor" aria-label="anchor" href="#json-response-10"></a></h4>
 
 
 <p></p><div class="sourceCode json"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ot">[</span></span>
@@ -1141,7 +1217,7 @@ Verified: 2026-05-22</p>
 <span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>  <span class="fu">}</span></span>
 <span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a><span class="ot">]</span></span></code></pre><p></p></div>
 </div><p></p><div class="section">
-<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
+<h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFuturesData</span><span class="op">$</span><span class="fu">get_trades</span><span class="op">(</span><span class="va">symbol</span>, limit <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
@@ -1154,7 +1230,7 @@ Verified: 2026-05-22</p>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-13">Returns<a class="anchor" aria-label="anchor" href="#returns-13"></a></h4>
+<h4 id="returns-14">Returns<a class="anchor" aria-label="anchor" href="#returns-14"></a></h4>
 <p>(data.table | promise&lt;data.table&gt;) one row per public trade
 (empty when there are none):</p><ul><li><p>id (numeric) Unique trade identifier.</p></li>
 <li><p>price (character) Trade execution price.</p></li>
@@ -1164,7 +1240,7 @@ Verified: 2026-05-22</p>
 <li><p>is_buyer_maker (logical) <code>TRUE</code> if the buyer was the maker.</p></li>
 </ul><p></p>
 </div><p></p><div class="section">
-<h4 id="examples-12">Examples<a class="anchor" aria-label="anchor" href="#examples-12"></a></h4>
+<h4 id="examples-13">Examples<a class="anchor" aria-label="anchor" href="#examples-13"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/BinanceFuturesData.html">BinanceFuturesData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">trades</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_trades</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, limit <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">trades</span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -1176,14 +1252,14 @@ Verified: 2026-05-22</p>
 <h3 id="binancefuturesdata-get-index-price-klines-"><code>BinanceFuturesData$get_index_price_klines()</code><a class="anchor" aria-label="anchor" href="#binancefuturesdata-get-index-price-klines-"></a></h3>
 <p>Get Index Price Klines</p>
 <p>Retrieves historical index price kline/candlestick data for a pair.</p><div class="section">
-<h4 id="api-endpoint-13">API Endpoint<a class="anchor" aria-label="anchor" href="#api-endpoint-13"></a></h4>
+<h4 id="api-endpoint-14">API Endpoint<a class="anchor" aria-label="anchor" href="#api-endpoint-14"></a></h4>
 
 
 <p><code>GET https://fapi.binance.com/fapi/v1/indexPriceKlines</code></p>
 </div>
 
 <div class="section">
-<h4 id="official-documentation-11">Official Documentation<a class="anchor" aria-label="anchor" href="#official-documentation-11"></a></h4>
+<h4 id="official-documentation-12">Official Documentation<a class="anchor" aria-label="anchor" href="#official-documentation-12"></a></h4>
 
 
 <p><a href="https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Index-Price-Kline-Candlestick-Data" class="external-link">Binance Futures Index Price Kline/Candlestick Data</a>
@@ -1191,14 +1267,14 @@ Verified: 2026-05-22</p>
 </div>
 
 <div class="section">
-<h4 id="curl-10">curl<a class="anchor" aria-label="anchor" href="#curl-10"></a></h4>
+<h4 id="curl-11">curl<a class="anchor" aria-label="anchor" href="#curl-11"></a></h4>
 
 
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>curl <span class="sc">-</span>X GET <span class="st">'https://fapi.binance.com/fapi/v1/indexPriceKlines?pair=BTCUSDT&amp;interval=1h&amp;limit=100'</span></span></code></pre><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="json-response-10">JSON Response<a class="anchor" aria-label="anchor" href="#json-response-10"></a></h4>
+<h4 id="json-response-11">JSON Response<a class="anchor" aria-label="anchor" href="#json-response-11"></a></h4>
 
 
 <p></p><div class="sourceCode json"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ot">[</span></span>
@@ -1218,7 +1294,7 @@ Verified: 2026-05-22</p>
 <span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>  <span class="ot">]</span></span>
 <span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="ot">]</span></span></code></pre><p></p></div>
 </div><p></p><div class="section">
-<h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
+<h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFuturesData</span><span class="op">$</span><span class="fu">get_index_price_klines</span><span class="op">(</span></span>
 <span>  <span class="va">pair</span>,</span>
 <span>  interval <span class="op">=</span> <span class="st">"1h"</span>,</span>
@@ -1249,10 +1325,10 @@ Verified: 2026-05-22</p>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-14">Returns<a class="anchor" aria-label="anchor" href="#returns-14"></a></h4>
+<h4 id="returns-15">Returns<a class="anchor" aria-label="anchor" href="#returns-15"></a></h4>
 <p>(Ohlcv | promise&lt;Ohlcv&gt;) one row per candle.</p>
 </div><p></p><div class="section">
-<h4 id="examples-13">Examples<a class="anchor" aria-label="anchor" href="#examples-13"></a></h4>
+<h4 id="examples-14">Examples<a class="anchor" aria-label="anchor" href="#examples-14"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/BinanceFuturesData.html">BinanceFuturesData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">klines</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_index_price_klines</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, <span class="st">"1h"</span>, limit <span class="op">=</span> <span class="fl">24</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">klines</span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -1264,14 +1340,14 @@ Verified: 2026-05-22</p>
 <h3 id="binancefuturesdata-get-mark-price-klines-"><code>BinanceFuturesData$get_mark_price_klines()</code><a class="anchor" aria-label="anchor" href="#binancefuturesdata-get-mark-price-klines-"></a></h3>
 <p>Get Mark Price Klines</p>
 <p>Retrieves historical mark price kline/candlestick data for a symbol.</p><div class="section">
-<h4 id="api-endpoint-14">API Endpoint<a class="anchor" aria-label="anchor" href="#api-endpoint-14"></a></h4>
+<h4 id="api-endpoint-15">API Endpoint<a class="anchor" aria-label="anchor" href="#api-endpoint-15"></a></h4>
 
 
 <p><code>GET https://fapi.binance.com/fapi/v1/markPriceKlines</code></p>
 </div>
 
 <div class="section">
-<h4 id="official-documentation-12">Official Documentation<a class="anchor" aria-label="anchor" href="#official-documentation-12"></a></h4>
+<h4 id="official-documentation-13">Official Documentation<a class="anchor" aria-label="anchor" href="#official-documentation-13"></a></h4>
 
 
 <p><a href="https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Mark-Price-Kline-Candlestick-Data" class="external-link">Binance Futures Mark Price Kline/Candlestick Data</a>
@@ -1279,14 +1355,14 @@ Verified: 2026-05-22</p>
 </div>
 
 <div class="section">
-<h4 id="curl-11">curl<a class="anchor" aria-label="anchor" href="#curl-11"></a></h4>
+<h4 id="curl-12">curl<a class="anchor" aria-label="anchor" href="#curl-12"></a></h4>
 
 
 <p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>curl <span class="sc">-</span>X GET <span class="st">'https://fapi.binance.com/fapi/v1/markPriceKlines?symbol=BTCUSDT&amp;interval=1h&amp;limit=100'</span></span></code></pre><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="json-response-11">JSON Response<a class="anchor" aria-label="anchor" href="#json-response-11"></a></h4>
+<h4 id="json-response-12">JSON Response<a class="anchor" aria-label="anchor" href="#json-response-12"></a></h4>
 
 
 <p></p><div class="sourceCode json"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ot">[</span></span>
@@ -1306,7 +1382,7 @@ Verified: 2026-05-22</p>
 <span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>  <span class="ot">]</span></span>
 <span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="ot">]</span></span></code></pre><p></p></div>
 </div><p></p><div class="section">
-<h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
+<h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFuturesData</span><span class="op">$</span><span class="fu">get_mark_price_klines</span><span class="op">(</span></span>
 <span>  <span class="va">symbol</span>,</span>
 <span>  interval <span class="op">=</span> <span class="st">"1h"</span>,</span>
@@ -1337,10 +1413,10 @@ Verified: 2026-05-22</p>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-15">Returns<a class="anchor" aria-label="anchor" href="#returns-15"></a></h4>
+<h4 id="returns-16">Returns<a class="anchor" aria-label="anchor" href="#returns-16"></a></h4>
 <p>(Ohlcv | promise&lt;Ohlcv&gt;) one row per candle.</p>
 </div><p></p><div class="section">
-<h4 id="examples-14">Examples<a class="anchor" aria-label="anchor" href="#examples-14"></a></h4>
+<h4 id="examples-15">Examples<a class="anchor" aria-label="anchor" href="#examples-15"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/BinanceFuturesData.html">BinanceFuturesData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">klines</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_mark_price_klines</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, <span class="st">"1h"</span>, limit <span class="op">=</span> <span class="fl">24</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">klines</span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -1351,7 +1427,7 @@ Verified: 2026-05-22</p>
 <p></p><hr><a id="method-BinanceFuturesData-clone"></a><div class="section">
 <h3 id="binancefuturesdata-clone-"><code>BinanceFuturesData$clone()</code><a class="anchor" aria-label="anchor" href="#binancefuturesdata-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
+<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">BinanceFuturesData</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-12">Arguments<a class="anchor" aria-label="anchor" href="#arguments-12"></a></h4>
@@ -1469,6 +1545,16 @@ Verified: 2026-05-22</p>
 <span class="r-in"><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va">BinanceFuturesData</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">rates</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_funding_rate</span><span class="op">(</span><span class="st">"BTCUSDT"</span>, limit <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">rates</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `BinanceFuturesData$get_funding_info()`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">futures</span> <span class="op">&lt;-</span> <span class="va">BinanceFuturesData</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">info</span> <span class="op">&lt;-</span> <span class="va">futures</span><span class="op">$</span><span class="fu">get_funding_info</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">info</span><span class="op">[</span><span class="va">funding_interval_hours</span> <span class="op">!=</span> <span class="fl">8L</span>, <span class="fu">.</span><span class="op">(</span><span class="va">symbol</span>, <span class="va">funding_interval_hours</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>

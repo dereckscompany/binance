@@ -1,5 +1,32 @@
 # Changelog
 
+## binance 0.11.0
+
+### Futures funding-interval declarations: `BinanceFuturesData$get_funding_info()`
+
+New keyless method wrapping `GET /fapi/v1/fundingInfo`, the venue’s own
+declaration of which perpetuals deviate from the default funding
+schedule. Binance publishes one entry per symbol carrying a non-standard
+funding interval (4h or 1h instead of the default 8h) and its declared
+rate cap/floor; symbols on the plain 8h default are omitted, so the list
+is short and can be empty (which returns the typed zero-row table via
+`empty_dt_futures_funding_info()`). This is the declaration source that
+pairs with `get_funding_rate()`’s realised settlement history — the
+tradebot-data-scraper futures collector previously had to call the
+endpoint through its own thin fapi client because the wrapper did not
+expose it (closes dereckscompany/binance#40).
+
+The returned `data.table` follows the type-fidelity convention: `symbol`
+is structural `character`; `adjusted_funding_rate_cap` /
+`adjusted_funding_rate_floor` are measurement columns coerced to
+`numeric | NA`; `funding_interval_hours` is `integer | NA`; `disclaimer`
+is a strict `logical` flag; `update_time` is the venue’s `updateTime`
+epoch-ms run through `ms_to_datetime()` to `POSIXct`. Grounded live
+against the endpoint on 2026-07-14 (the response also carries the
+`disclaimer` and `updateTime` fields the original issue did not
+enumerate; both are surfaced faithfully). Available in both synchronous
+and asynchronous (promise) modes like every other method on the class.
+
 ## binance 0.10.0
 
 ### Opt-in request retry at construction (`max_tries`), a hard GET-only carve-out

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,9 +36,18 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/dereckscompany/binance/blob/v0.10.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/dereckscompany/binance/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.11.0" id="binance-0110">binance 0.11.0<a class="anchor" aria-label="anchor" href="#binance-0110"></a></h2>
+<div class="section level3">
+<h3 id="futures-funding-interval-declarations-binancefuturesdataget_funding_info-0-11-0">Futures funding-interval declarations: <code>BinanceFuturesData$get_funding_info()</code>
+<a class="anchor" aria-label="anchor" href="#futures-funding-interval-declarations-binancefuturesdataget_funding_info-0-11-0"></a></h3>
+<p>New keyless method wrapping <code>GET /fapi/v1/fundingInfo</code>, the venue’s own declaration of which perpetuals deviate from the default funding schedule. Binance publishes one entry per symbol carrying a non-standard funding interval (4h or 1h instead of the default 8h) and its declared rate cap/floor; symbols on the plain 8h default are omitted, so the list is short and can be empty (which returns the typed zero-row table via <code>empty_dt_futures_funding_info()</code>). This is the declaration source that pairs with <code>get_funding_rate()</code>’s realised settlement history — the tradebot-data-scraper futures collector previously had to call the endpoint through its own thin fapi client because the wrapper did not expose it (closes dereckscompany/binance#40).</p>
+<p>The returned <code>data.table</code> follows the type-fidelity convention: <code>symbol</code> is structural <code>character</code>; <code>adjusted_funding_rate_cap</code> / <code>adjusted_funding_rate_floor</code> are measurement columns coerced to <code>numeric | NA</code>; <code>funding_interval_hours</code> is <code>integer | NA</code>; <code>disclaimer</code> is a strict <code>logical</code> flag; <code>update_time</code> is the venue’s <code>updateTime</code> epoch-ms run through <code>ms_to_datetime()</code> to <code>POSIXct</code>. Grounded live against the endpoint on 2026-07-14 (the response also carries the <code>disclaimer</code> and <code>updateTime</code> fields the original issue did not enumerate; both are surfaced faithfully). Available in both synchronous and asynchronous (promise) modes like every other method on the class.</p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.10.0" id="binance-0100">binance 0.10.0<a class="anchor" aria-label="anchor" href="#binance-0100"></a></h2>
 <div class="section level3">
