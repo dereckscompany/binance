@@ -27,7 +27,7 @@ future helper), this class faithfully captures the stream.
 
 ## Super classes
 
-[`connectcore::StreamClient`](https://rdrr.io/pkg/connectcore/man/StreamClient.html)
+[`connectcore::StreamClient`](https://dereckscompany.github.io/connectcore/reference/StreamClient.html)
 -\>
 [`BinanceWsBase`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.md)
 -\> `BinanceMarketStream`
@@ -44,12 +44,12 @@ future helper), this class faithfully captures the stream.
 
 Inherited methods
 
-- [`connectcore::StreamClient$close()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-close)
-- [`connectcore::StreamClient$connect()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-connect)
-- [`connectcore::StreamClient$is_open()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-is_open)
-- [`connectcore::StreamClient$on_event()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-on_event)
-- [`connectcore::StreamClient$run()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-run)
-- [`connectcore::StreamClient$send()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-send)
+- [`connectcore::StreamClient$close()`](https://dereckscompany.github.io/connectcore/reference/StreamClient.html#method-close)
+- [`connectcore::StreamClient$connect()`](https://dereckscompany.github.io/connectcore/reference/StreamClient.html#method-connect)
+- [`connectcore::StreamClient$is_open()`](https://dereckscompany.github.io/connectcore/reference/StreamClient.html#method-is_open)
+- [`connectcore::StreamClient$on_event()`](https://dereckscompany.github.io/connectcore/reference/StreamClient.html#method-on_event)
+- [`connectcore::StreamClient$run()`](https://dereckscompany.github.io/connectcore/reference/StreamClient.html#method-run)
+- [`connectcore::StreamClient$send()`](https://dereckscompany.github.io/connectcore/reference/StreamClient.html#method-send)
 - [`BinanceWsBase$on()`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.html#method-on)
 - [`BinanceWsBase$subscribe()`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.html#method-subscribe)
 - [`BinanceWsBase$subscriptions()`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.html#method-subscriptions)

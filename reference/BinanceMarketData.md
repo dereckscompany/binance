@@ -56,7 +56,7 @@ Data](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-
 
 ## Super classes
 
-[`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
+[`connectcore::RestClient`](https://dereckscompany.github.io/connectcore/reference/RestClient.html)
 -\>
 [`BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceMarketData`

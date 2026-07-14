@@ -1,5 +1,32 @@
 # Changelog
 
+## binance 0.10.0
+
+### Opt-in request retry at construction (`max_tries`), a hard GET-only carve-out
+
+Every client class constructor (via `BinanceBase`) gains a `max_tries`
+argument (`scalar<integer in [1, 10]>`, default `1` = no retry) threaded
+to `connectcore`’s retry machinery. Setting it above `1` opts every GET
+the client makes into automatic retry on a transient failure (HTTP
+408/429/5xx or a dropped connection) with jittered backoff. Retry is a
+hard **GET-only** carve-out: a non-idempotent verb (an order `POST`, a
+cancel `DELETE`) is never auto-retried, so a resend can never
+double-submit an order. The default `1` leaves live-trading behaviour
+unchanged — the trader layer stays the single retry authority there;
+raise `max_tries` only for research and backfill reads. Implements the
+fleet retry-convergence ruling (2026-07-14) on
+[\#12](https://github.com/dereckscompany/binance/issues/12). Requires
+`connectcore (>= 0.5.0)`, where the GET-only guard is enforced in the
+one shared request funnel.
+
+The pre-existing per-call `max_tries` on
+[`binance_backfill_klines()`](https://dereckscompany.github.io/binance/reference/binance_backfill_klines.md)
+is a separate code path and is unchanged: it calls
+[`binance_build_request()`](https://dereckscompany.github.io/binance/reference/binance_build_request.md)
+directly (not a client instance), so a method-level `max_tries` always
+governs that call and the new constructor default of `1` never overrides
+it.
+
 ## binance 0.9.0
 
 ### Column-type NA audit (org discussion [\#2](https://github.com/dereckscompany/binance/issues/2)): the exchange-info filter cluster tolerates absent filters
@@ -361,15 +388,15 @@ argument names by keyword must be updated (for example
   unchanged** (the same exported classes, methods, signatures, and
   return shapes; all tests pass untouched).
   - **`BinanceBase`** now inherits
-    [`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
+    [`connectcore::RestClient`](https://dereckscompany.github.io/connectcore/reference/RestClient.html)
     and supplies only the two venue-specific seams: `.sign()`
     (delegating to
-    [`connectcore::hmac_query_sign()`](https://rdrr.io/pkg/connectcore/man/hmac_query_sign.html)
+    [`connectcore::hmac_query_sign()`](https://dereckscompany.github.io/connectcore/reference/hmac_query_sign.html)
     with Binance’s `X-MBX-APIKEY` header) and `.parse_envelope()`
     (Binance’s negative-`code` error body). The request funnel,
     sync/async branching, retry, and throttle now live in `connectcore`.
   - **`BinanceWsBase`** now inherits
-    [`connectcore::StreamClient`](https://rdrr.io/pkg/connectcore/man/StreamClient.html)
+    [`connectcore::StreamClient`](https://dereckscompany.github.io/connectcore/reference/StreamClient.html)
     and supplies only `.dispatch()` (control-ack filtering + per-stream
     routing) and `.resubscribe()` plus Binance’s
     `SUBSCRIBE`/`UNSUBSCRIBE` control protocol. Auto-reconnect,

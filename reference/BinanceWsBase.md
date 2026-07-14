@@ -11,7 +11,7 @@ add typed stream methods.
 ### Transport
 
 This class is a thin Binance specialisation of
-[connectcore::StreamClient](https://rdrr.io/pkg/connectcore/man/StreamClient.html),
+[connectcore::StreamClient](https://dereckscompany.github.io/connectcore/reference/StreamClient.html),
 the shared WebSocket transport base. Auto-reconnect (full-jitter
 backoff), the keepalive tick, the silence watchdog, proactive reconnect,
 and the event loop all live in `connectcore`; `BinanceWsBase` only
@@ -61,13 +61,13 @@ pump the loop — that is `$run()`.
 ### Dependencies
 
 Built on
-[connectcore::StreamClient](https://rdrr.io/pkg/connectcore/man/StreamClient.html),
+[connectcore::StreamClient](https://dereckscompany.github.io/connectcore/reference/StreamClient.html),
 itself built on the `websocket` (the client) and `later` (R's libuv
 event loop) packages.
 
 ## Super class
 
-[`connectcore::StreamClient`](https://rdrr.io/pkg/connectcore/man/StreamClient.html)
+[`connectcore::StreamClient`](https://dereckscompany.github.io/connectcore/reference/StreamClient.html)
 -\> `BinanceWsBase`
 
 ## Methods
@@ -88,12 +88,12 @@ event loop) packages.
 
 Inherited methods
 
-- [`connectcore::StreamClient$close()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-close)
-- [`connectcore::StreamClient$connect()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-connect)
-- [`connectcore::StreamClient$is_open()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-is_open)
-- [`connectcore::StreamClient$on_event()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-on_event)
-- [`connectcore::StreamClient$run()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-run)
-- [`connectcore::StreamClient$send()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-send)
+- [`connectcore::StreamClient$close()`](https://dereckscompany.github.io/connectcore/reference/StreamClient.html#method-close)
+- [`connectcore::StreamClient$connect()`](https://dereckscompany.github.io/connectcore/reference/StreamClient.html#method-connect)
+- [`connectcore::StreamClient$is_open()`](https://dereckscompany.github.io/connectcore/reference/StreamClient.html#method-is_open)
+- [`connectcore::StreamClient$on_event()`](https://dereckscompany.github.io/connectcore/reference/StreamClient.html#method-on_event)
+- [`connectcore::StreamClient$run()`](https://dereckscompany.github.io/connectcore/reference/StreamClient.html#method-run)
+- [`connectcore::StreamClient$send()`](https://dereckscompany.github.io/connectcore/reference/StreamClient.html#method-send)
 
 ------------------------------------------------------------------------
 

@@ -69,7 +69,7 @@ Transfer](https://developers.binance.com/docs/wallet/asset/user-universal-transf
 
 ## Super classes
 
-[`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
+[`connectcore::RestClient`](https://dereckscompany.github.io/connectcore/reference/RestClient.html)
 -\>
 [`BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceTransfer`

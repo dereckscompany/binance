@@ -7,7 +7,7 @@ Binance REST endpoint classes. A method documents its return as
 resolving to the same value in async mode), and the contract roclet
 expands the shape into the generated `assert_return_*` helper. The
 helper is wired at the call site through
-[`connectcore::then_or_now()`](https://rdrr.io/pkg/connectcore/man/then_or_now.html)
+[`connectcore::then_or_now()`](https://dereckscompany.github.io/connectcore/reference/then_or_now.html)
 so the row-and-column contract runs in BOTH execution modes.
 
 Each column is typed to what the parser actually produces (verified

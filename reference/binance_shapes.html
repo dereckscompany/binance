@@ -57,7 +57,7 @@ export)."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +86,7 @@ export)."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Binance REST return shapes</h1>
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.9.0/R/types_binance.R" class="external-link"><code>R/types_binance.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/master/R/types_binance.R" class="external-link"><code>R/types_binance.R</code></a></small>
       <div class="d-none name"><code>binance_shapes.Rd</code></div>
     </div>
 
@@ -97,7 +97,7 @@ by the Binance REST endpoint classes. A method documents its return as
 <code><a href="https://rstudio.github.io/promises/reference/promise.html" class="external-link">promises::promise</a></code> resolving to the same value in async mode), and the
 contract roclet expands the shape into the generated <code>assert_return_*</code> helper.
 The helper is wired at the call site through
-<code><a href="https://rdrr.io/pkg/connectcore/man/then_or_now.html" class="external-link">connectcore::then_or_now()</a></code> so the row-and-column contract runs in BOTH
+<code><a href="https://dereckscompany.github.io/connectcore/reference/then_or_now.html" class="external-link">connectcore::then_or_now()</a></code> so the row-and-column contract runs in BOTH
 execution modes.</p>
 <p>Each column is typed to what the parser actually produces (verified against
 the parse helpers in <code>R/helpers_parse.R</code> and the <code>tests/testthat</code> fixtures).

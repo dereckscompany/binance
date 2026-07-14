@@ -8,12 +8,12 @@ functions.
 ### Transport
 
 This class is a thin Binance specialisation of
-[connectcore::RestClient](https://rdrr.io/pkg/connectcore/man/RestClient.html),
+[connectcore::RestClient](https://dereckscompany.github.io/connectcore/reference/RestClient.html),
 the shared transport base. The request funnel, sync/async branching,
 retry, and throttle all live in `connectcore`; `BinanceBase` only
 supplies the two venue-specific seams — how Binance authenticates a
 request (`.sign()`, delegating to
-[`connectcore::hmac_query_sign()`](https://rdrr.io/pkg/connectcore/man/hmac_query_sign.html)
+[`connectcore::hmac_query_sign()`](https://dereckscompany.github.io/connectcore/reference/hmac_query_sign.html)
 with the `X-MBX-APIKEY` header) and how it reports an error
 (`.parse_envelope()`, which honours Binance's negative-`code` error
 body). Binance carries signed parameters in the query string, so the
@@ -49,6 +49,19 @@ request signing:
   round trip) but ensures signing works even when the local clock is out
   of sync.
 
+### Retries
+
+`max_tries > 1` opts every GET this client makes into automatic retry on
+a transient failure (HTTP 408/429/5xx or a dropped connection) with
+jittered backoff, delegated to
+[`connectcore::build_request()`](https://dereckscompany.github.io/connectcore/reference/build_request.html).
+Retry is a hard **GET-only** carve-out: a non-idempotent verb (an order
+`POST`, a cancel `DELETE`) is never auto-retried, so a resend can never
+double-submit an order. Leave it at the default `1` for live trading —
+there the trader layer is the single retry authority (it routes by typed
+error class and manages cooldowns); raise it only for research and
+backfill reads.
+
 ### Design
 
 This class is not meant to be instantiated directly. Subclasses (e.g.,
@@ -59,7 +72,7 @@ inherit from it and define their own public methods that delegate to
 
 ## Super class
 
-[`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
+[`connectcore::RestClient`](https://dereckscompany.github.io/connectcore/reference/RestClient.html)
 -\> `BinanceBase`
 
 ## Methods
@@ -82,7 +95,8 @@ Initialise a BinanceBase Object
       keys = get_api_keys(),
       base_url = get_base_url(),
       async = FALSE,
-      time_source = c("local", "server")
+      time_source = c("local", "server"),
+      max_tries = 1L
     )
 
 #### Arguments
@@ -110,6 +124,13 @@ Initialise a BinanceBase Object
   request signing. `"local"` (default) uses the local UTC clock.
   `"server"` fetches the Binance server time before each authenticated
   request, which adds latency but avoids clock-drift issues.
+
+- `max_tries`:
+
+  (scalar\<integer in \[1, 10\]\>) for idempotent GET requests only,
+  retry up to this many times on a transient failure. Default `1` (no
+  retry). See the class **Retries** section for the write-safety
+  carve-out and why live trading should leave this at `1`.
 
 #### Returns
 

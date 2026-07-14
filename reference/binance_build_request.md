@@ -5,7 +5,7 @@ Constructs an
 optionally signs it, performs it via the supplied `.perform` function,
 and parses the JSON response. This is the single point through which all
 Binance API calls flow. A thin wrapper over
-[`connectcore::build_request()`](https://rdrr.io/pkg/connectcore/man/build_request.html)
+[`connectcore::build_request()`](https://dereckscompany.github.io/connectcore/reference/build_request.html)
 that injects Binance's signer and error envelope and carries signed
 parameters in the query string (`body_format = "query"`).
 

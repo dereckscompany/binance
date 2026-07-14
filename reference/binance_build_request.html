@@ -17,7 +17,7 @@ envelope and carries signed parameters in the query string
 
     <a class="navbar-brand me-2" href="../index.html">binance</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,7 @@ envelope and carries signed parameters in the query string
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Build and Execute a Binance API Request</h1>
-      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/v0.9.0/R/helpers_request.R" class="external-link"><code>R/helpers_request.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/dereckscompany/binance/blob/master/R/helpers_request.R" class="external-link"><code>R/helpers_request.R</code></a></small>
       <div class="d-none name"><code>binance_build_request.Rd</code></div>
     </div>
 
@@ -54,7 +54,7 @@ envelope and carries signed parameters in the query string
     <p>Constructs an <a href="https://httr2.r-lib.org/reference/request.html" class="external-link">httr2::request</a>, optionally signs it, performs it via the supplied
 <code>.perform</code> function, and parses the JSON response. This is the single
 point through which all Binance API calls flow. A thin wrapper over
-<code><a href="https://rdrr.io/pkg/connectcore/man/build_request.html" class="external-link">connectcore::build_request()</a></code> that injects Binance's signer and error
+<code><a href="https://dereckscompany.github.io/connectcore/reference/build_request.html" class="external-link">connectcore::build_request()</a></code> that injects Binance's signer and error
 envelope and carries signed parameters in the query string
 (<code>body_format = "query"</code>).</p>
     </div>
