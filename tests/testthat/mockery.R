@@ -140,6 +140,11 @@ mock_futures_exchange_info_data <- function() {
 }
 
 #' @export
+mock_futures_funding_info_data <- function() {
+  return(.fixtures$futures_funding_info_data)
+}
+
+#' @export
 mock_futures_funding_rate_data <- function() {
   return(.fixtures$futures_funding_rate_data)
 }

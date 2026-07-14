@@ -39,6 +39,7 @@
 #' | get_klines | GET /fapi/v1/klines | No |
 #' | get_mark_price | GET /fapi/v1/premiumIndex | No |
 #' | get_funding_rate | GET /fapi/v1/fundingRate | No |
+#' | get_funding_info | GET /fapi/v1/fundingInfo | No |
 #' | get_24hr_stats | GET /fapi/v1/ticker/24hr | No |
 #' | get_ticker | GET /fapi/v1/ticker/price | No |
 #' | get_book_ticker | GET /fapi/v1/ticker/bookTicker | No |
@@ -764,6 +765,90 @@ BinanceFuturesData <- R6::R6Class(
       return(connectcore::then_or_now(
         res,
         assert_return_BinanceFuturesData__get_funding_rate,
+        is_async = private$.is_async
+      ))
+    },
+
+    # ---- Funding Info ----
+
+    # nolint start: line_length_linter.
+    #' @description
+    #' Get Funding Info (Interval Declarations)
+    #'
+    #' Binance publishes a small list declaring the perpetuals whose funding
+    #' parameters deviate from the venue defaults — chiefly the contracts on a
+    #' non-standard funding interval (4h or 1h instead of the default 8h), plus
+    #' the declared rate cap/floor for each such symbol. Symbols on the plain 8h
+    #' default with no override are omitted, so the list is short and can even be
+    #' empty. This is the declaration source; use `get_funding_rate()` for the
+    #' realised funding-settlement history.
+    #'
+    #' ### API Endpoint
+    #' `GET https://fapi.binance.com/fapi/v1/fundingInfo`
+    #'
+    #' ### Official Documentation
+    #' [Binance Futures Get Funding Rate Info](https://developers.binance.com/docs/derivatives/usds-margined-futures/market-data/rest-api/Get-Funding-Rate-Info)
+    #' Verified: 2026-07-14
+    #'
+    #' ### curl
+    #' ```
+    #' curl -X GET 'https://fapi.binance.com/fapi/v1/fundingInfo'
+    #' ```
+    #'
+    #' ### JSON Response
+    #' ```json
+    #' [
+    #'   {
+    #'     "symbol": "BTCUSDT",
+    #'     "adjustedFundingRateCap": "0.02000000",
+    #'     "adjustedFundingRateFloor": "-0.02000000",
+    #'     "fundingIntervalHours": 8,
+    #'     "disclaimer": false,
+    #'     "updateTime": 1710028800000
+    #'   }
+    #' ]
+    #' ```
+    #'
+    #' @return (data.table | promise<data.table>) one row per declared symbol
+    #'   (empty when Binance returns no declarations, e.g. every symbol on the
+    #'   default schedule):
+    #'   - symbol (character) Trading pair identifier (e.g., `"BTCUSDT"`).
+    #'   - adjusted_funding_rate_cap (numeric | NA) Upper bound applied to the
+    #'     symbol's funding rate (`NA` when Binance omits the field).
+    #'   - adjusted_funding_rate_floor (numeric | NA) Lower bound applied to the
+    #'     symbol's funding rate (`NA` when Binance omits the field).
+    #'   - funding_interval_hours (integer | NA) Declared funding interval in
+    #'     whole hours (e.g. `4`; `NA` when Binance omits the field). Symbols
+    #'     absent from this list settle on the 8-hour default.
+    #'   - disclaimer (logical) Whether Binance attaches a funding disclaimer to
+    #'     the symbol.
+    #'   - update_time (POSIXct) Time the declaration was last updated.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' futures <- BinanceFuturesData$new()
+    #' info <- futures$get_funding_info()
+    #' print(info[funding_interval_hours != 8L, .(symbol, funding_interval_hours)])
+    #' }
+    # nolint end
+    get_funding_info = function() {
+      res <- private$.request(
+        endpoint = "/fapi/v1/fundingInfo",
+        auth = FALSE,
+        .parser = function(data) {
+          if (is.null(data) || length(data) == 0) {
+            return(empty_dt_futures_funding_info())
+          }
+          dt <- as_dt_list(data)
+          coerce_cols(dt, c("adjusted_funding_rate_cap", "adjusted_funding_rate_floor"), as.numeric)
+          coerce_cols(dt, "funding_interval_hours", as.integer)
+          coerce_cols(dt, "update_time", ms_to_datetime)
+          return(dt[])
+        }
+      )
+      return(connectcore::then_or_now(
+        res,
+        assert_return_BinanceFuturesData__get_funding_info,
         is_async = private$.is_async
       ))
     },
