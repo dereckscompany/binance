@@ -1,6 +1,6 @@
 Package: binance
 Title: API Wrapper to Binance Cryptocurrency Exchange
-Version: 0.8.0
+Version: 0.9.0
 URL: https://dereckscompany.github.io/binance/
 BugReports: https://github.com/dereckscompany/binance/issues
 Authors@R:

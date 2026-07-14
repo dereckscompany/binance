@@ -187,12 +187,15 @@ BinanceFuturesData <- R6::R6Class(
     #'     filter; `NA` when the symbol carries no LOT_SIZE filter).
     #'   - lot_max_qty (numeric | NA) Maximum order quantity (from LOT_SIZE filter).
     #'   - lot_step_size (numeric | NA) Quantity step size (from LOT_SIZE filter).
-    #'   - price_min (numeric) Minimum price (from PRICE_FILTER).
-    #'   - price_max (numeric) Maximum price (from PRICE_FILTER).
-    #'   - price_tick_size (numeric) Price tick size (from PRICE_FILTER).
+    #'   - price_min (numeric | NA) Minimum price (from PRICE_FILTER; `NA` when
+    #'     the symbol carries no PRICE_FILTER).
+    #'   - price_max (numeric | NA) Maximum price (from PRICE_FILTER; `NA` when
+    #'     the symbol carries no PRICE_FILTER).
+    #'   - price_tick_size (numeric | NA) Price tick size (from PRICE_FILTER; `NA`
+    #'     when the symbol carries no PRICE_FILTER).
     #'   - min_notional (numeric | NA) Minimum notional value (from MIN_NOTIONAL
     #'     filter; `NA` when the symbol carries no MIN_NOTIONAL filter).
-    #'   - filters_raw (character) JSON-encoded copy of the full per-symbol
+    #'   - filters_raw (character | NA) JSON-encoded copy of the full per-symbol
     #'     `filters` array. Preserves filter types not pulled into curated
     #'     columns (`PERCENT_PRICE`, `MARKET_LOT_SIZE`, `MAX_NUM_ORDERS`,
     #'     `MAX_NUM_ALGO_ORDERS`, `MIN_NOTIONAL`'s extra fields, ...).

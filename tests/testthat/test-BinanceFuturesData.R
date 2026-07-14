@@ -105,6 +105,27 @@ test_that("get_exchange_info preserves the full filters array in `filters_raw` (
   expect_equal(mls$stepSize, "0.001")
 })
 
+test_that("get_exchange_info tolerates a symbol with no filters (type-fidelity NA audit)", {
+  # dereckscompany/.github discussion #2: `.extract_filter` yields NA_real_ when a
+  # symbol carries no PRICE_FILTER, and `filters_raw` is NA when Binance sends no
+  # filters at all. The `price_*` / `filters_raw` contracts must tolerate those
+  # NAs, not abort -- before the audit they carried assert_no_missing_values.
+  data <- mock_futures_exchange_info_data()
+  data$symbols[[1]]$filters <- list()
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  # Returns without error => the `| NA` contract accepts the NA row.
+  dt <- new_futures_data()$get_exchange_info()
+  expect_s3_class(dt, "data.table")
+  for (col in c("price_min", "price_max", "price_tick_size")) {
+    expect_true(is.numeric(dt[[col]]), info = col)
+    expect_true(is.na(dt[[col]]), info = col)
+  }
+  expect_true(is.character(dt$filters_raw))
+  expect_true(is.na(dt$filters_raw))
+})
+
 test_that("get_rate_limits (futures) returns one row per rate-limit rule", {
   data <- mock_futures_exchange_info_data()
   data$rateLimits <- list(

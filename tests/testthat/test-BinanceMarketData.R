@@ -114,6 +114,29 @@ test_that("get_exchange_info returns data.table with string arrays semicolon-joi
   expect_false(dt[symbol == "ETHUSDT"]$iceberg_allowed)
 })
 
+test_that("get_exchange_info tolerates a symbol with no filters (type-fidelity NA audit)", {
+  # dereckscompany/.github discussion #2: `.extract_filter` yields NA_real_ when a
+  # symbol carries no PRICE_FILTER, and `filters_raw` is NA when Binance sends no
+  # filters at all. The `price_*` / `filters_raw` contracts must tolerate those
+  # NAs, not abort -- before the audit they carried assert_no_missing_values.
+  data <- mock_exchange_info_data()
+  stripped_symbol <- data$symbols[[1]]$symbol
+  data$symbols[[1]]$filters <- list()
+  resp <- mock_binance_response(data = data)
+  httr2::local_mocked_responses(function(req) resp)
+
+  # Returns without error => the `| NA` contract accepts the NA row.
+  dt <- new_market()$get_exchange_info()
+  expect_s3_class(dt, "data.table")
+  stripped <- dt[symbol == stripped_symbol]
+  for (col in c("price_min", "price_max", "price_tick_size")) {
+    expect_true(is.numeric(dt[[col]]), info = col)
+    expect_true(is.na(stripped[[col]]), info = col)
+  }
+  expect_true(is.character(dt$filters_raw))
+  expect_true(is.na(stripped$filters_raw))
+})
+
 test_that("get_exchange_info JSON-encodes multi-set permissionSets without flattening the grouping", {
   # The cross-package convention is that `permissionSets` array-of-arrays
   # is JSON-encoded so the inner groupings survive a round-trip. The
