@@ -1,3 +1,9 @@
+# binance 0.9.0
+
+## Column-type NA audit (org discussion #2): the exchange-info filter cluster tolerates absent filters
+
+The per-connector type-fidelity audit reaches binance. The venue's always-present-sentinel API design means most strict columns were already correct; the one defect cluster found is in both get_exchange_info parsers, whose filter extraction demonstrably emits NA when a symbol lacks a PRICE_FILTER or ships an empty filters array, while price_min/price_max/price_tick_size/filters_raw were typed strict — filters_raw's own prose even promised an NA its type forbade. Eight columns across the two methods move to `| NA`, aligning them with the sibling filter columns that were already permissive. Latent rather than live-firing (all 3,636 current spot symbols carry a PRICE_FILTER today), so this is a contract-and-docs correction with two new empty-filter tests.
+
 # binance 0.8.0
 
 ## Typed input-validation conditions (the non-transport half of the taxonomy)
