@@ -4,11 +4,6 @@
 \alias{BinanceBase}
 \title{BinanceBase: Abstract Base Class for Binance API Clients}
 \description{
-BinanceBase: Abstract Base Class for Binance API Clients
-
-BinanceBase: Abstract Base Class for Binance API Clients
-}
-\details{
 Provides shared infrastructure for all Binance R6 classes, including API
 credential management, sync/async execution mode, timestamp source
 configuration, and a standardised method for calling implementation
@@ -72,63 +67,64 @@ trading <- BinanceTrading$new(time_source = "server")
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-BinanceBase-new}{\code{BinanceBase$new()}}
-\item \href{#method-BinanceBase-clone}{\code{BinanceBase$clone()}}
-}
+  \itemize{
+    \item \href{#method-BinanceBase-initialize}{\code{BinanceBase$new()}}
+    \item \href{#method-BinanceBase-clone}{\code{BinanceBase$clone()}}
+  }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-BinanceBase-new"></a>}}
-\if{latex}{\out{\hypertarget{method-BinanceBase-new}{}}}
-\subsection{Method \code{new()}}{
-Initialise a BinanceBase Object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceBase$new(
+\if{html}{\out{<a id="method-BinanceBase-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-BinanceBase-initialize}{}}}
+\subsection{\code{BinanceBase$new()}}{
+  Initialise a BinanceBase Object
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceBase$new(
   keys = get_api_keys(),
   base_url = get_base_url(),
   async = FALSE,
   time_source = c("local", "server")
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{keys}}{(list) API credentials from \code{\link[=get_api_keys]{get_api_keys()}}.
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{keys}}{(list) API credentials from \code{\link[=get_api_keys]{get_api_keys()}}.
 Defaults to \code{get_api_keys()}.}
-
-\item{\code{base_url}}{(scalar<character>) API base URL. Defaults to
+      \item{\code{base_url}}{(scalar<character>) API base URL. Defaults to
 \code{get_base_url()}.}
-
-\item{\code{async}}{(scalar<logical>) if \code{TRUE}, methods return promises. Default
+      \item{\code{async}}{(scalar<logical>) if \code{TRUE}, methods return promises. Default
 \code{FALSE}.}
-
-\item{\code{time_source}}{(scalar<character in c("local", "server")>) clock source
+      \item{\code{time_source}}{(scalar<character in c("local", "server")>) clock source
 for HMAC request signing. \code{"local"} (default) uses the local UTC clock.
 \code{"server"} fetches the Binance server time before each authenticated
 request, which adds latency but avoids clock-drift issues.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    (class<BinanceBase>) invisibly, self.
+  }
 }
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-(class<BinanceBase>) invisibly, self.
-}
-}
+
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BinanceBase-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-BinanceBase-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BinanceBase$clone(deep = FALSE)}\if{html}{\out{</div>}}
+\subsection{\code{BinanceBase$clone()}}{
+  The objects of this class are cloneable with this method.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{BinanceBase$clone(deep = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{deep}}{Whether to make a deep clone.}
+    }
+    \if{html}{\out{</div>}}
+  }
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
 }
