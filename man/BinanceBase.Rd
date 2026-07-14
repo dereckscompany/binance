@@ -44,6 +44,18 @@ trip) but ensures signing works even when the local clock is out of sync.
 }
 }
 
+\subsection{Retries}{
+
+\code{max_tries > 1} opts every GET this client makes into automatic retry on a
+transient failure (HTTP 408/429/5xx or a dropped connection) with jittered
+backoff, delegated to \code{\link[connectcore:build_request]{connectcore::build_request()}}. Retry is a hard
+\strong{GET-only} carve-out: a non-idempotent verb (an order \code{POST}, a cancel
+\code{DELETE}) is never auto-retried, so a resend can never double-submit an order.
+Leave it at the default \code{1} for live trading — there the trader layer is the
+single retry authority (it routes by typed error class and manages cooldowns);
+raise it only for research and backfill reads.
+}
+
 \subsection{Design}{
 
 This class is not meant to be instantiated directly. Subclasses (e.g.,
@@ -83,7 +95,8 @@ trading <- BinanceTrading$new(time_source = "server")
   keys = get_api_keys(),
   base_url = get_base_url(),
   async = FALSE,
-  time_source = c("local", "server")
+  time_source = c("local", "server"),
+  max_tries = 1L
 )}
     \if{html}{\out{</div>}}
   }
@@ -100,6 +113,10 @@ Defaults to \code{get_api_keys()}.}
 for HMAC request signing. \code{"local"} (default) uses the local UTC clock.
 \code{"server"} fetches the Binance server time before each authenticated
 request, which adds latency but avoids clock-drift issues.}
+      \item{\code{max_tries}}{(scalar<integer in [1, 10]>) for idempotent GET requests
+only, retry up to this many times on a transient failure. Default \code{1}
+(no retry). See the class \strong{Retries} section for the write-safety
+carve-out and why live trading should leave this at \code{1}.}
     }
     \if{html}{\out{</div>}}
   }

@@ -34,6 +34,16 @@
 #'   before each authenticated request. This is slower (one extra HTTP round
 #'   trip) but ensures signing works even when the local clock is out of sync.
 #'
+#' ### Retries
+#' `max_tries > 1` opts every GET this client makes into automatic retry on a
+#' transient failure (HTTP 408/429/5xx or a dropped connection) with jittered
+#' backoff, delegated to [connectcore::build_request()]. Retry is a hard
+#' **GET-only** carve-out: a non-idempotent verb (an order `POST`, a cancel
+#' `DELETE`) is never auto-retried, so a resend can never double-submit an order.
+#' Leave it at the default `1` for live trading — there the trader layer is the
+#' single retry authority (it routes by typed error class and manages cooldowns);
+#' raise it only for research and backfill reads.
+#'
 #' ### Design
 #' This class is not meant to be instantiated directly. Subclasses (e.g.,
 #' [BinanceMarketData], [BinanceTrading]) inherit from it and define their
@@ -68,15 +78,20 @@ BinanceBase <- R6::R6Class(
     #'   for HMAC request signing. `"local"` (default) uses the local UTC clock.
     #'   `"server"` fetches the Binance server time before each authenticated
     #'   request, which adds latency but avoids clock-drift issues.
+    #' @param max_tries (scalar<integer in [1, 10]>) for idempotent GET requests
+    #'   only, retry up to this many times on a transient failure. Default `1`
+    #'   (no retry). See the class **Retries** section for the write-safety
+    #'   carve-out and why live trading should leave this at `1`.
     #' @return (class<BinanceBase>) invisibly, self.
     initialize = function(
       keys = get_api_keys(),
       base_url = get_base_url(),
       async = FALSE,
-      time_source = c("local", "server")
+      time_source = c("local", "server"),
+      max_tries = 1L
     ) {
       time_source <- match.arg(time_source)
-      assert_args_BinanceBase__initialize(keys, base_url, async, time_source)
+      assert_args_BinanceBase__initialize(keys, base_url, async, time_source, max_tries)
       assert::assert_nonempty_strings(base_url)
       super$initialize(
         keys = keys,
@@ -85,7 +100,8 @@ BinanceBase <- R6::R6Class(
         time_source = time_source,
         time_endpoint = "/api/v3/time",
         time_field = "serverTime",
-        body_format = "query"
+        body_format = "query",
+        max_tries = max_tries
       )
       return(invisible(assert_return_BinanceBase__initialize(self)))
     }
