@@ -1,11 +1,5 @@
 # BinanceMarginData: Margin Market Data Retrieval
 
-BinanceMarginData: Margin Market Data Retrieval
-
-BinanceMarginData: Margin Market Data Retrieval
-
-## Details
-
 Provides methods for retrieving margin-specific market data from
 Binance, including cross/isolated margin pairs, price indices, interest
 rate history, and margin data summaries.
@@ -54,7 +48,7 @@ Account/Trade](https://developers.binance.com/docs/margin_trading/trade)
 
 [`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
 -\>
-[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
+[`BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceMarginData`
 
 ## Methods
@@ -77,11 +71,11 @@ Account/Trade](https://developers.binance.com/docs/margin_trading/trade)
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 
-### Method `get_all_pairs()`
+### `BinanceMarginData$get_all_pairs()`
 
 Get All Cross Margin Pairs
 
@@ -156,15 +150,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMarginData$new()
     pairs <- margin$get_all_pairs()
     print(pairs)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_isolated_pairs()`
+### `BinanceMarginData$get_isolated_pairs()`
 
 Get All Isolated Margin Pairs
 
@@ -236,15 +228,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMarginData$new()
     pairs <- margin$get_isolated_pairs()
     print(pairs)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_price_index()`
+### `BinanceMarginData$get_price_index()`
 
 Get Margin Price Index
 
@@ -292,15 +282,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMarginData$new()
     idx <- margin$get_price_index("BTCUSDT")
     print(idx)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_interest_rate_history()`
+### `BinanceMarginData$get_interest_rate_history()`
 
 Get Interest Rate History
 
@@ -385,15 +373,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMarginData$new()
     history <- margin$get_interest_rate_history("BTC")
     print(history)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_cross_margin_data()`
+### `BinanceMarginData$get_cross_margin_data()`
 
 Get Cross Margin Data
 
@@ -489,15 +475,13 @@ repeated on each row.
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMarginData$new()
     data <- margin$get_cross_margin_data()
     print(data)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_isolated_margin_data()`
+### `BinanceMarginData$get_isolated_margin_data()`
 
 Get Isolated Margin Data
 
@@ -594,15 +578,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMarginData$new()
     data <- margin$get_isolated_margin_data()
     print(data)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `BinanceMarginData$clone()`
 
 The objects of this class are cloneable with this method.
 
@@ -642,7 +624,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceMarginData$get_all_pairs`
+## Method `BinanceMarginData$get_all_pairs()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -652,7 +634,7 @@ print(pairs)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMarginData$get_isolated_pairs`
+## Method `BinanceMarginData$get_isolated_pairs()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -662,7 +644,7 @@ print(pairs)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMarginData$get_price_index`
+## Method `BinanceMarginData$get_price_index()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -672,7 +654,7 @@ print(idx)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMarginData$get_interest_rate_history`
+## Method `BinanceMarginData$get_interest_rate_history()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -682,7 +664,7 @@ print(history)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMarginData$get_cross_margin_data`
+## Method `BinanceMarginData$get_cross_margin_data()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -692,7 +674,7 @@ print(data)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMarginData$get_isolated_margin_data`
+## Method `BinanceMarginData$get_isolated_margin_data()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{

@@ -1,11 +1,5 @@
 # BinanceMarketData: Spot Market Data Retrieval
 
-BinanceMarketData: Spot Market Data Retrieval
-
-BinanceMarketData: Spot Market Data Retrieval
-
-## Details
-
 Provides methods for retrieving market data from Binance's Spot trading
 API, including exchange info, klines, tickers, orderbooks, trade
 history, and 24-hour statistics.
@@ -64,7 +58,7 @@ Data](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-
 
 [`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
 -\>
-[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
+[`BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceMarketData`
 
 ## Methods
@@ -101,11 +95,11 @@ Data](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/market-
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 
-### Method `get_server_time()`
+### `BinanceMarketData$get_server_time()`
 
 Get Server Time
 
@@ -153,16 +147,14 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     market <- BinanceMarketData$new()
     st <- market$get_server_time()
     drift <- as.numeric(difftime(Sys.time(), st$server_time, units = "secs"))
     cat("Clock drift:", round(drift * 1000), "ms\n")
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_exchange_info()`
+### `BinanceMarketData$get_exchange_info()`
 
 Get Exchange Info
 
@@ -338,7 +330,6 @@ Exchange-wide metadata returned by the same endpoint (`rateLimits`,
 
 #### Examples
 
-    \dontrun{
     market <- BinanceMarketData$new()
     info <- market$get_exchange_info("BTCUSDT")
     print(info[, .(symbol, status, base_asset, quote_asset)])
@@ -349,11 +340,10 @@ Exchange-wide metadata returned by the same endpoint (`rateLimits`,
     # Exchange-wide metadata via sibling methods
     market$get_rate_limits()
     market$get_exchange_filters()
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_rate_limits()`
+### `BinanceMarketData$get_rate_limits()`
 
 Get Exchange Rate Limits
 
@@ -395,14 +385,12 @@ when Binance returned no `rateLimits` block):
 
 #### Examples
 
-    \dontrun{
     market <- BinanceMarketData$new()
     market$get_rate_limits()
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_exchange_filters()`
+### `BinanceMarketData$get_exchange_filters()`
 
 Get Exchange-Wide Filters
 
@@ -432,14 +420,12 @@ so this return is schemaless (no fixed columns).
 
 #### Examples
 
-    \dontrun{
     market <- BinanceMarketData$new()
     market$get_exchange_filters()
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_ticker()`
+### `BinanceMarketData$get_ticker()`
 
 Get Symbol Price Ticker
 
@@ -483,15 +469,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     market <- BinanceMarketData$new()
     ticker <- market$get_ticker("BTCUSDT")
     print(ticker)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_all_tickers()`
+### `BinanceMarketData$get_all_tickers()`
 
 Get All Symbol Price Tickers
 
@@ -533,15 +517,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     market <- BinanceMarketData$new()
     all_tickers <- market$get_all_tickers()
     print(all_tickers[1:5])
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_book_ticker()`
+### `BinanceMarketData$get_book_ticker()`
 
 Get Best Bid/Ask (Book Ticker)
 
@@ -587,15 +569,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     market <- BinanceMarketData$new()
     book <- market$get_book_ticker("BTCUSDT")
     print(book)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_24hr_stats()`
+### `BinanceMarketData$get_24hr_stats()`
 
 Get 24hr Ticker Statistics
 
@@ -699,15 +679,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     market <- BinanceMarketData$new()
     stats <- market$get_24hr_stats("BTCUSDT")
     print(stats[, .(symbol, last_price, price_change_percent, volume)])
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_all_24hr_stats()`
+### `BinanceMarketData$get_all_24hr_stats()`
 
 Get 24hr Ticker Statistics for All Symbols
 
@@ -776,15 +754,13 @@ columns as `get_24hr_stats()`.
 
 #### Examples
 
-    \dontrun{
     market <- BinanceMarketData$new()
     all_stats <- market$get_all_24hr_stats()
     print(all_stats[1:5, .(symbol, last_price, price_change_percent, volume)])
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_avg_price()`
+### `BinanceMarketData$get_avg_price()`
 
 Get Average Price
 
@@ -831,15 +807,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     market <- BinanceMarketData$new()
     avg <- market$get_avg_price("BTCUSDT")
     print(avg)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_depth()`
+### `BinanceMarketData$get_depth()`
 
 Get Order Book Depth
 
@@ -895,15 +869,13 @@ then asks).
 
 #### Examples
 
-    \dontrun{
     market <- BinanceMarketData$new()
     depth <- market$get_depth("BTCUSDT", limit = 20)
     print(depth)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_trades()`
+### `BinanceMarketData$get_trades()`
 
 Get Recent Trades
 
@@ -957,15 +929,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     market <- BinanceMarketData$new()
     trades <- market$get_trades("BTCUSDT", limit = 10)
     print(trades)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_klines()`
+### `BinanceMarketData$get_klines()`
 
 Get Klines (Candlestick Data)
 
@@ -1087,7 +1057,6 @@ buffered (returned) case.
 
 #### Examples
 
-    \dontrun{
     market <- BinanceMarketData$new()
     klines <- market$get_klines("BTCUSDT", "1h", limit = 24)
 
@@ -1098,11 +1067,10 @@ buffered (returned) case.
       end_time = as.POSIXct("2024-06-01", tz = "UTC"),
       fetch_all = TRUE, sleep = 0.5
     )
-    }
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `BinanceMarketData$clone()`
 
 The objects of this class are cloneable with this method.
 
@@ -1137,7 +1105,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_server_time`
+## Method `BinanceMarketData$get_server_time()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1148,7 +1116,7 @@ cat("Clock drift:", round(drift * 1000), "ms\n")
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_exchange_info`
+## Method `BinanceMarketData$get_exchange_info()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1165,7 +1133,7 @@ market$get_exchange_filters()
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_rate_limits`
+## Method `BinanceMarketData$get_rate_limits()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1174,7 +1142,7 @@ market$get_rate_limits()
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_exchange_filters`
+## Method `BinanceMarketData$get_exchange_filters()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1183,7 +1151,7 @@ market$get_exchange_filters()
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_ticker`
+## Method `BinanceMarketData$get_ticker()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1193,7 +1161,7 @@ print(ticker)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_all_tickers`
+## Method `BinanceMarketData$get_all_tickers()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1203,7 +1171,7 @@ print(all_tickers[1:5])
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_book_ticker`
+## Method `BinanceMarketData$get_book_ticker()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1213,7 +1181,7 @@ print(book)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_24hr_stats`
+## Method `BinanceMarketData$get_24hr_stats()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1223,7 +1191,7 @@ print(stats[, .(symbol, last_price, price_change_percent, volume)])
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_all_24hr_stats`
+## Method `BinanceMarketData$get_all_24hr_stats()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1233,7 +1201,7 @@ print(all_stats[1:5, .(symbol, last_price, price_change_percent, volume)])
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_avg_price`
+## Method `BinanceMarketData$get_avg_price()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1243,7 +1211,7 @@ print(avg)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_depth`
+## Method `BinanceMarketData$get_depth()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1253,7 +1221,7 @@ print(depth)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_trades`
+## Method `BinanceMarketData$get_trades()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1263,7 +1231,7 @@ print(trades)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMarketData$get_klines`
+## Method `BinanceMarketData$get_klines()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{

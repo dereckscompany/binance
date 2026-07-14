@@ -1,11 +1,5 @@
 # BinanceFutures: USD-M Futures Trading
 
-BinanceFutures: USD-M Futures Trading
-
-BinanceFutures: USD-M Futures Trading
-
-## Details
-
 Provides methods for placing, cancelling, and querying USD-M futures
 orders, managing positions, leverage, and margin on Binance. Inherits
 from
@@ -79,14 +73,14 @@ API](https://developers.binance.com/docs/derivatives/usds-margined-futures/gener
 
 [`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
 -\>
-[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
+[`BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceFutures`
 
 ## Methods
 
 ### Public methods
 
-- [`BinanceFutures$new()`](#method-BinanceFutures-new)
+- [`BinanceFutures$new()`](#method-BinanceFutures-initialize)
 
 - [`BinanceFutures$add_order()`](#method-BinanceFutures-add_order)
 
@@ -128,7 +122,7 @@ API](https://developers.binance.com/docs/derivatives/usds-margined-futures/gener
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `BinanceFutures$new()`
 
 Initialise a BinanceFutures Object
 
@@ -174,7 +168,7 @@ futures-specific server time endpoint (`/fapi/v1/time`).
 
 ------------------------------------------------------------------------
 
-### Method `add_order()`
+### `BinanceFutures$add_order()`
 
 Place a Futures Order
 
@@ -349,18 +343,16 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     order <- futures$add_order(
       symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
       quantity = 0.001, price = 50000, time_in_force = "GTC"
     )
     print(order)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `add_order_test()`
+### `BinanceFutures$add_order_test()`
 
 Test Futures Order Placement
 
@@ -489,18 +481,16 @@ the absence of an error is the validation signal.
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     test <- futures$add_order_test(
       symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
       quantity = 0.001, price = 50000, time_in_force = "GTC"
     )
     stopifnot(test$validated)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `cancel_order()`
+### `BinanceFutures$cancel_order()`
 
 Cancel a Futures Order
 
@@ -606,15 +596,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     cancelled <- futures$cancel_order("BTCUSDT", order_id = 283194212)
     print(cancelled)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `cancel_all_orders()`
+### `BinanceFutures$cancel_all_orders()`
 
 Cancel All Open Futures Orders
 
@@ -675,15 +663,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     result <- futures$cancel_all_orders("BTCUSDT")
     print(result)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_order()`
+### `BinanceFutures$get_order()`
 
 Query a Futures Order
 
@@ -792,15 +778,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     order <- futures$get_order("BTCUSDT", order_id = 283194212)
     print(order)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_open_orders()`
+### `BinanceFutures$get_open_orders()`
 
 Get Open Futures Orders
 
@@ -895,15 +879,13 @@ there are none):
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     open <- futures$get_open_orders("BTCUSDT")
     print(open)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_all_orders()`
+### `BinanceFutures$get_all_orders()`
 
 Get All Futures Orders
 
@@ -1020,15 +1002,13 @@ there are no matching orders):
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     all <- futures$get_all_orders("BTCUSDT", limit = 50)
     print(all)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_account()`
+### `BinanceFutures$get_account()`
 
 Get Futures Account Information
 
@@ -1174,17 +1154,15 @@ drop the `positions` array here; `get_positions()` hits
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     account <- futures$get_account()
     print(account)
     positions <- futures$get_positions()
     print(positions)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_balances()`
+### `BinanceFutures$get_balances()`
 
 Get Futures Account Balances
 
@@ -1268,15 +1246,13 @@ there are none):
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     balances <- futures$get_balances()
     print(balances)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_positions()`
+### `BinanceFutures$get_positions()`
 
 Get Futures Position Information
 
@@ -1365,15 +1341,13 @@ there are none):
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     positions <- futures$get_positions("BTCUSDT")
     print(positions)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `set_leverage()`
+### `BinanceFutures$set_leverage()`
 
 Set Leverage
 
@@ -1444,15 +1418,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     result <- futures$set_leverage("BTCUSDT", 20)
     print(result)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `set_margin_type()`
+### `BinanceFutures$set_margin_type()`
 
 Set Margin Type
 
@@ -1519,15 +1491,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     result <- futures$set_margin_type("BTCUSDT", "ISOLATED")
     print(result)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `modify_position_margin()`
+### `BinanceFutures$modify_position_margin()`
 
 Modify Position Margin
 
@@ -1616,15 +1586,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     result <- futures$modify_position_margin("BTCUSDT", amount = 100, type = 1)
     print(result)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_position_margin_history()`
+### `BinanceFutures$get_position_margin_history()`
 
 Get Position Margin Change History
 
@@ -1718,15 +1686,13 @@ when there are none):
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     history <- futures$get_position_margin_history("BTCUSDT")
     print(history)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_trades()`
+### `BinanceFutures$get_trades()`
 
 Get Futures Account Trade List
 
@@ -1847,15 +1813,13 @@ there are none):
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     trades <- futures$get_trades("BTCUSDT", limit = 50)
     print(trades)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_income_history()`
+### `BinanceFutures$get_income_history()`
 
 Get Income History
 
@@ -1972,15 +1936,13 @@ when there are none):
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     income <- futures$get_income_history(symbol = "BTCUSDT", income_type = "FUNDING_FEE")
     print(income)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `set_position_mode()`
+### `BinanceFutures$set_position_mode()`
 
 Set Position Mode
 
@@ -2042,15 +2004,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     result <- futures$set_position_mode(TRUE)
     print(result)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_position_mode()`
+### `BinanceFutures$get_position_mode()`
 
 Get Position Mode
 
@@ -2097,15 +2057,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFutures$new()
     mode <- futures$get_position_mode()
     print(mode$dual_side_position)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `BinanceFutures$clone()`
 
 The objects of this class are cloneable with this method.
 
@@ -2146,7 +2104,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceFutures$add_order`
+## Method `BinanceFutures$add_order()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2159,7 +2117,7 @@ print(order)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$add_order_test`
+## Method `BinanceFutures$add_order_test()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2172,7 +2130,7 @@ stopifnot(test$validated)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$cancel_order`
+## Method `BinanceFutures$cancel_order()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2182,7 +2140,7 @@ print(cancelled)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$cancel_all_orders`
+## Method `BinanceFutures$cancel_all_orders()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2192,7 +2150,7 @@ print(result)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_order`
+## Method `BinanceFutures$get_order()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2202,7 +2160,7 @@ print(order)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_open_orders`
+## Method `BinanceFutures$get_open_orders()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2212,7 +2170,7 @@ print(open)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_all_orders`
+## Method `BinanceFutures$get_all_orders()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2222,7 +2180,7 @@ print(all)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_account`
+## Method `BinanceFutures$get_account()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2234,7 +2192,7 @@ print(positions)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_balances`
+## Method `BinanceFutures$get_balances()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2244,7 +2202,7 @@ print(balances)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_positions`
+## Method `BinanceFutures$get_positions()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2254,7 +2212,7 @@ print(positions)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$set_leverage`
+## Method `BinanceFutures$set_leverage()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2264,7 +2222,7 @@ print(result)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$set_margin_type`
+## Method `BinanceFutures$set_margin_type()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2274,7 +2232,7 @@ print(result)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$modify_position_margin`
+## Method `BinanceFutures$modify_position_margin()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2284,7 +2242,7 @@ print(result)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_position_margin_history`
+## Method `BinanceFutures$get_position_margin_history()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2294,7 +2252,7 @@ print(history)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_trades`
+## Method `BinanceFutures$get_trades()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2304,7 +2262,7 @@ print(trades)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_income_history`
+## Method `BinanceFutures$get_income_history()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2314,7 +2272,7 @@ print(income)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$set_position_mode`
+## Method `BinanceFutures$set_position_mode()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2324,7 +2282,7 @@ print(result)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFutures$get_position_mode`
+## Method `BinanceFutures$get_position_mode()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{

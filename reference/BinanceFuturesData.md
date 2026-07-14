@@ -1,11 +1,5 @@
 # BinanceFuturesData: USD-M Futures Market Data Retrieval
 
-BinanceFuturesData: USD-M Futures Market Data Retrieval
-
-BinanceFuturesData: USD-M Futures Market Data Retrieval
-
-## Details
-
 Provides methods for retrieving market data from Binance's USD-M Futures
 API, including exchange info, klines, mark prices, funding rates,
 tickers, order books, open interest, and trade history.
@@ -74,14 +68,14 @@ Data](https://developers.binance.com/docs/derivatives/usds-margined-futures/mark
 
 [`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
 -\>
-[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
+[`BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceFuturesData`
 
 ## Methods
 
 ### Public methods
 
-- [`BinanceFuturesData$new()`](#method-BinanceFuturesData-new)
+- [`BinanceFuturesData$new()`](#method-BinanceFuturesData-initialize)
 
 - [`BinanceFuturesData$get_exchange_info()`](#method-BinanceFuturesData-get_exchange_info)
 
@@ -117,7 +111,7 @@ Data](https://developers.binance.com/docs/derivatives/usds-margined-futures/mark
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `BinanceFuturesData$new()`
 
 Initialise a BinanceFuturesData Object
 
@@ -166,7 +160,7 @@ configures the server time endpoint for futures when
 
 ------------------------------------------------------------------------
 
-### Method `get_exchange_info()`
+### `BinanceFuturesData$get_exchange_info()`
 
 Get Futures Exchange Info
 
@@ -295,7 +289,6 @@ sibling methods: `get_rate_limits()`, `get_exchange_filters()`,
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFuturesData$new()
     info <- futures$get_exchange_info()
     print(info[, .(symbol, contract_type, status, base_asset)])
@@ -306,11 +299,10 @@ sibling methods: `get_rate_limits()`, `get_exchange_filters()`,
     # Exchange-wide metadata via sibling methods
     futures$get_rate_limits()
     futures$get_futures_assets()
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_rate_limits()`
+### `BinanceFuturesData$get_rate_limits()`
 
 Get Futures Exchange Rate Limits
 
@@ -341,14 +333,12 @@ when Binance returned no `rateLimits` block):
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFuturesData$new()
     futures$get_rate_limits()
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_exchange_filters()`
+### `BinanceFuturesData$get_exchange_filters()`
 
 Get Futures Exchange-Wide Filters
 
@@ -370,14 +360,12 @@ rule (schemaless empty when none, the common case).
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFuturesData$new()
     futures$get_exchange_filters()
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_futures_assets()`
+### `BinanceFuturesData$get_futures_assets()`
 
 Get Futures Margin Assets
 
@@ -406,14 +394,12 @@ when Binance returned no `assets` block):
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFuturesData$new()
     futures$get_futures_assets()
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_klines()`
+### `BinanceFuturesData$get_klines()`
 
 Get Klines (Candlestick Data)
 
@@ -524,7 +510,6 @@ buffered (returned) case.
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFuturesData$new()
     klines <- futures$get_klines("BTCUSDT", "1h", limit = 24)
 
@@ -535,11 +520,10 @@ buffered (returned) case.
       end_time = as.POSIXct("2024-06-01", tz = "UTC"),
       fetch_all = TRUE, sleep = 0.5
     )
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_mark_price()`
+### `BinanceFuturesData$get_mark_price()`
 
 Get Mark Price
 
@@ -607,7 +591,6 @@ when `symbol` is given):
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFuturesData$new()
     mark <- futures$get_mark_price("BTCUSDT")
     print(mark)
@@ -615,11 +598,10 @@ when `symbol` is given):
     # All symbols
     all_marks <- futures$get_mark_price()
     print(all_marks)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_funding_rate()`
+### `BinanceFuturesData$get_funding_rate()`
 
 Get Funding Rate History
 
@@ -698,15 +680,13 @@ when there are none):
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFuturesData$new()
     rates <- futures$get_funding_rate("BTCUSDT", limit = 10)
     print(rates)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_24hr_stats()`
+### `BinanceFuturesData$get_24hr_stats()`
 
 Get 24hr Ticker Statistics
 
@@ -784,15 +764,13 @@ when `symbol` is given):
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFuturesData$new()
     stats <- futures$get_24hr_stats("BTCUSDT")
     print(stats[, .(symbol, last_price, price_change_percent, volume)])
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_ticker()`
+### `BinanceFuturesData$get_ticker()`
 
 Get Symbol Price Ticker
 
@@ -844,15 +822,13 @@ when `symbol` is given):
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFuturesData$new()
     ticker <- futures$get_ticker("BTCUSDT")
     print(ticker)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_book_ticker()`
+### `BinanceFuturesData$get_book_ticker()`
 
 Get Best Bid/Ask (Book Ticker)
 
@@ -912,15 +888,13 @@ when `symbol` is given):
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFuturesData$new()
     book <- futures$get_book_ticker("BTCUSDT")
     print(book)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_open_interest()`
+### `BinanceFuturesData$get_open_interest()`
 
 Get Open Interest
 
@@ -970,15 +944,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFuturesData$new()
     oi <- futures$get_open_interest("BTCUSDT")
     print(oi)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_depth()`
+### `BinanceFuturesData$get_depth()`
 
 Get Order Book Depth
 
@@ -1038,15 +1010,13 @@ then asks).
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFuturesData$new()
     depth <- futures$get_depth("BTCUSDT", limit = 20)
     print(depth)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_trades()`
+### `BinanceFuturesData$get_trades()`
 
 Get Recent Trades
 
@@ -1120,15 +1090,13 @@ when there are none):
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFuturesData$new()
     trades <- futures$get_trades("BTCUSDT", limit = 10)
     print(trades)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_index_price_klines()`
+### `BinanceFuturesData$get_index_price_klines()`
 
 Get Index Price Klines
 
@@ -1207,15 +1175,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFuturesData$new()
     klines <- futures$get_index_price_klines("BTCUSDT", "1h", limit = 24)
     print(klines)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_mark_price_klines()`
+### `BinanceFuturesData$get_mark_price_klines()`
 
 Get Mark Price Klines
 
@@ -1294,15 +1260,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     futures <- BinanceFuturesData$new()
     klines <- futures$get_mark_price_klines("BTCUSDT", "1h", limit = 24)
     print(klines)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `BinanceFuturesData$clone()`
 
 The objects of this class are cloneable with this method.
 
@@ -1337,7 +1301,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceFuturesData$get_exchange_info`
+## Method `BinanceFuturesData$get_exchange_info()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1354,7 +1318,7 @@ futures$get_futures_assets()
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFuturesData$get_rate_limits`
+## Method `BinanceFuturesData$get_rate_limits()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1363,7 +1327,7 @@ futures$get_rate_limits()
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFuturesData$get_exchange_filters`
+## Method `BinanceFuturesData$get_exchange_filters()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1372,7 +1336,7 @@ futures$get_exchange_filters()
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFuturesData$get_futures_assets`
+## Method `BinanceFuturesData$get_futures_assets()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1381,7 +1345,7 @@ futures$get_futures_assets()
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFuturesData$get_klines`
+## Method `BinanceFuturesData$get_klines()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1398,7 +1362,7 @@ all_klines <- futures$get_klines(
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFuturesData$get_mark_price`
+## Method `BinanceFuturesData$get_mark_price()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1412,7 +1376,7 @@ print(all_marks)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFuturesData$get_funding_rate`
+## Method `BinanceFuturesData$get_funding_rate()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1422,7 +1386,7 @@ print(rates)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFuturesData$get_24hr_stats`
+## Method `BinanceFuturesData$get_24hr_stats()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1432,7 +1396,7 @@ print(stats[, .(symbol, last_price, price_change_percent, volume)])
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFuturesData$get_ticker`
+## Method `BinanceFuturesData$get_ticker()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1442,7 +1406,7 @@ print(ticker)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFuturesData$get_book_ticker`
+## Method `BinanceFuturesData$get_book_ticker()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1452,7 +1416,7 @@ print(book)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFuturesData$get_open_interest`
+## Method `BinanceFuturesData$get_open_interest()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1462,7 +1426,7 @@ print(oi)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFuturesData$get_depth`
+## Method `BinanceFuturesData$get_depth()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1472,7 +1436,7 @@ print(depth)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFuturesData$get_trades`
+## Method `BinanceFuturesData$get_trades()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1482,7 +1446,7 @@ print(trades)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFuturesData$get_index_price_klines`
+## Method `BinanceFuturesData$get_index_price_klines()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1492,7 +1456,7 @@ print(klines)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceFuturesData$get_mark_price_klines`
+## Method `BinanceFuturesData$get_mark_price_klines()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{

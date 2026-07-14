@@ -1,11 +1,5 @@
 # BinanceMargin: Margin Trading Operations
 
-BinanceMargin: Margin Trading Operations
-
-BinanceMargin: Margin Trading Operations
-
-## Details
-
 Provides methods for margin borrowing, repaying, order management, and
 account queries on Binance. Inherits from
 [BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
@@ -82,7 +76,7 @@ Trading](https://developers.binance.com/docs/margin_trading/Introduction)
 
 [`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
 -\>
-[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
+[`BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceMargin`
 
 ## Methods
@@ -125,11 +119,11 @@ Trading](https://developers.binance.com/docs/margin_trading/Introduction)
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 
-### Method `add_borrow()`
+### `BinanceMargin$add_borrow()`
 
 Borrow on Margin
 
@@ -209,15 +203,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMargin$new()
     result <- margin$add_borrow(asset = "USDT", amount = 100)
     print(result)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `add_repay()`
+### `BinanceMargin$add_repay()`
 
 Repay Margin Loan
 
@@ -297,15 +289,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMargin$new()
     result <- margin$add_repay(asset = "USDT", amount = 100)
     print(result)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `add_order()`
+### `BinanceMargin$add_order()`
 
 Place a Margin Order
 
@@ -460,18 +450,16 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMargin$new()
     order <- margin$add_order(
       symbol = "BTCUSDT", side = "BUY", type = "LIMIT",
       price = 50000, quantity = 0.0001, time_in_force = "GTC"
     )
     print(order)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `cancel_order()`
+### `BinanceMargin$cancel_order()`
 
 Cancel a Margin Order
 
@@ -569,15 +557,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMargin$new()
     cancelled <- margin$cancel_order("BTCUSDT", order_id = 28)
     print(cancelled)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `cancel_all_orders()`
+### `BinanceMargin$cancel_all_orders()`
 
 Cancel All Open Margin Orders on a Symbol
 
@@ -664,15 +650,13 @@ rows" convention — the absence of an error is the success signal):
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMargin$new()
     cancelled <- margin$cancel_all_orders("BTCUSDT")
     print(cancelled)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_order()`
+### `BinanceMargin$get_order()`
 
 Query a Margin Order
 
@@ -778,15 +762,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMargin$new()
     order <- margin$get_order("BTCUSDT", order_id = 28)
     print(order)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_open_orders()`
+### `BinanceMargin$get_open_orders()`
 
 Get Open Margin Orders
 
@@ -885,15 +867,13 @@ there are none):
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMargin$new()
     open <- margin$get_open_orders("BTCUSDT")
     print(open)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_all_orders()`
+### `BinanceMargin$get_all_orders()`
 
 Get All Margin Orders
 
@@ -1029,15 +1009,13 @@ there are no matching orders):
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMargin$new()
     all <- margin$get_all_orders("BTCUSDT", limit = 50)
     print(all)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_account()`
+### `BinanceMargin$get_account()`
 
 Get Margin Account Information
 
@@ -1127,15 +1105,13 @@ on each row.
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMargin$new()
     account <- margin$get_account()
     print(account)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_max_borrowable()`
+### `BinanceMargin$get_max_borrowable()`
 
 Get Max Borrowable Amount
 
@@ -1196,15 +1172,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMargin$new()
     max_borrow <- margin$get_max_borrowable(asset = "USDT")
     print(max_borrow)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_max_transferable()`
+### `BinanceMargin$get_max_transferable()`
 
 Get Max Transferable Amount
 
@@ -1265,15 +1239,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMargin$new()
     max_transfer <- margin$get_max_transferable(asset = "USDT")
     print(max_transfer)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_interest_history()`
+### `BinanceMargin$get_interest_history()`
 
 Get Margin Interest History
 
@@ -1384,15 +1356,13 @@ when there are none):
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMargin$new()
     history <- margin$get_interest_history(asset = "USDT")
     print(history)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_force_liquidation_history()`
+### `BinanceMargin$get_force_liquidation_history()`
 
 Get Force Liquidation History
 
@@ -1499,15 +1469,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMargin$new()
     liquidations <- margin$get_force_liquidation_history()
     print(liquidations)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_trades()`
+### `BinanceMargin$get_trades()`
 
 Get Margin Trades
 
@@ -1624,15 +1592,13 @@ there are none):
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMargin$new()
     trades <- margin$get_trades("BTCUSDT")
     print(trades)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_isolated_account()`
+### `BinanceMargin$get_isolated_account()`
 
 Get Isolated Margin Account Info
 
@@ -1746,15 +1712,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMargin$new()
     isolated <- margin$get_isolated_account()
     print(isolated)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `add_isolated_transfer()`
+### `BinanceMargin$add_isolated_transfer()`
 
 Isolated Margin Transfer
 
@@ -1843,7 +1807,6 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     margin <- BinanceMargin$new()
     result <- margin$add_isolated_transfer(
       asset = "USDT", symbol = "BTCUSDT",
@@ -1851,11 +1814,10 @@ Verified: 2026-05-22
       amount = 100
     )
     print(result)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `BinanceMargin$clone()`
 
 The objects of this class are cloneable with this method.
 
@@ -1890,7 +1852,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceMargin$add_borrow`
+## Method `BinanceMargin$add_borrow()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1900,7 +1862,7 @@ print(result)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$add_repay`
+## Method `BinanceMargin$add_repay()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1910,7 +1872,7 @@ print(result)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$add_order`
+## Method `BinanceMargin$add_order()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1923,7 +1885,7 @@ print(order)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$cancel_order`
+## Method `BinanceMargin$cancel_order()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1933,7 +1895,7 @@ print(cancelled)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$cancel_all_orders`
+## Method `BinanceMargin$cancel_all_orders()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1943,7 +1905,7 @@ print(cancelled)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_order`
+## Method `BinanceMargin$get_order()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1953,7 +1915,7 @@ print(order)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_open_orders`
+## Method `BinanceMargin$get_open_orders()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1963,7 +1925,7 @@ print(open)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_all_orders`
+## Method `BinanceMargin$get_all_orders()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1973,7 +1935,7 @@ print(all)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_account`
+## Method `BinanceMargin$get_account()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1983,7 +1945,7 @@ print(account)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_max_borrowable`
+## Method `BinanceMargin$get_max_borrowable()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1993,7 +1955,7 @@ print(max_borrow)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_max_transferable`
+## Method `BinanceMargin$get_max_transferable()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2003,7 +1965,7 @@ print(max_transfer)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_interest_history`
+## Method `BinanceMargin$get_interest_history()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2013,7 +1975,7 @@ print(history)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_force_liquidation_history`
+## Method `BinanceMargin$get_force_liquidation_history()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2023,7 +1985,7 @@ print(liquidations)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_trades`
+## Method `BinanceMargin$get_trades()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2033,7 +1995,7 @@ print(trades)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$get_isolated_account`
+## Method `BinanceMargin$get_isolated_account()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -2043,7 +2005,7 @@ print(isolated)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceMargin$add_isolated_transfer`
+## Method `BinanceMargin$add_isolated_transfer()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{

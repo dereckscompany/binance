@@ -1,11 +1,5 @@
 # BinanceAccount: Account and Funding Management
 
-BinanceAccount: Account and Funding Management
-
-BinanceAccount: Account and Funding Management
-
-## Details
-
 Provides methods for querying account information, balances, and trade
 history on Binance. Inherits from
 [BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
@@ -41,7 +35,7 @@ Endpoints](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/ac
 
 [`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
 -\>
-[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
+[`BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceAccount`
 
 ## Methods
@@ -58,11 +52,11 @@ Endpoints](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/ac
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 
-### Method `get_account_info()`
+### `BinanceAccount$get_account_info()`
 
 Get Account Information
 
@@ -188,15 +182,13 @@ return is always one row per account.
 
 #### Examples
 
-    \dontrun{
     account <- BinanceAccount$new()
     info <- account$get_account_info()
     print(info[, .(maker_commission, taker_commission, can_trade, account_type)])
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_balances()`
+### `BinanceAccount$get_balances()`
 
 Get Account Balances
 
@@ -265,15 +257,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     account <- BinanceAccount$new()
     balances <- account$get_balances()
     print(balances[free != "0.00000000"])
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_trades()`
+### `BinanceAccount$get_trades()`
 
 Get Account Trade List
 
@@ -397,15 +387,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     account <- BinanceAccount$new()
     trades <- account$get_trades("BTCUSDT", limit = 50)
     print(trades[, .(id, price, qty, commission, time)])
-    }
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `BinanceAccount$clone()`
 
 The objects of this class are cloneable with this method.
 
@@ -442,7 +430,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceAccount$get_account_info`
+## Method `BinanceAccount$get_account_info()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -452,7 +440,7 @@ print(info[, .(maker_commission, taker_commission, can_trade, account_type)])
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceAccount$get_balances`
+## Method `BinanceAccount$get_balances()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -462,7 +450,7 @@ print(balances[free != "0.00000000"])
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceAccount$get_trades`
+## Method `BinanceAccount$get_trades()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{

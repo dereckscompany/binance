@@ -1,11 +1,5 @@
 # BinanceTrading: Spot Order Management
 
-BinanceTrading: Spot Order Management
-
-BinanceTrading: Spot Order Management
-
-## Details
-
 Provides methods for placing, cancelling, and querying spot orders on
 Binance. Inherits from
 [BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
@@ -75,7 +69,7 @@ Trading](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trad
 
 [`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
 -\>
-[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
+[`BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceTrading`
 
 ## Methods
@@ -100,11 +94,11 @@ Trading](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trad
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 
-### Method `add_order()`
+### `BinanceTrading$add_order()`
 
 Place an Order
 
@@ -291,18 +285,16 @@ as `NA` so the schema is stable across response types.
 
 #### Examples
 
-    \dontrun{
     trading <- BinanceTrading$new()
     order <- trading$add_order(
       type = "LIMIT", symbol = "BTCUSDT", side = "BUY",
       price = 50000, quantity = 0.0001
     )
     print(order)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `add_order_test()`
+### `BinanceTrading$add_order_test()`
 
 Test Order Placement
 
@@ -438,18 +430,16 @@ stub rows" convention).
 
 #### Examples
 
-    \dontrun{
     trading <- BinanceTrading$new()
     test <- trading$add_order_test(
       type = "LIMIT", symbol = "BTCUSDT", side = "BUY",
       price = 50000, quantity = 0.0001
     )
     stopifnot(test$validated)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `cancel_order()`
+### `BinanceTrading$cancel_order()`
 
 Cancel an Order
 
@@ -554,15 +544,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     trading <- BinanceTrading$new()
     cancelled <- trading$cancel_order("BTCUSDT", order_id = 12345)
     print(cancelled)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `cancel_all_orders()`
+### `BinanceTrading$cancel_all_orders()`
 
 Cancel All Open Orders on a Symbol
 
@@ -674,15 +662,13 @@ rows" convention — the absence of an error is the success signal):
 
 #### Examples
 
-    \dontrun{
     trading <- BinanceTrading$new()
     cancelled <- trading$cancel_all_orders("BTCUSDT")
     print(cancelled)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_order()`
+### `BinanceTrading$get_order()`
 
 Query Order
 
@@ -761,15 +747,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     trading <- BinanceTrading$new()
     order <- trading$get_order("BTCUSDT", order_id = 12345)
     print(order)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_open_orders()`
+### `BinanceTrading$get_open_orders()`
 
 Get Open Orders
 
@@ -877,15 +861,13 @@ there are none):
 
 #### Examples
 
-    \dontrun{
     trading <- BinanceTrading$new()
     open <- trading$get_open_orders("BTCUSDT")
     print(open)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_all_orders()`
+### `BinanceTrading$get_all_orders()`
 
 Get All Orders
 
@@ -1039,15 +1021,13 @@ there are no matching orders):
 
 #### Examples
 
-    \dontrun{
     trading <- BinanceTrading$new()
     all <- trading$get_all_orders("BTCUSDT", limit = 50)
     print(all[, .(order_id, side, price, status, time)])
-    }
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `BinanceTrading$clone()`
 
 The objects of this class are cloneable with this method.
 
@@ -1086,7 +1066,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceTrading$add_order`
+## Method `BinanceTrading$add_order()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1099,7 +1079,7 @@ print(order)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceTrading$add_order_test`
+## Method `BinanceTrading$add_order_test()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1112,7 +1092,7 @@ stopifnot(test$validated)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceTrading$cancel_order`
+## Method `BinanceTrading$cancel_order()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1122,7 +1102,7 @@ print(cancelled)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceTrading$cancel_all_orders`
+## Method `BinanceTrading$cancel_all_orders()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1132,7 +1112,7 @@ print(cancelled)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceTrading$get_order`
+## Method `BinanceTrading$get_order()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1142,7 +1122,7 @@ print(order)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceTrading$get_open_orders`
+## Method `BinanceTrading$get_open_orders()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1152,7 +1132,7 @@ print(open)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceTrading$get_all_orders`
+## Method `BinanceTrading$get_all_orders()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{

@@ -1,11 +1,5 @@
 # BinanceDeposit: Deposit Management
 
-BinanceDeposit: Deposit Management
-
-BinanceDeposit: Deposit Management
-
-## Details
-
 Provides methods for retrieving deposit addresses and deposit history on
 Binance. Inherits from
 [BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
@@ -52,7 +46,7 @@ Endpoints](https://developers.binance.com/docs/wallet/capital)
 
 [`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
 -\>
-[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
+[`BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceDeposit`
 
 ## Methods
@@ -67,11 +61,11 @@ Endpoints](https://developers.binance.com/docs/wallet/capital)
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 
-### Method `get_deposit_address()`
+### `BinanceDeposit$get_deposit_address()`
 
 Get Deposit Address
 
@@ -146,7 +140,6 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     deposit <- BinanceDeposit$new()
 
     # Get BTC deposit address (default network)
@@ -156,11 +149,10 @@ Verified: 2026-05-22
     # Get USDT deposit address on TRC20
     usdt <- deposit$get_deposit_address(coin = "USDT", network = "TRX")
     print(usdt[, .(address, coin, tag)])
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_deposit_history()`
+### `BinanceDeposit$get_deposit_history()`
 
 Get Deposit History
 
@@ -298,7 +290,6 @@ there are no matching deposits):
 
 #### Examples
 
-    \dontrun{
     deposit <- BinanceDeposit$new()
 
     # Get all successful BTC deposits
@@ -311,11 +302,10 @@ there are no matching deposits):
       start_time = now_ms - 86400000L,
       end_time = now_ms
     )
-    }
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `BinanceDeposit$clone()`
 
 The objects of this class are cloneable with this method.
 
@@ -350,7 +340,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceDeposit$get_deposit_address`
+## Method `BinanceDeposit$get_deposit_address()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -366,7 +356,7 @@ print(usdt[, .(address, coin, tag)])
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceDeposit$get_deposit_history`
+## Method `BinanceDeposit$get_deposit_history()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{

@@ -1,11 +1,5 @@
 # BinanceTransfer: Universal Transfer Management
 
-BinanceTransfer: Universal Transfer Management
-
-BinanceTransfer: Universal Transfer Management
-
-## Details
-
 Provides methods for initiating and querying universal transfers between
 wallet types on Binance. Inherits from
 [BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
@@ -77,7 +71,7 @@ Transfer](https://developers.binance.com/docs/wallet/asset/user-universal-transf
 
 [`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
 -\>
-[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
+[`BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceTransfer`
 
 ## Methods
@@ -92,11 +86,11 @@ Transfer](https://developers.binance.com/docs/wallet/asset/user-universal-transf
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 
-### Method `add_transfer()`
+### `BinanceTransfer$add_transfer()`
 
 Initiate a Universal Transfer
 
@@ -187,17 +181,15 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     transfer <- BinanceTransfer$new()
     result <- transfer$add_transfer(
       type = "MAIN_UMFUTURE", asset = "USDT", amount = 100
     )
     print(result)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_transfer_history()`
+### `BinanceTransfer$get_transfer_history()`
 
 Query Universal Transfer History
 
@@ -304,15 +296,13 @@ there are no matching transfers):
 
 #### Examples
 
-    \dontrun{
     transfer <- BinanceTransfer$new()
     history <- transfer$get_transfer_history(type = "MAIN_UMFUTURE")
     print(history)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `BinanceTransfer$clone()`
 
 The objects of this class are cloneable with this method.
 
@@ -351,7 +341,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceTransfer$add_transfer`
+## Method `BinanceTransfer$add_transfer()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -363,7 +353,7 @@ print(result)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceTransfer$get_transfer_history`
+## Method `BinanceTransfer$get_transfer_history()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{

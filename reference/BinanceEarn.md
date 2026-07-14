@@ -1,11 +1,5 @@
 # BinanceEarn: Simple Earn Management
 
-BinanceEarn: Simple Earn Management
-
-BinanceEarn: Simple Earn Management
-
-## Details
-
 Provides methods for subscribing, redeeming, and querying Simple Earn
 flexible and locked products on Binance. Inherits from
 [BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
@@ -55,7 +49,7 @@ Earn](https://developers.binance.com/docs/simple_earn/Introduction)
 
 [`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
 -\>
-[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
+[`BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceEarn`
 
 ## Methods
@@ -90,11 +84,11 @@ Earn](https://developers.binance.com/docs/simple_earn/Introduction)
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 
-### Method `get_flexible_products()`
+### `BinanceEarn$get_flexible_products()`
 
 Get Flexible Products
 
@@ -200,15 +194,13 @@ there are none):
 
 #### Examples
 
-    \dontrun{
     earn <- BinanceEarn$new()
     products <- earn$get_flexible_products(asset = "USDT")
     print(products)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_locked_products()`
+### `BinanceEarn$get_locked_products()`
 
 Get Locked Products
 
@@ -338,15 +330,13 @@ Field names mirror the current Binance API (verified 2026-05-22):
 
 #### Examples
 
-    \dontrun{
     earn <- BinanceEarn$new()
     products <- earn$get_locked_products(asset = "BTC")
     print(products)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `add_flexible_subscription()`
+### `BinanceEarn$add_flexible_subscription()`
 
 Subscribe to Flexible Product
 
@@ -427,15 +417,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     earn <- BinanceEarn$new()
     result <- earn$add_flexible_subscription(product_id = "USDT001", amount = 100)
     print(result)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `add_locked_subscription()`
+### `BinanceEarn$add_locked_subscription()`
 
 Subscribe to Locked Product
 
@@ -513,15 +501,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     earn <- BinanceEarn$new()
     result <- earn$add_locked_subscription(project_id = "BTC30d001", amount = 0.01)
     print(result)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `add_flexible_redemption()`
+### `BinanceEarn$add_flexible_redemption()`
 
 Redeem Flexible Product
 
@@ -602,15 +588,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     earn <- BinanceEarn$new()
     result <- earn$add_flexible_redemption(product_id = "USDT001", amount = 50)
     print(result)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `add_locked_redemption()`
+### `BinanceEarn$add_locked_redemption()`
 
 Redeem Locked Product
 
@@ -669,15 +653,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     earn <- BinanceEarn$new()
     result <- earn$add_locked_redemption(position_id = "12345")
     print(result)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_flexible_position()`
+### `BinanceEarn$get_flexible_position()`
 
 Get Flexible Position
 
@@ -803,15 +785,13 @@ there are none):
 
 #### Examples
 
-    \dontrun{
     earn <- BinanceEarn$new()
     positions <- earn$get_flexible_position(asset = "USDT")
     print(positions)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_locked_position()`
+### `BinanceEarn$get_locked_position()`
 
 Get Locked Position
 
@@ -936,15 +916,13 @@ is typed only as a `data.table` (no fixed-column contract).
 
 #### Examples
 
-    \dontrun{
     earn <- BinanceEarn$new()
     positions <- earn$get_locked_position(asset = "BTC")
     print(positions)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_flexible_subscription_history()`
+### `BinanceEarn$get_flexible_subscription_history()`
 
 Get Flexible Subscription History
 
@@ -1050,15 +1028,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     earn <- BinanceEarn$new()
     history <- earn$get_flexible_subscription_history(asset = "USDT")
     print(history)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_locked_subscription_history()`
+### `BinanceEarn$get_locked_subscription_history()`
 
 Get Locked Subscription History
 
@@ -1165,15 +1141,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     earn <- BinanceEarn$new()
     history <- earn$get_locked_subscription_history(asset = "BTC")
     print(history)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_flexible_redemption_history()`
+### `BinanceEarn$get_flexible_redemption_history()`
 
 Get Flexible Redemption History
 
@@ -1279,15 +1253,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     earn <- BinanceEarn$new()
     history <- earn$get_flexible_redemption_history(asset = "USDT")
     print(history)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_locked_redemption_history()`
+### `BinanceEarn$get_locked_redemption_history()`
 
 Get Locked Redemption History
 
@@ -1393,15 +1365,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     earn <- BinanceEarn$new()
     history <- earn$get_locked_redemption_history(asset = "BTC")
     print(history)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `BinanceEarn$clone()`
 
 The objects of this class are cloneable with this method.
 
@@ -1440,7 +1410,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceEarn$get_flexible_products`
+## Method `BinanceEarn$get_flexible_products()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1450,7 +1420,7 @@ print(products)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$get_locked_products`
+## Method `BinanceEarn$get_locked_products()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1460,7 +1430,7 @@ print(products)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$add_flexible_subscription`
+## Method `BinanceEarn$add_flexible_subscription()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1470,7 +1440,7 @@ print(result)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$add_locked_subscription`
+## Method `BinanceEarn$add_locked_subscription()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1480,7 +1450,7 @@ print(result)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$add_flexible_redemption`
+## Method `BinanceEarn$add_flexible_redemption()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1490,7 +1460,7 @@ print(result)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$add_locked_redemption`
+## Method `BinanceEarn$add_locked_redemption()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1500,7 +1470,7 @@ print(result)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$get_flexible_position`
+## Method `BinanceEarn$get_flexible_position()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1510,7 +1480,7 @@ print(positions)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$get_locked_position`
+## Method `BinanceEarn$get_locked_position()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1520,7 +1490,7 @@ print(positions)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$get_flexible_subscription_history`
+## Method `BinanceEarn$get_flexible_subscription_history()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1530,7 +1500,7 @@ print(history)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$get_locked_subscription_history`
+## Method `BinanceEarn$get_locked_subscription_history()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1540,7 +1510,7 @@ print(history)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$get_flexible_redemption_history`
+## Method `BinanceEarn$get_flexible_redemption_history()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1550,7 +1520,7 @@ print(history)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceEarn$get_locked_redemption_history`
+## Method `BinanceEarn$get_locked_redemption_history()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{

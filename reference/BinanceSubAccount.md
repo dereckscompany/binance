@@ -1,11 +1,5 @@
 # BinanceSubAccount: Sub-Account Management
 
-BinanceSubAccount: Sub-Account Management
-
-BinanceSubAccount: Sub-Account Management
-
-## Details
-
 Provides methods for creating and managing Binance sub-accounts,
 querying balances, performing universal transfers, and retrieving
 futures/margin account details. Inherits from
@@ -68,7 +62,7 @@ Endpoints](https://developers.binance.com/docs/sub_account/Introduction)
 
 [`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
 -\>
-[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
+[`BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceSubAccount`
 
 ## Methods
@@ -97,11 +91,11 @@ Endpoints](https://developers.binance.com/docs/sub_account/Introduction)
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 
-### Method `add_sub_account()`
+### `BinanceSubAccount$add_sub_account()`
 
 Create a Virtual Sub-Account
 
@@ -151,15 +145,13 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     sub <- BinanceSubAccount$new()
     result <- sub$add_sub_account(sub_account_string = "mysubaccount")
     print(result$email)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_sub_accounts()`
+### `BinanceSubAccount$get_sub_accounts()`
 
 List Sub-Accounts
 
@@ -246,15 +238,13 @@ when there are none):
 
 #### Examples
 
-    \dontrun{
     sub <- BinanceSubAccount$new()
     accounts <- sub$get_sub_accounts()
     print(accounts[, .(email, is_freeze, create_time)])
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_balances()`
+### `BinanceSubAccount$get_balances()`
 
 Get Sub-Account Balances
 
@@ -311,15 +301,13 @@ there are none):
 
 #### Examples
 
-    \dontrun{
     sub <- BinanceSubAccount$new()
     balances <- sub$get_balances(email = "sub@virtual.com")
     print(balances)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_spot_summary()`
+### `BinanceSubAccount$get_spot_summary()`
 
 Get Sub-Account Spot Summary
 
@@ -401,15 +389,13 @@ each row:
 
 #### Examples
 
-    \dontrun{
     sub <- BinanceSubAccount$new()
     summary <- sub$get_spot_summary()
     print(summary)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `add_transfer()`
+### `BinanceSubAccount$add_transfer()`
 
 Universal Transfer
 
@@ -511,7 +497,6 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     sub <- BinanceSubAccount$new()
     result <- sub$add_transfer(
       to_email = "sub@virtual.com",
@@ -519,11 +504,10 @@ Verified: 2026-05-22
       asset = "USDT", amount = 100
     )
     print(result$tran_id)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_transfer_history()`
+### `BinanceSubAccount$get_transfer_history()`
 
 Get Universal Transfer History
 
@@ -639,15 +623,13 @@ there are none):
 
 #### Examples
 
-    \dontrun{
     sub <- BinanceSubAccount$new()
     history <- sub$get_transfer_history(to_email = "sub@virtual.com")
     print(history)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_futures_account()`
+### `BinanceSubAccount$get_futures_account()`
 
 Get Sub-Account Futures Account
 
@@ -736,15 +718,13 @@ single row without asset-level columns is returned.
 
 #### Examples
 
-    \dontrun{
     sub <- BinanceSubAccount$new()
     futures <- sub$get_futures_account(email = "sub@virtual.com", futures_type = 1)
     print(futures)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_margin_account()`
+### `BinanceSubAccount$get_margin_account()`
 
 Get Sub-Account Margin Account
 
@@ -805,15 +785,13 @@ column set follows the payload, so the return is typed only as a
 
 #### Examples
 
-    \dontrun{
     sub <- BinanceSubAccount$new()
     margin <- sub$get_margin_account(email = "sub@virtual.com")
     print(margin)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_status()`
+### `BinanceSubAccount$get_status()`
 
 Get Sub-Account Status
 
@@ -884,15 +862,13 @@ when there are none):
 
 #### Examples
 
-    \dontrun{
     sub <- BinanceSubAccount$new()
     status <- sub$get_status()
     print(status)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `BinanceSubAccount$clone()`
 
 The objects of this class are cloneable with this method.
 
@@ -927,7 +903,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$add_sub_account`
+## Method `BinanceSubAccount$add_sub_account()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -937,7 +913,7 @@ print(result$email)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$get_sub_accounts`
+## Method `BinanceSubAccount$get_sub_accounts()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -947,7 +923,7 @@ print(accounts[, .(email, is_freeze, create_time)])
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$get_balances`
+## Method `BinanceSubAccount$get_balances()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -957,7 +933,7 @@ print(balances)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$get_spot_summary`
+## Method `BinanceSubAccount$get_spot_summary()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -967,7 +943,7 @@ print(summary)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$add_transfer`
+## Method `BinanceSubAccount$add_transfer()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -981,7 +957,7 @@ print(result$tran_id)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$get_transfer_history`
+## Method `BinanceSubAccount$get_transfer_history()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -991,7 +967,7 @@ print(history)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$get_futures_account`
+## Method `BinanceSubAccount$get_futures_account()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1001,7 +977,7 @@ print(futures)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$get_margin_account`
+## Method `BinanceSubAccount$get_margin_account()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -1011,7 +987,7 @@ print(margin)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceSubAccount$get_status`
+## Method `BinanceSubAccount$get_status()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{

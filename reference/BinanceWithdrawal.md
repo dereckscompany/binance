@@ -1,11 +1,5 @@
 # BinanceWithdrawal: Withdrawal Management
 
-BinanceWithdrawal: Withdrawal Management
-
-BinanceWithdrawal: Withdrawal Management
-
-## Details
-
 Provides methods for submitting withdrawals and querying withdrawal
 history on Binance. Inherits from
 [BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
@@ -56,7 +50,7 @@ Endpoints](https://developers.binance.com/docs/wallet/capital)
 
 [`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
 -\>
-[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
+[`BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceWithdrawal`
 
 ## Methods
@@ -71,11 +65,11 @@ Endpoints](https://developers.binance.com/docs/wallet/capital)
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 
-### Method `add_withdrawal()`
+### `BinanceWithdrawal$add_withdrawal()`
 
 Submit Withdrawal
 
@@ -193,7 +187,6 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     withdrawal <- BinanceWithdrawal$new()
 
     # Withdraw USDT via TRC20
@@ -204,11 +197,10 @@ Verified: 2026-05-22
       network = "TRX"
     )
     print(result$id)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_withdrawal_history()`
+### `BinanceWithdrawal$get_withdrawal_history()`
 
 Get Withdrawal History
 
@@ -355,7 +347,6 @@ there are no matching withdrawals):
 
 #### Examples
 
-    \dontrun{
     withdrawal <- BinanceWithdrawal$new()
 
     # Get all completed USDT withdrawals
@@ -368,11 +359,10 @@ there are no matching withdrawals):
       start_time = now_ms - 7 * 86400000L,
       end_time = now_ms
     )
-    }
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `BinanceWithdrawal$clone()`
 
 The objects of this class are cloneable with this method.
 
@@ -407,7 +397,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceWithdrawal$add_withdrawal`
+## Method `BinanceWithdrawal$add_withdrawal()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -424,7 +414,7 @@ print(result$id)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceWithdrawal$get_withdrawal_history`
+## Method `BinanceWithdrawal$get_withdrawal_history()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{

@@ -1,11 +1,5 @@
 # BinanceOcoOrders: OCO Order Management
 
-BinanceOcoOrders: OCO Order Management
-
-BinanceOcoOrders: OCO Order Management
-
-## Details
-
 Provides methods for placing, cancelling, and querying OCO
 (One-Cancels-Other) orders on Binance. Inherits from
 [BinanceBase](https://dereckscompany.github.io/binance/reference/BinanceBase.md).
@@ -43,7 +37,7 @@ Trading](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trad
 
 [`connectcore::RestClient`](https://rdrr.io/pkg/connectcore/man/RestClient.html)
 -\>
-[`binance::BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
+[`BinanceBase`](https://dereckscompany.github.io/binance/reference/BinanceBase.md)
 -\> `BinanceOcoOrders`
 
 ## Methods
@@ -64,11 +58,11 @@ Trading](https://developers.binance.com/docs/binance-spot-api-docs/rest-api/trad
 
 Inherited methods
 
-- [`binance::BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
+- [`BinanceBase$initialize()`](https://dereckscompany.github.io/binance/reference/BinanceBase.html#method-initialize)
 
 ------------------------------------------------------------------------
 
-### Method `add_oco_order()`
+### `BinanceOcoOrders$add_oco_order()`
 
 Place an OCO Order
 
@@ -259,7 +253,6 @@ Verified: 2026-05-22
 
 #### Examples
 
-    \dontrun{
     oco <- BinanceOcoOrders$new()
     result <- oco$add_oco_order(
       symbol = "BTCUSDT", side = "SELL",
@@ -267,11 +260,10 @@ Verified: 2026-05-22
       stop_limit_price = 48500, stop_limit_time_in_force = "GTC"
     )
     print(result)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `cancel_oco_order()`
+### `BinanceOcoOrders$cancel_oco_order()`
 
 Cancel an OCO Order
 
@@ -436,15 +428,13 @@ prices, quantities, and stop price for each child order:
 
 #### Examples
 
-    \dontrun{
     oco <- BinanceOcoOrders$new()
     cancelled <- oco$cancel_oco_order("BTCUSDT", order_list_id = 0)
     print(cancelled)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_oco_order()`
+### `BinanceOcoOrders$get_oco_order()`
 
 Query an OCO Order
 
@@ -540,15 +530,13 @@ format):
 
 #### Examples
 
-    \dontrun{
     oco <- BinanceOcoOrders$new()
     order <- oco$get_oco_order(order_list_id = 0)
     print(order)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_open_oco_orders()`
+### `BinanceOcoOrders$get_open_oco_orders()`
 
 Get Open OCO Orders
 
@@ -633,15 +621,13 @@ open OCOs (long format; empty when there are no open OCOs):
 
 #### Examples
 
-    \dontrun{
     oco <- BinanceOcoOrders$new()
     open <- oco$get_open_oco_orders()
     print(open)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `get_all_oco_orders()`
+### `BinanceOcoOrders$get_all_oco_orders()`
 
 Get All OCO Orders
 
@@ -771,15 +757,13 @@ OCOs (long format; empty when there are no matching OCOs):
 
 #### Examples
 
-    \dontrun{
     oco <- BinanceOcoOrders$new()
     all <- oco$get_all_oco_orders(limit = 50)
     print(all)
-    }
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `BinanceOcoOrders$clone()`
 
 The objects of this class are cloneable with this method.
 
@@ -818,7 +802,7 @@ while (!later::loop_empty()) later::run_now()
 
 
 ## ------------------------------------------------
-## Method `BinanceOcoOrders$add_oco_order`
+## Method `BinanceOcoOrders$add_oco_order()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -832,7 +816,7 @@ print(result)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceOcoOrders$cancel_oco_order`
+## Method `BinanceOcoOrders$cancel_oco_order()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -842,7 +826,7 @@ print(cancelled)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceOcoOrders$get_oco_order`
+## Method `BinanceOcoOrders$get_oco_order()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -852,7 +836,7 @@ print(order)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceOcoOrders$get_open_oco_orders`
+## Method `BinanceOcoOrders$get_open_oco_orders()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
@@ -862,7 +846,7 @@ print(open)
 } # }
 
 ## ------------------------------------------------
-## Method `BinanceOcoOrders$get_all_oco_orders`
+## Method `BinanceOcoOrders$get_all_oco_orders()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{

@@ -1,11 +1,5 @@
 # BinanceBase: Abstract Base Class for Binance API Clients
 
-BinanceBase: Abstract Base Class for Binance API Clients
-
-BinanceBase: Abstract Base Class for Binance API Clients
-
-## Details
-
 Provides shared infrastructure for all Binance R6 classes, including API
 credential management, sync/async execution mode, timestamp source
 configuration, and a standardised method for calling implementation
@@ -72,13 +66,13 @@ inherit from it and define their own public methods that delegate to
 
 ### Public methods
 
-- [`BinanceBase$new()`](#method-BinanceBase-new)
+- [`BinanceBase$new()`](#method-BinanceBase-initialize)
 
 - [`BinanceBase$clone()`](#method-BinanceBase-clone)
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `BinanceBase$new()`
 
 Initialise a BinanceBase Object
 
@@ -123,7 +117,7 @@ Initialise a BinanceBase Object
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `BinanceBase$clone()`
 
 The objects of this class are cloneable with this method.
 

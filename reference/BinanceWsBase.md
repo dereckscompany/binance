@@ -1,11 +1,5 @@
 # BinanceWsBase: Abstract Base Class for Binance WebSocket Streams
 
-BinanceWsBase: Abstract Base Class for Binance WebSocket Streams
-
-BinanceWsBase: Abstract Base Class for Binance WebSocket Streams
-
-## Details
-
 Node.js-style event-driven base for Binance's public market-data
 WebSocket streams. You register handlers with `$on(event, handler)` —
 exactly like `ws.on("message", ...)` in JavaScript — and the library
@@ -80,7 +74,7 @@ event loop) packages.
 
 ### Public methods
 
-- [`BinanceWsBase$new()`](#method-BinanceWsBase-new)
+- [`BinanceWsBase$new()`](#method-BinanceWsBase-initialize)
 
 - [`BinanceWsBase$on()`](#method-BinanceWsBase-on)
 
@@ -97,12 +91,13 @@ Inherited methods
 - [`connectcore::StreamClient$close()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-close)
 - [`connectcore::StreamClient$connect()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-connect)
 - [`connectcore::StreamClient$is_open()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-is_open)
+- [`connectcore::StreamClient$on_event()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-on_event)
 - [`connectcore::StreamClient$run()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-run)
 - [`connectcore::StreamClient$send()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-send)
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `BinanceWsBase$new()`
 
 Initialise a BinanceWsBase Object
 
@@ -147,7 +142,7 @@ Initialise a BinanceWsBase Object
 
 ------------------------------------------------------------------------
 
-### Method `on()`
+### `BinanceWsBase$on()`
 
 Register an Event Handler (Node-style `ws.on`)
 
@@ -173,7 +168,7 @@ Register an Event Handler (Node-style `ws.on`)
 
 ------------------------------------------------------------------------
 
-### Method `subscribe()`
+### `BinanceWsBase$subscribe()`
 
 Subscribe to Streams
 
@@ -197,7 +192,7 @@ open.
 
 ------------------------------------------------------------------------
 
-### Method `unsubscribe()`
+### `BinanceWsBase$unsubscribe()`
 
 Unsubscribe from Streams
 
@@ -217,7 +212,7 @@ Unsubscribe from Streams
 
 ------------------------------------------------------------------------
 
-### Method `subscriptions()`
+### `BinanceWsBase$subscriptions()`
 
 Currently Tracked Subscriptions
 
@@ -231,7 +226,7 @@ Currently Tracked Subscriptions
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `BinanceWsBase$clone()`
 
 The objects of this class are cloneable with this method.
 

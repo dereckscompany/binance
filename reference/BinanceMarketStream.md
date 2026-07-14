@@ -1,11 +1,5 @@
 # BinanceMarketStream: Spot Market-Data WebSocket Streams
 
-BinanceMarketStream: Spot Market-Data WebSocket Streams
-
-BinanceMarketStream: Spot Market-Data WebSocket Streams
-
-## Details
-
 Typed, event-driven client for Binance's **public** spot market-data
 streams. Inherits the Node.js-style event API and connection management
 from
@@ -35,14 +29,14 @@ future helper), this class faithfully captures the stream.
 
 [`connectcore::StreamClient`](https://rdrr.io/pkg/connectcore/man/StreamClient.html)
 -\>
-[`binance::BinanceWsBase`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.md)
+[`BinanceWsBase`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.md)
 -\> `BinanceMarketStream`
 
 ## Methods
 
 ### Public methods
 
-- [`BinanceMarketStream$new()`](#method-BinanceMarketStream-new)
+- [`BinanceMarketStream$new()`](#method-BinanceMarketStream-initialize)
 
 - [`BinanceMarketStream$depth()`](#method-BinanceMarketStream-depth)
 
@@ -53,16 +47,17 @@ Inherited methods
 - [`connectcore::StreamClient$close()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-close)
 - [`connectcore::StreamClient$connect()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-connect)
 - [`connectcore::StreamClient$is_open()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-is_open)
+- [`connectcore::StreamClient$on_event()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-on_event)
 - [`connectcore::StreamClient$run()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-run)
 - [`connectcore::StreamClient$send()`](https://rdrr.io/pkg/connectcore/man/StreamClient.html#method-send)
-- [`binance::BinanceWsBase$on()`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.html#method-on)
-- [`binance::BinanceWsBase$subscribe()`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.html#method-subscribe)
-- [`binance::BinanceWsBase$subscriptions()`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.html#method-subscriptions)
-- [`binance::BinanceWsBase$unsubscribe()`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.html#method-unsubscribe)
+- [`BinanceWsBase$on()`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.html#method-on)
+- [`BinanceWsBase$subscribe()`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.html#method-subscribe)
+- [`BinanceWsBase$subscriptions()`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.html#method-subscriptions)
+- [`BinanceWsBase$unsubscribe()`](https://dereckscompany.github.io/binance/reference/BinanceWsBase.html#method-unsubscribe)
 
 ------------------------------------------------------------------------
 
-### Method `new()`
+### `BinanceMarketStream$new()`
 
 Initialise a BinanceMarketStream Object
 
@@ -102,7 +97,7 @@ Initialise a BinanceMarketStream Object
 
 ------------------------------------------------------------------------
 
-### Method `depth()`
+### `BinanceMarketStream$depth()`
 
 Subscribe to the Order-Book Diff-Depth Stream
 
@@ -157,15 +152,13 @@ stream](https://developers.binance.com/docs/binance-spot-api-docs/web-socket-str
 
 #### Examples
 
-    \dontrun{
     stream <- BinanceMarketStream$new()
     stream$depth("BTCUSDT", speed = "100ms", handler = function(msg) print(msg))
     stream$run()
-    }
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `BinanceMarketStream$clone()`
 
 The objects of this class are cloneable with this method.
 
@@ -194,7 +187,7 @@ stream$run() # blocks, pumping the event loop; interrupt to stop
 
 
 ## ------------------------------------------------
-## Method `BinanceMarketStream$depth`
+## Method `BinanceMarketStream$depth()`
 ## ------------------------------------------------
 
 if (FALSE) { # \dontrun{
