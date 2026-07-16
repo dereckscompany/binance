@@ -60,7 +60,12 @@
 </h1></div>
 <!-- badges: start -->
 
+<p><strong>In plain terms:</strong> Binance is one of the largest cryptocurrency exchanges, where people buy, sell and hold digital coins. This package is the R doorway to it: you can pull historical price data and stream live market updates such as the order book, place and manage buy and sell orders on both the spot and futures markets, and handle the account side – balances, deposits, withdrawals, transfers and sub-accounts – all from R scripts. Requests can run the ordinary way, where your code waits for each answer, or in the background so your program keeps working and collects the results later. For research it can bulk-download years of price history and resume where it left off if it is interrupted, handing everything back as tidy tables ready for analysis. Because it can move real funds and place real trades, it is built to be driven deliberately and tested with small amounts first.</p>
+<div class="section level2">
+<h2 id="technical-overview">Technical overview<a class="anchor" aria-label="anchor" href="#technical-overview"></a>
+</h2>
 <p>An R API wrapper for the <a href="https://www.binance.com/" class="external-link">Binance</a> cryptocurrency exchange. Provides <code>R6</code> classes for spot market data, trading, account management, deposits, withdrawals, and sub-accounts. Supports both synchronous and asynchronous (promise based) operation via <code>httr2</code>.</p>
+</div>
 <div class="section level2">
 <h2 id="disclaimer">Disclaimer<a class="anchor" aria-label="anchor" href="#disclaimer"></a>
 </h2>
@@ -269,7 +274,7 @@
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">market</span><span class="op">$</span><span class="fu">get_klines</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, interval <span class="op">=</span> <span class="st">"1h"</span>, limit <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co">#&gt;     open_time      open   high      low    close   volume          close_time</span></span>
+<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co">#&gt;      datetime      open   high      low    close   volume          close_time</span></span>
 <span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt;        &lt;POSc&gt;     &lt;num&gt;  &lt;num&gt;    &lt;num&gt;    &lt;num&gt;    &lt;num&gt;              &lt;POSc&gt;</span></span>
 <span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; 1: 2017-07-03 0.0163479 0.8000 0.015758 0.015771 148976.1 2017-07-09 23:59:59</span></span>
 <span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; 2: 2017-07-10 0.0157710 0.0158 0.015730 0.015788  95432.0 2017-07-16 23:59:59</span></span>
@@ -283,13 +288,13 @@
 <div class="section level3">
 <h3 id="fetch-all-klines-large-date-ranges">Fetch All Klines (Large Date Ranges)<a class="anchor" aria-label="anchor" href="#fetch-all-klines-large-date-ranges"></a>
 </h3>
-<p>When you need more than 1000 candles, pass <code>fetch_all = TRUE</code>. The method pages forward through the range — following the data and stopping at the first empty or short page — and returns the combined result. Because Binance returns candles from the first one on or after <code>startTime</code>, an empty leading stretch (e.g. dates before a symbol was listed) is skipped in a single request:</p>
+<p>When you need more than 1000 candles, pass <code>fetch_all = TRUE</code>. The method pages forward through the range — following the data and stopping at the first empty or short page — and returns the combined result. Because Binance returns candles from the first one on or after <code>start_time</code>, an empty leading stretch (e.g. dates before a symbol was listed) is skipped in a single request:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">all_klines</span> <span class="op">&lt;-</span> <span class="va">market</span><span class="op">$</span><span class="fu">get_klines</span><span class="op">(</span></span>
 <span>  symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>,</span>
 <span>  interval <span class="op">=</span> <span class="st">"1h"</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-01-01"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-06-01"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html" class="external-link">as_datetime</a></span><span class="op">(</span><span class="st">"2024-01-01"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html" class="external-link">as_datetime</a></span><span class="op">(</span><span class="st">"2024-06-01"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
 <span>  fetch_all <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  sleep <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span>
@@ -300,8 +305,8 @@
 <code class="sourceCode R"><span><span class="va">candles</span> <span class="op">&lt;-</span> <span class="fl">0L</span></span>
 <span><span class="va">market</span><span class="op">$</span><span class="fu">get_klines</span><span class="op">(</span></span>
 <span>  symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, interval <span class="op">=</span> <span class="st">"1h"</span>,</span>
-<span>  startTime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-01-01"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
-<span>  endTime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-02-01"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
+<span>  start_time <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html" class="external-link">as_datetime</a></span><span class="op">(</span><span class="st">"2024-01-01"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html" class="external-link">as_datetime</a></span><span class="op">(</span><span class="st">"2024-02-01"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
 <span>  fetch_all <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  on_page <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">page</span><span class="op">)</span> <span class="va">candles</span> <span class="op">&lt;&lt;-</span> <span class="va">candles</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">page</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -343,7 +348,7 @@
 <span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="co">#&gt;           &lt;char&gt;             &lt;char&gt;              &lt;POSc&gt;              &lt;POSc&gt;</span></span>
 <span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a><span class="co">#&gt; 1: 3456.78901234 232456789.12000000 2024-10-16 10:04:19 2024-10-17 10:04:19</span></span>
 <span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="co">#&gt;    first_id last_id count</span></span>
-<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a><span class="co">#&gt;       &lt;int&gt;   &lt;int&gt; &lt;int&gt;</span></span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a><span class="co">#&gt;       &lt;num&gt;   &lt;num&gt; &lt;int&gt;</span></span>
 <span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a><span class="co">#&gt; 1:     1000    2000  1001</span></span></code></pre></div>
 </div>
 </div>
@@ -372,9 +377,9 @@
 <h3 id="query-an-order">Query an Order<a class="anchor" aria-label="anchor" href="#query-an-order"></a>
 </h3>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">trading</span><span class="op">$</span><span class="fu">get_order</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, orderId <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">trading</span><span class="op">$</span><span class="fu">get_order</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span>, order_id <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb21"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="co">#&gt;     symbol order_id order_list_id        client_order_id          price</span></span>
-<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;    &lt;int&gt;         &lt;int&gt;                 &lt;char&gt;         &lt;char&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;    &lt;num&gt;         &lt;num&gt;                 &lt;char&gt;         &lt;char&gt;</span></span>
 <span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT       28            -1 6gCrw2kRUAF9CvJDGP16IP 50000.00000000</span></span>
 <span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="co">#&gt;      orig_qty executed_qty cummulative_quote_qty status time_in_force   type</span></span>
 <span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="co">#&gt;        &lt;char&gt;       &lt;char&gt;                &lt;char&gt; &lt;char&gt;        &lt;char&gt; &lt;char&gt;</span></span>
@@ -395,7 +400,7 @@
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trading</span><span class="op">$</span><span class="fu">get_open_orders</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb23"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="co">#&gt;     symbol order_id order_list_id        client_order_id          price</span></span>
-<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;    &lt;int&gt;         &lt;int&gt;                 &lt;char&gt;         &lt;char&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;    &lt;num&gt;         &lt;num&gt;                 &lt;char&gt;         &lt;char&gt;</span></span>
 <span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT       28            -1 6gCrw2kRUAF9CvJDGP16IP 50000.00000000</span></span>
 <span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a><span class="co">#&gt;      orig_qty executed_qty cummulative_quote_qty status time_in_force   type</span></span>
 <span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a><span class="co">#&gt;        &lt;char&gt;       &lt;char&gt;                &lt;char&gt; &lt;char&gt;        &lt;char&gt; &lt;char&gt;</span></span>
@@ -425,7 +430,7 @@
 <span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="co">#&gt;       &lt;lgcl&gt;       &lt;lgcl&gt;      &lt;lgcl&gt;   &lt;lgcl&gt;                        &lt;lgcl&gt;</span></span>
 <span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a><span class="co">#&gt; 1:      TRUE         TRUE        TRUE    FALSE                         FALSE</span></span>
 <span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a><span class="co">#&gt;    prevent_sor         update_time account_type permissions       uid</span></span>
-<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a><span class="co">#&gt;         &lt;lgcl&gt;              &lt;POSc&gt;       &lt;char&gt;      &lt;char&gt;     &lt;int&gt;</span></span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a><span class="co">#&gt;         &lt;lgcl&gt;              &lt;POSc&gt;       &lt;char&gt;      &lt;char&gt;     &lt;num&gt;</span></span>
 <span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a><span class="co">#&gt; 1:       FALSE 1970-01-02 10:17:36         SPOT        SPOT 354937868</span></span>
 <span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a><span class="co">#&gt;    commission_rates_maker commission_rates_taker commission_rates_buyer</span></span>
 <span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a><span class="co">#&gt;                    &lt;char&gt;                 &lt;char&gt;                 &lt;char&gt;</span></span>
@@ -440,7 +445,7 @@
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">account</span><span class="op">$</span><span class="fu">get_trades</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb28"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co">#&gt;     symbol    id order_id order_list_id          price        qty   quote_qty</span></span>
-<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt; &lt;int&gt;    &lt;int&gt;         &lt;int&gt;         &lt;char&gt;     &lt;char&gt;      &lt;char&gt;</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt; &lt;num&gt;    &lt;num&gt;         &lt;num&gt;         &lt;char&gt;     &lt;char&gt;      &lt;char&gt;</span></span>
 <span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT 28457   100234            -1 67232.90000000 0.00100000 67.23290000</span></span>
 <span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a><span class="co">#&gt; 2: BTCUSDT 28458   100235            -1 67200.00000000 0.00050000 33.60000000</span></span>
 <span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a><span class="co">#&gt;    commission commission_asset                time is_buyer is_maker</span></span>
@@ -496,7 +501,7 @@
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">margin</span><span class="op">$</span><span class="fu">get_trades</span><span class="op">(</span>symbol <span class="op">=</span> <span class="st">"BTCUSDT"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb35"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="co">#&gt;     symbol    id order_id          price        qty   quote_qty commission</span></span>
-<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt; &lt;int&gt;    &lt;int&gt;         &lt;char&gt;     &lt;char&gt;      &lt;char&gt;     &lt;char&gt;</span></span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt; &lt;num&gt;    &lt;num&gt;         &lt;char&gt;     &lt;char&gt;      &lt;char&gt;     &lt;char&gt;</span></span>
 <span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT 28457   100234 67232.90000000 0.00100000 67.23290000 0.00000100</span></span>
 <span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a><span class="co">#&gt;    commission_asset                time is_buyer is_maker is_best_match</span></span>
 <span id="cb35-5"><a href="#cb35-5" tabindex="-1"></a><span class="co">#&gt;              &lt;char&gt;              &lt;POSc&gt;   &lt;lgcl&gt;   &lt;lgcl&gt;        &lt;lgcl&gt;</span></span>
@@ -579,7 +584,7 @@
 <span>  type <span class="op">=</span> <span class="st">"LIMIT"</span>,</span>
 <span>  quantity <span class="op">=</span> <span class="fl">0.001</span>,</span>
 <span>  price <span class="op">=</span> <span class="fl">50000</span>,</span>
-<span>  timeInForce <span class="op">=</span> <span class="st">"GTC"</span></span>
+<span>  time_in_force <span class="op">=</span> <span class="st">"GTC"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb47"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="co">#&gt;    validated</span></span>
 <span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a><span class="co">#&gt;       &lt;lgcl&gt;</span></span>
@@ -623,7 +628,7 @@
 <div class="sourceCode" id="cb51"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a><span class="co">#&gt;     symbol          price</span></span>
 <span id="cb51-2"><a href="#cb51-2" tabindex="-1"></a><span class="co">#&gt;     &lt;char&gt;         &lt;char&gt;</span></span>
 <span id="cb51-3"><a href="#cb51-3" tabindex="-1"></a><span class="co">#&gt; 1: BTCUSDT 67232.90000000</span></span>
-<span id="cb51-4"><a href="#cb51-4" tabindex="-1"></a><span class="co">#&gt;     open_time      open   high      low    close   volume          close_time</span></span>
+<span id="cb51-4"><a href="#cb51-4" tabindex="-1"></a><span class="co">#&gt;      datetime      open   high      low    close   volume          close_time</span></span>
 <span id="cb51-5"><a href="#cb51-5" tabindex="-1"></a><span class="co">#&gt;        &lt;POSc&gt;     &lt;num&gt;  &lt;num&gt;    &lt;num&gt;    &lt;num&gt;    &lt;num&gt;              &lt;POSc&gt;</span></span>
 <span id="cb51-6"><a href="#cb51-6" tabindex="-1"></a><span class="co">#&gt; 1: 2017-07-03 0.0163479 0.8000 0.015758 0.015771 148976.1 2017-07-09 23:59:59</span></span>
 <span id="cb51-7"><a href="#cb51-7" tabindex="-1"></a><span class="co">#&gt; 2: 2017-07-10 0.0157710 0.0158 0.015730 0.015788  95432.0 2017-07-16 23:59:59</span></span>
