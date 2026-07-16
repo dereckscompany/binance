@@ -8,6 +8,22 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
+**In plain terms:** Binance is one of the largest cryptocurrency
+exchanges, where people buy, sell and hold digital coins. This package
+is the R doorway to it: you can pull historical price data and stream
+live market updates such as the order book, place and manage buy and
+sell orders on both the spot and futures markets, and handle the account
+side – balances, deposits, withdrawals, transfers and sub-accounts – all
+from R scripts. Requests can run the ordinary way, where your code waits
+for each answer, or in the background so your program keeps working and
+collects the results later. For research it can bulk-download years of
+price history and resume where it left off if it is interrupted, handing
+everything back as tidy tables ready for analysis. Because it can move
+real funds and place real trades, it is built to be driven deliberately
+and tested with small amounts first.
+
+## Technical overview
+
 An R API wrapper for the [Binance](https://www.binance.com/)
 cryptocurrency exchange. Provides `R6` classes for spot market data,
 trading, account management, deposits, withdrawals, and sub-accounts.
@@ -211,7 +227,7 @@ market$get_ticker(symbol = "BTCUSDT")
 market$get_klines(symbol = "BTCUSDT", interval = "1h", limit = 5)
 ```
 
-    #>     open_time      open   high      low    close   volume          close_time
+    #>      datetime      open   high      low    close   volume          close_time
     #>        <POSc>     <num>  <num>    <num>    <num>    <num>              <POSc>
     #> 1: 2017-07-03 0.0163479 0.8000 0.015758 0.015771 148976.1 2017-07-09 23:59:59
     #> 2: 2017-07-10 0.0157710 0.0158 0.015730 0.015788  95432.0 2017-07-16 23:59:59
@@ -228,15 +244,15 @@ When you need more than 1000 candles, pass `fetch_all = TRUE`. The
 method pages forward through the range — following the data and stopping
 at the first empty or short page — and returns the combined result.
 Because Binance returns candles from the first one on or after
-`startTime`, an empty leading stretch (e.g. dates before a symbol was
+`start_time`, an empty leading stretch (e.g. dates before a symbol was
 listed) is skipped in a single request:
 
 ``` r
 all_klines <- market$get_klines(
   symbol = "BTCUSDT",
   interval = "1h",
-  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-  endTime = as.POSIXct("2024-06-01", tz = "UTC"),
+  start_time = lubridate::as_datetime("2024-01-01", tz = "UTC"),
+  end_time = lubridate::as_datetime("2024-06-01", tz = "UTC"),
   fetch_all = TRUE,
   sleep = 0
 )
@@ -254,8 +270,8 @@ invisibly and your callback owns the data (this is how
 candles <- 0L
 market$get_klines(
   symbol = "BTCUSDT", interval = "1h",
-  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-  endTime = as.POSIXct("2024-02-01", tz = "UTC"),
+  start_time = lubridate::as_datetime("2024-01-01", tz = "UTC"),
+  end_time = lubridate::as_datetime("2024-02-01", tz = "UTC"),
   fetch_all = TRUE,
   on_page = function(page) candles <<- candles + nrow(page)
 )
@@ -302,7 +318,7 @@ market$get_24hr_stats(symbol = "BTCUSDT")
     #>           <char>             <char>              <POSc>              <POSc>
     #> 1: 3456.78901234 232456789.12000000 2024-10-16 10:04:19 2024-10-17 10:04:19
     #>    first_id last_id count
-    #>       <int>   <int> <int>
+    #>       <num>   <num> <int>
     #> 1:     1000    2000  1001
 
 ## Trading
@@ -333,11 +349,11 @@ trading$add_order_test(
 ### Query an Order
 
 ``` r
-trading$get_order(symbol = "BTCUSDT", orderId = 12345)
+trading$get_order(symbol = "BTCUSDT", order_id = 12345)
 ```
 
     #>     symbol order_id order_list_id        client_order_id          price
-    #>     <char>    <int>         <int>                 <char>         <char>
+    #>     <char>    <num>         <num>                 <char>         <char>
     #> 1: BTCUSDT       28            -1 6gCrw2kRUAF9CvJDGP16IP 50000.00000000
     #>      orig_qty executed_qty cummulative_quote_qty status time_in_force   type
     #>        <char>       <char>                <char> <char>        <char> <char>
@@ -359,7 +375,7 @@ trading$get_open_orders(symbol = "BTCUSDT")
 ```
 
     #>     symbol order_id order_list_id        client_order_id          price
-    #>     <char>    <int>         <int>                 <char>         <char>
+    #>     <char>    <num>         <num>                 <char>         <char>
     #> 1: BTCUSDT       28            -1 6gCrw2kRUAF9CvJDGP16IP 50000.00000000
     #>      orig_qty executed_qty cummulative_quote_qty status time_in_force   type
     #>        <char>       <char>                <char> <char>        <char> <char>
@@ -390,7 +406,7 @@ account$get_account_info()
     #>       <lgcl>       <lgcl>      <lgcl>   <lgcl>                        <lgcl>
     #> 1:      TRUE         TRUE        TRUE    FALSE                         FALSE
     #>    prevent_sor         update_time account_type permissions       uid
-    #>         <lgcl>              <POSc>       <char>      <char>     <int>
+    #>         <lgcl>              <POSc>       <char>      <char>     <num>
     #> 1:       FALSE 1970-01-02 10:17:36         SPOT        SPOT 354937868
     #>    commission_rates_maker commission_rates_taker commission_rates_buyer
     #>                    <char>                 <char>                 <char>
@@ -406,7 +422,7 @@ account$get_trades(symbol = "BTCUSDT")
 ```
 
     #>     symbol    id order_id order_list_id          price        qty   quote_qty
-    #>     <char> <int>    <int>         <int>         <char>     <char>      <char>
+    #>     <char> <num>    <num>         <num>         <char>     <char>      <char>
     #> 1: BTCUSDT 28457   100234            -1 67232.90000000 0.00100000 67.23290000
     #> 2: BTCUSDT 28458   100235            -1 67200.00000000 0.00050000 33.60000000
     #>    commission commission_asset                time is_buyer is_maker
@@ -467,7 +483,7 @@ margin$get_trades(symbol = "BTCUSDT")
 ```
 
     #>     symbol    id order_id          price        qty   quote_qty commission
-    #>     <char> <int>    <int>         <char>     <char>      <char>     <char>
+    #>     <char> <num>    <num>         <char>     <char>      <char>     <char>
     #> 1: BTCUSDT 28457   100234 67232.90000000 0.00100000 67.23290000 0.00000100
     #>    commission_asset                time is_buyer is_maker is_best_match
     #>              <char>              <POSc>   <lgcl>   <lgcl>        <lgcl>
@@ -552,7 +568,7 @@ futures$add_order_test(
   type = "LIMIT",
   quantity = 0.001,
   price = 50000,
-  timeInForce = "GTC"
+  time_in_force = "GTC"
 )
 ```
 
@@ -606,7 +622,7 @@ while (!later$loop_empty()) {
     #>     symbol          price
     #>     <char>         <char>
     #> 1: BTCUSDT 67232.90000000
-    #>     open_time      open   high      low    close   volume          close_time
+    #>      datetime      open   high      low    close   volume          close_time
     #>        <POSc>     <num>  <num>    <num>    <num>    <num>              <POSc>
     #> 1: 2017-07-03 0.0163479 0.8000 0.015758 0.015771 148976.1 2017-07-09 23:59:59
     #> 2: 2017-07-10 0.0157710 0.0158 0.015730 0.015788  95432.0 2017-07-16 23:59:59

@@ -21,6 +21,10 @@ knitr::opts_chunk$set(
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
+**In plain terms:** Binance is one of the largest cryptocurrency exchanges, where people buy, sell and hold digital coins. This package is the R doorway to it: you can pull historical price data and stream live market updates such as the order book, place and manage buy and sell orders on both the spot and futures markets, and handle the account side -- balances, deposits, withdrawals, transfers and sub-accounts -- all from R scripts. Requests can run the ordinary way, where your code waits for each answer, or in the background so your program keeps working and collects the results later. For research it can bulk-download years of price history and resume where it left off if it is interrupted, handing everything back as tidy tables ready for analysis. Because it can move real funds and place real trades, it is built to be driven deliberately and tested with small amounts first.
+
+## Technical overview
+
 An R API wrapper for the [Binance](https://www.binance.com/) cryptocurrency exchange. Provides `R6` classes for spot market data, trading, account management, deposits, withdrawals, and sub-accounts. Supports both synchronous and asynchronous (promise based) operation via `httr2`.
 
 ## Disclaimer
@@ -155,14 +159,14 @@ market$get_klines(symbol = "BTCUSDT", interval = "1h", limit = 5)
 
 ### Fetch All Klines (Large Date Ranges)
 
-When you need more than 1000 candles, pass `fetch_all = TRUE`. The method pages forward through the range — following the data and stopping at the first empty or short page — and returns the combined result. Because Binance returns candles from the first one on or after `startTime`, an empty leading stretch (e.g. dates before a symbol was listed) is skipped in a single request:
+When you need more than 1000 candles, pass `fetch_all = TRUE`. The method pages forward through the range — following the data and stopping at the first empty or short page — and returns the combined result. Because Binance returns candles from the first one on or after `start_time`, an empty leading stretch (e.g. dates before a symbol was listed) is skipped in a single request:
 
 ```{r}
 all_klines <- market$get_klines(
   symbol = "BTCUSDT",
   interval = "1h",
-  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-  endTime = as.POSIXct("2024-06-01", tz = "UTC"),
+  start_time = lubridate::as_datetime("2024-01-01", tz = "UTC"),
+  end_time = lubridate::as_datetime("2024-06-01", tz = "UTC"),
   fetch_all = TRUE,
   sleep = 0
 )
@@ -175,8 +179,8 @@ Pass an `on_page` callback to **stream** each page as it is fetched instead of h
 candles <- 0L
 market$get_klines(
   symbol = "BTCUSDT", interval = "1h",
-  startTime = as.POSIXct("2024-01-01", tz = "UTC"),
-  endTime = as.POSIXct("2024-02-01", tz = "UTC"),
+  start_time = lubridate::as_datetime("2024-01-01", tz = "UTC"),
+  end_time = lubridate::as_datetime("2024-02-01", tz = "UTC"),
   fetch_all = TRUE,
   on_page = function(page) candles <<- candles + nrow(page)
 )
@@ -220,7 +224,7 @@ trading$add_order_test(
 ### Query an Order
 
 ```{r}
-trading$get_order(symbol = "BTCUSDT", orderId = 12345)
+trading$get_order(symbol = "BTCUSDT", order_id = 12345)
 ```
 
 ### Get Open Orders
@@ -320,7 +324,7 @@ futures$add_order_test(
   type = "LIMIT",
   quantity = 0.001,
   price = 50000,
-  timeInForce = "GTC"
+  time_in_force = "GTC"
 )
 ```
 
