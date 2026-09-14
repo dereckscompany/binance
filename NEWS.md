@@ -1,3 +1,10 @@
+# binance 0.11.1
+
+**A regression test that guards against price data ever being truncated again.** In plain English: on 2026-09-13 the fleet discovered that every Hyperliquid candle in the data lake had been stored to four decimal places for months, so a coin priced below a cent lost almost all of its information, and a strategy that ranks coins by calmness ranked them wrongly as a result. The cause was traced and proved NOT to be in the venue connector packages — this package's parse path turns Binance's decimal strings into R numbers at full precision (klines), and deliberately keeps some fields (the book ticker's prices/quantities) as Binance's own strings, never converting them at all — it was a re-serialisation default in the data scraper, since fixed. This release adds a test that pins that correctness in place for Binance: if anyone later introduces `round()`, `signif()`, `sprintf("%.4f")`, `format(nsmall = )`, or a narrowing cast into a parse helper, the test fails immediately.
+
+- Added `tests/testthat/test-parse-precision.R`: drives `get_klines()` and `get_book_ticker()` through the real public client, via synthetic high-precision fixtures (raw JSON text, matching Binance's own wire format) routed through the shared `connectcore` mock harness. Every kline OHLCV column is asserted `expect_identical()` (never tolerance-based) against `as.numeric()` of the fixture's own decimal string; the book ticker's price/quantity strings are asserted to remain character and byte-identical (never coerced to numeric); and a big-integer-looking identifier (`symbol`, and the kline `ignore` field) is asserted to stay character and unchanged.
+- No behaviour change: the parse path (`parse_klines()` / `as_dt_row()`, `R/helpers_parse.R`) was already correct and is untouched.
+
 # binance 0.11.0
 
 ## Futures funding-interval declarations: `BinanceFuturesData$get_funding_info()`
