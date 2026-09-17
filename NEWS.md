@@ -1,3 +1,11 @@
+# binance 0.11.3
+
+**A withdrawal example and its test used what reads as a genuine wallet address instead of an obviously fake one.** In plain English: the roxygen documentation example for `BinanceWithdrawal$add_withdrawal()` and its accompanying test both hard-coded the same syntactically valid Tron (TRX) address, which is also the exact address reused in the kucoin package's own withdrawal fixtures — an exotic, real-looking value sitting in a withdrawal-destination role where anyone skimming the docs or a git history search could mistake it for an actual wallet. The address field is never checked against a base58 checksum or a network lookup, only checked for being present, so a placeholder that is visibly fake works just as well.
+
+- Replaced every occurrence of `TKFRQXSDcY4kd3QLzw7uK16GmLrjJggwX8` in `R/BinanceWithdrawal.R` (the roxygen example, both the curl and JSON blocks) and `tests/testthat/test-BinanceWithdrawal.R` with `TXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX` — a 34-character string matching Tron's address length and base58 alphabet but visually unmistakable as a placeholder.
+- Confirmed `add_withdrawal()`'s `address` parameter is validated only via `assert::assert_nonempty_strings()` (`R/BinanceWithdrawal.R`), with no base58 or checksum validation, so the placeholder needed no special construction beyond matching the venue's expected length.
+- Regenerated `man/BinanceWithdrawal.Rd` via `scripts/BUILD.sh document` to pick up the roxygen example change.
+
 # binance 0.11.2
 
 **A WebSocket subscribe request that Binance could have silently rejected when the caller happened to pass named stream names.** In plain English: the function that builds the `SUBSCRIBE`/`UNSUBSCRIBE` control frame sent over the live market-data socket turned the list of stream names into a JSON list before encoding it, and a JSON list built from a named R vector serialises as a `{...}` object instead of a `[...]` array. Binance's WebSocket API requires `params` to always be an array; sending an object would have been rejected by the venue for any caller who supplied names on the vector (for example `c(spot = "btcusdt@depth")`), even though no path in this package currently constructs one that way.
