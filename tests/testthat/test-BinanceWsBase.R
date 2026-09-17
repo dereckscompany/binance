@@ -16,6 +16,13 @@ test_that("ws_control_message encodes params as a JSON array even for one stream
   expect_equal(length(multi$params), 2L)
 })
 
+test_that("ws_control_message drops names off params so the frame stays a JSON array", {
+  msg <- ws_control_message("SUBSCRIBE", c(spot = "btcusdt@depth", perp = "ethusdt@depth"), 3L)
+  expect_true(grepl('"params":[', msg, fixed = TRUE))
+  parsed <- jsonlite::fromJSON(msg, simplifyVector = FALSE)
+  expect_null(names(parsed$params))
+})
+
 test_that("ws_depth_stream lower-cases and applies the speed suffix", {
   expect_equal(ws_depth_stream("BTCUSDT"), "btcusdt@depth")
   expect_equal(ws_depth_stream("BTCUSDT", "1000ms"), "btcusdt@depth")
