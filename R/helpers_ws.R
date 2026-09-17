@@ -20,6 +20,7 @@
 #' @noRd
 ws_control_message <- function(method, params, id) {
   assert_args_ws_control_message(method, params, id)
+  params <- unname(params)
   return(assert_return_ws_control_message(as.character(jsonlite::toJSON(
     list(method = method, params = as.list(params), id = id),
     auto_unbox = TRUE
