@@ -1,6 +1,6 @@
 # binance — Roadmap
 
-> Version 0.0.1 · Last updated 2026-03-08
+> **This file is stale and no longer maintained (flagged 2026-09-18).** It was written for the package's initial v0.0.1 release on 2026-03-08 and was never updated afterwards, so the "Implemented" list below only covers what shipped in that first release and the "Won't do" section below wrongly lists WebSocket support as skipped when it in fact shipped in v0.3.0. The package is now at v0.11.4 with WebSocket streaming, `roxyassert` typed contracts, and a `connectcore`-based transport layer on top of everything listed here. NEWS.md is the authoritative, kept-current record of what has shipped; treat everything below this notice as a historical snapshot of the original plan, not a current one.
 
 ## Naming convention
 
