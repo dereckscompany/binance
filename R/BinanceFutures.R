@@ -1797,7 +1797,7 @@ BinanceFutures <- R6::R6Class(
     #' Get Income History
     #'
     #' Retrieves the income history for the futures account (funding fees,
-    #' realized PnL, commissions, etc.).
+    #' realised PnL, commissions, etc.).
     #'
     #' ### API Endpoint
     #' `GET https://fapi.binance.com/fapi/v1/income`
