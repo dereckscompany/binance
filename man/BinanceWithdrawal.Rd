@@ -74,7 +74,7 @@ withdrawal <- BinanceWithdrawal$new()
 # Withdraw USDT via TRC20
 result <- withdrawal$add_withdrawal(
   coin = "USDT",
-  address = "TKFRQXSDcY4kd3QLzw7uK16GmLrjJggwX8",
+  address = "TXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
   amount = 10,
   network = "TRX"
 )
@@ -148,7 +148,7 @@ to select the cheapest or fastest network.
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{curl -X POST 'https://api.binance.com/sapi/v1/capital/withdraw/apply' \\
   -H 'X-MBX-APIKEY: your-api-key' \\
-  -d 'coin=USDT&address=TKFRQXSDcY4kd3QLzw7uK16GmLrjJggwX8&amount=10&network=TRX&timestamp=...&signature=...'
+  -d 'coin=USDT&address=TXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&amount=10&network=TRX&timestamp=...&signature=...'
 }\if{html}{\out{</div>}}
 }
 
@@ -156,7 +156,7 @@ to select the cheapest or fastest network.
 
 \if{html}{\out{<div class="sourceCode json">}}\preformatted{\{
   "coin": "USDT",
-  "address": "TKFRQXSDcY4kd3QLzw7uK16GmLrjJggwX8",
+  "address": "TXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
   "amount": "10",
   "network": "TRX",
   "timestamp": 1661493146000,
@@ -218,7 +218,7 @@ fee to destination, \code{FALSE} to origin.}
 # Withdraw USDT via TRC20
 result <- withdrawal$add_withdrawal(
   coin = "USDT",
-  address = "TKFRQXSDcY4kd3QLzw7uK16GmLrjJggwX8",
+  address = "TXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
   amount = 10,
   network = "TRX"
 )

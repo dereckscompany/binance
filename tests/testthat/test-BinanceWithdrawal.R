@@ -24,7 +24,7 @@ test_that("add_withdrawal returns data.table with id", {
 
   dt <- new_withdrawal()$add_withdrawal(
     coin = "USDT",
-    address = "TKFRQXSDcY4kd3QLzw7uK16GmLrjJggwX8",
+    address = "TXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
     amount = 10
   )
   expect_s3_class(dt, "data.table")
@@ -45,7 +45,7 @@ test_that("add_withdrawal hits correct endpoint with POST", {
 
   new_withdrawal()$add_withdrawal(
     coin = "USDT",
-    address = "TKFRQXSDcY4kd3QLzw7uK16GmLrjJggwX8",
+    address = "TXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
     amount = 10
   )
   expect_true(grepl("sapi/v1/capital/withdraw/apply", captured_url))
