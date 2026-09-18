@@ -1,8 +1,15 @@
+# binance 0.11.4
+
+**Two documentation files were caught out of step with the code they describe: a changelog entry that republished the very address it said it had removed, and a roadmap frozen at the package's first release.** In plain English: the 0.11.3 changelog entry describes replacing a real-looking withdrawal address with a placeholder, but the entry's own bullet quoted that real-looking address in full, so fixing the defect in the code and then restating it in the changelog put the same value straight back into a public, permanent, and heavily-indexed document. Separately, `ROADMAP.md` still described the package as it stood at v0.0.1 on 2026-03-08 and listed WebSocket support under "won't do", even though WebSocket streaming shipped six releases and six months ago in v0.3.0; nobody had kept the roadmap current since the initial release, so it had drifted from a plan into a historical curiosity that looked like a current one.
+
+- Rewrote the 0.11.3 entry's bullet in `NEWS.md` to describe the withdrawal-address defect and its fix without quoting the address value, matching the abstraction already used for the same class of fixture-address defect in the kucoin package's 4.6.3 entry.
+- Added a dated notice to the top of `ROADMAP.md` flagging it as stale and no longer maintained, explaining what it does and does not still reflect, and pointing readers to `NEWS.md` as the authoritative record of what has shipped, rather than rewriting the roadmap's body to chase a moving target.
+
 # binance 0.11.3
 
 **A withdrawal example and its test used what reads as a genuine wallet address instead of an obviously fake one.** In plain English: the roxygen documentation example for `BinanceWithdrawal$add_withdrawal()` and its accompanying test both hard-coded the same syntactically valid Tron (TRX) address, which is also the exact address reused in the kucoin package's own withdrawal fixtures — an exotic, real-looking value sitting in a withdrawal-destination role where anyone skimming the docs or a git history search could mistake it for an actual wallet. The address field is never checked against a base58 checksum or a network lookup, only checked for being present, so a placeholder that is visibly fake works just as well.
 
-- Replaced every occurrence of `TKFRQXSDcY4kd3QLzw7uK16GmLrjJggwX8` in `R/BinanceWithdrawal.R` (the roxygen example, both the curl and JSON blocks) and `tests/testthat/test-BinanceWithdrawal.R` with `TXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX` — a 34-character string matching Tron's address length and base58 alphabet but visually unmistakable as a placeholder.
+- Replaced the real-format Tron (TRX) withdrawal address in `R/BinanceWithdrawal.R` (the roxygen example, both the curl and JSON blocks) and `tests/testthat/test-BinanceWithdrawal.R` with an obviously-fake, shape-valid placeholder, a 34-character string matching Tron's address length and base58 alphabet but visually unmistakable as a placeholder.
 - Confirmed `add_withdrawal()`'s `address` parameter is validated only via `assert::assert_nonempty_strings()` (`R/BinanceWithdrawal.R`), with no base58 or checksum validation, so the placeholder needed no special construction beyond matching the venue's expected length.
 - Regenerated `man/BinanceWithdrawal.Rd` via `scripts/BUILD.sh document` to pick up the roxygen example change.
 
