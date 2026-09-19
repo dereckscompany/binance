@@ -8,8 +8,8 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-Binance is one of the largest cryptocurrency exchanges, where people
-buy, sell and hold digital coins. This package is the R doorway to it:
+**Binance is one of the largest cryptocurrency exchanges, where people
+buy, sell and hold digital coins.** This package is the R doorway to it:
 you can pull historical price data and stream live market updates such
 as the order book, place and manage buy and sell orders on both the spot
 and futures markets, and handle the account side – balances, deposits,
@@ -30,22 +30,7 @@ trading, account management, deposits, withdrawals, and sub-accounts.
 Supports both synchronous and asynchronous (promise based) operation via
 `httr2`.
 
-## Disclaimer
-
-This software is provided “as is”, without warranty of any kind. **This
-package interacts with live cryptocurrency exchange accounts and can
-execute real trades, transfers, and withdrawals involving real money.**
-By using this package you accept full responsibility for any financial
-losses, erroneous transactions, or other damages that may result. Always
-test with small amounts first, use API key permissions to restrict
-access to only what you need, and never share your API credentials. The
-author(s) and contributor(s) are not liable for any financial loss or
-damage arising from the use of this software.
-
-We invite you to read the source code and make contributions if you find
-a bug or wish to make an improvement.
-
-## Design Philosophy
+## Design philosophy
 
 All API responses are returned as `data.table` objects. The package
 targets a consistent “one entity = one row, no list columns” shape, but
@@ -123,41 +108,17 @@ the Binance documentation.
 If a column you expect is missing, check the method’s `@return`; if it
 still looks wrong, please file an issue.
 
-## Available Classes
-
-| Class | Purpose | Auth Required |
-|----|----|:--:|
-| `BinanceMarketData` | Spot market data: tickers, klines, depth, trades, exchange info | No |
-| `BinanceTrading` | Spot order placement, query, and cancellation | Yes |
-| `BinanceOcoOrders` | One-Cancels-Other order management | Yes |
-| `BinanceAccount` | Account info and trade history | Yes |
-| `BinanceDeposit` | Deposit addresses and deposit history | Yes |
-| `BinanceWithdrawal` | Withdrawal submission and history | Yes |
-| `BinanceTransfer` | Internal transfers between wallet types (spot, margin, futures) | Yes |
-| `BinanceSubAccount` | Sub-account listing and management | Yes |
-| `BinanceEarn` | Simple Earn: flexible savings products and positions | Yes |
-| `BinanceMarginData` | Margin pairs, price index, interest rates, cross/isolated data | Mixed |
-| `BinanceMargin` | Margin borrowing, repayment, orders, and account queries | Yes |
-| `BinanceFuturesData` | Futures exchange info, mark price, funding rates, klines | No |
-| `BinanceFutures` | Futures order placement, positions, leverage, account queries | Yes |
-| `BinanceMarketStream` | Live spot market-data WebSocket streams (order-book depth) | No |
-| `BinanceBase` | Internal base class (not used directly) | — |
-| `BinanceWsBase` | Internal base class for WebSocket streams (not used directly) | — |
-
-All REST classes accept an `async = TRUE` argument at construction and
-share a common `time_source` parameter for clock drift correction. The
-WebSocket classes are always event-driven (a socket is an endless push
-stream, not a single request) — see [WebSocket
-Streams](#websocket-streams) below.
-
 ## Installation
 
 ``` r
+renv::install("dereckscompany/binance")
+
+# or, if you use remotes instead of renv:
 # install.packages("remotes")
-remotes::install_github("dereckscompany/binance")
+# remotes::install_github("dereckscompany/binance")
 ```
 
-## Setup
+## Quick start
 
 ``` r
 # special mock for local build
@@ -203,7 +164,22 @@ BINANCE_API_SECRET = your-api-secret
 If you don’t have a key, visit the [Binance API
 documentation](https://developers.binance.com/docs/binance-spot-api-docs).
 
-## Quick Start – Market Data
+## Disclaimer
+
+This software is provided “as is”, without warranty of any kind. **This
+package interacts with live cryptocurrency exchange accounts and can
+execute real trades, transfers, and withdrawals involving real money.**
+By using this package you accept full responsibility for any financial
+losses, erroneous transactions, or other damages that may result. Always
+test with small amounts first, use API key permissions to restrict
+access to only what you need, and never share your API credentials. The
+author(s) and contributor(s) are not liable for any financial loss or
+damage arising from the use of this software.
+
+We invite you to read the source code and make contributions if you find
+a bug or wish to make an improvement.
+
+## Market Data
 
 Market data endpoints are public and require no authentication.
 
@@ -586,53 +562,6 @@ futures$set_leverage(symbol = "BTCUSDT", leverage = 10)
     #>       <int>             <char>  <char>
     #> 1:       20           25000000 BTCUSDT
 
-## Async Usage
-
-This package is meant to be used in an asynchronous non-blocking event
-loop (i.e. à la JavaScript) and is written around promises. Please use
-`later` to run your event loop. I recommend the pattern shown below.
-
-We offer a synchronous and asynchronous instance of the classes. All
-classes accept `async = TRUE`, this makes methods return promises
-instead of objects. You can resolve promises in whichever way you like,
-either `$then()` chaining or `async`/`await` patterns.
-
-I recommend use `coro::async()` to write sequential looking async code:
-
-``` r
-box::use(coro, later)
-
-market_async <- BinanceMarketData$new(async = TRUE)
-
-main <- coro$async(function() {
-  ticker <- await(market_async$get_ticker(symbol = "BTCUSDT"))
-  klines <- await(market_async$get_klines(symbol = "BTCUSDT", interval = "1h", limit = 10))
-
-  print(ticker)
-  print(klines)
-})
-
-main()
-
-while (!later$loop_empty()) {
-  later$run_now()
-}
-```
-
-    #>     symbol          price
-    #>     <char>         <char>
-    #> 1: BTCUSDT 67232.90000000
-    #>      datetime      open   high      low    close   volume          close_time
-    #>        <POSc>     <num>  <num>    <num>    <num>    <num>              <POSc>
-    #> 1: 2017-07-03 0.0163479 0.8000 0.015758 0.015771 148976.1 2017-07-09 23:59:59
-    #> 2: 2017-07-10 0.0157710 0.0158 0.015730 0.015788  95432.0 2017-07-16 23:59:59
-    #> 3: 2017-07-17 0.0157880 0.0159 0.015700 0.015850 120000.0 2017-07-23 23:59:59
-    #>    quote_volume trades taker_buy_base_volume taker_buy_quote_volume ignore
-    #>           <num>  <int>                 <num>                  <num> <char>
-    #> 1:     2434.191    308             1756.8740               28.46694      0
-    #> 2:     1505.250    205              876.1235               13.82000      0
-    #> 3:     1899.600    250              950.0000               15.06750      0
-
 ## WebSocket Streams
 
 Beyond the REST API, the package opens **live market-data WebSocket
@@ -681,16 +610,111 @@ head(binance_btc_usdt_4h_ohlcv)
 See `?binance_btc_usdt_4h_ohlcv` for column descriptions. This data was
 produced by `binance_backfill_klines()`.
 
-## Citation
+## Available Classes
 
-If you use this package in your work, please cite it:
+| Class | Purpose | Auth Required |
+|----|----|:--:|
+| `BinanceMarketData` | Spot market data: tickers, klines, depth, trades, exchange info | No |
+| `BinanceTrading` | Spot order placement, query, and cancellation | Yes |
+| `BinanceOcoOrders` | One-Cancels-Other order management | Yes |
+| `BinanceAccount` | Account info and trade history | Yes |
+| `BinanceDeposit` | Deposit addresses and deposit history | Yes |
+| `BinanceWithdrawal` | Withdrawal submission and history | Yes |
+| `BinanceTransfer` | Internal transfers between wallet types (spot, margin, futures) | Yes |
+| `BinanceSubAccount` | Sub-account listing and management | Yes |
+| `BinanceEarn` | Simple Earn: flexible savings products and positions | Yes |
+| `BinanceMarginData` | Margin pairs, price index, interest rates, cross/isolated data | Mixed |
+| `BinanceMargin` | Margin borrowing, repayment, orders, and account queries | Yes |
+| `BinanceFuturesData` | Futures exchange info, mark price, funding rates, klines | No |
+| `BinanceFutures` | Futures order placement, positions, leverage, account queries | Yes |
+| `BinanceMarketStream` | Live spot market-data WebSocket streams (order-book depth) | No |
+| `BinanceBase` | Internal base class (not used directly) | — |
+| `BinanceWsBase` | Internal base class for WebSocket streams (not used directly) | — |
+
+All REST classes accept an `async = TRUE` argument at construction and
+share a common `time_source` parameter for clock drift correction. The
+WebSocket classes are always event-driven (a socket is an endless push
+stream, not a single request) — see [WebSocket
+Streams](#websocket-streams) above.
+
+## Asynchronous usage
+
+This package is meant to be used in an asynchronous non-blocking event
+loop (i.e. à la JavaScript) and is written around promises. Please use
+`later` to run your event loop. I recommend the pattern shown below.
+
+We offer a synchronous and asynchronous instance of the classes. All
+classes accept `async = TRUE`, this makes methods return promises
+instead of objects. You can resolve promises in whichever way you like,
+either `$then()` chaining or `async`/`await` patterns.
+
+I recommend use `coro::async()` to write sequential looking async code:
 
 ``` r
-citation("binance")
+box::use(coro, later)
+
+market_async <- BinanceMarketData$new(async = TRUE)
+
+main <- coro$async(function() {
+  ticker <- await(market_async$get_ticker(symbol = "BTCUSDT"))
+  klines <- await(market_async$get_klines(symbol = "BTCUSDT", interval = "1h", limit = 10))
+
+  print(ticker)
+  print(klines)
+})
+
+main()
+
+while (!later$loop_empty()) {
+  later$run_now()
+}
 ```
 
-> Mezquita, D. (2026). binance: R API Wrapper to Binance Cryptocurrency
-> Exchange. R package version 0.0.1.
+    #>     symbol          price
+    #>     <char>         <char>
+    #> 1: BTCUSDT 67232.90000000
+    #>      datetime      open   high      low    close   volume          close_time
+    #>        <POSc>     <num>  <num>    <num>    <num>    <num>              <POSc>
+    #> 1: 2017-07-03 0.0163479 0.8000 0.015758 0.015771 148976.1 2017-07-09 23:59:59
+    #> 2: 2017-07-10 0.0157710 0.0158 0.015730 0.015788  95432.0 2017-07-16 23:59:59
+    #> 3: 2017-07-17 0.0157880 0.0159 0.015700 0.015850 120000.0 2017-07-23 23:59:59
+    #>    quote_volume trades taker_buy_base_volume taker_buy_quote_volume ignore
+    #>           <num>  <int>                 <num>                  <num> <char>
+    #> 1:     2434.191    308             1756.8740               28.46694      0
+    #> 2:     1505.250    205              876.1235               13.82000      0
+    #> 3:     1899.600    250              950.0000               15.06750      0
+
+## Documentation
+
+The rendered reference site is at
+<https://dereckscompany.github.io/binance>.
+
+The vignette ladder, in reading order:
+
+- `vignette("getting-started", package = "binance")` – constructing a
+  client and walking every synchronous surface: market data, trading,
+  OCO orders, account, deposits, withdrawals, transfers, Simple Earn,
+  sub-accounts, clock-drift correction, and bulk kline backfill.
+- `vignette("async-usage", package = "binance")` – consuming the same
+  client in asynchronous mode with `coro::async()`/`await()` and
+  `later::run_now()`, plus structured error handling with `tryCatch()`.
+- `vignette("websocket-streams", package = "binance")` – the live
+  order-book diff stream’s Node.js-style event API, the recorder
+  pattern, and reconnection.
+- `vignette("margin-futures-trading", package = "binance")` – margin
+  borrowing, repayment and orders, and USD-M futures market data and
+  trading, in synchronous mode against mock data.
+- `vignette("data-shapes", package = "binance")` – the one-stop tour:
+  every public method by topic, the shape of what each returns, and the
+  data-shape policy in full.
+
+Release history is in [`NEWS.md`](NEWS.md).
+
+## Citation
+
+Cite as: Mezquita, D. (2026). API Wrapper to Binance Cryptocurrency
+Exchange. R package version 0.11.6.
+<https://github.com/dereckscompany/binance>
 
 ## Licence
 
