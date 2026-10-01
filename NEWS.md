@@ -1,3 +1,11 @@
+# binance 0.11.7
+
+**This package now re-locks against connectcore 0.6.0, which closes a fault that could freeze every live request a connector was making at once.** A resident container once asked a venue for its positions and orders and got no answer for ten minutes, because of a units bug in the shared transport's asynchronous request pool: one request that stalled against the venue could block the whole curl pool, so every other asynchronous call sharing that pool froze behind it even though nothing was wrong with them. connectcore 0.6.0 fixes this by giving every asynchronous request its own dedicated connection pool and racing it against an independent timer; if the request does not finish within its timeout plus a safety margin, only that request is cancelled, with a new classed condition raised in its place, and every other in-flight request keeps going unaffected. This release makes no behavioural change to binance itself: the fix lives entirely inside connectcore's transport layer, which this package already depends on without touching its internals.
+
+- Raised the `connectcore` floor in `DESCRIPTION`'s `Imports` from `(>= 0.5.0)` to `(>= 0.6.0)`.
+- Re-locked `renv.lock` against `connectcore@v0.6.0` via `renv::record()` followed by `renv::restore()`; no other package versions changed.
+- Audited `tests/` and `R/` for a custom async `.perform` test stub of the kind connectcore 0.6.0 required alpaca to fix; binance's test suite drives all async paths through its own `mock_router` fixture rather than stubbing httr2 internals directly, so no test needed changing.
+
 # binance 0.11.6
 
 **The README now follows the one shape used across the whole connector fleet, and it gains a citation and a map of the vignettes.** This release reshapes `README.Rmd` into the fleet's canonical section order (owner ruling 20, 2026-09-18): a plain-English lead, a technical overview, a design philosophy, installation, a quick start, one section per API surface, asynchronous usage, and finally a documentation index, a citation, and the licence. No sentence was rewritten and no code chunk's behaviour changed; existing sections were only renamed, moved into their new slots, or merged, and two sections that did not exist before in this form -- Documentation and a canonical Citation -- were built from the package's own metadata.
