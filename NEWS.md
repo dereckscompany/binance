@@ -1,3 +1,12 @@
+# binance 0.11.8
+
+**Two stale or duplicated documents are deleted and the README's "Cite as" line names the current version; nothing the package does has changed.** `ROADMAP.md` was frozen at an early release and is contradicted by this changelog and by the code, and `CONTRIBUTING.md` was a boilerplate copy that only alpaca, binance and kucoin carried (the other eight connector packages have none); `NEWS.md` is the one record of what was released and why.
+
+- `ROADMAP.md` removed (fleet clean-up plan D.1-39). Evidence: it describes an early release and is contradicted by this file and the code; its only unique content, the method-name verb convention (`get_*` query, `add_*` create, `cancel_*` cancel, `modify_*` amend, `set_*` configure; snake_case; no API version numbers in method names), is unchanged and visible in every class's method list. The file stays recoverable from git history.
+- `CONTRIBUTING.md` removed (plan G.2-18). Evidence: byte-identical across alpaca, binance and kucoin once the package name is substituted, absent from the other eight connector packages, and its advice to prefer base R over added dependencies conflicts with the fleet's lubridate and data.table conventions; the pull-request template in `.github/` is untouched.
+- `README.Rmd` / `README.md`: citation 0.11.6 -> 0.11.8 (fleet clean-up plan G.2-14); `README.md` re-rendered.
+- `DESCRIPTION`: version bumped 0.11.7 -> 0.11.8.
+
 # binance 0.11.7
 
 **This package now re-locks against connectcore 0.6.0, which closes a fault that could freeze every live request a connector was making at once.** A resident container once asked a venue for its positions and orders and got no answer for ten minutes, because of a units bug in the shared transport's asynchronous request pool: one request that stalled against the venue could block the whole curl pool, so every other asynchronous call sharing that pool froze behind it even though nothing was wrong with them. connectcore 0.6.0 fixes this by giving every asynchronous request its own dedicated connection pool and racing it against an independent timer; if the request does not finish within its timeout plus a safety margin, only that request is cancelled, with a new classed condition raised in its place, and every other in-flight request keeps going unaffected. This release makes no behavioural change to binance itself: the fix lives entirely inside connectcore's transport layer, which this package already depends on without touching its internals.

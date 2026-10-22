@@ -417,7 +417,7 @@ Release history is in [`NEWS.md`](NEWS.md).
 
 ## Citation
 
-Cite as: Mezquita, D. (2026). API Wrapper to Binance Cryptocurrency Exchange. R package version 0.11.6. https://github.com/dereckscompany/binance
+Cite as: Mezquita, D. (2026). API Wrapper to Binance Cryptocurrency Exchange. R package version 0.11.8. https://github.com/dereckscompany/binance
 
 ## Licence
 
